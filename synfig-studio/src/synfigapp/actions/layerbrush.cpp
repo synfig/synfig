@@ -26,10 +26,10 @@
 /* === H E A D E R S ======================================================= */
 
 #ifdef USING_PCH
-#	include "pch.h"
+#   include "pch.h"
 #else
 #ifdef HAVE_CONFIG_H
-#	include <config.h>
+#   include <config.h>
 #endif
 
 #include "layerbrush.h"
@@ -45,12 +45,12 @@ using namespace synfigapp;
 /* === M A C R O S ========================================================= */
 
 ACTION_INIT(Action::LayerBrush);
-ACTION_SET_NAME(Action::LayerBrush,"LayerBrush");
-ACTION_SET_LOCAL_NAME(Action::LayerBrush,N_("Brush Stroke"));
-ACTION_SET_TASK(Action::LayerBrush,"brush_stroke");
-ACTION_SET_CATEGORY(Action::LayerBrush,Action::CATEGORY_NONE);
-ACTION_SET_PRIORITY(Action::LayerBrush,0);
-ACTION_SET_VERSION(Action::LayerBrush,"0.0");
+ACTION_SET_NAME(Action::LayerBrush, "LayerBrush");
+ACTION_SET_LOCAL_NAME(Action::LayerBrush, N_("Brush Stroke"));
+ACTION_SET_TASK(Action::LayerBrush, "brush_stroke");
+ACTION_SET_CATEGORY(Action::LayerBrush, Action::CATEGORY_NONE);
+ACTION_SET_PRIORITY(Action::LayerBrush, 0);
+ACTION_SET_VERSION(Action::LayerBrush, "0.0");
 
 #define CHECKPOINT_INTERVAL 20
 
@@ -60,8 +60,8 @@ struct StrokeData {
 	Layer_Bitmap::Handle layer;
 	std::vector<Action::LayerBrush::StrokePoint> points;
 	std::unique_ptr<brushlib::Brush> brush;
-	std::unique_ptr<synfig::Surface> checkpoint_surface;
-	Point before_tl , before_br;
+	std::unique_ptr<Surface> checkpoint_surface;
+	Point before_tl, before_br;
 };
 
 static std::vector<StrokeData> strokes_history;
@@ -105,9 +105,10 @@ paint_stroke_data(const StrokeData& stroke_data)
 		if (!lock || !lock->get_surface().is_valid())
 			return;
 		const Surface &layer_surface = lock->get_surface();
-		tmp = synfig::Surface(layer_surface.get_w(), layer_surface.get_h());
+		tmp = Surface(layer_surface.get_w(), layer_surface.get_h());
 		tmp.copy(layer_surface);
 	}
+
 	// reset brush
 	{
 		auto& brush = *stroke_data.brush;
@@ -122,10 +123,12 @@ paint_stroke_data(const StrokeData& stroke_data)
 		brush.set_state(STATE_ACTUAL_Y, brush.get_state(STATE_Y));
 		brush.set_state(STATE_STROKE, 1.0);
 	}
+
 	Point new_tl = stroke_data.before_tl;
 	Point new_br = stroke_data.before_br;
+
 	// replay stroke points
-	for (const auto &point : stroke_data.points) {
+	for (const auto& point : stroke_data.points) {
 		int old_w = tmp.get_w();
 		int old_h = tmp.get_h();
 
@@ -133,7 +136,8 @@ paint_stroke_data(const StrokeData& stroke_data)
 		stroke_data.brush->stroke_to(&wrapper, point.x, point.y, point.pressure, 0.0f, 0.0f, point.dtime);
 
 		bool expanded = wrapper.offset_x != 0 || wrapper.offset_y != 0 ||
-					wrapper.extra_right > 0 || wrapper.extra_bottom > 0;
+						wrapper.extra_right > 0 || wrapper.extra_bottom > 0;
+
 		if (expanded) {
 			float w = new_br[0] - new_tl[0];
 			float h = new_br[1] - new_tl[1];
@@ -154,11 +158,11 @@ paint_stroke_data(const StrokeData& stroke_data)
 		stroke_data.brush->set_state(STATE_Y, new_y);
 	}
 
-	stroke_data.layer->set_param("tl" , new_tl);
-	stroke_data.layer->set_param("br" , new_br);
+	stroke_data.layer->set_param("tl", new_tl);
+	stroke_data.layer->set_param("br", new_br);
 
 	if (stroke_data.layer->rendering_surface && tmp.is_valid()) {
-		Surface *surface_copy = new Surface(tmp.get_w(), tmp.get_h());
+		Surface* surface_copy = new Surface(tmp.get_w(), tmp.get_h());
 		surface_copy->copy(tmp);
 		stroke_data.layer->rendering_surface = new rendering::SurfaceResource(new rendering::SurfaceSW(*surface_copy, true));
 	}
@@ -169,7 +173,9 @@ Action::LayerBrush::BrushStroke::prepare()
 {
 	new_tl = original_tl = layer->get_param("tl").get(Point());
 	new_br = original_br = layer->get_param("br").get(Point());
-	switch (undo_mode) {
+
+	switch (undo_mode)
+	{
 		case SURFACE_SAVING:
 			if (!layer || prepared)
 				return;
@@ -181,12 +187,16 @@ Action::LayerBrush::BrushStroke::prepare()
 			}
 			prepared = true;
 			break;
+
 		case REDRAW:
-			if (!layer || prepared) return;
+			if (!layer || prepared)
+				return;
 			prepared = true;
 			break;
+
 		case CHECKPOINTING:
-			if (!layer || prepared) return;
+			if (!layer || prepared)
+				return;
 			prepared = true;
 			break;
 	}
@@ -195,14 +205,15 @@ Action::LayerBrush::BrushStroke::prepare()
 void
 Action::LayerBrush::BrushStroke::apply()
 {
-	switch (undo_mode) {
+	switch (undo_mode)
+	{
 		case SURFACE_SAVING:
 		{
 			if (!prepared || applied || !layer) {
 				return;
 			}
 			if (layer->rendering_surface && final_surface && final_surface->is_valid()) {
-				Surface *surface_copy = new Surface(*final_surface);
+				Surface* surface_copy = new Surface(*final_surface);
 				layer->rendering_surface = new rendering::SurfaceResource(
 					new rendering::SurfaceSW(*surface_copy, true)
 				);
@@ -227,7 +238,7 @@ Action::LayerBrush::BrushStroke::apply()
 			}
 			// apply stroke
 			if (layer->rendering_surface && final_surface && final_surface->is_valid()) {
-				Surface *surface_copy = new Surface(*final_surface);
+				Surface* surface_copy = new Surface(*final_surface);
 				layer->rendering_surface = new rendering::SurfaceResource(
 					new rendering::SurfaceSW(*surface_copy, true)
 				);
@@ -263,7 +274,7 @@ Action::LayerBrush::BrushStroke::apply()
 			// if we need to checkpoint save the surface
 			std::unique_ptr<Surface> temp_checkpoint;
 			if (strokes_history.size() % CHECKPOINT_INTERVAL == 0) {
-				if(layer->rendering_surface) {
+				if (layer->rendering_surface) {
 					rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
 					if (lock && lock->get_surface().is_valid()) {
 						temp_checkpoint.reset(new Surface(lock->get_surface()));
@@ -272,7 +283,7 @@ Action::LayerBrush::BrushStroke::apply()
 			}
 
 			if (layer->rendering_surface && final_surface && final_surface->is_valid()) {
-				Surface *surface_copy = new Surface(*final_surface);
+				Surface* surface_copy = new Surface(*final_surface);
 				layer->rendering_surface = new rendering::SurfaceResource(
 					new rendering::SurfaceSW(*surface_copy, true)
 				);
@@ -300,7 +311,9 @@ Action::LayerBrush::BrushStroke::undo()
 {
 	layer->set_param("tl", original_tl);
 	layer->set_param("br", original_br);
-	switch (undo_mode) {
+
+	switch (undo_mode)
+	{
 		case SURFACE_SAVING:
 		{
 			if (!prepared || !applied || !layer || !original_surface.is_valid()) {
@@ -308,7 +321,7 @@ Action::LayerBrush::BrushStroke::undo()
 			}
 			{
 				std::lock_guard<std::mutex> lock(layer->mutex);
-				synfig::Surface* surface_copy = new synfig::Surface(original_surface);
+				Surface* surface_copy = new Surface(original_surface);
 				layer->rendering_surface = new rendering::SurfaceResource(
 					new rendering::SurfaceSW(*surface_copy, true));
 			}
@@ -430,9 +443,9 @@ bool
 Action::LayerBrush::is_candidate(const ParamList& x)
 {
 	// Check if we have a layer parameter and it's a bitmap layer
-	for (ParamList::const_iterator i = x.begin(); i != x.end(); ++i) {
-		if (i->first == "layer" && i->second.get_type() == Param::TYPE_LAYER) {
-			Layer::Handle layer = i->second.get_layer();
+	for (const auto& i : x) {
+		if (i.first == "layer" && i.second.get_type() == Param::TYPE_LAYER) {
+			Layer::Handle layer = i.second.get_layer();
 			if (Layer_Bitmap::Handle::cast_dynamic(layer)) {
 				return true;
 			}
@@ -453,13 +466,13 @@ Action::LayerBrush::set_param(const synfig::String& name, const Action::Param& p
 		return false;
 	}
 
-	return Action::CanvasSpecific::set_param(name, param);
+	return CanvasSpecific::set_param(name, param);
 }
 
 bool
 Action::LayerBrush::is_ready() const
 {
-	return stroke.get_layer() && !stroke.get_points().empty() && Action::CanvasSpecific::is_ready();
+	return stroke.get_layer() && !stroke.get_points().empty() && CanvasSpecific::is_ready();
 }
 
 void
@@ -483,8 +496,8 @@ Action::LayerBrush::perform()
 	if (stroke.get_layer() && stroke.get_layer()->rendering_surface) {
 		rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(stroke.get_layer()->rendering_surface);
 		if (lock && lock->get_surface().is_valid() && before_surface.is_valid()) {
-			auto after = synfig::rendering::Surface::Handle(new synfig::rendering::SurfaceSW(const_cast<synfig::Surface&>(lock->get_surface()), false));
-			auto before = synfig::rendering::Surface::Handle(new synfig::rendering::SurfaceSW(before_surface, false));
+			auto after = rendering::Surface::Handle(new rendering::SurfaceSW(const_cast<Surface&>(lock->get_surface()), false));
+			auto before = rendering::Surface::Handle(new rendering::SurfaceSW(before_surface, false));
 			surfaces_are_equal = after->equals_to(before);
 		}
 	}
@@ -493,13 +506,14 @@ Action::LayerBrush::perform()
 	if (surfaces_are_equal) {
 		stroke.undo();
 		applied = true;
-		throw Action::Error(Action::Error::TYPE_UNABLE, "");
+		throw Error(Error::TYPE_UNABLE, "");
 	}
 
 	if (get_canvas_interface()) {
 		get_canvas_interface()->signal_layer_param_changed()(stroke.get_layer(), "rendering_surface");
 	}
-	if (!applied) stroke.get_layer()->add_surface_modification_id(id);
+	if (!applied)
+		stroke.get_layer()->add_surface_modification_id(id);
 	applied = !applied;
 }
 
@@ -511,7 +525,8 @@ Action::LayerBrush::undo()
 		if (get_canvas_interface()) {
 			get_canvas_interface()->signal_layer_param_changed()(stroke.get_layer(), "rendering_surface");
 		}
-		if (applied) stroke.get_layer()->add_surface_modification_id(id);
+		if (applied)
+			stroke.get_layer()->add_surface_modification_id(id);
 		applied = !applied;
 	}
 }

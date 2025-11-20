@@ -55,7 +55,7 @@ public:
 		float x, y;
 		synfig::Real pressure;
 		double dtime;
-		StrokePoint(): x(0), y(0), pressure(0.0) { }
+		StrokePoint(): x(0), y(0), pressure(0.0), dtime(0.0) { }
 		StrokePoint(float x, float y, synfig::Real pr, double dtime):
 			x(x), y(y), pressure(pr), dtime(dtime) { }
 	};
@@ -67,11 +67,12 @@ public:
 			CHECKPOINTING,
 			SURFACE_SAVING
 		};
+
 	private:
 		synfig::Layer_Bitmap::Handle layer;
 		std::unique_ptr<brushlib::Brush> brush_;
-		synfig::Point new_tl , new_br;
-		synfig::Point original_tl , original_br;
+		synfig::Point new_tl, new_br;
+		synfig::Point original_tl, original_br;
 		synfig::Surface original_surface;
 		std::unique_ptr<synfig::Surface> final_surface;
 
@@ -80,14 +81,16 @@ public:
 		bool applied;
 		int stroke_index;
 		UndoMode undo_mode;
+
 	public:
 		BrushStroke();
 		~BrushStroke();
 
 		void set_layer(synfig::Layer_Bitmap::Handle layer) { this->layer = layer; }
 		synfig::Layer_Bitmap::Handle get_layer() const { return layer; }
+
 		void set_undo_mode(UndoMode mode) { undo_mode = mode; }
-    	void set_final_data(std::unique_ptr<synfig::Surface> surface) { final_surface = std::move(surface); }
+		void set_final_data(std::unique_ptr<synfig::Surface> surface) { final_surface = std::move(surface); }
 
 		brushlib::Brush& brush() { return *brush_; }
 		const brushlib::Brush& get_brush() const { return *brush_; }
