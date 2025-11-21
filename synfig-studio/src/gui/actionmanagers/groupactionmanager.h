@@ -30,7 +30,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/uimanager.h>
+#include <giomm/simpleactiongroup.h>
+#include <gtkmm/widget.h>
+
 #include <synfigapp/canvasinterface.h>
 
 /* === M A C R O S ========================================================= */
@@ -45,12 +47,11 @@ class LayerGroupTree;
 
 class GroupActionManager
 {
-	Glib::RefPtr<Gtk::UIManager> ui_manager_;
+	Gtk::Widget* action_widget_;
 	LayerGroupTree* group_tree_;
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 
-	Glib::RefPtr<Gtk::ActionGroup>	action_group_;
-	Gtk::UIManager::ui_merge_id 	popup_id_;
+	Glib::RefPtr<Gio::SimpleActionGroup> action_group_;
 
 	sigc::connection selection_changed_connection;
 
@@ -67,8 +68,7 @@ public:
 	GroupActionManager();
 	~GroupActionManager();
 
-	void set_ui_manager(const Glib::RefPtr<Gtk::UIManager> &x);
-	Glib::RefPtr<Gtk::UIManager> get_ui_manager()const { return ui_manager_; }
+	void set_action_widget(Gtk::Widget* x);
 
 	void set_group_tree(LayerGroupTree* x);
 	LayerGroupTree* get_group_tree()const { return group_tree_; }
