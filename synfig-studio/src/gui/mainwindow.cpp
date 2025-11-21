@@ -515,55 +515,22 @@ void
 MainWindow::on_recent_files_changed()
 {
 	// TODO(ice0): switch to GtkRecentChooserMenu?
-	auto recent_file_group = App::instance();
 
-	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-recentfiles");
-
-	std::vector<filesystem::Path> fullnames(App::get_recent_files().begin(), App::get_recent_files().end());
+	const std::vector<filesystem::Path> fullnames(App::get_recent_files().begin(), App::get_recent_files().end());
 	std::vector<String> shortnames;
 	make_short_filenames(fullnames, shortnames);
 
 	App::menu_recent_files->remove_all();
 
-	std::string menu_items;
-	for(int i = 0; i < (int)fullnames.size(); ++i)
-	{
-		std::string raw = shortnames[i];
-		std::string quoted = escape_underline(raw);
+	for (int i = 0; i < (int)fullnames.size(); ++i) {
+		const std::string raw = shortnames[i];
+		const std::string quoted_shortname = escape_underline(raw);
+		const filesystem::Path filename = fullnames[i];
 
 		const std::string action_name = synfig::strprintf("file-recent-%d", i);
-		menu_items += "<menuitem action='" + action_name +"' />";
 
-		filesystem::Path filename = fullnames[i];
-		action_group->add( Gtk::Action::create(action_name, quoted, filename.u8string()),
-			[filename](){App::open_recent(filename);}
-		);
-		App::menu_recent_files->append(quoted, strprintf("app.open-recent-file(\"%s\")", filename.c_str()));
+		App::menu_recent_files->append_item(Gio::MenuItem::create(quoted_shortname, strprintf("app.open-recent-file(\"%s\")", filename.c_str())));
 	}
-
-	std::string ui_info =
-		"<menu action='menu-file'><menu action='menu-open-recent'>"
-	  + menu_items
-	  + "</menu></menu>";
-	std::string ui_info_popup =
-		"<ui><popup action='menu-main'>" + ui_info + "</popup></ui>";
-	std::string ui_info_menubar =
-		"<ui><menubar action='menubar-main'>" + ui_info + "</menubar></ui>";
-
-	// remove group if exists
-	typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;
-	ActionGroupList groups = App::ui_manager()->get_action_groups();
-	for(ActionGroupList::const_iterator i = groups.begin(); i != groups.end(); ++i)
-		if ((*i)->get_name() == action_group->get_name())
-			App::ui_manager()->remove_action_group(*i);
-	groups.clear();
-
-	App::ui_manager()->insert_action_group(action_group);
-	App::ui_manager()->add_ui_from_string(ui_info_popup);
-	App::ui_manager()->add_ui_from_string(ui_info_menubar);
-
-//	App::instance()->remove_action();
-	// move to App?
 }
 
 void
