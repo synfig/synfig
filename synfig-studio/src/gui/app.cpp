@@ -303,6 +303,7 @@ Glib::RefPtr<Gio::Menu> studio::App::menu_tools;
 Glib::RefPtr<Gio::Menu> studio::App::menu_window_custom_workspaces;
 Glib::RefPtr<Gio::Menu> studio::App::menu_window_docks;
 Glib::RefPtr<Gio::Menu> studio::App::menu_window_canvas;
+Glib::RefPtr<Gio::Menu> studio::App::menu_keyframe;
 
 bool   studio::App::enable_mainwin_menubar = true;
 bool   studio::App::enable_mainwin_toolbar = true;
@@ -1612,6 +1613,7 @@ void App::init(const synfig::String& rootpath)
 		menu_window_custom_workspaces = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-custom-workspaces"));
 		menu_window_docks = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-docks"));
 		menu_window_canvas = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-canvas"));
+		menu_keyframe = Gio::Menu::create();
 	}
 
 	try

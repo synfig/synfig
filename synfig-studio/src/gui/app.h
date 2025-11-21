@@ -242,6 +242,7 @@ public:
 	static Glib::RefPtr<Gio::Menu> menu_window_custom_workspaces;
 	static Glib::RefPtr<Gio::Menu> menu_window_docks;
 	static Glib::RefPtr<Gio::Menu> menu_window_canvas;
+	static Glib::RefPtr<Gio::Menu> menu_keyframe;
 	static bool enable_mainwin_menubar;
 	static bool enable_mainwin_toolbar;
 	static synfig::String ui_language;
