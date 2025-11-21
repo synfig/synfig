@@ -1353,8 +1353,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				return true;
 			}
 
-			if(guide_highlighted){
+			if (guide_highlighted) {
 				Gtk::Menu* guide_menu(manage(new Gtk::Menu()));
+				guide_menu->attach_to_widget(*this);
 				guide_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), guide_menu));
 				Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("_Edit Guide")));
 				item->set_use_underline(true);
