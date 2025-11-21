@@ -346,6 +346,8 @@ void
 Dock_PalEdit::show_menu(int i)
 {
 	Gtk::Menu* menu(manage(new Gtk::Menu()));
+	menu->attach_to_widget(*this);
+
 	menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 
 	Gtk::MenuItem *item = image_menu_item("type_color_icon", _("_Color"), true);
