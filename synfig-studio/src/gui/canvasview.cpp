@@ -1652,6 +1652,8 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 		return;
 
 	Gtk::Menu* menu(&parammenu);
+	if (!menu->get_attach_widget())
+		menu->attach_to_widget(*this);
 	std::vector<Widget*> children = menu->get_children();
 	for(std::vector<Widget*>::iterator i = children.begin(); i != children.end(); ++i)
 		menu->remove(**i);
