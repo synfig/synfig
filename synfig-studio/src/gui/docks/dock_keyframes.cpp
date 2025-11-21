@@ -38,6 +38,8 @@
 
 #include <gtkmm/stylecontext.h>
 
+#include <synfig/general.h>
+
 #include <gui/app.h>
 #include <gui/actionmanagers/keyframeactionmanager.h>
 #include <gui/canvasview.h>
@@ -58,6 +60,29 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
+static Gtk::ToolButton*
+create_action_toolbutton(const std::string& action_name, const std::string& icon_name, const std::string& tooltip)
+{
+	Gtk::ToolButton* button = Gtk::manage(new Gtk::ToolButton());
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(button->gobj()), action_name.c_str());
+	button->set_icon_name(icon_name);
+	button->set_tooltip_text(tooltip);
+	button->show();
+	return button;
+}
+
+static Gtk::ToolButton*
+create_synfigapp_action_toolbutton(const std::string& action_name)
+{
+	auto action_it = synfigapp::Action::book().find(action_name);
+	if (action_it == synfigapp::Action::book().end()) {
+		synfig::error(_("Internal error: can't find synfigapp action to create its button: '%s'"), action_name.c_str());
+		return nullptr; // FIXME: SHOULD RETURN NULL OR an empty ToolButton?
+	}
+	;
+	return create_action_toolbutton("keyframe.action-" + action_name, get_action_icon_name(action_it->second), action_it->second.local_name);
+}
+
 /* === M E T H O D S ======================================================= */
 
 Dock_Keyframes::Dock_Keyframes():
@@ -68,30 +93,23 @@ Dock_Keyframes::Dock_Keyframes():
 	// Make Keyframes toolbar small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
-	keyframe_action_manager->set_ui_manager(App::ui_manager());
+	if (keyframe_action_manager)
+		keyframe_action_manager->set_action_widget_and_menu(App::main_window, App::menu_keyframe);
+
+	auto toolbar = Gtk::manage(new Gtk::Toolbar());
+	toolbar->append(*create_synfigapp_action_toolbutton("KeyframeAdd"));
+	toolbar->append(*create_synfigapp_action_toolbutton("KeyframeDuplicate"));
+	toolbar->append(*create_synfigapp_action_toolbutton("KeyframeRemove"));
+	toolbar->append(*create_action_toolbutton("keyframe.properties", "document-properties", _("Keyframe Properties")));
+	toolbar->show_all();
+	set_toolbar(*toolbar);
+
 	keyframe_action_manager->signal_show_keyframe_properties().connect(
 		sigc::mem_fun(*this,&Dock_Keyframes::show_keyframe_properties) );
 	keyframe_action_manager->signal_keyframe_toggle().connect(
 		sigc::mem_fun(*this,&Dock_Keyframes::keyframe_toggle) );
 	keyframe_action_manager->signal_keyframe_description_set().connect(
 		sigc::mem_fun(*this,&Dock_Keyframes::keyframe_description_set) );
-
-    Glib::ustring ui_info =
-	"<ui>"
-	"	<toolbar action='toolbar-keyframe'>"
-	"	<toolitem action='action-KeyframeAdd' />"
-	"	<toolitem action='action-KeyframeDuplicate' />"
-	"	<toolitem action='action-KeyframeRemove' />"
-	"	<toolitem action='keyframe-properties' />"
-	"	</toolbar>"
-	"</ui>"
-	;
-
-	App::ui_manager()->add_ui_from_string(ui_info);
-
-	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-keyframe"))) {
-		set_toolbar(*toolbar);
-	}
 }
 
 Dock_Keyframes::~Dock_Keyframes()
@@ -162,7 +180,7 @@ Dock_Keyframes::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 		keyframe_action_manager->queue_refresh();
 	} else {
 		keyframe_action_manager->clear();
-		keyframe_action_manager->set_keyframe_tree(0);
-		keyframe_action_manager->set_canvas_interface(0);
+		keyframe_action_manager->set_keyframe_tree(nullptr);
+		keyframe_action_manager->set_canvas_interface(nullptr);
 	}
 }

@@ -224,6 +224,7 @@ public:
 	void add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list1,const synfigapp::Action::ParamList &param_list2, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
 
 	void add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
+	void add_actions_to_group(const Glib::RefPtr<Gio::SimpleActionGroup>& action_group, const synfigapp::Action::ParamList& param_list, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL) const;
 	void add_actions_to_group_and_menu(const Glib::RefPtr<Gio::SimpleActionGroup>& action_group, const std::string& action_group_name, const Glib::RefPtr<Gio::Menu>& menu, const synfigapp::Action::ParamList& param_list, synfigapp::Action::Category category = synfigapp::Action::CATEGORY_ALL) const;
 
 	void add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfig::Layer::Handle &layer) const;
