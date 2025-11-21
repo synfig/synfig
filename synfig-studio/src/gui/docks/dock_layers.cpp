@@ -287,6 +287,10 @@ void Dock_Layers::popup_add_layer_menu()
 	if (!action_new_layer->is_sensitive())
 		return;
 	Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/popup-layer-new"));
-	if (menu)
+	if (menu) {
+		if (menu->get_attach_widget())
+			menu->detach();
+		menu->attach_to_widget(*this);
 		menu->popup(0, gtk_get_current_event_time());
+	}
 }

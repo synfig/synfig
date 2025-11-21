@@ -417,8 +417,12 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 			break;
 		case 3:
 			if (kf) set_selected_keyframe(*kf);
-			if (Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-keyframe")))
-				menu->popup(event->button.button,gtk_get_current_event_time());
+			if (Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-keyframe"))) {
+				if (menu->get_attach_widget())
+					menu->detach();
+				menu->attach_to_widget(*this);
+				menu->popup_at_pointer(event);
+			}
 			break;
 		default:
 			return false;

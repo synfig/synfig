@@ -1630,6 +1630,8 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 		return;
 
 	Gtk::Menu* menu(&parammenu);
+	if (!menu->get_attach_widget())
+		menu->attach_to_widget(*this);
 	std::vector<Widget*> children = menu->get_children();
 	for(std::vector<Widget*>::iterator i = children.begin(); i != children.end(); ++i)
 		menu->remove(**i);
@@ -1682,6 +1684,8 @@ CanvasView::popup_main_menu()
 	{
 		//menu->set_accel_group(App::ui_manager()->get_accel_group());
 		//menu->accelerate(*this);
+		if (!menu->get_attach_widget())
+			menu->attach_to_widget(*this);
 		menu->popup(0,gtk_get_current_event_time());
 	}
 }
@@ -1915,6 +1919,8 @@ CanvasView::popup_param_menu(ValueDesc value_desc, float location, bool bezier)
 	for(std::vector<Widget*>::iterator i = children.begin(); i != children.end(); ++i)
 		parammenu.remove(**i);
 	get_instance()->make_param_menu(&parammenu,get_canvas(),value_desc,location,bezier);
+	if (!parammenu.get_attach_widget())
+		parammenu.attach_to_widget(*this);
 	parammenu.popup(3,gtk_get_current_event_time());
 }
 
@@ -2643,7 +2649,10 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 	case 2:
 	{
 		Gtk::Menu* waypoint_menu(manage(new Gtk::Menu()));
-		waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));
+		if (waypoint_menu) {
+			waypoint_menu->attach_to_widget(*this);
+			waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));
+		}
 
 		Gtk::Menu* interp_menu_in(manage(new Gtk::Menu()));
 		Gtk::Menu* interp_menu_out(manage(new Gtk::Menu()));
