@@ -419,10 +419,10 @@ Dock_PalEdit::add_from_clipboard()
 		col.set_a(1.0f);
 
 		palette_.push_back(col);
-	}
 
-	signal_changed()();
-	refresh();
+		signal_changed()();
+		refresh();
+	}
 }
 
 void
@@ -431,9 +431,6 @@ Dock_PalEdit::copy_color(int i)
 	//Taking first 7 characters of the color string as they contain the formated #hexadecimal color
 	Glib::RefPtr<Gtk::Clipboard> refClipboard = Gtk::Clipboard::get();
 	refClipboard->set_text(palette_[i].color.get_string().substr(0,7));
-
-	signal_changed()();
-	refresh();
 }
 
 void
