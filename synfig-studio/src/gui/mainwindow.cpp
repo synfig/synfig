@@ -88,8 +88,7 @@ escape_underline(const std::string& raw)
 /* === M E T H O D S ======================================================= */
 
 MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
-	: Gtk::ApplicationWindow(application),
-	  save_workspace_merge_id(0), custom_workspaces_merge_id(0)
+	: Gtk::ApplicationWindow(application)
 {
 	register_custom_widget_types();
 
@@ -332,8 +331,6 @@ MainWindow::init_menus()
 	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
 
 	App::ui_manager()->insert_action_group(action_group);
-
-	add_custom_workspace_menu_item_handlers();
 }
 
 void MainWindow::register_custom_widget_types()
@@ -375,31 +372,6 @@ MainWindow::save_all()
 {
 	for (auto& instance : App::instance_list)
 		instance->save();
-}
-
-void MainWindow::add_custom_workspace_menu_item_handlers()
-{
-	std::string ui_info_menu =
-			"<menu action='menu-window'>"
-			"	<menu action='menu-workspace'>"
-			"	    <separator name='sep-window2'/>"
-			"		<menuitem action='save-workspace' />"
-			"		<menuitem action='edit-workspacelist' />"
-			"	</menu>"
-			"</menu>";
-
-	std::string ui_info =
-			"<ui>"
-			"  <popup name='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
-			"  <menubar name='menubar-main' action='menubar-main'>" + ui_info_menu + "</menubar>"
-			"</ui>";
-
-	save_workspace_merge_id = App::ui_manager()->add_ui_from_string(ui_info);
-}
-
-void MainWindow::remove_custom_workspace_menu_item_handlers()
-{
-	App::ui_manager()->remove_ui(save_workspace_merge_id);
 }
 
 const std::vector<std::string>
@@ -741,59 +713,19 @@ MainWindow::on_custom_workspaces_changed()
 	App::menu_window_custom_workspaces->remove_all();
 	auto workspace_group = Gio::SimpleActionGroup::create();
 
-	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-customworkspaces");
-
 	std::vector<std::string> workspaces = get_workspaces();
 
-	std::string menu_items;
 	unsigned int num_custom_workspaces = 0;
-	for (const auto& raw : workspaces) {
-		std::string quoted = escape_underline(raw);
-
+	for (const auto& workspace_name : workspaces) {
 		std::string action_name = synfig::strprintf("custom-workspace-%d", num_custom_workspaces);
-		menu_items += "<menuitem action='" + action_name +"' />";
 
-		action_group->add( Gtk::Action::create(action_name, quoted),
-			sigc::bind(sigc::ptr_fun(&MainWindow::set_workspace_from_name), workspaces[num_custom_workspaces])
-		);
-
-		workspace_group->add_action(action_name, sigc::bind(sigc::ptr_fun(&MainWindow::set_workspace_from_name), workspaces[num_custom_workspaces]));
-		App::menu_window_custom_workspaces->append(workspaces[num_custom_workspaces], "workspace." + action_name);
+		workspace_group->add_action(action_name, sigc::bind(sigc::ptr_fun(&MainWindow::set_workspace_from_name), workspace_name));
+		App::menu_window_custom_workspaces->append(workspace_name, "workspace." + action_name);
 
 		++num_custom_workspaces;
 	}
 
-	if (num_custom_workspaces > 0)
-		menu_items = "<separator name='sep-window1' />" + menu_items;
-
-	remove_custom_workspace_menu_item_handlers();
-	if (custom_workspaces_merge_id)
-		App::ui_manager()->remove_ui(custom_workspaces_merge_id);
-
-	std::string ui_info =
-		"<menu action='menu-window'><menu action='menu-workspace'>"
-	  + menu_items
-	  + "</menu></menu>";
-	std::string ui_info_popup =
-		"<popup action='menu-main'>" + ui_info + "</popup>";
-	std::string ui_info_menubar =
-		"<menubar action='menubar-main'>" + ui_info + "</menubar>";
-
 	// remove group if exists
-	typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;
-	ActionGroupList groups = App::ui_manager()->get_action_groups();
-	for(ActionGroupList::const_iterator it = groups.begin(); it != groups.end(); ++it)
-		if ((*it)->get_name() == action_group->get_name()) {
-			App::ui_manager()->remove_action_group(*it);
-			break;
-		}
-	groups.clear();
-	App::ui_manager()->ensure_update();
-
-	App::ui_manager()->insert_action_group(action_group);
-	custom_workspaces_merge_id = App::ui_manager()->add_ui_from_string("<ui>" + ui_info_popup + ui_info_menubar + "</ui>");
-
-	add_custom_workspace_menu_item_handlers();
 
 	remove_action_group("workspace");
 	insert_action_group("workspace", workspace_group);

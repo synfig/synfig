@@ -70,12 +70,6 @@ namespace studio {
 
 		static void save_all();
 
-		guint save_workspace_merge_id;
-		guint custom_workspaces_merge_id;
-
-		void add_custom_workspace_menu_item_handlers();
-		void remove_custom_workspace_menu_item_handlers();
-
 		static std::unique_ptr<studio::WorkspaceHandler> workspaces;
 		static const std::vector<std::string> get_workspaces();
 
