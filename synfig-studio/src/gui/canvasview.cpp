@@ -672,7 +672,6 @@ CanvasView::~CanvasView()
 	// and this code is required to rewrite.
 
 	if (!this->_action_group_removed) {
-		App::ui_manager()->remove_action_group(action_group);
 		App::main_window->remove_action_group("doc");
 	}
 
@@ -702,7 +701,6 @@ void CanvasView::activate()
 {
 	activation_index_.activate();
 	get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
-	App::ui_manager()->insert_action_group(action_group);
 	App::main_window->insert_action_group("doc", action_group_);
 	this->_action_group_removed = false;
 	update_title();
@@ -713,7 +711,6 @@ void CanvasView::activate()
 void CanvasView::deactivate()
 {
 	get_smach().process_event(EVENT_YIELD_TOOL_OPTIONS);
-	App::ui_manager()->remove_action_group(action_group);
 	App::main_window->remove_action_group("doc");
 	this->_action_group_removed = true;
 	update_title();
@@ -1398,23 +1395,14 @@ CanvasView::init_menus()
 #endif
 	};
 
-	action_group = Gtk::ActionGroup::create("canvasview");
 	action_group_ = Gio::SimpleActionGroup::create();
 
 	for (const auto& item : action_list) {
-		if (!item.icon.empty()) {
-			action_group->add( Gtk::Action::create_with_icon_name(item.name, item.icon, _(item.label.c_str()), _(item.tooltip.c_str())),
-				item.slot
-			);
-		} else {
-			action_group->add( Gtk::Action::create(item.name, _(item.label.c_str()), _(item.tooltip.c_str())), item.slot);
-		}
 		App::get_action_database()->add(ActionDatabase::Entry{"doc." + item.name, item.label, item.shortcut, item.icon, item.tooltip});
 		action_group_->add_action(item.name, item.slot);
 	}
 
 	// Prevent call to preview window before preview option has created the preview window
-	action_group->get_action("dialog-flipbook")->set_sensitive(false);
 
 	Glib::RefPtr<Gio::SimpleAction>::cast_static(action_group_->lookup_action("dialog-flipbook"))->set_enabled(false);
 
@@ -1429,30 +1417,13 @@ CanvasView::init_menus()
 	auto instance = get_instance().get();
 	for ( const auto& plugin : App::plugin_manager.plugins() )
 	{
-		std::string id = plugin.id;
-		action_group->add(
-			Gtk::Action::create(id, plugin.name.get()),
-			[instance, id](){instance->run_plugin(id, true);}
-		);
+		const std::string id = plugin.id;
 		const std::string action_name = "plugin-" + id;
 		App::get_action_database()->add(ActionDatabase::Entry{"doc." + action_name, plugin.name.get(), "", "", plugin.description.get()});
 		action_group_->add_action(action_name, [instance, id](){ instance->run_plugin(id, true); });
 	}
 
 	// Low-Res Quality Menu
-	for (int i : get_pixel_sizes()) {
-		Glib::RefPtr<Gtk::RadioAction> action = Gtk::RadioAction::create(
-			low_res_pixel_size_group,
-			synfig::strprintf("lowres-pixel-%d", i),
-			synfig::strprintf(_("Set Low-Res pixel size to %d"), i) );
-		if (i == 2) { // default pixel size
-			action->set_active();
-			work_area->set_low_res_pixel_size(i);
-		}
-		action_group->add(
-			action,
-			sigc::bind(sigc::mem_fun(*work_area, &WorkArea::set_low_res_pixel_size), i) );
-	}
 	const int initial_low_res_pixel_size = 2;
 	action_group_->add_action_radio_integer("set-lowres-pixel", sigc::track_obj([=](int n) {
 		action_group_->lookup_action("set-lowres-pixel")->change_state(n);
@@ -3250,10 +3221,6 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 
 	// Preview Window created, the action can be enabled
 	Glib::RefPtr<Gio::SimpleAction>::cast_static(action_group_->lookup_action("dialog-flipbook"))->set_enabled(true);
-	{
-		Glib::RefPtr< Gtk::Action > action = action_group->get_action("dialog-flipbook");
-		action->set_sensitive(true);
-	}
 
 }
 

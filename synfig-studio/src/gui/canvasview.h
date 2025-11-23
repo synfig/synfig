@@ -345,7 +345,6 @@ private:
 	Glib::RefPtr<Gio::SimpleAction> low_resolution_toggle;
 	Gtk::RadioButtonGroup low_res_pixel_size_group;
 
-	Glib::RefPtr<Gtk::ActionGroup> action_group;
 	Glib::RefPtr<Gio::SimpleActionGroup> action_group_;
 	bool _action_group_removed;
 
