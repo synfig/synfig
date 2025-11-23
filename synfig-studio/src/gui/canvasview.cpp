@@ -3369,29 +3369,6 @@ CanvasView::set_adjustment_group(const synfig::String& x, AdjustmentGroup::Handl
 		adjustment_group_book_.erase(x);
 }
 
-Gtk::UIManager::ui_merge_id
-CanvasView::get_popup_id()
-{
-	return merge_id_popup_;
-}
-// apagar
-void
-CanvasView::set_popup_id(Gtk::UIManager::ui_merge_id popup_id)
-{
-	merge_id_popup_ = popup_id;
-}
-
-Gtk::UIManager::ui_merge_id
-CanvasView::get_toolbar_id()
-{
-	return merge_id_toolbar_;
-}
-
-void
-CanvasView::set_toolbar_id(Gtk::UIManager::ui_merge_id toolbar_id)
-{
-	merge_id_toolbar_ = toolbar_id;
-}
 
 bool
 CanvasView::on_delete_event(GdkEventAny* /*event*/)

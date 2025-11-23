@@ -737,7 +737,7 @@ MainWindow::on_dockable_registered(Dockable* dockable)
 	const std::string local_name = dockable->get_local_name();
 	const std::string escaped_local_name = escape_underline(local_name);
 
-	CanvasView* canvas_view = dynamic_cast<CanvasView*>(dockable);
+	const CanvasView* canvas_view = dynamic_cast<CanvasView*>(dockable);
 
 //	auto panel_group = Gio::SimpleActionGroup::create();
 	/*panel_group->*/add_action("panel-"+dockable->get_name(), sigc::mem_fun(*dockable, &Dockable::present));
@@ -748,28 +748,6 @@ MainWindow::on_dockable_registered(Dockable* dockable)
 	else
 		App::menu_window_docks->append(escaped_local_name, "win.panel-" + dockable->get_name());
 
-	window_action_group->add( Gtk::Action::create("panel-" + dockable->get_name(), escaped_local_name),
-		sigc::mem_fun(*dockable, &Dockable::present)
-	);
-
-	const std::string ui_info =
-		"<menu action='menu-window'>"
-	    "<menuitem action='panel-" + dockable->get_name() + "' />"
-	    "</menu>";
-	const std::string ui_info_popup =
-		"<ui><popup action='menu-main'>" + ui_info + "</popup></ui>";
-	const std::string ui_info_menubar =
-		"<ui><menubar action='menubar-main'>" + ui_info + "</menubar></ui>";
-
-	Gtk::UIManager::ui_merge_id merge_id_popup = App::ui_manager()->add_ui_from_string(ui_info_popup);
-	Gtk::UIManager::ui_merge_id merge_id_menubar = App::ui_manager()->add_ui_from_string(ui_info_menubar);
-
-	// record CanvasView toolbar and popup id's
-	if(canvas_view)
-	{
-		canvas_view->set_popup_id(merge_id_popup);
-		canvas_view->set_toolbar_id(merge_id_menubar);
-	}
 //FIXME
 //	insert_action_group("panel", panel_group);
 }
@@ -778,12 +756,6 @@ void
 MainWindow::on_dockable_unregistered(Dockable* dockable)
 {
 	// remove the document from the menus
-	CanvasView *canvas_view = dynamic_cast<CanvasView*>(dockable);
-	if(canvas_view)
-	{
-		App::ui_manager()->remove_ui(canvas_view->get_popup_id());
-		App::ui_manager()->remove_ui(canvas_view->get_toolbar_id());
-	}
 
 	const auto dock_action_name = "win.panel-" + dockable->get_name();
 	auto menu_window_docks = App::menu_window_docks;
