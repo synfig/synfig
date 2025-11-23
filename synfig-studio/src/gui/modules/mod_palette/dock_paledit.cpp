@@ -118,93 +118,59 @@ public:
 */
 /* === P R O C E D U R E S ================================================= */
 
+
+static Gtk::ToolButton*
+create_action_toolbutton(const std::string& action_name, const std::string& icon_name, const std::string& tooltip)
+{
+	Gtk::ToolButton* button = Gtk::manage(new Gtk::ToolButton());
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(button->gobj()), action_name.c_str());
+	button->set_icon_name(icon_name);
+	button->set_tooltip_text(tooltip);
+	button->show();
+	return button;
+}
+
 /* === M E T H O D S ======================================================= */
 
 Dock_PalEdit::Dock_PalEdit():
 	Dockable("pal_edit",_("Palette Editor"),"palette_icon"),
+	action_group_(Gio::SimpleActionGroup::create()),
 	//palette_settings(new PaletteSettings(this,"colors")),
 	table(2,2,false)
 {
 	// Make Palette Editor toolbar buttons small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
-	action_group=Gtk::ActionGroup::create("action_group_pal_edit");
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"palette-add-color",
-		"list-add",
-		_("Add Color"),
-		_("Add current fill color\nto the palette")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_PalEdit::on_add_pressed
-		)
-	);
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"palette-add-from-clipboard",
-		"hex_icon",
-		_("Add clipboard color"),
-		_("Add hex color from clipboard")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_PalEdit::add_from_clipboard
-		)
-	);
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"palette-save",
-		"document-save",
-		_("Save palette"),
-		_("Save the current palette")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_PalEdit::on_save_pressed
-		)
-	);
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"palette-load",
-		"document-open",
-		_("Open a palette"),
-		_("Open a saved palette")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_PalEdit::on_open_pressed
-		)
-	);
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"palette-set-default",
-		"view-refresh",
-		_("Load default"),
-		_("Load default palette")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_PalEdit::set_default_palette
-		)
-	);
+	struct ActionMetadata {
+		std::string name;
+		std::string icon;
+		// std::string shortcut;
+		std::string label;
+		std::string tooltip;
+		std::function<void()> slot;
+	};
 
+	const std::vector<ActionMetadata> action_list = {
+		{"palette-add-color",          "list-add",      N_("Add Color"),           N_("Add current fill color\nto the palette"), sigc::mem_fun(*this, &Dock_PalEdit::on_add_pressed) },
+		{"palette-add-from-clipboard", "hex_icon",      N_("Add clipboard color"), N_("Add hex color from clipboard"),           sigc::mem_fun(*this, &Dock_PalEdit::add_from_clipboard) },
+		{"palette-save",               "document-save", N_("Save palette"),        N_("Save the current palette"),               sigc::mem_fun(*this, &Dock_PalEdit::on_save_pressed) },
+		{"palette-load",               "document-open", N_("Open a palette"),      N_("Open a saved palette"),                   sigc::mem_fun(*this, &Dock_PalEdit::on_open_pressed) },
+		{"palette-set-default",        "view-refresh",  N_("Load default"),        N_("Load default palette"),                   sigc::mem_fun(*this, &Dock_PalEdit::set_default_palette) },
+	};
 
-	App::ui_manager()->insert_action_group(action_group);
-
-    Glib::ustring ui_info =
-	"<ui>"
-	"	<toolbar action='toolbar-palette'>"
-	"	<toolitem action='palette-add-color' />"
-	"	<toolitem action='palette-add-from-clipboard' />"
-	"	<toolitem action='palette-save' />"
-	"	<toolitem action='palette-load' />"
-	"	<toolitem action='palette-set-default' />"
-	"	</toolbar>"
-	"</ui>"
-	;
-
-	App::ui_manager()->add_ui_from_string(ui_info);
-
-	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-palette"))) {
-		set_toolbar(*toolbar);
+	for (const auto& action : action_list) {
+		action_group_->add_action(action.name, action.slot);
 	}
+
+	insert_action_group("palette", action_group_);
+
+	auto toolbar = Gtk::manage(new Gtk::Toolbar());
+	for (const auto& action : action_list) {
+		toolbar->append(*create_action_toolbutton("palette." + action.name, action.icon, action.tooltip));
+	}
+	toolbar->show_all();
+
+	set_toolbar(*toolbar);
 
 	/*
 	add_button(
