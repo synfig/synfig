@@ -1209,51 +1209,19 @@ CanvasView::create_right_toolbar()
 	right_toolbar->set_property("orientation", Gtk::ORIENTATION_VERTICAL);
 
 	{ // Show grid toggle button
-		show_grid = Gtk::manage(new Gtk::ToggleToolButton());
-		gtk_actionable_set_action_name(GTK_ACTIONABLE(show_grid->gobj()), "doc.toggle-grid-show");
-		show_grid->set_active(work_area->grid_status());
-		show_grid->set_icon_name("show_grid_icon");
-		show_grid->set_label(_("Show Grid"));
-		show_grid->set_tooltip_text(_("Show Grid when enabled"));
-		show_grid->show();
-
-		right_toolbar->append(*show_grid);
+		right_toolbar->append(*create_action_toggletoolbutton("doc.toggle-grid-show"));
 	}
 
 	{ // Snap to grid toggle button
-		snap_grid = Gtk::manage(new Gtk::ToggleToolButton());
-		gtk_actionable_set_action_name(GTK_ACTIONABLE(snap_grid->gobj()), "doc.toggle-grid-snap");
-		snap_grid->set_active(work_area->grid_status());
-		snap_grid->set_icon_name("snap_grid_icon");
-		snap_grid->set_label(_("Snap to Grid"));
-		snap_grid->set_tooltip_text(_("Snap to Grid when enabled"));
-		snap_grid->show();
-
-		right_toolbar->append(*snap_grid);
+		right_toolbar->append(*create_action_toggletoolbutton("doc.toggle-grid-snap"));
 	}
 
 	{ // Show guide toggle button
-		show_guides = Gtk::manage(new Gtk::ToggleToolButton());
-		gtk_actionable_set_action_name(GTK_ACTIONABLE(show_guides->gobj()), "doc.toggle-guide-show");
-		show_guides->set_active(work_area->get_show_guides());
-		show_guides->set_icon_name("show_guideline_icon");
-		show_guides->set_label(_("Show Guides"));
-		show_guides->set_tooltip_text(_("Show Guides when enabled"));
-		show_guides->show();
-
-		right_toolbar->append(*show_guides);
+		right_toolbar->append(*create_action_toggletoolbutton("doc.toggle-guide-show"));
 	}
 
 	{ // Snap to guides toggle button
-		snap_guides = Gtk::manage(new Gtk::ToggleToolButton());
-		gtk_actionable_set_action_name(GTK_ACTIONABLE(snap_guides->gobj()), "doc.toggle-guide-snap");
-		snap_guides->set_active(work_area->get_guide_snap());
-		snap_guides->set_icon_name("snap_guideline_icon");
-		snap_guides->set_label(_("Snap to Guides"));
-		snap_guides->set_tooltip_text(_("Snap to Guides when enabled"));
-		snap_guides->show();
-
-		right_toolbar->append(*snap_guides);
+		right_toolbar->append(*create_action_toggletoolbutton("doc.toggle-guide-snap"));
 	}
 
 	// Separator
