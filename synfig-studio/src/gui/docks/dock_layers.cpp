@@ -147,26 +147,6 @@ Dock_Layers::Dock_Layers():
 	action_popup_new_layer = Gio::SimpleAction::create("popup-layer-new");
 	action_popup_new_layer->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &Dock_Layers::popup_add_layer_menu)));
 
-	Glib::ustring ui_info =
-	"<ui>"
-	"	<toolbar action='toolbar-layer'>"
-	"	<toolitem action='popup-layer-new' />"
-	"	<separator />"
-	"	<toolitem action='action-LayerRaise' />"
-	"	<toolitem action='action-LayerLower' />"
-	"	<separator />"
-	"	<toolitem action='action-LayerDuplicate' />"
-	"	<toolitem action='action-LayerEncapsulate' />"
-	"	<toolitem action='select-all-child-layers' />"
-	"	<toolitem action='action-LayerRemove' />"
-	"	<separator />"
-	"	<toolitem action='cut' />"
-	"	<toolitem action='copy' />"
-	"	<toolitem action='paste' />"
-	"	</toolbar>"
-	"</ui>"
-	;
-
 
 
 	auto toolbar = Gtk::manage(new Gtk::Toolbar());
