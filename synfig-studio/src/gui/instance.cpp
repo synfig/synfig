@@ -1792,7 +1792,7 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 	gather_uri(uris, layers);
 	for (auto i = uris.cbegin(); i != uris.cend(); ++i) {
 		String label;
-		Gtk::Action::SlotActivate func;
+		sigc::slot<void> func;
 		// check if layer is image
 		if (is_img(i->second)) {
 			label = _("Edit image in external tool...");
@@ -1847,7 +1847,7 @@ Instance::add_special_layer_actions_to_group_and_menu(
 	for (auto i = uris.cbegin(); i != uris.cend(); ++i, ++index) {
 		String action_name = strprintf("special-action-open-file-%d", index);
 		String local_name;
-		Gtk::Action::SlotActivate func;
+		sigc::slot<void> func;
 		//if the import layer is type image
 		if (is_img(i->second)) {
 			local_name = _("Edit image in external tool...");
