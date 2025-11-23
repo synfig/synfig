@@ -112,21 +112,7 @@ MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
 	bin_->add(*main_dock_book_);
 	bin_->show();
 
-	auto visible_vbox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	auto hidden_box   = manage(new Gtk::Box());
-
-	auto hidden_menubar  = App::ui_manager()->get_widget("/menubar-hidden");
-	{
-		hidden_box->add(*hidden_menubar);
-		hidden_box->hide();
-
-		visible_vbox->add(*hidden_box);
-	}
-
-	visible_vbox->pack_end(*bin_, true, true, 0);
-	visible_vbox->show();
-
-	add(*visible_vbox);
+	add(*bin_);
 
 	init_menus();
 
