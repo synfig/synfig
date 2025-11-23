@@ -323,7 +323,7 @@ Dock_PalEdit::show_menu(int i)
 			i ));
 	menu->append(*item);
 
-	item = image_menu_item("hex_icon", _("Add clipboard color"));
+	item = image_menu_item("hex_icon", _("Copy hex color code"));
 	item->signal_activate().connect(
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::Dock_PalEdit::copy_color),
