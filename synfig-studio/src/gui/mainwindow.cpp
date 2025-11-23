@@ -37,7 +37,6 @@
 #include <gtkmm/box.h>
 #include <gtkmm/cssprovider.h>
 #include <gtkmm/messagedialog.h>
-#include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
 
 #include <gui/actionmanagers/actionmanager.h>
@@ -234,101 +233,8 @@ MainWindow::init_menus()
 		}
 	}
 
-	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow");
 
-	// file
-	action_group->add( Gtk::Action::create_with_icon_name("new", "action_doc_new_icon", _("New"), _("Create a new document")),
-		sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance))
-	);
-	action_group->add( Gtk::Action::create_with_icon_name("open", "action_doc_open_icon", _("Open"), _("Open an existing document")),
-		sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), filesystem::Path{}))
-	);
-	action_group->add( Gtk::Action::create_with_icon_name("save-all", "action_doc_saveall_icon", _("Save All"), _("Save all opened documents")),
-		sigc::ptr_fun(&save_all)
-	);
-	action_group->add( Gtk::Action::create_with_icon_name("quit", "application-exit", _("_Quit"), _("Quit")),
-		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
-	);
 
-	// Edit menu
-	action_group->add( Gtk::Action::create("input-devices", _("Input Devices...")),
-		sigc::ptr_fun(&MainWindow::show_dialog_input)
-	);
-	action_group->add( Gtk::Action::create("preferences", _("Preferences...")),
-		sigc::ptr_fun(&studio::App::show_setup)
-	);
-
-	// View menu
-	Glib::RefPtr<Gtk::ToggleAction> toggle_menubar = Gtk::ToggleAction::create("toggle-mainwin-menubar", _("Show Menubar"));
-	toggle_menubar->set_active(App::enable_mainwin_menubar);
-	action_group->add(toggle_menubar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_menubar));
-
-	Glib::RefPtr<Gtk::ToggleAction> toggle_toolbar = Gtk::ToggleAction::create("toggle-mainwin-toolbar", _("Toolbar"));
-	toggle_toolbar->set_active(App::enable_mainwin_toolbar);
-	action_group->add(toggle_toolbar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_toolbar));
-	
-	// pre defined workspace (window ui layout)
-	action_group->add( Gtk::Action::create("workspace-compositing", _("Compositing")),
-		sigc::ptr_fun(MainWindow::set_workspace_compositing)
-	);
-	action_group->add( Gtk::Action::create("workspace-animating", _("Animating")),
-		sigc::ptr_fun(MainWindow::set_workspace_animating)
-	);
-	action_group->add( Gtk::Action::create("workspace-default", _("Default")),
-		sigc::ptr_fun(MainWindow::set_workspace_default)
-	);
-	action_group->add( Gtk::Action::create_with_icon_name("save-workspace", "action_doc_saveas_icon", _("Save workspace..."), _("Save workspace...")),
-		sigc::mem_fun(*this, &MainWindow::save_custom_workspace)
-	);
-
-	action_group->add( Gtk::Action::create("edit-workspacelist", _("Edit workspaces...")),
-		sigc::ptr_fun(MainWindow::edit_custom_workspace_list)
-	);
-
-	//animation tabs
-	for (int i = 1; i <= 8; ++i) {
-		const std::string tab = std::to_string(i);
-		action_group->add(Gtk::Action::create("switch-to-tab-" + tab, _("Switch to Tab ") + tab),
-			sigc::track_obj([this, i]() { main_dock_book().set_current_page(i-1); }, this)
-		);
-	}
-	action_group->add(Gtk::Action::create("switch-to-rightmost-tab", _("Switch to Rightmost Tab")),
-		sigc::track_obj([this]() { main_dock_book().set_current_page(-1); }, this)
-	);
-
-	// help
-	#define URL(action_name,title,url) \
-		action_group->add( Gtk::Action::create(action_name, title), \
-			sigc::bind(sigc::ptr_fun(&studio::App::open_uri),url))
-	#define WIKI(action_name,title,page) \
-		URL(action_name,title, "https://wiki.synfig.org/" + String(page))
-
-	action_group->add( Gtk::Action::create("help", Gtk::Stock::HELP),
-		sigc::ptr_fun(studio::App::dialog_help)
-	);
-
-#if GTK_CHECK_VERSION(3, 20, 0)
-	action_group->add( Gtk::Action::create(
-			"help-shortcuts", _("Keyboard Shortcuts")),
-		sigc::ptr_fun(studio::App::window_shortcuts)
-	);
-#endif
-
-	// TRANSLATORS:         | Help menu entry:              | A wiki page:          |
-	URL("help-tutorials",	_("Tutorials"),					_("https://synfig.readthedocs.io/en/latest/tutorials.html"));
-	WIKI("help-reference",	_("Reference"),					_("Category:Reference"));
-	URL("help-faq",		_("Frequently Asked Questions"),	_("https://wiki.synfig.org/FAQ")				);
-	URL("help-support",		_("Get Support"),				_("https://forums.synfig.org/")	);
-
-	action_group->add( Gtk::Action::create_with_icon_name(
-			"about", "about_icon", _("About Synfig Studio"), _("About Synfig Studio")),
-		sigc::ptr_fun(studio::App::dialog_about)
-	);
-
-	// TODO: open recent
-	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
-
-	App::ui_manager()->insert_action_group(action_group);
 }
 
 void MainWindow::register_custom_widget_types()

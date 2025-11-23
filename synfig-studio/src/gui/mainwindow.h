@@ -30,7 +30,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/actiongroup.h>
 #include <gtkmm/applicationwindow.h>
 
 #include <synfig/filesystem_path.h>
