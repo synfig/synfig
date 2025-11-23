@@ -130,8 +130,6 @@ MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
 	add(*visible_vbox);
 
 	init_menus();
-	window_action_group = Gtk::ActionGroup::create("mainwindow-window");
-	App::ui_manager()->insert_action_group(window_action_group);
 
 	App::signal_recent_files_changed().connect(
 		sigc::mem_fun(*this, &MainWindow::on_recent_files_changed) );
