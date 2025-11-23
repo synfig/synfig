@@ -281,8 +281,6 @@ private:
 
 	Gtk::Button *closebutton;
 	Gtk::Button *stopbutton;
-	Gtk::ToggleToolButton *background_rendering_button;
-	Gtk::ToolButton *refreshbutton;
 	Gtk::ComboBoxText *render_combobox;
 	Gtk::Grid *timebar;
 	Gtk::Toolbar *top_toolbar;
@@ -291,7 +289,6 @@ private:
 	Gtk::ToggleButton *animatebutton;
 	Gtk::ToggleButton *timetrackbutton;
 	Gtk::Grid *timetrack;
-	Gtk::Button *keyframebutton;
 	KeyFrameDial *keyframedial;
 	bool toggling_animate_mode_;
 	FrameDial *framedial;
@@ -304,14 +301,6 @@ private:
 	Glib::RefPtr<Gtk::Adjustment> past_onion_adjustment_;
 	Gtk::SpinButton *past_onion_spin;
 	Gtk::SpinButton *future_onion_spin;
-	Gtk::ToggleToolButton *show_grid;
-	Gtk::ToggleToolButton *snap_grid;
-	Gtk::ToggleToolButton *show_guides;
-	Gtk::ToggleToolButton *snap_guides;
-	Gtk::ToggleToolButton *onion_skin;
-	Gtk::ToolButton *render_options_button;
-	Gtk::ToolButton *preview_options_button;
-	Gtk::ToggleToolButton *onion_skin_keyframes;
 
 	//! Shows current time and allows edition
 	Widget_Time *current_time_widget;
