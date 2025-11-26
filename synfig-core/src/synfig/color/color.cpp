@@ -53,7 +53,7 @@ using namespace synfig;
 /* === M E T H O D S ======================================================= */
 
 ColorReal
-Color::hex2real(String s)
+Color::hex2real(const String& s)
 {
 	std::istringstream i(s);
 	int n;
@@ -76,7 +76,7 @@ Color::real2hex(ColorReal c)
 }
 
 void
-Color::set_hex(String& str)
+Color::set_hex(const String& str)
 {
 	value_type r, g, b;
 	String hex;
