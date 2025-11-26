@@ -275,8 +275,9 @@ public:
 		BLEND_ALPHA_DARKEN=15,		//!< \deprecated If A is more opaque than B, use B
 		BLEND_ALPHA_OVER=19,		//!< \deprecated multiply alphas and then straight blends using the amount
 		BLEND_ALPHA=23,				//!< multiply alphas
+		BLEND_ALPHA_INTERSECTION=24,//!< Alpha Over where layers overlaps, Composite otherwise
 
-		BLEND_END=24,				//!< \internal
+		BLEND_END=25,				//!< \internal
 		BLEND_BY_LAYER=999			//! Used to let the layer decides what Blend Method use by
 									//! default when the layer is created
 	};
@@ -316,7 +317,8 @@ public:
 			| (1 << BLEND_ALPHA_DARKEN),
 
 		BLEND_METHODS_COMMUTATIVE = 0
-			| (1 << BLEND_ADD_COMPOSITE),
+			| (1 << BLEND_ADD_COMPOSITE)
+			| (1 << BLEND_ALPHA_INTERSECTION),
 
 		BLEND_METHODS_ALL = (1 << BLEND_END) - 1
 	};
