@@ -58,7 +58,6 @@
 #include <gtkmm/toggletoolbutton.h>
 #include <gtkmm/toolbar.h>
 #include <gtkmm/toolbutton.h>
-#include <gtkmm/uimanager.h>
 
 #include <synfig/canvas.h>
 #include <synfig/clock.h>
