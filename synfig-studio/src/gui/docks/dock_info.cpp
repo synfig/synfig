@@ -285,7 +285,7 @@ void studio::Dock_Info::hide_open_button()
 	open_button.hide();
 }
 
-void studio::Dock_Info::set_open_button(synfig::filesystem::Path target_filepath)
+void studio::Dock_Info::set_rendered_file_path(const synfig::filesystem::Path& target_filepath)
 {
 	output_target = target_filepath;
 	open_button.show();

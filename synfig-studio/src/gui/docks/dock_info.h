@@ -82,7 +82,7 @@ public:
 	void set_render_progress   (float value);
 	void set_n_passes_requested(int   value);
 	void set_n_passes_pending  (int   value);
-	void set_open_button(synfig::filesystem::Path target_filepath);
+	void set_rendered_file_path(const synfig::filesystem::Path& target_filepath);
 	void hide_open_button();
 };
 
