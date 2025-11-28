@@ -36,10 +36,11 @@
 #include "docks/dock_history.h"
 
 #include <gtkmm/scrolledwindow.h>
-#include <gtkmm/stock.h>
 #include <gtkmm/stylecontext.h>
 
+#include <gui/actionmanagers/actionmanager.h>
 #include <gui/app.h>
+#include <gui/canvasview.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
 #include <gui/trees/historytreestore.h>
@@ -61,11 +62,21 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
+static Gtk::ToolButton*
+create_action_toolbutton(const std::string& action_name, const std::string& icon_name, const std::string& tooltip)
+{
+	Gtk::ToolButton* button = Gtk::manage(new Gtk::ToolButton());
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(button->gobj()), action_name.c_str());
+	button->set_icon_name(icon_name);
+	button->set_tooltip_text(tooltip);
+	button->show();
+	return button;
+}
+
 /* === M E T H O D S ======================================================= */
 
 Dock_History::Dock_History():
-	Dock_CanvasSpecific("history",_("History"),"history_icon"),
-	action_group(Gtk::ActionGroup::create("action_group_dock_history"))
+	Dock_CanvasSpecific("history",_("History"),"history_icon")
 {
 	// Make History toolbar small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
@@ -73,78 +84,16 @@ Dock_History::Dock_History():
 	App::signal_instance_deleted().connect(sigc::mem_fun(*this,&studio::Dock_History::delete_instance));
 	App::signal_instance_selected().connect(sigc::mem_fun(*this,&studio::Dock_History::set_selected_instance_signal));
 
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"clear-undo",
-		"clear_undo_icon",
-		_("Clear Undo Stack"),
-		_("Clear the undo stack")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_History::clear_undo
-		)
-	);
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"clear-redo",
-		"clear_redo_icon",
-		_("Clear Redo Stack"),
-		_("Clear the redo stack")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_History::clear_redo
-		)
-	);
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"clear-undo-and-redo",
-		"edit-clear",
-		_("Clear Undo and Redo Stacks"),
-		_("Clear the undo and redo stacks")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_History::clear_undo_and_redo
-		)
-	);
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"undo",
-		"action_doc_undo_icon",
-		_("Undo"),
-		_("Undo the previous action")
-	),
-		sigc::ptr_fun(studio::App::undo)
-	);
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"redo",
-		"action_doc_redo_icon",
-		_("Redo"),
-		_("Redo the previously undone action")
-	),
-		sigc::ptr_fun(studio::App::redo)
-	);
+	auto toolbar = Gtk::manage(new Gtk::Toolbar());
+	toolbar->show_all();
+	toolbar->append(*create_action_toolbutton("doc.undo", "action_doc_undo_icon", _("Undo the previous action")));
+	toolbar->append(*create_action_toolbutton("doc.redo", "action_doc_redo_icon", _("Redo the previously undone action")));
+	toolbar->append(*create_action_toolbutton("doc.clear-undo", "clear_undo_icon", _("Clear the undo stack")));
+	toolbar->append(*create_action_toolbutton("doc.clear-redo", "clear_redo_icon", _("Clear the redo stack")));
+	toolbar->append(*create_action_toolbutton("doc.clear-undo-and-redo", "edit-clear", _("Clear the undo and redo stacks")));
 
-	action_group->add( Gtk::Action::create("toolbar-history", _("History")) );
-	App::ui_manager()->insert_action_group(action_group);
+	set_toolbar(*toolbar);
 
-	Glib::ustring ui_info =
-	"<ui>"
-	"	<toolbar action='toolbar-history'>"
-	"	<toolitem action='undo' />"
-	"	<toolitem action='redo' />"
-	"	<toolitem action='clear-undo' />"
-	"	<toolitem action='clear-redo' />"
-	"	<toolitem action='clear-undo-and-redo' />"
-	"	</toolbar>"
-	"</ui>"
-	;
-
-	App::ui_manager()->add_ui_from_string(ui_info);
-
-	action_group->set_sensitive(false);
-
-	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-history"))) {
-		set_toolbar(*toolbar);
-	}
 	add(*create_action_tree());
 }
 
@@ -158,6 +107,20 @@ Dock_History::init_instance_vfunc(etl::loose_handle<Instance> instance)
 	instance->signal_undo_redo_status_changed().connect(
 		sigc::mem_fun(*this,&Dock_History::update_undo_redo)
 	);
+}
+
+void
+Dock_History::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
+{
+	auto action_group = Glib::RefPtr<Gio::SimpleActionGroup>::cast_dynamic(canvas_view->get_action_group("doc"));
+	if (action_group) {
+		auto action = action_group->add_action("clear-undo", sigc::mem_fun(*this, &Dock_History::clear_undo));
+		action->set_enabled(false);
+		action = action_group->add_action("clear-redo", sigc::mem_fun(*this, &Dock_History::clear_redo));
+		action->set_enabled(false);
+		action = action_group->add_action("clear-undo-and-redo", sigc::mem_fun(*this, &Dock_History::clear_undo_and_redo));
+		action->set_enabled(false);
+	}
 }
 
 Gtk::Widget*
@@ -302,11 +265,14 @@ Dock_History::update_undo_redo()
 	etl::handle<Instance> instance=App::get_selected_instance();
 	if(instance)
 	{
-		action_group->get_action("undo")->set_sensitive(instance->get_undo_status());
-		action_group->get_action("clear-undo")->set_sensitive(instance->get_undo_status());
-		action_group->get_action("redo")->set_sensitive(instance->get_redo_status());
-		action_group->get_action("clear-redo")->set_sensitive(instance->get_redo_status());
-		action_group->get_action("clear-undo-and-redo")->set_sensitive(instance->get_undo_status() || instance->get_redo_status());
+		auto action_group = Glib::RefPtr<Gio::SimpleActionGroup>::cast_dynamic(App::main_window->get_action_group("doc"));
+		if (action_group) {
+			action_group->lookup_action("undo")->set_property("enabled", instance->get_undo_status());
+			action_group->lookup_action("clear-undo")->set_property("enabled", instance->get_undo_status());
+			action_group->lookup_action("redo")->set_property("enabled", instance->get_redo_status());
+			action_group->lookup_action("clear-redo")->set_property("enabled", instance->get_redo_status());
+			action_group->lookup_action("clear-undo-and-redo")->set_property("enabled", instance->get_undo_status() || instance->get_redo_status());
+		}
 	}
 }
 
@@ -356,13 +322,11 @@ Dock_History::set_selected_instance_(etl::handle<studio::Instance> instance)
 		action_tree->set_model(instance->history_tree_store());
 		action_tree->show();
 		update_undo_redo();
-		action_group->set_sensitive(true);
 	}
 	else
 	{
 		action_tree->set_model(Glib::RefPtr< Gtk::TreeModel >());
 		action_tree->hide();
-		action_group->set_sensitive(false);
 	}
 }
 

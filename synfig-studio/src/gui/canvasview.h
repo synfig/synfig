@@ -42,6 +42,8 @@
 
 #include <gdkmm/device.h>
 
+#include <giomm/simpleactiongroup.h>
+
 #include <glibmm/dispatcher.h>
 
 #include <gtkmm/button.h>
@@ -56,7 +58,6 @@
 #include <gtkmm/toggletoolbutton.h>
 #include <gtkmm/toolbar.h>
 #include <gtkmm/toolbutton.h>
-#include <gtkmm/uimanager.h>
 
 #include <synfig/canvas.h>
 #include <synfig/clock.h>
@@ -224,13 +225,13 @@ public:
 
 	typedef synfigapp::CanvasInterface::Mode Mode;
 
-	void set_grid_snap_toggle(bool flag) { grid_snap_toggle->set_active(flag); }
-	void set_grid_show_toggle(bool flag) { grid_show_toggle->set_active(flag); }
-	void set_guides_snap_toggle(bool flag) { guides_snap_toggle->set_active(flag); }
-	void set_guides_show_toggle(bool flag) { guides_show_toggle->set_active(flag); }
-	void set_onion_skin_toggle(bool flag) { onion_skin_toggle->set_active(flag); }
-	void set_onion_skin_keyframes_toggle(bool flag) { onion_skin_keyframes_toggle->set_active(flag); }
-	void set_background_rendering_toggle(bool flag) { background_rendering_toggle->set_active(flag); }
+	void set_grid_snap_toggle(bool flag);
+	void set_grid_show(bool flag);
+	void set_guides_snap_toggle(bool flag);
+	void set_guides_show_toggle(bool flag);
+	void set_onion_skin_toggle(bool flag);
+	void set_onion_skin_keyframes_toggle(bool flag);
+	void set_background_rendering_toggle(bool flag);
 
 	void grab_focus();
 
@@ -278,8 +279,6 @@ private:
 
 	Gtk::Button *closebutton;
 	Gtk::Button *stopbutton;
-	Gtk::ToggleToolButton *background_rendering_button;
-	Gtk::ToolButton *refreshbutton;
 	Gtk::ComboBoxText *render_combobox;
 	Gtk::Grid *timebar;
 	Gtk::Toolbar *top_toolbar;
@@ -288,7 +287,6 @@ private:
 	Gtk::ToggleButton *animatebutton;
 	Gtk::ToggleButton *timetrackbutton;
 	Gtk::Grid *timetrack;
-	Gtk::Button *keyframebutton;
 	KeyFrameDial *keyframedial;
 	bool toggling_animate_mode_;
 	FrameDial *framedial;
@@ -301,21 +299,7 @@ private:
 	Glib::RefPtr<Gtk::Adjustment> past_onion_adjustment_;
 	Gtk::SpinButton *past_onion_spin;
 	Gtk::SpinButton *future_onion_spin;
-	Gtk::ToggleToolButton *show_grid;
-	Gtk::ToggleToolButton *snap_grid;
-	Gtk::ToggleToolButton *show_guides;
-	Gtk::ToggleToolButton *snap_guides;
-	Gtk::ToggleToolButton *onion_skin;
-	Gtk::ToolButton *render_options_button;
-	Gtk::ToolButton *preview_options_button;
-	Gtk::ToggleToolButton *onion_skin_keyframes;
-	bool toggling_show_grid;
-	bool toggling_snap_grid;
-	bool toggling_show_guides;
-	bool toggling_snap_guides;
-	bool toggling_onion_skin;
-	bool toggling_onion_skin_keyframes;
-	bool toggling_background_rendering;
+
 	//! Shows current time and allows edition
 	Widget_Time *current_time_widget;
 	void on_current_time_widget_changed();
@@ -334,21 +318,20 @@ private:
 	//! Menu members
 	Gtk::Menu parammenu;
 
-	Gtk::UIManager::ui_merge_id merge_id_popup_;
-	Gtk::UIManager::ui_merge_id merge_id_toolbar_;
+	Glib::RefPtr<Gio::SimpleAction> grid_snap_toggle;
+	Glib::RefPtr<Gio::SimpleAction> grid_show_toggle;
+	Glib::RefPtr<Gio::SimpleAction> rulers_show_toggle;
+	Glib::RefPtr<Gio::SimpleAction> guides_snap_toggle;
+	Glib::RefPtr<Gio::SimpleAction> guides_show_toggle;
+	Glib::RefPtr<Gio::SimpleAction> onion_skin_toggle;
+	Glib::RefPtr<Gio::SimpleAction> onion_skin_keyframes_toggle;
+	Glib::RefPtr<Gio::SimpleAction> background_rendering_toggle;
 
-	Glib::RefPtr<Gtk::ToggleAction> grid_snap_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> grid_show_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> rulers_show_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> guides_snap_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> guides_show_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> onion_skin_keyframes_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> background_rendering_toggle;
-
+	Glib::RefPtr<Gio::SimpleAction> low_resolution_toggle;
 	Gtk::RadioButtonGroup low_res_pixel_size_group;
 
-	Glib::RefPtr<Gtk::ActionGroup> action_group;
+	// Glib::RefPtr<Gtk::ActionGroup> action_group;
+	Glib::RefPtr<Gio::SimpleActionGroup> action_group_;
 	bool _action_group_removed;
 
 	etl::handle<synfigapp::UIInterface> ui_interface_;
@@ -376,8 +359,6 @@ private:
 	synfig::Time jack_time;
 	bool toggling_jack;
 	#endif
-
-	Glib::RefPtr<Gtk::ToggleAction> action_mask_bone_setup_ducks, action_mask_bone_recursive_ducks;
 
 	int ducks_locks;
 	bool ducks_rebuild_requested;
@@ -439,7 +420,8 @@ private:
 
 	Gtk::Widget *create_time_bar();
 
-	Gtk::ToolButton* create_action_toolbutton(const Glib::RefPtr<Gtk::Action> &action);
+	Gtk::ToolButton* create_action_toolbutton(const std::string& action);
+	Gtk::ToolButton* create_action_toggletoolbutton(const std::string& action);
 	Gtk::SeparatorToolItem* create_tool_separator();
 	Gtk::Widget* create_top_toolbar();
 	Gtk::Widget* create_stop_button();
@@ -460,16 +442,16 @@ private:
 
 	void decrease_low_res_pixel_size();
 	void increase_low_res_pixel_size();
-	void toggle_low_res_pixel_flag();
+	void on_low_resolution_toggled();
 	void set_onion_skins();
-	void toggle_show_ruler();
-	void toggle_show_grid();
-	void toggle_snap_grid();
-	void toggle_show_guides();
-	void toggle_snap_guides();
-	void toggle_onion_skin();
-	void toggle_onion_skin_keyframes();
-	void toggle_background_rendering();
+	void on_show_ruler_toggled();
+	void on_show_grid_toggled();
+	void on_snap_grid_toggled();
+	void on_show_guides_toggled();
+	void on_snap_guides_toggled();
+	void on_onion_skin_toggled();
+	void on_onion_skin_keyframes_toggled();
+	void on_background_rendering_toggled();
 
 	void toggle_animatebutton();
 	void toggle_timetrackbutton();
@@ -521,10 +503,6 @@ public:
 	AdjustmentGroup::Handle get_adjustment_group(const synfig::String& x);
 	void set_adjustment_group(const synfig::String& x, AdjustmentGroup::Handle y);
 
-	Gtk::UIManager::ui_merge_id get_popup_id();
-	void set_popup_id(Gtk::UIManager::ui_merge_id popup_id);
-	Gtk::UIManager::ui_merge_id get_toolbar_id();
-	void set_toolbar_id(Gtk::UIManager::ui_merge_id toolbar_id);
 
 	//std::map<synfig::String,Gtk::Widget*>& tree_view_book() { return tree_view_book_; }
 	//std::map<synfig::String,Gtk::Widget*>& ext_widget_book() { return ext_widget_book_; }
@@ -701,7 +679,7 @@ protected:
 	*/
 public:
 	static studio::CanvasView::Handle create(etl::loose_handle<Instance> instance, synfig::Canvas::Handle canvas);
-	static std::list<int>& get_pixel_sizes();
+	static const std::vector<int>& get_pixel_sizes();
 
 private:
 	#ifdef WITH_JACK

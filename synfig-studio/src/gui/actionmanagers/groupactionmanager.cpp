@@ -36,7 +36,6 @@
 #include "groupactionmanager.h"
 
 #include <glibmm/main.h>
-#include <gtkmm/stock.h>
 
 #include <gui/instance.h>
 #include <gui/localization.h>
@@ -50,13 +49,13 @@
 using namespace synfig;
 using namespace studio;
 
-static const guint no_prev_popup((guint)-1);
-
 /* === M A C R O S ========================================================= */
 
 //#define ONE_ACTION_GROUP 1
 
 /* === G L O B A L S ======================================================= */
+
+static const std::string group_name {"layer-set"};
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -64,8 +63,7 @@ static const guint no_prev_popup((guint)-1);
 
 GroupActionManager::GroupActionManager():
 	group_tree_(),
-	action_group_(Gtk::ActionGroup::create("action_group_group_action_manager")),
-	popup_id_(no_prev_popup),
+	action_group_(Gio::SimpleActionGroup::create()),
 	queued(false)
 { }
 
@@ -73,17 +71,11 @@ GroupActionManager::~GroupActionManager()
 { }
 
 void
-GroupActionManager::set_ui_manager(const Glib::RefPtr<Gtk::UIManager> &x)
+GroupActionManager::set_action_widget(Gtk::Widget* x)
 {
 	clear();
 
-#ifdef ONE_ACTION_GROUP
-	if(ui_manager_)	get_ui_manager()->remove_action_group(action_group_);
-	ui_manager_=x;
-	if(ui_manager_)	get_ui_manager()->insert_action_group(action_group_);
-#else
-	ui_manager_=x;
-#endif
+	action_widget_ = x;
 }
 
 void
@@ -108,22 +100,15 @@ GroupActionManager::set_canvas_interface(const etl::handle<synfigapp::CanvasInte
 void
 GroupActionManager::clear()
 {
-	if(ui_manager_)
-	{
-		// Clear out old stuff
-		if(popup_id_!=no_prev_popup)
-		{
-			get_ui_manager()->remove_ui(popup_id_);
-			popup_id_=no_prev_popup;
-			action_group_->set_sensitive(false);
-#ifdef ONE_ACTION_GROUP
-			while(!action_group_->get_actions().empty())action_group_->remove(*action_group_->get_actions().begin());
-			action_group_->set_sensitive(true);
-#else
-			get_ui_manager()->remove_action_group(action_group_);
-			action_group_=Gtk::ActionGroup::create("action_group_group_action_manager");
-#endif
+	if (action_group_) {
+		auto actions = action_group_->list_actions();
+		for (const auto& action_name : actions) {
+			action_group_->remove_action(action_name);
 		}
+	}
+
+	if (action_widget_) {
+		action_widget_->remove_action_group(group_name);
 	}
 }
 
@@ -157,32 +142,18 @@ GroupActionManager::refresh()
 	clear();
 
 	// Make sure we are ready
-	if(!ui_manager_ || !group_tree_ || !canvas_interface_)
-	{
+	if (!action_widget_ || !group_tree_ || !canvas_interface_) {
 		synfig::error("GroupActionManager::refresh(): Not ready!");
 		return;
 	}
 
-	if(group_tree_->get_selection()->count_selected_rows()==0)
+	if (group_tree_->get_selection()->count_selected_rows() == 0)
 		return;
 
-	String ui_info;
-
 	{
-		{
-			action_group_->add(
-				Gtk::Action::create(
-					"action-group_add",
-					Gtk::Stock::ADD,
-					_("Add a New Set"),
-					_("Add a New Set")
-				),
-				sigc::mem_fun(
-					*this,
-					&GroupActionManager::on_action_add
-				)
-			);
-		}
+		action_group_->add_action("group_add",
+			sigc::mem_fun(*this, &GroupActionManager::on_action_add)
+		);
 
 
 //		bool multiple_selected(group_tree_->get_selection()->count_selected_rows()>1);
@@ -225,27 +196,17 @@ GroupActionManager::refresh()
 			}
 
 			etl::handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance())->
-				add_actions_to_group(action_group_, ui_info,   param_list, synfigapp::Action::CATEGORY_GROUP);
+				add_actions_to_group(action_group_, param_list, synfigapp::Action::CATEGORY_GROUP);
 			}
 	}
 
-	if(true)
-	{
-		String full_ui_info;
-		full_ui_info="<ui><popup action='menu-main'><menu action='menu-group'>"+ui_info+"</menu></popup></ui>";
-		popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
-		full_ui_info="<ui><menubar action='menubar-main'><menu action='menu-group'>"+ui_info+"</menu></menubar></ui>";
-		popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
-	}
-	else
-	{
-		get_ui_manager()->ensure_update();
-	}
+	// String full_ui_info;
+	// full_ui_info="<ui><popup action='menu-main'><menu action='menu-group'>"+ui_info+"</menu></popup></ui>";
+	// popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
+	// full_ui_info="<ui><menubar action='menubar-main'><menu action='menu-group'>"+ui_info+"</menu></menubar></ui>";
+	// popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
 
-#ifdef ONE_ACTION_GROUP
-#else
-	get_ui_manager()->insert_action_group(action_group_);
-#endif
+	action_widget_->insert_action_group(group_name, action_group_);
 }
 
 void
