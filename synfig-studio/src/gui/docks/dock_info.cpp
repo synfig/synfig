@@ -35,6 +35,8 @@
 
 #include "docks/dock_info.h"
 
+#include <glibmm/fileutils.h>
+
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/localization.h>
@@ -186,15 +188,25 @@ studio::Dock_Info::Dock_Info()
 	stop_button.set_valign(Gtk::ALIGN_CENTER);
 	stop_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_stop_button_clicked));
 
-	open_button.set_label(_("Open Rendered File"));
-	open_button.set_halign(Gtk::ALIGN_START);
-	open_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_open_button_clicked));
+	open_file_button.set_label(_("Open Rendered File"));
+	open_file_button.set_halign(Gtk::ALIGN_START);
+	open_file_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_open_file_button_clicked));
+
+	open_folder_button.set_image_from_icon_name("folder-open");
+	open_folder_button.set_tooltip_text(_("Open Destination Folder"));
+	open_folder_button.set_halign(Gtk::ALIGN_START);
+	open_folder_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_open_folder_button_clicked));
+
+	Gtk::Box* open_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
+	open_box->set_spacing(6);
+	open_box->pack_start(open_file_button, false, false, 0);
+	open_box->pack_start(open_folder_button, false, false, 0);
 
 	render_box->pack_start(*overlay, true, true, 0);
 	render_box->pack_start(stop_button, false, false, 0);
 	grid->attach_next_to(*render_progress_label, *separator2, Gtk::POS_BOTTOM, 8, 1);
 	grid->attach_next_to(*render_box, *render_progress_label, Gtk::POS_BOTTOM, 7, 1);
-	grid->attach_next_to(open_button, *separator3, Gtk::POS_BOTTOM, 8, 1);
+	grid->attach_next_to(*open_box, *separator3, Gtk::POS_BOTTOM, 8, 1);
 
 	grid->set_margin_start(5);
 	grid->set_margin_end(5);
@@ -202,7 +214,7 @@ studio::Dock_Info::Dock_Info()
 	grid->set_margin_bottom(5);
 	grid->show_all();
 
-	open_button.hide();
+	hide_open_buttons();
 
 	add(*grid);
 
@@ -218,9 +230,15 @@ studio::Dock_Info::~Dock_Info()
 {
 }
 
-void studio::Dock_Info::on_open_button_clicked()
+void studio::Dock_Info::on_open_file_button_clicked()
 {
-	synfig::OS::launch_file_async(output_target);    
+	synfig::OS::launch_file_async(output_target);
+}
+
+void studio::Dock_Info::on_open_folder_button_clicked()
+{
+	const bool is_directory = Glib::file_test(output_target.u8string(), Glib::FILE_TEST_IS_DIR);
+	synfig::OS::launch_file_async(is_directory ? output_target : output_target.parent_path());
 }
 
 void studio::Dock_Info::on_stop_button_clicked()
@@ -280,13 +298,17 @@ void studio::Dock_Info::set_render_progress(float value)
 		stop_button.set_sensitive(false);
 }
 
-void studio::Dock_Info::hide_open_button()
+void studio::Dock_Info::hide_open_buttons()
 {
-	open_button.hide();
+	open_file_button.hide();
+	open_folder_button.hide();
 }
 
 void studio::Dock_Info::set_rendered_file_path(const synfig::filesystem::Path& target_filepath)
 {
 	output_target = target_filepath;
-	open_button.show();
+	const bool is_directory = Glib::file_test(target_filepath.u8string(), Glib::FILE_TEST_IS_DIR);
+
+	open_file_button.set_visible(!is_directory);
+	open_folder_button.show();
 }

@@ -53,7 +53,8 @@ class Dock_Info : public Dock_CanvasSpecific
 	Gtk::ProgressBar render_progress;
 	Gtk::Label       render_percentage;
 	Gtk::Button      stop_button;
-	Gtk::Button      open_button;
+	Gtk::Button      open_file_button;
+	Gtk::Button      open_folder_button;
 
 	synfig::filesystem::Path output_target;
 
@@ -68,7 +69,8 @@ class Dock_Info : public Dock_CanvasSpecific
 
 	void on_mouse_move();
 	void on_stop_button_clicked();
-	void on_open_button_clicked();
+	void on_open_file_button_clicked();
+	void on_open_folder_button_clicked();
 
 public:
 	Dock_Info();
@@ -83,7 +85,7 @@ public:
 	void set_n_passes_requested(int   value);
 	void set_n_passes_pending  (int   value);
 	void set_rendered_file_path(const synfig::filesystem::Path& target_filepath);
-	void hide_open_button();
+	void hide_open_buttons();
 };
 
 }; // END of namespace studio
