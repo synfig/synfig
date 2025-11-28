@@ -186,7 +186,7 @@ studio::Dock_Info::Dock_Info()
 	stop_button.set_valign(Gtk::ALIGN_CENTER);
 	stop_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_stop_button_clicked));
 
-	open_button.set_label("Open Rendered File");
+	open_button.set_label(_("Open Rendered File"));
 	open_button.set_halign(Gtk::ALIGN_START);
 	open_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_open_button_clicked));
 
