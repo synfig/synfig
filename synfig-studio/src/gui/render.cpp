@@ -364,7 +364,7 @@ RenderSettings::on_render_pressed()
 	App::dock_info_->set_n_passes_requested(render_passes.size());
 	App::dock_info_->set_n_passes_pending(render_passes.size());
 	App::dock_info_->set_render_progress(0.0);
-	App::dock_info_->hide_open_button();
+	App::dock_info_->hide_open_buttons();
 	App::dock_manager->find_dockable("info").present(); //Bring Dock_Info to front
 
 	progress_logger->clear();
