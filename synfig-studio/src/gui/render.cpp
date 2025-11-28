@@ -585,9 +585,9 @@ RenderSettings::on_finished(std::string error_message)
 		        && (std::find(ext_multi.begin(), ext_multi.end(), target_filepath.extension()) != ext_multi.end());
 		
 		if (has_multiple_files)
-			App::dock_info_->set_open_button(target_filepath.parent_path());
+			App::dock_info_->set_rendered_file_path(target_filepath.parent_path());
 		else 
-			App::dock_info_->set_open_button(target_filepath);
+			App::dock_info_->set_rendered_file_path(target_filepath);
 		App::dock_info_->set_render_progress(1.0);
 	}
 
