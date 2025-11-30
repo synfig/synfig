@@ -205,9 +205,9 @@ namespace {
 				{ clear(); return; }
 
 			if (approximate_equal(i1->first, p)) {
-				erase(begin(), i1);
 				i1->second.side0 = side;
 				i1->second.pp0 = Vector(p, 0);
+				erase(begin(), i1);
 				return;
 			}
 
@@ -256,9 +256,9 @@ namespace {
 			iterator i0 = i1; --i0;
 
 			if (approximate_equal(i0->first, p)) {
-				erase(i1, end());
 				i0->second.side1 = side;
 				i0->second.pp1 = Vector(p, 0);
+				erase(i1, end());
 				return;
 			}
 
