@@ -148,7 +148,7 @@ Outline::sync_vfunc()
 		// that has the incoming tangent of the first point and the outgoing tangent of the last point
 
 		std::vector<BLinePoint> clean_bline;
-		for (int i = 0; i < original_bline.size(); ++i) {
+		for (size_t i = 0; i < original_bline.size(); ++i) {
 			BLinePoint current_p = original_bline[i];
 
 			while (i + 1 < original_bline.size()) {
