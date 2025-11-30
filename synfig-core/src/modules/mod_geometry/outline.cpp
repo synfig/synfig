@@ -139,6 +139,30 @@ Outline::sync_vfunc()
 		}
 		const ValueBase::List &bline = bline_segment.is_valid() ? bline_segment.get_list() : param_bline.get_list();
 
+		std::vector<BLinePoint> original_bline;
+		for (auto &i : bline) {
+			original_bline.push_back(i.get(blank));
+		}
+
+		// If we find consecutive points that are identical we merge them into one point
+		// that has the incoming tangent of the first point and the outgoing tangent of the last point
+
+		std::vector<BLinePoint> clean_bline;
+		for (int i = 0; i < original_bline.size(); ++i) {
+			BLinePoint current_p = original_bline[i];
+
+			while (i + 1 < original_bline.size()) {
+				BLinePoint &next_p = original_bline[i+1];
+				if ((current_p.get_vertex() - next_p.get_vertex()).mag_squared() <= 1e-12) {
+					current_p.set_tangent2(next_p.get_tangent2());
+					current_p.set_width(next_p.get_width());
+					i++;
+				} else {
+					break;
+				}
+			}
+			clean_bline.push_back(current_p);
+		}
 		// retrieve the parent canvas grow value
 		Real gv = exp(get_outline_grow_mark());
 		
@@ -146,9 +170,9 @@ Outline::sync_vfunc()
 		rendering::Contour contour;
 		
 		Real w = 0, w0 = 0;
-		for(ValueBase::List::const_iterator i = bline.begin(); i != bline.end(); ++i) {
-			const BLinePoint &point = i->get(blank);
-			
+		for (std::vector<BLinePoint>::const_iterator i = clean_bline.begin(); i != clean_bline.end(); ++i) {
+			const BLinePoint &point = *i;
+
 			bend.add(
 				point.get_vertex(),
 				point.get_tangent1(),
@@ -159,8 +183,8 @@ Outline::sync_vfunc()
 			Real length = bend.length1();
 			
 			w = gv*(point.get_width()*width*0.5 + expand);
-			
-			if (i == bline.begin()) {
+
+			if (i == clean_bline.begin()) {
 				w0 = w;
 				if (loop) {
 					contour.move_to( Vector(-w, 0) );
