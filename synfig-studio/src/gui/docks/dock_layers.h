@@ -30,6 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <giomm/simpleactiongroup.h>
 #include <gtkmm/actiongroup.h>
 #include <gui/docks/dock_canvasspecific.h>
 
@@ -49,6 +50,8 @@ class Dock_Layers : public Dock_CanvasSpecific
 	Glib::RefPtr<Gtk::ActionGroup> action_group_layer_ops;
 
 	Glib::RefPtr<Gtk::Action> action_new_layer;
+
+	Glib::RefPtr<Gio::SimpleActionGroup> action_group_new_layers2;
 
 	//Gtk::Scale *layer_amount_hscale;
 
