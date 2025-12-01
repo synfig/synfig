@@ -99,6 +99,7 @@ static const std::map<std::string, std::pair<const char*, const char*>> known_ic
 	{"draw", {"tool_draw_icon", N_("Draw Tool")}},
 	{"lasso", {"tool_cutout_icon", N_("Cutout Tool")}},
 	{"brush", {"tool_brush_icon", N_("Brush Tool")}},
+	{"brush2", {"tool_brush_icon", N_("Brush2 Tool")}},
 	{"sketch", {"tool_sketch_icon", N_("Sketch Tool")}},
 	{"circle", {"tool_circle_icon", N_("Circle Tool")}},
 	{"rectangle", {"tool_rectangle_icon", N_("Rectangle Tool")}},

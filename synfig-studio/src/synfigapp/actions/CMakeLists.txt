@@ -3,6 +3,7 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/layeractivate.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layeradd.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layeraddframe.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/layerbrush.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layercopy.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerduplicate.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerembed.cpp"

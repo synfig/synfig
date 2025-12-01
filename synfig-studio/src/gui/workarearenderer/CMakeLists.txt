@@ -11,5 +11,6 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/renderer_timecode.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renderer_bonesetup.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renderer_bonedeformarea.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/renderer_brush_overlay.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/workarearenderer.cpp"
 )
