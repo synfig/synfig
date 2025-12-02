@@ -979,6 +979,8 @@ DEFINE_ACTION("increase-low-res-pixel-size", _("Increase Low-Res Pixel Size"))
 DEFINE_ACTION("toggle-background-rendering", _("Toggle Background Rendering"))
 DEFINE_ACTION("toggle-onion-skin",           _("Toggle Onion Skin"))
 DEFINE_ACTION("toggle-onion-skin-keyframes", _("Toggle Onion Skin on Keyframes"))
+DEFINE_ACTION("toggle-keyframe-lock-past",   _("Toggle Keyframe Lock Past"))
+DEFINE_ACTION("toggle-keyframe-lock-future", _("Toggle Keyframe Lock Future"))
 DEFINE_ACTION("canvas-zoom-in",              Gtk::StockID("gtk-zoom-in"))
 DEFINE_ACTION("canvas-zoom-out",             Gtk::StockID("gtk-zoom-out"))
 DEFINE_ACTION("canvas-zoom-fit",             Gtk::StockID("gtk-zoom-fit"))
@@ -1137,6 +1139,8 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "		<menuitem action='toggle-background-rendering'/>"
 "		<menuitem action='toggle-onion-skin'/>"
 "		<menuitem action='toggle-onion-skin-keyframes'/>"
+"		<menuitem action='toggle-keyframe-lock-past'/>"
+"		<menuitem action='toggle-keyframe-lock-future'/>"
 "		<separator name='sep-view2'/>"
 "		<menuitem action='canvas-zoom-in'/>"
 "		<menuitem action='canvas-zoom-out'/>"
@@ -1400,6 +1404,8 @@ App::get_default_accel_map()
 		{"space",                   "<Actions>/canvasview/play"},
 		{"<Shift>space",            "<Actions>/canvasview/pause"},
 		{"<Control>space",          "<Actions>/canvasview/animate"},
+		{"<Control>Left",           "<Actions>/canvasview/toggle-keyframe-lock-past"},
+		{"<Control>Right",          "<Actions>/canvasview/toggle-keyframe-lock-future"},
 	};
 
 	return default_accel_map;

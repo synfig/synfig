@@ -345,6 +345,8 @@ private:
 	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> onion_skin_keyframes_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> background_rendering_toggle;
+	Glib::RefPtr<Gtk::ToggleAction> past_keyframes_toggle;
+	Glib::RefPtr<Gtk::ToggleAction> future_keyframes_toggle;
 
 	Gtk::RadioButtonGroup low_res_pixel_size_group;
 

@@ -2280,3 +2280,48 @@ WorkArea::resort_render_set()
 	renderer_set_.swap(tmp);
 	queue_draw();
 }
+
+bool 
+WorkArea::get_keyframe_lock_past() const
+{
+    if (!canvas_view)
+        return false;
+    return (canvas_view->get_mode() & synfigapp::MODE_ANIMATE_PAST);
+}
+
+bool 
+WorkArea::get_keyframe_lock_future() const
+{
+    if (!canvas_view)
+        return false;
+    return (canvas_view->get_mode() & synfigapp::MODE_ANIMATE_FUTURE);
+}
+
+void 
+WorkArea::set_keyframe_lock_past(bool x)
+{
+	if (!canvas_view)
+		return;
+	auto mode = canvas_view->get_mode();
+	if (x)
+        mode = static_cast<synfigapp::EditMode>(mode | synfigapp::MODE_ANIMATE_PAST);
+    else
+        mode = static_cast<synfigapp::EditMode>(mode & ~synfigapp::MODE_ANIMATE_PAST);
+
+	canvas_view->set_mode(mode);
+}
+
+void 
+WorkArea::set_keyframe_lock_future(bool x)
+{
+	if (!canvas_view)
+		return;
+	auto mode = canvas_view->get_mode();
+	if (x)
+        mode = static_cast<synfigapp::EditMode>(mode | synfigapp::MODE_ANIMATE_FUTURE);
+    else
+        mode = static_cast<synfigapp::EditMode>(mode & ~synfigapp::MODE_ANIMATE_FUTURE);
+
+	canvas_view->set_mode(mode);
+	
+}
