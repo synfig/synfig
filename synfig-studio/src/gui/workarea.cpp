@@ -597,6 +597,26 @@ WorkArea::load_meta_data()
 	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
 		set_onion_skin_keyframes(false);
 
+	data=canvas->get_meta_data("lock_keyframes_past");
+	if (canvas_view)
+	{
+		auto mode = canvas_view->get_mode();
+		if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
+			canvas_view->set_mode(mode | synfigapp::MODE_ANIMATE_PAST);
+		if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
+			canvas_view->set_mode(mode - synfigapp::MODE_ANIMATE_PAST);
+	}
+
+	data=canvas->get_meta_data("lock_keyframes_future");
+	if (canvas_view)
+	{
+		auto mode = canvas_view->get_mode();
+		if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
+			canvas_view->set_mode(mode | synfigapp::MODE_ANIMATE_FUTURE);
+		if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
+			canvas_view->set_mode(mode - synfigapp::MODE_ANIMATE_FUTURE);
+	}
+
 	// Update the canvas
 	if (onion_skin && render_required) queue_render();
 
@@ -2279,4 +2299,18 @@ WorkArea::resort_render_set()
 	);
 	renderer_set_.swap(tmp);
 	queue_draw();
+}
+
+bool WorkArea::get_keyframe_lock_past() const
+{
+    if (!canvas_view)
+        return false;
+    return (canvas_view->get_mode() & synfigapp::MODE_ANIMATE_PAST);
+}
+
+bool WorkArea::get_keyframe_lock_future() const
+{
+    if (!canvas_view)
+        return false;
+    return (canvas_view->get_mode() & synfigapp::MODE_ANIMATE_FUTURE);
 }

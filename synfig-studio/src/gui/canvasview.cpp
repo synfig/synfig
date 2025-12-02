@@ -1478,6 +1478,8 @@ CanvasView::init_menus()
 		{"toggle-background-rendering", "background_rendering_icon", N_("Enable rendering in background"), "", &WorkArea::get_background_rendering, &CanvasView::toggle_background_rendering },
 		{"toggle-onion-skin",           "onion_skin_icon",           N_("Show Onion Skin"),         "", &WorkArea::get_onion_skin, &CanvasView::toggle_onion_skin },
 		{"toggle-onion-skin-keyframes", "keyframe_icon",             N_("Onion Skin on Keyframes"), "", &WorkArea::get_onion_skin_keyframes, &CanvasView::toggle_onion_skin_keyframes },
+		{"toggle-keyframe-lock-past",   "keyframe_lock_past_on_icon",   N_("Lock Past Keyframes"),    "", &WorkArea::get_keyframe_lock_past, &CanvasView::toggle_past_keyframe_button },
+		{"toggle-keyframe-lock-future", "keyframe_lock_future_on_icon", N_("Lock Future Keyframes"),  "", &WorkArea::get_keyframe_lock_future, &CanvasView::toggle_future_keyframe_button },
 	};
 
 	for (const auto& item : bool_action_list) {
@@ -1501,6 +1503,8 @@ CanvasView::init_menus()
 	background_rendering_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-background-rendering"));
 	onion_skin_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-onion-skin"));
 	onion_skin_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-onion-skin-keyframes"));
+	past_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-keyframe-lock-past"));
+	future_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-keyframe-lock-future"));
 
 	{
 		Glib::RefPtr<Gtk::ToggleAction> action;
@@ -2149,26 +2153,38 @@ CanvasView::toggle_timetrackbutton()
 void
 CanvasView::toggle_past_keyframe_button()
 {
-	if(toggling_animate_mode_)
-		return;
-	CanvasInterface::Mode mode(get_mode());
-	if((mode&MODE_ANIMATE_PAST) )
-		set_mode(get_mode()-MODE_ANIMATE_PAST);
-	else
-		set_mode((get_mode()|MODE_ANIMATE_PAST));
+    if(toggling_animate_mode_)
+        return;
+    CanvasInterface::Mode mode(get_mode());
+    if((mode&MODE_ANIMATE_PAST) )
+    {
+        set_mode(get_mode()-MODE_ANIMATE_PAST);
+        canvas_interface()->set_meta_data("lock_keyframes_past", "0");
+    }
+    else
+    {
+        set_mode((get_mode()|MODE_ANIMATE_PAST));
+        canvas_interface()->set_meta_data("lock_keyframes_past", "1");
+    }
 }
 
 
 void
 CanvasView::toggle_future_keyframe_button()
 {
-	if(toggling_animate_mode_)
-		return;
- 	CanvasInterface::Mode mode(get_mode());
-	if((mode&MODE_ANIMATE_FUTURE) )
-		set_mode(get_mode()-MODE_ANIMATE_FUTURE);
-	else
-		set_mode(get_mode()|MODE_ANIMATE_FUTURE);
+    if(toggling_animate_mode_)
+        return;
+    CanvasInterface::Mode mode(get_mode());
+    if((mode&MODE_ANIMATE_FUTURE) )
+    {
+        set_mode(get_mode()-MODE_ANIMATE_FUTURE);
+        canvas_interface()->set_meta_data("lock_keyframes_future", "0");
+    }
+    else
+    {
+        set_mode(get_mode()|MODE_ANIMATE_FUTURE);
+        canvas_interface()->set_meta_data("lock_keyframes_future", "1");
+    }
 }
 
 bool

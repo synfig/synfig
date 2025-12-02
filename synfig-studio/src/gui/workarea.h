@@ -329,6 +329,9 @@ public:
 	void set_onion_skin_keyframes(bool x);
 	bool get_onion_skin_keyframes() const { return onion_skin_keyframes; }
 
+	bool get_keyframe_lock_past() const;
+	bool get_keyframe_lock_future() const;
+
 	void set_background_rendering(bool x);
 	bool get_background_rendering() const { return background_rendering; }
 
