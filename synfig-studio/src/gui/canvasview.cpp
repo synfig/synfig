@@ -2153,38 +2153,26 @@ CanvasView::toggle_timetrackbutton()
 void
 CanvasView::toggle_past_keyframe_button()
 {
-    if(toggling_animate_mode_)
-        return;
-    CanvasInterface::Mode mode(get_mode());
-    if((mode&MODE_ANIMATE_PAST) )
-    {
-        set_mode(get_mode()-MODE_ANIMATE_PAST);
-        canvas_interface()->set_meta_data("lock_keyframes_past", "0");
-    }
-    else
-    {
-        set_mode((get_mode()|MODE_ANIMATE_PAST));
-        canvas_interface()->set_meta_data("lock_keyframes_past", "1");
-    }
+	if(toggling_animate_mode_)
+		return;
+	CanvasInterface::Mode mode(get_mode());
+	if((mode&MODE_ANIMATE_PAST) )
+		work_area->set_keyframe_lock_past(false);
+	else
+		work_area->set_keyframe_lock_past(true);
 }
 
 
 void
 CanvasView::toggle_future_keyframe_button()
 {
-    if(toggling_animate_mode_)
-        return;
-    CanvasInterface::Mode mode(get_mode());
-    if((mode&MODE_ANIMATE_FUTURE) )
-    {
-        set_mode(get_mode()-MODE_ANIMATE_FUTURE);
-        canvas_interface()->set_meta_data("lock_keyframes_future", "0");
-    }
-    else
-    {
-        set_mode(get_mode()|MODE_ANIMATE_FUTURE);
-        canvas_interface()->set_meta_data("lock_keyframes_future", "1");
-    }
+	if(toggling_animate_mode_)
+		return;
+ 	CanvasInterface::Mode mode(get_mode());
+	if((mode&MODE_ANIMATE_FUTURE) )
+		work_area->set_keyframe_lock_future(false);
+	else
+		work_area->set_keyframe_lock_future(true);
 }
 
 bool
