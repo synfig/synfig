@@ -73,7 +73,7 @@ private:
 
 	void compile();
 	void sync();
-	Color color_func(const Point &x, int quality=10, Real supersample=0)const;
+	Color color_func(const Point& x, Real supersample = 0) const;
 
 public:
 	CurveGradient();

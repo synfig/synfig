@@ -458,7 +458,7 @@ CurveGradient::CurveGradient():
 }
 
 inline Color
-CurveGradient::color_func(const Point &point_, int quality, Real supersample)const
+CurveGradient::color_func(const Point& point_, Real supersample) const
 {
 	Point origin=param_origin.get(Point());
 	Real width=param_width.get(Real());
@@ -513,24 +513,7 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 			next->get_tangent1()
 			);
 
-		int search_iterations(7);
-
-		/*if(quality==0)search_iterations=8;
-		  else if(quality<=2)search_iterations=10;
-		  else if(quality<=4)search_iterations=8;
-		*/
-		if(perpendicular)
-		{
-			if(quality>7)
-				search_iterations=4;
-		}
-		else					// not perpendicular
-		{
-			if(quality<=6)search_iterations=7;
-			else if(quality<=7)search_iterations=6;
-			else if(quality<=8)search_iterations=5;
-			else search_iterations=4;
-		}
+		constexpr int search_iterations(7);
 
 		// Figure out the closest point on the curve
 		if (fast)
@@ -619,20 +602,7 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 
 	if (perpendicular && bline.size() > 1)
 	{
-		if(quality>7)
-		{
-			dist=perp_dist;
-/*			diff=tangent.perp();
-			const Real mag(diff.inv_mag());
-			supersample=supersample*mag;
-*/
-			supersample=0;
-		}
-		else
-		{
-			diff=tangent.perp();
-			//p1-=diff*0.5;
-		}
+		diff=tangent.perp();
 	}
 	else						// not perpendicular
 	{
@@ -768,7 +738,7 @@ CurveGradient::get_param_vocab()const
 Color
 CurveGradient::get_color(Context context, const Point &point)const
 {
-	const Color color(color_func(point,0));
+	const Color color(color_func(point));
 
 	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
 		return color;
