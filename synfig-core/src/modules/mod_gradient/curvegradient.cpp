@@ -230,7 +230,6 @@ public:
 	Color get_color(const Vector& p) const override
 	{
 		Vector tangent;
-		Vector diff;
 		Point p1;
 		Real thickness;
 		Real dist;
@@ -361,16 +360,12 @@ public:
 				thickness=(next->get_width()-iter->get_width())*t+iter->get_width();
 		}
 
-		Real supersample = get_units_per_pixel()[0];
+		Vector diff;
 
 		if (perpendicular && bline.size() > 1)
 		{
 			diff=tangent.perp();
 			//p1-=diff*0.5;
-			const Real mag(diff.inv_mag());
-			supersample = supersample*mag;
-			diff*=mag*mag;
-			dist=(p-origin - p1)*diff;
 		}
 		else						// not perpendicular
 		{
@@ -384,12 +379,13 @@ public:
 				diff=tangent.perp()*thickness*width;
 
 			p1-=diff*0.5;
-			const Real mag(diff.inv_mag());
-			supersample = supersample*mag;
-			diff*=mag*mag;
-			dist=(p-origin - p1)*diff;
 		}
 
+		const Real mag(diff.inv_mag());
+		diff*=mag*mag;
+		dist=(p-origin - p1)*diff;
+		Real supersample = get_units_per_pixel()[0];
+		supersample = synfig::clamp(supersample*mag, 0., 2.);
 		supersample *= 0.5;
 		return compiled_gradient.average(dist - supersample, dist + supersample);
 	}
@@ -468,7 +464,6 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 	bool fast=param_fast.get(bool());
 
 	Vector tangent;
-	Vector diff;
 	Point p1;
 	Real thickness;
 	Real dist;
@@ -616,6 +611,8 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 			thickness=(next->get_width()-iter->get_width())*t+iter->get_width();
 	}
 
+	Vector diff;
+
 	if (perpendicular && bline.size() > 1)
 	{
 		if(quality>7)
@@ -631,10 +628,6 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 		{
 			diff=tangent.perp();
 			//p1-=diff*0.5;
-			const Real mag(diff.inv_mag());
-			supersample=supersample*mag;
-			diff*=mag*mag;
-			dist=(point_-origin - p1)*diff;
 		}
 	}
 	else						// not perpendicular
@@ -649,12 +642,13 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 			diff=tangent.perp()*thickness*width;
 
 		p1-=diff*0.5;
-		const Real mag(diff.inv_mag());
-		supersample=supersample*mag;
-		diff*=mag*mag;
-		dist=(point_-origin - p1)*diff;
 	}
 
+	const Real mag(diff.inv_mag());
+	diff *= mag * mag;
+	dist = (point_ - origin - p1) * diff;
+
+	supersample = supersample * mag;
 	supersample *= 0.5;
 	return compiled_gradient.average(dist - supersample, dist + supersample);
 }
