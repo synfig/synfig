@@ -25,22 +25,21 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_GTKMM_PLUGINMANAGER_H
-#define __SYNFIG_GTKMM_PLUGINMANAGER_H
+#ifndef SYNFIG_STUDIO_PLUGINMANAGER_H
+#define SYNFIG_STUDIO_PLUGINMANAGER_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/string.h>
 #include <unordered_map>
 #include <vector>
+
+#include <sigc++/signal.h>
+
+#include <synfig/filesystem_path.h>
 
 namespace xmlpp {
 	class Node;
 } // namespace xmlpp
-
-namespace JSON {
-std::string escape_string(const std::string& str);
-}
 
 namespace studio {
 
@@ -74,8 +73,8 @@ struct PluginScript
 	PluginStream stdout_behaviour = PluginStream::Ignore;
 	PluginStream stderr_behaviour = PluginStream::Message;
 	std::string interpreter;
-	std::string script;
-	std::string working_directory;
+	synfig::filesystem::Path script;
+	synfig::filesystem::Path working_directory;
 
 	// Behavior
 	bool modify_document = true;
@@ -93,7 +92,7 @@ struct PluginScript
 		ArgNecessity selected_layers = ArgNecessity::ARGUMENT_UNUSED;
 	} extra_args;
 
-	static PluginScript load(const xmlpp::Node& node, const std::string& working_directory);
+	static PluginScript load(const xmlpp::Node& node, const synfig::filesystem::Path& working_directory);
 	static PluginStream stream_from_name(const std::string& name, PluginStream default_value);
 
 	bool is_valid() const;
@@ -117,6 +116,7 @@ class Plugin
 {
 public:
 	std::string id;
+	synfig::filesystem::Path dir;
 	PluginString name;
 
 	std::string author;
@@ -127,6 +127,13 @@ public:
 	PluginString description;
 
 	bool is_valid() const;
+
+	synfig::filesystem::Path user_config_filepath() const;
+	synfig::filesystem::Path config_ui_filepath() const;
+
+private:
+	static const synfig::filesystem::Path user_config_filename;
+	static const synfig::filesystem::Path config_ui_filename;
 };
 
 class PluginManager
@@ -140,16 +147,18 @@ private:
 	std::string interpreter_executable(const std::string& interpreter) const;
 	void handle_stream(PluginStream behaviour, const std::string& output) const;
 	void load_import_export(
-		const std::string& id, const std::string& plugindir, const xmlpp::Node* node,
+		const std::string& id, const synfig::filesystem::Path& plugindir, const xmlpp::Node* node,
 		const std::string& name, std::vector<ImportExport>& output
 	);
 
 	static bool check_and_run_dialog(const PluginScript& script, std::string& dialog_args);
 
-public:
-	void load_dir( const std::string &pluginsprefix );
-	void load_plugin( const std::string &file, const std::string &plugindir );
+	sigc::signal<void> signal_list_changed_;
 
+public:
+	void load_dir(const std::string& pluginsprefix);
+	void load_plugin(const synfig::filesystem::Path& file, const synfig::filesystem::Path& plugindir, bool notify = false);
+	void remove_plugin(const std::string& id);
 	bool run(const PluginScript& script, std::vector<std::string> args, const std::unordered_map<std::string,std::string>& view_state) const;
 	bool run(const std::string& script_id, const std::vector<std::string>& args, const std::unordered_map<std::string,std::string>& view_state = {}) const;
 
@@ -161,6 +170,8 @@ public:
 	const std::vector<ImportExport>& exporters() { return exporters_; };
 
 	const std::vector<ImportExport>& importers() { return importers_; };
+
+	sigc::signal<void>& signal_list_changed();
 
 }; // END class PluginManager
 
