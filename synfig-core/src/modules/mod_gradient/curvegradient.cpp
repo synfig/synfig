@@ -291,7 +291,7 @@ public:
 			// this point
 			if (t<0.00001 || t>0.99999)
 			{
-				bool zero_tangent = (tangent[0] == 0 && tangent[1] == 0);
+				const bool zero_tangent = approximate_zero(tangent[0]) && approximate_zero(tangent[1]);
 
 				if (t<0.5)
 				{
@@ -302,7 +302,7 @@ public:
 
 						// calculate the other tangent
 						Vector other_tangent(iter->get_tangent1());
-						if (other_tangent[0] == 0 && other_tangent[1] == 0)
+						if (approximate_zero(other_tangent[0]) && approximate_zero(other_tangent[1]))
 						{
 							// find the previous blinepoint
 							std::vector<synfig::BLinePoint>::const_iterator prev;
@@ -328,7 +328,7 @@ public:
 
 						// calculate the other tangent
 						Vector other_tangent(next->get_tangent2());
-						if (other_tangent[0] == 0 && other_tangent[1] == 0)
+						if (approximate_zero(other_tangent[0]) && approximate_zero(other_tangent[1]))
 						{
 							// find the next blinepoint
 							std::vector<synfig::BLinePoint>::const_iterator next2(next);
@@ -548,7 +548,7 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 		// this point
 		if (t<0.00001 || t>0.99999)
 		{
-			bool zero_tangent = (tangent[0] == 0 && tangent[1] == 0);
+			const bool zero_tangent = approximate_zero(tangent[0]) && approximate_zero(tangent[1] == 0);
 
 			if (t<0.5)
 			{
@@ -559,8 +559,7 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 
 					// calculate the other tangent
 					Vector other_tangent(iter->get_tangent1());
-					if (other_tangent[0] == 0 && other_tangent[1] == 0)
-					{
+					if (approximate_zero(other_tangent[0]) && approximate_zero(other_tangent[1] == 0)) {
 						// find the previous blinepoint
 						std::vector<synfig::BLinePoint>::const_iterator prev;
 						if (iter != bline.begin()) (prev = iter)--;
@@ -585,8 +584,7 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 
 					// calculate the other tangent
 					Vector other_tangent(next->get_tangent2());
-					if (other_tangent[0] == 0 && other_tangent[1] == 0)
-					{
+					if (approximate_zero(other_tangent[0]) && approximate_zero(other_tangent[1] == 0)) {
 						// find the next blinepoint
 						std::vector<synfig::BLinePoint>::const_iterator next2(next);
 						if (++next2 == bline.end())
