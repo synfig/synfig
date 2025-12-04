@@ -381,6 +381,10 @@ public:
 			p1-=diff*0.5;
 		}
 
+		if (approximate_zero(diff[0]) && approximate_zero(diff[1])) {
+			return compiled_gradient.color(compiled_gradient.get_from_zigzag()? 0.5 : 1.0);
+		}
+
 		const Real mag(diff.inv_mag());
 		diff*=mag*mag;
 		dist=(p-origin - p1)*diff;
@@ -642,6 +646,10 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 			diff=tangent.perp()*thickness*width;
 
 		p1-=diff*0.5;
+	}
+
+	if (approximate_zero(diff[0]) && approximate_zero(diff[1])) {
+		return compiled_gradient.color(compiled_gradient.get_from_zigzag()? 0.5 : 1.0);
 	}
 
 	const Real mag(diff.inv_mag());
