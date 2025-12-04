@@ -158,7 +158,36 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 	
 	Real brightness((_brightness-0.5)*contrast+0.5);
 
-	Color ret = gamma.apply(in);
+	// Apply saturation adjustment BEFORE gamma correction
+	// Saturation should be computed in linear color space for correct results
+	Color ret = in;
+	Real saturation = param_saturation.get(Real());
+	if (!approximate_equal_lp(saturation, Real(1.0)))
+	{
+		// Find the max (Value) and min of RGB components
+		ColorReal max_val = std::max({ret.get_r(), ret.get_g(), ret.get_b()});
+		ColorReal min_val = std::min({ret.get_r(), ret.get_g(), ret.get_b()});
+
+		// Only adjust if there's actual saturation (max != min) and max > 0
+		if (max_val > 0 && max_val != min_val)
+		{
+			// Move each component toward max_val based on saturation factor
+			// At saturation=0, all components become max_val (grayscale at Value)
+			// At saturation=1, no change
+			// At saturation>1, components move away from max_val (more saturated)
+			ret.set_r(max_val - (max_val - ret.get_r()) * saturation);
+			ret.set_g(max_val - (max_val - ret.get_g()) * saturation);
+			ret.set_b(max_val - (max_val - ret.get_b()) * saturation);
+		}
+		else if (max_val == min_val && saturation > 1.0)
+		{
+			// For grayscale colors, increasing saturation has no effect
+			// (no hue information to amplify)
+		}
+	}
+
+	// Apply gamma after saturation
+	ret = gamma.apply(ret);
 
 	assert(!std::isnan(ret.get_r()));
 	assert(!std::isnan(ret.get_g()));
@@ -206,33 +235,6 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 			ret.set_b(ret.get_b()-brightness);
 		else
 			ret.set_b(0);
-	}
-
-	// Apply saturation adjustment using HSV color model
-	// This preserves the Value (max RGB component) while adjusting saturation
-	Real saturation = param_saturation.get(Real());
-	if (!approximate_equal_lp(saturation, Real(1.0)))
-	{
-		// Find the max (Value) and min of RGB components
-		ColorReal max_val = std::max({ret.get_r(), ret.get_g(), ret.get_b()});
-		ColorReal min_val = std::min({ret.get_r(), ret.get_g(), ret.get_b()});
-
-		// Only adjust if there's actual saturation (max != min) and max > 0
-		if (max_val > 0 && max_val != min_val)
-		{
-			// Move each component toward max_val based on saturation factor
-			// At saturation=0, all components become max_val (grayscale at Value)
-			// At saturation=1, no change
-			// At saturation>1, components move away from max_val (more saturated)
-			ret.set_r(max_val - (max_val - ret.get_r()) * saturation);
-			ret.set_g(max_val - (max_val - ret.get_g()) * saturation);
-			ret.set_b(max_val - (max_val - ret.get_b()) * saturation);
-		}
-		else if (max_val == min_val && saturation > 1.0)
-		{
-			// For grayscale colors, increasing saturation has no effect
-			// (no hue information to amplify)
-		}
 	}
 
 	// Return the color, adjusting the hue if necessary
@@ -330,16 +332,8 @@ Layer_ColorCorrect::build_rendering_task_vfunc(Context context)const
 {
 	rendering::Task::Handle task = context.build_rendering_task();
 
-	ColorReal gamma = param_gamma.get(Real());
-	if (!approximate_equal_lp(gamma, ColorReal(1.0)))
-	{
-		rendering::TaskPixelGamma::Handle task_gamma(new rendering::TaskPixelGamma());
-		task_gamma->gamma = Gamma(gamma).get_inverted();
-		task_gamma->sub_task() = task;
-		task = task_gamma;
-	}
-
-	// Apply HSV saturation adjustment (non-linear, cannot use ColorMatrix)
+	// Apply HSV saturation adjustment first (before gamma)
+	// Saturation should be applied in linear color space for correct results
 	Real saturation = param_saturation.get(Real());
 	if (!approximate_equal_lp(saturation, Real(1.0)))
 	{
@@ -347,6 +341,15 @@ Layer_ColorCorrect::build_rendering_task_vfunc(Context context)const
 		task_saturation->saturation = saturation;
 		task_saturation->sub_task() = task;
 		task = task_saturation;
+	}
+
+	ColorReal gamma = param_gamma.get(Real());
+	if (!approximate_equal_lp(gamma, ColorReal(1.0)))
+	{
+		rendering::TaskPixelGamma::Handle task_gamma(new rendering::TaskPixelGamma());
+		task_gamma->gamma = Gamma(gamma).get_inverted();
+		task_gamma->sub_task() = task;
+		task = task_gamma;
 	}
 
 	// Apply remaining linear color transformations via ColorMatrix
