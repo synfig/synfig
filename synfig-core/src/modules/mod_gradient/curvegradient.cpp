@@ -92,7 +92,7 @@ inline Real calculate_distance(const std::vector<synfig::BLinePoint>& bline, boo
 	for(;next!=end;iter=next++)
 	{
 		// Setup the curve
-		hermite<Vector> curve(
+		synfig::hermite<Vector> curve(
 			iter->get_vertex(),
 			next->get_vertex(),
 			iter->get_tangent2(),
@@ -120,7 +120,7 @@ find_closest(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point
 	//Real best_bline_len(0);
 	Real total_bline_dist(0);
 	Real best_pos(0);
-	hermite<Vector> best_curve;
+	synfig::hermite<Vector> best_curve;
 
 	if(loop)
 		iter=--bline.end();
@@ -132,7 +132,7 @@ find_closest(bool fast, const std::vector<synfig::BLinePoint>& bline,const Point
 	for(;next!=end;iter=next++)
 	{
 		// Setup the curve
-		hermite<Vector> curve(
+		synfig::hermite<Vector> curve(
 			iter->get_vertex(),
 			next->get_vertex(),
 			iter->get_tangent2(),
@@ -269,7 +269,7 @@ public:
 			if(next==bline.end()) next=bline.begin();
 
 			// Setup the curve
-			hermite<Vector> curve(
+			synfig::hermite<Vector> curve(
 				iter->get_vertex(),
 				next->get_vertex(),
 				iter->get_tangent2(),
@@ -310,7 +310,7 @@ public:
 							else if (loop) (prev = bline.end())--;
 							else prev = iter;
 
-							hermite<Vector> other_curve(prev->get_vertex(), iter->get_vertex(), prev->get_tangent2(), iter->get_tangent1());
+							synfig::hermite<Vector> other_curve(prev->get_vertex(), iter->get_vertex(), prev->get_tangent2(), iter->get_tangent1());
 							other_tangent = other_curve(1) - other_curve(1-FAKE_TANGENT_STEP);
 						}
 
@@ -338,7 +338,7 @@ public:
 								else next2 = next;
 							}
 
-							hermite<Vector> other_curve(next->get_vertex(), next2->get_vertex(), next->get_tangent2(), next2->get_tangent1());
+							synfig::hermite<Vector> other_curve(next->get_vertex(), next2->get_vertex(), next->get_tangent2(), next2->get_tangent1());
 							other_tangent = other_curve(FAKE_TANGENT_STEP) - other_curve(0);
 						}
 
@@ -507,7 +507,7 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 		if(next==bline.end()) next=bline.begin();
 
 		// Setup the curve
-		hermite<Vector> curve(
+		synfig::hermite<Vector> curve(
 			iter->get_vertex(),
 			next->get_vertex(),
 			iter->get_tangent2(),
@@ -567,7 +567,7 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 						else if (loop) (prev = bline.end())--;
 						else prev = iter;
 
-						hermite<Vector> other_curve(prev->get_vertex(), iter->get_vertex(), prev->get_tangent2(), iter->get_tangent1());
+						synfig::hermite<Vector> other_curve(prev->get_vertex(), iter->get_vertex(), prev->get_tangent2(), iter->get_tangent1());
 						other_tangent = other_curve(1) - other_curve(1-FAKE_TANGENT_STEP);
 					}
 
@@ -595,7 +595,7 @@ CurveGradient::color_func(const Point &point_, int quality, Real supersample)con
 							else next2 = next;
 						}
 
-						hermite<Vector> other_curve(next->get_vertex(), next2->get_vertex(), next->get_tangent2(), next2->get_tangent1());
+						synfig::hermite<Vector> other_curve(next->get_vertex(), next2->get_vertex(), next->get_tangent2(), next2->get_tangent1());
 						other_tangent = other_curve(FAKE_TANGENT_STEP) - other_curve(0);
 					}
 
