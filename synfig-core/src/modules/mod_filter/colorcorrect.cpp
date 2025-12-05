@@ -41,9 +41,12 @@
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
+#include <synfig/surface.h>
 #include <synfig/value.h>
 
 #include <synfig/rendering/common/task/taskpixelprocessor.h>
+
+#include <algorithm>
 
 #endif
 
@@ -61,7 +64,75 @@ SYNFIG_LAYER_SET_LOCAL_NAME(Layer_ColorCorrect,N_("Color Correct"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_ColorCorrect,N_("Filters"));
 SYNFIG_LAYER_SET_VERSION(Layer_ColorCorrect,"0.1");
 
+// Task tokens for HSV saturation
+rendering::Task::Token TaskSaturation::token(
+	DescAbstract<TaskSaturation>("Saturation") );
+rendering::Task::Token TaskSaturationSW::token(
+	DescReal<TaskSaturationSW, TaskSaturation>("SaturationSW") );
+
 /* === P R O C E D U R E S ================================================= */
+
+void
+TaskSaturationSW::apply_saturation(Color &dst, const Color &src) const
+{
+	dst = src;
+
+	if (approximate_equal_lp(saturation, Real(1.0)))
+		return;
+
+	// Find the max (Value) and min of RGB components
+	ColorReal max_val = std::max({dst.get_r(), dst.get_g(), dst.get_b()});
+	ColorReal min_val = std::min({dst.get_r(), dst.get_g(), dst.get_b()});
+
+	// Only adjust if there's actual saturation (max != min) and max > 0
+	if (max_val > 0 && max_val != min_val)
+	{
+		// Move each component toward max_val based on saturation factor
+		// At saturation=0, all components become max_val (grayscale at Value)
+		// At saturation=1, no change
+		// At saturation>1, components move away from max_val (more saturated)
+		// Clamp results to [0,1] range for saturation > 1.0
+		ColorReal sat = static_cast<ColorReal>(saturation);
+		dst.set_r(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - dst.get_r()) * sat)));
+		dst.set_g(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - dst.get_g()) * sat)));
+		dst.set_b(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - dst.get_b()) * sat)));
+	}
+}
+
+bool
+TaskSaturationSW::run(RunParams&) const
+{
+	RectInt r = target_rect;
+	if (r.valid())
+	{
+		VectorInt offset = get_offset();
+		RectInt ra = sub_task()->target_rect + r.get_min() + get_offset();
+		if (ra.valid())
+		{
+			rect_set_intersect(ra, ra, r);
+			if (ra.valid())
+			{
+				LockWrite ldst(this);
+				if (!ldst) return false;
+				LockRead lsrc(sub_task());
+				if (!lsrc) return false;
+
+				const synfig::Surface &a = lsrc->get_surface();
+				synfig::Surface &c = ldst->get_surface();
+
+				for(int y = ra.miny; y < ra.maxy; ++y)
+				{
+					const Color *ca = &a[y - r.miny - offset[1]][ra.minx - r.minx - offset[0]];
+					Color *cc = &c[y][ra.minx];
+					for(int x = ra.minx; x < ra.maxx; ++x, ++ca, ++cc)
+						apply_saturation(*cc, *ca);
+				}
+			}
+		}
+	}
+
+	return true;
+}
 
 /* === M E T H O D S ======================================================= */
 
@@ -72,6 +143,7 @@ Layer_ColorCorrect::Layer_ColorCorrect():
 	param_brightness(ValueBase(Real(0))),
 	param_contrast(ValueBase(Real(1.0))),
 	param_exposure(ValueBase(Real(0.0))),
+	param_saturation(ValueBase(Real(1.0))),
 	param_gamma(ValueBase(Real(1.0)))
 {
 	SET_INTERPOLATION_DEFAULTS();
@@ -88,7 +160,33 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 	
 	Real brightness((_brightness-0.5)*contrast+0.5);
 
-	Color ret = gamma.apply(in);
+	// Apply RGB-based saturation adjustment BEFORE gamma correction
+	// Saturation should be computed in linear color space for correct results
+	Color ret = in;
+	Real saturation = param_saturation.get(Real());
+	if (!approximate_equal_lp(saturation, Real(1.0)))
+	{
+		// Find the max (Value) and min of RGB components
+		ColorReal max_val = std::max({ret.get_r(), ret.get_g(), ret.get_b()});
+		ColorReal min_val = std::min({ret.get_r(), ret.get_g(), ret.get_b()});
+
+		// Only adjust if there's actual saturation (max != min) and max > 0
+		if (max_val > 0 && max_val != min_val)
+		{
+			// Move each component toward max_val based on saturation factor
+			// At saturation=0, all components become max_val (grayscale at Value)
+			// At saturation=1, no change
+			// At saturation>1, components move away from max_val (more saturated)
+			// Clamp results to [0,1] range for saturation > 1.0
+			ColorReal sat = static_cast<ColorReal>(saturation);
+			ret.set_r(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - ret.get_r()) * sat)));
+			ret.set_g(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - ret.get_g()) * sat)));
+			ret.set_b(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - ret.get_b()) * sat)));
+		}
+	}
+
+	// Apply gamma after saturation
+	ret = gamma.apply(ret);
 
 	assert(!std::isnan(ret.get_r()));
 	assert(!std::isnan(ret.get_g()));
@@ -152,6 +250,7 @@ Layer_ColorCorrect::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_brightness);
 	IMPORT_VALUE(param_contrast);
 	IMPORT_VALUE(param_exposure);
+	IMPORT_VALUE(param_saturation);
 
 	IMPORT_VALUE_PLUS(param_gamma,
 		{
@@ -168,6 +267,7 @@ Layer_ColorCorrect::get_param(const String &param)const
 	EXPORT_VALUE(param_brightness);
 	EXPORT_VALUE(param_contrast);
 	EXPORT_VALUE(param_exposure);
+	EXPORT_VALUE(param_saturation);
 
 	if(param=="gamma")
 	{
@@ -203,6 +303,10 @@ Layer_ColorCorrect::get_param_vocab()const
 		.set_local_name(_("Exposure Adjust"))
 	);
 
+	ret.push_back(ParamDesc("saturation")
+		.set_local_name(_("Saturation"))
+	);
+
 	ret.push_back(ParamDesc("gamma")
 		.set_local_name(_("Gamma Adjustment"))
 	);
@@ -227,6 +331,17 @@ Layer_ColorCorrect::build_rendering_task_vfunc(Context context)const
 {
 	rendering::Task::Handle task = context.build_rendering_task();
 
+	// Apply RGB-based saturation adjustment first (before gamma)
+	// Saturation should be applied in linear color space for correct results
+	Real saturation = param_saturation.get(Real());
+	if (!approximate_equal_lp(saturation, Real(1.0)))
+	{
+		TaskSaturation::Handle task_saturation(new TaskSaturation());
+		task_saturation->saturation = saturation;
+		task_saturation->sub_task() = task;
+		task = task_saturation;
+	}
+
 	ColorReal gamma = param_gamma.get(Real());
 	if (!approximate_equal_lp(gamma, ColorReal(1.0)))
 	{
@@ -236,6 +351,7 @@ Layer_ColorCorrect::build_rendering_task_vfunc(Context context)const
 		task = task_gamma;
 	}
 
+	// Apply remaining linear color transformations via ColorMatrix
 	ColorMatrix matrix;
 	matrix *= ColorMatrix().set_hue( param_hue_adjust.get(Angle()) );
 	matrix *= ColorMatrix().set_exposure( param_exposure.get(Real()) );
