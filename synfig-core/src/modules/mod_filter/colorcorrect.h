@@ -49,7 +49,7 @@ namespace modules {
 namespace mod_filter {
 
 
-//! Task for HSV-based saturation adjustment
+//! Task for RGB-based saturation adjustment
 class TaskSaturation: public rendering::TaskPixelProcessor
 {
 public:

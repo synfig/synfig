@@ -91,9 +91,11 @@ TaskSaturationSW::apply_saturation(Color &dst, const Color &src) const
 		// At saturation=0, all components become max_val (grayscale at Value)
 		// At saturation=1, no change
 		// At saturation>1, components move away from max_val (more saturated)
-		dst.set_r(max_val - (max_val - dst.get_r()) * saturation);
-		dst.set_g(max_val - (max_val - dst.get_g()) * saturation);
-		dst.set_b(max_val - (max_val - dst.get_b()) * saturation);
+		// Clamp results to [0,1] range for saturation > 1.0
+		ColorReal sat = static_cast<ColorReal>(saturation);
+		dst.set_r(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - dst.get_r()) * sat)));
+		dst.set_g(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - dst.get_g()) * sat)));
+		dst.set_b(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - dst.get_b()) * sat)));
 	}
 }
 
@@ -158,7 +160,7 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 	
 	Real brightness((_brightness-0.5)*contrast+0.5);
 
-	// Apply saturation adjustment BEFORE gamma correction
+	// Apply RGB-based saturation adjustment BEFORE gamma correction
 	// Saturation should be computed in linear color space for correct results
 	Color ret = in;
 	Real saturation = param_saturation.get(Real());
@@ -175,14 +177,11 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 			// At saturation=0, all components become max_val (grayscale at Value)
 			// At saturation=1, no change
 			// At saturation>1, components move away from max_val (more saturated)
-			ret.set_r(max_val - (max_val - ret.get_r()) * saturation);
-			ret.set_g(max_val - (max_val - ret.get_g()) * saturation);
-			ret.set_b(max_val - (max_val - ret.get_b()) * saturation);
-		}
-		else if (max_val == min_val && saturation > 1.0)
-		{
-			// For grayscale colors, increasing saturation has no effect
-			// (no hue information to amplify)
+			// Clamp results to [0,1] range for saturation > 1.0
+			ColorReal sat = static_cast<ColorReal>(saturation);
+			ret.set_r(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - ret.get_r()) * sat)));
+			ret.set_g(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - ret.get_g()) * sat)));
+			ret.set_b(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - ret.get_b()) * sat)));
 		}
 	}
 
@@ -332,7 +331,7 @@ Layer_ColorCorrect::build_rendering_task_vfunc(Context context)const
 {
 	rendering::Task::Handle task = context.build_rendering_task();
 
-	// Apply HSV saturation adjustment first (before gamma)
+	// Apply RGB-based saturation adjustment first (before gamma)
 	// Saturation should be applied in linear color space for correct results
 	Real saturation = param_saturation.get(Real());
 	if (!approximate_equal_lp(saturation, Real(1.0)))
