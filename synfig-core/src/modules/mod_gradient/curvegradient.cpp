@@ -362,7 +362,7 @@ public:
 
 		Vector diff;
 
-		if (perpendicular && bline.size() > 1)
+		if (perpendicular)
 		{
 			diff=tangent.perp();
 			//p1-=diff*0.5;
@@ -600,7 +600,7 @@ CurveGradient::color_func(const Point& point_, Real supersample) const
 
 	Vector diff;
 
-	if (perpendicular && bline.size() > 1)
+	if (perpendicular)
 	{
 		diff=tangent.perp();
 	}
