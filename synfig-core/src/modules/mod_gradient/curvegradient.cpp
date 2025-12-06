@@ -749,10 +749,14 @@ CurveGradient::get_color(Context context, const Point &point)const
 rendering::Task::Handle
 CurveGradient::build_composite_task_vfunc(ContextParams /*context_params*/) const
 {
+	auto bline = param_bline.get_list_of(BLinePoint());
+	if (bline.empty())
+		return {};
+
 	TaskCurveGradient::Handle task(new TaskCurveGradient());
 	task->origin = param_origin.get(Point());
 	task->width = param_width.get(Real());
-	task->bline = param_bline.get_list_of(BLinePoint());
+	task->bline = std::move(bline);
 	task->loop = param_loop.get(bool());
 	task->perpendicular = param_perpendicular.get(bool());
 	task->fast = param_fast.get(bool());
