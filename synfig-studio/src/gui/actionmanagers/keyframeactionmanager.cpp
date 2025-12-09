@@ -36,11 +36,15 @@
 #include "keyframeactionmanager.h"
 
 #include <glibmm/main.h>
+#include <giomm/themedicon.h>
 
+
+#include <synfig/general.h>
+
+#include <gui/iconcontroller.h>
 #include <gui/instance.h>
 #include <gui/localization.h>
 #include <gui/trees/keyframetree.h>
-#include <synfig/general.h>
 
 #endif
 
@@ -49,22 +53,44 @@
 using namespace synfig;
 using namespace studio;
 
-static const guint no_prev_popup((guint)-1);
-
 /* === M A C R O S ========================================================= */
-
-//#define ONE_ACTION_GROUP 1
 
 /* === G L O B A L S ======================================================= */
 
+static const std::string group_name {"keyframe"};
+
 /* === P R O C E D U R E S ================================================= */
+
+static Glib::RefPtr<Gio::MenuItem>
+create_menu_item_for_synfigapp_action(const std::string& group_prefix, const std::string& action_name)
+{
+	auto action_it = synfigapp::Action::book().find(action_name);
+	if (action_it == synfigapp::Action::book().end()) {
+		synfig::error(_("Internal error: can't find synfigapp action to create its menu item: '%s'"), action_name.c_str());
+		return {}; // FIXME: SHOULD RETURN NULL OR an empty MenuItem?
+	}
+
+	const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
+	auto item = Gio::MenuItem::create(action_it->second.local_name, strprintf("%s.action-%s", group_prefix.c_str(), action_name.c_str()));
+	item->set_icon(Gio::ThemedIcon::create(get_action_icon_name(action_it->second) + symbolic_suffix));
+	return item;
+}
+
+static Glib::RefPtr<Gio::MenuItem>
+create_menu_item_for_action(const std::string& action_name, const std::string& icon_name, const std::string& label)
+{
+	const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
+	auto item = Gio::MenuItem::create(label, action_name);
+	if (!icon_name.empty())
+		item->set_icon(Gio::ThemedIcon::create(icon_name + symbolic_suffix));
+	return item;
+}
 
 /* === M E T H O D S ======================================================= */
 
 KeyframeActionManager::KeyframeActionManager():
 	keyframe_tree_(),
-	action_group_(Gtk::ActionGroup::create("action_group_keyframe_action_manager")),
-	popup_id_(no_prev_popup),
+	action_group_(Gio::SimpleActionGroup::create()),
 	queued(false)
 { }
 
@@ -72,17 +98,12 @@ KeyframeActionManager::~KeyframeActionManager()
 { }
 
 void
-KeyframeActionManager::set_ui_manager(const Glib::RefPtr<Gtk::UIManager> &x)
+KeyframeActionManager::set_action_widget_and_menu(Gtk::Widget* x, Glib::RefPtr<Gio::Menu>& menu_keyframe)
 {
-	clear();
+	// clear();
 
-#ifdef ONE_ACTION_GROUP
-	if (ui_manager_) get_ui_manager()->remove_action_group(action_group_);
-	ui_manager_ = x;
-	if (ui_manager_) get_ui_manager()->insert_action_group(action_group_);
-#else
-	ui_manager_ = x;
-#endif
+	action_widget_ = x;
+	menu_keyframe_ = menu_keyframe;
 }
 
 void
@@ -90,9 +111,11 @@ KeyframeActionManager::set_keyframe_tree(KeyframeTree* x)
 {
 	selection_changed_connection.disconnect();
 	keyframe_tree_ = x;
-	if (keyframe_tree_)
+
+	if (keyframe_tree_) {
 		selection_changed_connection = keyframe_tree_->get_selection()->signal_changed().connect(
-			sigc::mem_fun(*this,&KeyframeActionManager::queue_refresh) );
+			sigc::mem_fun(*this, &KeyframeActionManager::queue_refresh) );
+	}
 }
 
 void
@@ -102,28 +125,34 @@ KeyframeActionManager::set_canvas_interface(const etl::handle<synfigapp::CanvasI
 	canvas_interface_ = x;
 
 	// refresh keyframes list connected animation time position change
-	if (canvas_interface_)
-		time_changed_connection=canvas_interface_->signal_time_changed().connect(
-			sigc::mem_fun(*this,&KeyframeActionManager::queue_refresh) );
+	if (canvas_interface_) {
+		time_changed_connection = canvas_interface_->signal_time_changed().connect(
+			sigc::mem_fun(*this, &KeyframeActionManager::queue_refresh) );
+	}
+}
+
+Glib::RefPtr<Gio::SimpleActionGroup>
+KeyframeActionManager::get_action_group() const
+{
+	return action_group_;
 }
 
 void
 KeyframeActionManager::clear()
 {
-	if(ui_manager_)
-	{
-		// Clear out old stuff
-		if(popup_id_!=no_prev_popup)
-		{
-			get_ui_manager()->remove_ui(popup_id_);
-			popup_id_=no_prev_popup;
-#ifdef ONE_ACTION_GROUP
-			while(!action_group_->get_actions().empty())action_group_->remove(*action_group_->get_actions().begin());
-#else
-			get_ui_manager()->remove_action_group(action_group_);
-			action_group_=Gtk::ActionGroup::create("action_group_keyframe_action_manager");
-#endif
+	if (action_group_) {
+		auto actions = action_group_->list_actions();
+		for (const auto& action_name : actions) {
+			action_group_->remove_action(action_name);
 		}
+	}
+
+	if (action_widget_) {
+		action_widget_->remove_action_group(group_name);
+	}
+
+	if (menu_keyframe_) {
+		menu_keyframe_->remove_all();
 	}
 }
 
@@ -198,17 +227,13 @@ KeyframeActionManager::refresh()
 	queued = false;
 	queue_refresh_connection.disconnect();
 
-
 	clear();
 
 	// Make sure we are ready
-	if(!ui_manager_ || !keyframe_tree_ || !canvas_interface_)
-	{
+	if (!action_widget_ || !keyframe_tree_ || !canvas_interface_) {
 		synfig::error("KeyframeActionManager::refresh(): Not ready!");
 		return;
 	}
-
-	String ui_info;
 
 	{
 		synfigapp::Action::ParamList param_list;
@@ -225,34 +250,25 @@ KeyframeActionManager::refresh()
 			get_canvas_interface()->get_instance()
 		)->add_actions_to_group(
 			action_group_,
-			ui_info,
 			param_list,
 			synfigapp::Action::CATEGORY_KEYFRAME
 		);
 	}
 
-	Glib::RefPtr<Gtk::Action> action_kf_add = action_group_->get_action("action-KeyframeAdd");
-	if(action_kf_add)
-	{
-		action_group_->remove(action_kf_add);
+	if (action_group_->lookup_action("action-KeyframeAdd")) {
+		action_group_->remove("action-KeyframeAdd");
 	}
 
-	action_kf_add = Gtk::Action::create_with_icon_name("action-KeyframeAdd", "list-add",
-										_("Add New Keyframe"),_("Add New Keyframe"));
-	action_group_->add(action_kf_add, sigc::mem_fun(*this,&KeyframeActionManager::on_add_keyframe));
+	auto action_kf_add = action_group_->add_action("action-KeyframeAdd", sigc::mem_fun(*this, &KeyframeActionManager::on_add_keyframe));
 
 	//Keyframe properties definition
-	Glib::RefPtr<Gtk::Action> action_kf_properties(Gtk::Action::create_with_icon_name("keyframe-properties", "document-properties",
-														 _("Keyframe Properties"), _("Keyframe Properties")));
-	action_group_->add(action_kf_properties,sigc::mem_fun(*this,&KeyframeActionManager::on_keyframe_properties));
+	auto action_kf_properties = action_group_->add_action("properties", sigc::mem_fun(*this, &KeyframeActionManager::on_keyframe_properties));
 
 	// Keyframe activate status definition
-	Glib::RefPtr<Gtk::Action> action_kf_toggle(Gtk::Action::create("keyframe-toggle", _("Toggle Keyframe"), _("Toggle Keyframe")));
-	action_group_->add(action_kf_toggle,sigc::mem_fun(*this,&KeyframeActionManager::on_keyframe_toggle));
+	auto action_kf_toggle = action_group_->add_action("toggle",sigc::mem_fun(*this, &KeyframeActionManager::on_keyframe_toggle));
 
 	// Keyframe description definition
-	Glib::RefPtr<Gtk::Action> action_kf_description(Gtk::Action::create("keyframe-description-set", _("Set Keyframe Description"), _("Set Keyframe Description")));
-	action_group_->add(action_kf_description,sigc::mem_fun(*this,&KeyframeActionManager::on_keyframe_description_set));
+	auto action_kf_description = action_group_->add_action("description-set",sigc::mem_fun(*this, &KeyframeActionManager::on_keyframe_description_set));
 
 	//activate actions depending on context
 	{
@@ -261,58 +277,44 @@ KeyframeActionManager::refresh()
 		KeyframeList::iterator iter;
 		if (canvas_interface_->get_canvas()->keyframe_list().find(canvas_interface_->get_time(), iter)) {
 			kf_at_current_time = true;
-			if (action_group_->get_action("action-KeyframeDuplicate"))
-				action_group_->get_action("action-KeyframeDuplicate")->set_sensitive(false);
+			if (auto action = Glib::RefPtr<Gio::SimpleAction>::cast_dynamic(action_group_->lookup_action("action-KeyframeDuplicate")))
+				action->set_enabled(false);
 		}
 
-		/*try
-		{
-			canvas_interface_->get_canvas()->keyframe_list().find(canvas_interface_->get_time());
-			if(action_group_->get_action("action-KeyframeDuplicate"))
-				action_group_->get_action("action-KeyframeDuplicate")->set_sensitive(false);
-		}
-		catch(synfig::Exception::NotFound)
-		{
-			kf_at_current_time = false;
-		}*/
 		//get the beginning and ending time of the time slider
 		Time begin_time=canvas_interface_->get_canvas()->rend_desc().get_time_start();
 		Time end_time=canvas_interface_->get_canvas()->rend_desc().get_time_end();
 		//enable add key frame action if animation duration != 0
-		if(kf_at_current_time||(begin_time==end_time))
-		{
-			action_kf_add->set_sensitive(false);
-		}
-		else
-		{
-			action_kf_add->set_sensitive(true);
-		}
+		action_kf_add->set_enabled(!kf_at_current_time && (begin_time != end_time));
 
-		if(keyframe_tree_->get_selection()->count_selected_rows()==0)
-		{
-			action_kf_properties->set_sensitive(false);
-			action_kf_toggle->set_sensitive(false);
-			action_kf_description->set_sensitive(false);
+		if (keyframe_tree_->get_selection()->count_selected_rows() == 0) {
+			action_kf_properties->set_enabled(false);
+			action_kf_toggle->set_enabled(false);
+			action_kf_description->set_enabled(false);
 		}
 	}
 
 	// this popup menu is used from widget_keyframe_list
-	String full_ui_info;
-	full_ui_info=
-			"<ui>"
-				"<popup action='menu-keyframe'>"
-						"<menuitem action='action-KeyframeAdd' />"
-						"<menuitem action='action-KeyframeDuplicate' />"
-						"<menuitem action='action-KeyframeRemove' />"
-						"<menuitem action='keyframe-properties' />"
-						"<menuitem action='keyframe-toggle' />"
-						"<menuitem action='keyframe-description-set' />"
-				"</popup>"
-			"</ui>";
-	popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
 
-#ifdef ONE_ACTION_GROUP
-#else
-	get_ui_manager()->insert_action_group(action_group_);
-#endif
+	const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
+	auto item = create_menu_item_for_synfigapp_action("keyframe", "KeyframeAdd");
+	menu_keyframe_->append_item(item);
+	item = create_menu_item_for_synfigapp_action("keyframe", "KeyframeDuplicate");
+	menu_keyframe_->append_item(item);
+	item = create_menu_item_for_synfigapp_action("keyframe", "KeyframeRemove");
+	menu_keyframe_->append_item(item);
+	item = create_menu_item_for_action("keyframe.properties", "document-properties", _("Keyframe Properties"));
+	menu_keyframe_->append_item(item);
+	item = create_menu_item_for_action("keyframe.toggle", "", _("Toggle Keyframe"));
+	menu_keyframe_->append_item(item);
+	item = create_menu_item_for_action("keyframe.description-set", "", _("Set Keyframe Description"));
+	menu_keyframe_->append_item(item);
+
+	action_widget_->insert_action_group(group_name, action_group_);
+}
+
+Glib::RefPtr<Gio::Menu>
+KeyframeActionManager::get_menu_for_selected_keyframe() const
+{
+	return menu_keyframe_;
 }

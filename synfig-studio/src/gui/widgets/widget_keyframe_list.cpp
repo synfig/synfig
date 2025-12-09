@@ -39,6 +39,8 @@
 #include <gui/widgets/widget_keyframe_list.h>
 
 #include <gtkmm/menu.h>
+#include <gtkmm/object.h>
+
 #include <gui/app.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
@@ -402,8 +404,12 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 			break;
 		case 3:
 			if (kf) set_selected_keyframe(*kf);
-			if (Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-keyframe")))
-				menu->popup(event->button.button,gtk_get_current_event_time());
+			if (Gtk::Menu* menu = Gtk::manage(new Gtk::Menu(App::menu_keyframe))) {
+				menu->attach_to_widget(*this);
+				menu->popup(event->button.button, gtk_get_current_event_time());
+			} else {
+				synfig::error(_("Internal error: couldn't instantiate menu Add Layer to pop it up."));
+			}
 			break;
 		default:
 			return false;

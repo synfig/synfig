@@ -51,22 +51,23 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 static void
-init_label_button(Gtk::ToggleToolButton &button, const std::string& icon_name, const std::string& label, const std::string& tooltip)
+init_label_button(Gtk::ToggleToolButton &button, const std::string& icon_name, const std::string& label, const std::string& tooltip, const std::string& action)
 {
 	button.set_label(label);
 	button.set_tooltip_text(tooltip);
 	button.set_icon_name(icon_name);
+	gtk_actionable_set_action_name(GTK_ACTIONABLE(button.gobj()), action.c_str());
 	button.show();
 }
 
 ToggleDucksDial::ToggleDucksDial(const Gtk::IconSize &size)
 {
-	init_label_button(ducks_position, "duck_position_icon", _("Position handles"), _("Toggle position handles"));
-	init_label_button(ducks_vertex,   "duck_vertex_icon",   _("Vertex handles"),   _("Toggle vertex handles"));
-	init_label_button(ducks_tangent,  "duck_tangent_icon",  _("Tangent handles"),  _("Toggle tangent handles"));
-	init_label_button(ducks_radius,   "duck_radius_icon",   _("Radius handles"),   _("Toggle radius handles"));
-	init_label_button(ducks_width,    "duck_width_icon",    _("Width handles"),    _("Toggle width handles"));
-	init_label_button(ducks_angle,    "duck_angle_icon",    _("Angle handles"),    _("Toggle angle handles"));
+	init_label_button(ducks_position, "duck_position_icon", _("Position handles"), _("Toggle position handles"), "doc.mask-position-ducks");
+	init_label_button(ducks_vertex,   "duck_vertex_icon",   _("Vertex handles"),   _("Toggle vertex handles"), "doc.mask-vertex-ducks");
+	init_label_button(ducks_tangent,  "duck_tangent_icon",  _("Tangent handles"),  _("Toggle tangent handles"), "doc.mask-tangent-ducks");
+	init_label_button(ducks_radius,   "duck_radius_icon",   _("Radius handles"),   _("Toggle radius handles"), "doc.mask-radius-ducks");
+	init_label_button(ducks_width,    "duck_width_icon",    _("Width handles"),    _("Toggle width handles"), "doc.mask-width-ducks");
+	init_label_button(ducks_angle,    "duck_angle_icon",    _("Angle handles"),    _("Toggle angle handles"), "doc.mask-angle-ducks");
 }
 
 void

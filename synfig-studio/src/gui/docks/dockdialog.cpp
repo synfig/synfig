@@ -98,9 +98,7 @@ DockDialog::DockDialog():
 	// Register with the dock manager
 	App::dock_manager->dock_dialog_list_.push_back(this);
 
-	add_accel_group(App::ui_manager()->get_accel_group());
 	App::signal_present_all().connect(sigc::mem_fun0(*this,&DockDialog::present));
-
 }
 
 DockDialog::~DockDialog()

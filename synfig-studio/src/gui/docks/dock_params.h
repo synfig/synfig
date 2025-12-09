@@ -30,7 +30,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/actiongroup.h>
 #include <gui/docks/dock_canvasspecific.h>
 
 /* === M A C R O S ========================================================= */
@@ -43,7 +42,6 @@ namespace studio {
 
 class Dock_Params : public Dock_CanvasSpecific
 {
-	Glib::RefPtr<Gtk::ActionGroup> action_group;
 	Glib::RefPtr<Gtk::Adjustment> vadjustment;
 	sigc::connection refresh_selected_param_connection;
 	sigc::connection canvas_changed_connection;

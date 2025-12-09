@@ -65,12 +65,6 @@ public:
 	void insert_to_toolbar(Gtk::Toolbar &toolbar, int index = -1);
 	void remove_from_toolbar(Gtk::Toolbar &toolbar);
 
-	Glib::SignalProxy0<void> signal_ducks_position()  { return ducks_position.signal_toggled(); }
-	Glib::SignalProxy0<void> signal_ducks_vertex()    { return ducks_vertex.  signal_toggled(); }
-	Glib::SignalProxy0<void> signal_ducks_tangent()   { return ducks_tangent. signal_toggled(); }
-	Glib::SignalProxy0<void> signal_ducks_radius()    { return ducks_radius.  signal_toggled(); }
-	Glib::SignalProxy0<void> signal_ducks_width()     { return ducks_width.   signal_toggled(); }
-	Glib::SignalProxy0<void> signal_ducks_angle()     { return ducks_angle.   signal_toggled(); }
 
 }; // END of class ToggleDucksDial
 
