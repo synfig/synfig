@@ -331,8 +331,8 @@ public:
 
 	bool get_keyframe_lock_past() const;
 	bool get_keyframe_lock_future() const;
-	void set_keyframe_lock_past(bool x);
-	void set_keyframe_lock_future(bool x);
+	void set_keyframe_lock_past(bool enabled);
+	void set_keyframe_lock_future(bool enabled);
 
 	void set_background_rendering(bool x);
 	bool get_background_rendering() const { return background_rendering; }

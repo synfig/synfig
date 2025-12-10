@@ -2298,29 +2298,29 @@ WorkArea::get_keyframe_lock_future() const
 }
 
 void 
-WorkArea::set_keyframe_lock_past(bool x)
+WorkArea::set_keyframe_lock_past(bool enabled)
 {
-	if (!canvas_view)
-		return;
-	auto mode = canvas_view->get_mode();
-	if (x)
-        mode = static_cast<synfigapp::EditMode>(mode | synfigapp::MODE_ANIMATE_PAST);
+    if (!canvas_view)
+        return;
+    auto mode = canvas_view->get_mode();
+    if (enabled)
+        mode = synfigapp::set_flag(mode, synfigapp::MODE_ANIMATE_PAST);
     else
-        mode = static_cast<synfigapp::EditMode>(mode & ~synfigapp::MODE_ANIMATE_PAST);
+        mode = synfigapp::clear_flag(mode, synfigapp::MODE_ANIMATE_PAST);
 
-	canvas_view->set_mode(mode);
+    canvas_view->set_mode(mode);
 }
 
 void 
-WorkArea::set_keyframe_lock_future(bool x)
+WorkArea::set_keyframe_lock_future(bool enabled)
 {
-	if (!canvas_view)
-		return;
-	auto mode = canvas_view->get_mode();
-	if (x)
-        mode = static_cast<synfigapp::EditMode>(mode | synfigapp::MODE_ANIMATE_FUTURE);
+    if (!canvas_view)
+        return;
+    auto mode = canvas_view->get_mode();
+    if (enabled)
+        mode = synfigapp::set_flag(mode, synfigapp::MODE_ANIMATE_FUTURE);
     else
-        mode = static_cast<synfigapp::EditMode>(mode & ~synfigapp::MODE_ANIMATE_FUTURE);
+        mode = synfigapp::clear_flag(mode, synfigapp::MODE_ANIMATE_FUTURE);
 
 	canvas_view->set_mode(mode);
 	

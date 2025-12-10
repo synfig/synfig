@@ -2155,11 +2155,9 @@ CanvasView::toggle_past_keyframe_button()
 {
 	if(toggling_animate_mode_)
 		return;
-	CanvasInterface::Mode mode(get_mode());
-	if((mode&MODE_ANIMATE_PAST) )
-		work_area->set_keyframe_lock_past(false);
-	else
-		work_area->set_keyframe_lock_past(true);
+    CanvasInterface::Mode mode(get_mode());
+    bool enable = !synfigapp::has_flag(mode, MODE_ANIMATE_PAST);
+    work_area->set_keyframe_lock_past(enable);
 }
 
 
@@ -2168,11 +2166,9 @@ CanvasView::toggle_future_keyframe_button()
 {
 	if(toggling_animate_mode_)
 		return;
- 	CanvasInterface::Mode mode(get_mode());
-	if((mode&MODE_ANIMATE_FUTURE) )
-		work_area->set_keyframe_lock_future(false);
-	else
-		work_area->set_keyframe_lock_future(true);
+    CanvasInterface::Mode mode(get_mode());
+    bool enable = !synfigapp::has_flag(mode, MODE_ANIMATE_FUTURE);
+    work_area->set_keyframe_lock_future(enable);
 }
 
 bool
