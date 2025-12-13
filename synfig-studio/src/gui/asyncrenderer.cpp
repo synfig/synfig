@@ -493,22 +493,16 @@ AsyncRenderer::stop(AsyncRenderer::Interaction interaction)
 				else
 					error_message = _("Animation couldn't be rendered");
 
-				target=0;
-				render_thread=0;
-				lock.release();
-
 				if(status == RENDERING_ERROR)
 				{
 					if(ProgressLogger *logger = dynamic_cast<ProgressLogger*>(cb))
 						error_message += "\n" + logger->get_error_message();
 				}
 			}
-			else
-			{
-				target=0;
-				render_thread=0;
-				lock.release();
-			}
+
+			target = nullptr;
+			render_thread = nullptr;
+			lock.release();
 
 			signal_finished_(error_message);
 		}
