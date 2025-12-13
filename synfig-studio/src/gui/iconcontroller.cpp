@@ -168,6 +168,7 @@ static const std::map<std::string, std::pair<const char*, const char*>> known_ic
 
 	{"set_outline_color", {"set_outline_color_icon", N_("Set as Outline")}},
 	{"set_fill_color", {"set_fill_color_icon", N_("Set as Fill")}},
+	{"hex", {"hex_icon", N_("Copy Hex")}},
 
 	{"animate_seek_begin", {"animate_seek_begin_icon", N_("Seek to Begin")}},
 	{"animate_seek_prev_keyframe", {"animate_seek_prev_keyframe_icon", N_("Seek to Previous Keyframe")}},

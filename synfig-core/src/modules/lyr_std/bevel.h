@@ -61,10 +61,9 @@ private:
 	ValueBase param_use_luma;
 	//!Parameter: (bool) solid
 	ValueBase param_solid;
-	
+
 	Vector	offset;
 	Vector	offset45;
-
 
 	void calc_offset();
 public:
@@ -76,16 +75,36 @@ public:
 
 	Color get_color(Context context, const Point& pos) const override;
 
-	bool accelerated_render(Context context, Surface* surface, int quality, const RendDesc& renddesc, ProgressCallback* cb) const override;
-
 	Rect get_full_bounding_rect(Context context) const override;
 	Vocab get_param_vocab() const override;
 	bool reads_context() const override { return true; }
 
 protected:
-	RendDesc get_sub_renddesc_vfunc(const RendDesc& renddesc) const override;
-	rendering::Task::Handle build_rendering_task_vfunc(Context context) const override;
+	rendering::Task::Handle build_composite_fork_task_vfunc(ContextParams, rendering::Task::Handle sub_task) const override;
 }; // END of class Layer_Bevel
+
+// TaskBevel performs Blur internally, and the behavior of
+// applying skew transformation before or after the blur is not the same.
+// Therefore, we can't inherit synfig::rendering::TaskInterfaceTransformationPass here
+class TaskBevel: public rendering::Task//, rendering::TaskInterfaceTransformationPass
+{
+public:
+	typedef etl::handle<TaskBevel> Handle;
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Real softness;
+	int type;
+	Color color1;
+	Color color2;
+	bool use_luma;
+	bool solid;
+
+	Vector offset, offset45;
+
+	void set_coords_sub_tasks() override;
+	Rect calc_bounds() const override;
+};
 
 }; // END of namespace lyr_std
 }; // END of namespace modules

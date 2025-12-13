@@ -26,7 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **System information:**
  - OS: [Windows, Linux or Mac. If Linux, please tell us your distro]
  - OS version:
- - Synfig version: 1.4.2
+ - Synfig version: 1.4.5
 
 **Additional comments**
 Add any other context about the problem here.

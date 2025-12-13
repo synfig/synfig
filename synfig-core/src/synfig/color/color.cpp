@@ -53,7 +53,7 @@ using namespace synfig;
 /* === M E T H O D S ======================================================= */
 
 ColorReal
-Color::hex2real(String s)
+Color::hex2real(const String& s)
 {
 	std::istringstream i(s);
 	int n;
@@ -76,7 +76,7 @@ Color::real2hex(ColorReal c)
 }
 
 void
-Color::set_hex(String& str)
+Color::set_hex(const String& str)
 {
 	value_type r, g, b;
 	String hex;
@@ -212,7 +212,7 @@ Color::blend(Color a, Color b, float amount, Color::BlendMethod type)
 
 	const static blendfunc vtable[BLEND_END]=
 	{
-		blendfunc_COMPOSITE<Color>,	// 0
+		blendfunc_COMPOSITE<Color>,	   // 0
 		blendfunc_STRAIGHT<Color>,
 		blendfunc_BRIGHTEN<Color>,
 		blendfunc_DARKEN<Color>,
@@ -236,6 +236,7 @@ Color::blend(Color a, Color b, float amount, Color::BlendMethod type)
 		blendfunc_STRAIGHT_ONTO<Color>,
 		blendfunc_ADD_COMPOSITE<Color>,
 		blendfunc_ALPHA<Color>,
+		blendfunc_ALPHA_INTERSECTION<Color>,
 	};
 
 	return vtable[type](a,b,amount);

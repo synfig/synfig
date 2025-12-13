@@ -25,6 +25,7 @@
 #ifndef SYNFIG_TESTBASE_H
 #define SYNFIG_TESTBASE_H
 
+#include <cmath> // std::isnan
 #include <cstdlib> // std::abs
 #include <iostream> // std::cerr
 #include <sstream>
@@ -49,6 +50,18 @@ struct SynfigTestException : public std::exception
 std::ostream& operator<<(std::ostream& os, const synfig::Vector& v)
 {
 	os << '(' << v[0] << ',' << v[1] << ')';
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const synfig::Angle& a)
+{
+	os << '(' << synfig::Angle::deg(a).get() << "°)'";
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const synfig::Angle::deg& a)
+{
+	os << '(' << a.get() << "°)";
 	return os;
 }
 
@@ -116,14 +129,15 @@ std::ostream& operator<<(std::ostream& os, std::nullptr_t)
 }
 
 #define ASSERT_APPROX_EQUAL_MICRO(expected, value) {\
-	if (std::abs(expected - value) > 1e-6) { \
+	if (std::isnan(value) != std::isnan(expected) || std::abs(expected - value) > 1e-6) { \
 		ERROR_MESSAGE_TWO_VALUES(expected, value) \
 	} \
 }
 
 #define ASSERT_VECTOR_APPROX_EQUAL_MICRO(expected, value) {\
-	if (std::abs(expected[0] - value[0]) > 2e-6 || std::abs(expected[1] - value[1]) > 2e-6) { \
-		ERROR_MESSAGE_TWO_VALUES(expected, value) \
+	if (std::isnan(value[0]) != std::isnan(expected[0]) || std::isnan(value[1]) != std::isnan(expected[1]) \
+		|| std::abs(expected[0] - value[0]) > 2e-6 || std::abs(expected[1] - value[1]) > 2e-6) { \
+			ERROR_MESSAGE_TWO_VALUES(expected, value) \
 	} \
 }
 

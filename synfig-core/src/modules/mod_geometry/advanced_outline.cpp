@@ -94,7 +94,7 @@ namespace {
 	Real calc_position(Real p, const rendering::Bend &bend, bool homogeneous) {
 		return homogeneous
 			 ? p*bend.length1()
-			 : bend.length_by_l( p*bend.l1() );
+			 : bend.length_by_index( p*bend.l1() );
 	}
 	
 	class AdvancedPoint {
@@ -203,7 +203,14 @@ namespace {
 			iterator i1 = lower_bound(p);
 			if (i1 == end())
 				{ clear(); return; }
-				
+
+			if (approximate_equal(i1->first, p)) {
+				i1->second.side0 = side;
+				i1->second.pp0 = Vector(p, 0);
+				erase(begin(), i1);
+				return;
+			}
+
 			Bezier b;
 			if (i1 == begin()) {
 				b = Bezier(
@@ -247,7 +254,14 @@ namespace {
 			if (i1 == begin())
 				{ clear(); return; }
 			iterator i0 = i1; --i0;
-				
+
+			if (approximate_equal(i0->first, p)) {
+				i0->second.side1 = side;
+				i0->second.pp1 = Vector(p, 0);
+				erase(i1, end());
+				return;
+			}
+
 			Bezier b;
 			if (i1 == end()) {
 				b = Bezier(

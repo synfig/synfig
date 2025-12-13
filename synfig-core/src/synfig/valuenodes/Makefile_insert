@@ -30,6 +30,7 @@ VALUENODES_HH = \
 	valuenodes/valuenode_join.h \
 	valuenodes/valuenode_linear.h \
 	valuenodes/valuenode_log.h \
+	valuenodes/valuenode_maprange.h \
 	valuenodes/valuenode_modulo.h \
 	valuenodes/valuenode_not.h \
 	valuenodes/valuenode_or.h \
@@ -101,6 +102,7 @@ VALUENODES_CC = \
 	valuenodes/valuenode_join.cpp \
 	valuenodes/valuenode_linear.cpp \
 	valuenodes/valuenode_log.cpp \
+	valuenodes/valuenode_maprange.cpp \
 	valuenodes/valuenode_modulo.cpp \
 	valuenodes/valuenode_not.cpp \
 	valuenodes/valuenode_or.cpp \

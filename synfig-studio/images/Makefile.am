@@ -55,6 +55,7 @@ EXTRA_DIST = \
 	rename_icon.sif \
 	set_fill_color_icon.sif \
 	set_outline_color_icon.sif \
+	hex_icon.sif \
 	duck_position_icon.sif \
 	duck_vertex_icon.sif \
 	duck_tangent_icon.sif \
@@ -259,6 +260,7 @@ ICONS = \
 	rename_icon.$(EXT) \
 	set_fill_color_icon.$(EXT) \
 	set_outline_color_icon.$(EXT) \
+	hex_icon.$(EXT) \
 	duck_position_icon.$(EXT) \
 	duck_vertex_icon.$(EXT) \
 	duck_tangent_icon.$(EXT) \

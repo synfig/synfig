@@ -241,6 +241,7 @@ public:
 private:
 	bool is_empty;
 	bool repeat;
+	bool zigzag;
 	List list;
 
 	Accumulator summary_color;
@@ -256,6 +257,8 @@ public:
 
 	bool empty() const { return is_empty; }
 	bool get_repeat() const { return repeat; }
+	/** Tells if the compiled gradient was generated from a zigzag (not if it is zigzag) */
+	bool get_from_zigzag() const { return zigzag; }
 	const List& get_list() const { return list; }
 
 	inline List::const_iterator find(Real x) const
