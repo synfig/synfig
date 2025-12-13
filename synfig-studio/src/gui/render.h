@@ -112,6 +112,7 @@ private:
 	void submit_next_render_pass();
 	void on_comboboxtext_target_changed();
 	void on_finished(std::string error_message);
+	void on_success(synfig::filesystem::Path filepath);
 }; // END of class RenderSettings
 
 }; // END of namespace studio

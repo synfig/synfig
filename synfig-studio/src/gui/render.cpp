@@ -550,6 +550,7 @@ RenderSettings::submit_next_render_pass()
 
 		async_renderer=new AsyncRenderer(target, progress_logger.get());
 		async_renderer->signal_finished().connect( sigc::mem_fun(*this,&RenderSettings::on_finished));
+		async_renderer->signal_success().connect(sigc::mem_fun(*this, &RenderSettings::on_success));
 		async_renderer->start();
 		App::dock_info_->set_async_render(async_renderer);
 	}
@@ -578,22 +579,31 @@ RenderSettings::on_finished(std::string error_message)
 			App::sound_render_done->set_playing(true);
 		}
 
-		const filesystem::Path target_filepath(entry_filename.get_text());
-		const std::vector<std::string> ext_multi = {{".bmp"}, {".png"}, {".jpg"}, {".exr"}, {".ppm"}};		
-		
-		bool has_multiple_files = !toggle_single_frame.get_active() 
-		        && (std::find(ext_multi.begin(), ext_multi.end(), target_filepath.extension()) != ext_multi.end());
-		
-		if (has_multiple_files)
-			App::dock_info_->set_rendered_file_path(target_filepath.parent_path());
-		else 
-			App::dock_info_->set_rendered_file_path(target_filepath);
+		if (!success) {
+			App::dock_info_->hide_open_buttons();
+		}
+
 		App::dock_info_->set_render_progress(1.0);
 	}
 
 	// Play the sound before show error dialog!
 	if (!success)
 		canvas_interface_->get_ui_interface()->error(error_message);
+}
+
+void
+RenderSettings::on_success(filesystem::Path filepath)
+{
+	const bool really_finished = (render_passes.size() == 0); // May have another files/tiles to render yet
+
+	if (really_finished) { // Because of multi-pass render
+		if (!async_renderer || !async_renderer->get_target()) {
+			App::dock_info_->hide_open_buttons();
+		} else {
+			const filesystem::Path target_filepath(async_renderer->get_target()->get_filename());
+			App::dock_info_->set_rendered_file_path(target_filepath);
+		}
+	}
 }
 
 void
