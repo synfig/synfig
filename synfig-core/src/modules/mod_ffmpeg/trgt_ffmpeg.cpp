@@ -105,6 +105,18 @@ ffmpeg_trgt::~ffmpeg_trgt()
 }
 
 bool
+ffmpeg_trgt::is_multiple_files() const
+{
+	return /*multi_image*/false;
+}
+
+filesystem::Path
+ffmpeg_trgt::get_filename() const
+{
+	return filename;
+}
+
+bool
 ffmpeg_trgt::set_rend_desc(RendDesc *given_desc)
 {
 	//given_desc->set_pixel_format(PF_RGB);

@@ -66,6 +66,9 @@ public:
 	jpeg_trgt(const synfig::filesystem::Path& filename, const synfig::TargetParam& /* params */);
 	virtual ~jpeg_trgt();
 
+	bool is_multiple_files() const override;
+	synfig::filesystem::Path get_filename() const override;
+
 	bool set_rend_desc(synfig::RendDesc* desc) override;
 
 	bool start_frame(synfig::ProgressCallback* cb) override;

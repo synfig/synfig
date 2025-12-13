@@ -440,6 +440,19 @@ Target_LibAVCodec::Target_LibAVCodec(
 Target_LibAVCodec::~Target_LibAVCodec()
 	{ delete internal; }
 
+
+bool
+Target_LibAVCodec::is_multiple_files() const
+{
+	return false;
+}
+
+filesystem::Path
+Target_LibAVCodec::get_filename() const
+{
+	return filename;
+}
+
 bool
 Target_LibAVCodec::set_rend_desc(RendDesc *given_desc)
 {

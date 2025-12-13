@@ -161,6 +161,22 @@ bmp::~bmp()
 }
 
 bool
+bmp::is_multiple_files() const
+{
+	return multi_image;
+}
+
+filesystem::Path
+bmp::get_filename() const
+{
+	if (!multi_image)
+		return filename;
+	if (filename.u8string() == "-")
+		return filename;
+	return filesystem::Path(filename).add_suffix(strprintf("%s%04d", sequence_separator.c_str(), desc.get_frame_start()));
+}
+
+bool
 bmp::set_rend_desc(RendDesc *given_desc)
 {
 	pf=PF_BGR;

@@ -215,6 +215,20 @@ public:
 	 ** \return true on success
 	*/
 	virtual bool set_rend_desc(RendDesc *d) { desc=*d; return true; }
+
+	/**
+	 * If the target will render in multiple files (like image sequence)
+	 * with current settings.
+	 */
+	virtual bool is_multiple_files() const;
+
+	/**
+	 * The file path of the rendered document.
+	 *
+	 * If multiple files are generated, return the first one (first frame of the sequence).
+	 */
+	virtual filesystem::Path get_filename() const;
+
 	//! Renders the canvas to the target
 	virtual bool render(ProgressCallback* cb = nullptr) = 0;
 	//! Initialization tasks of the derived target.
