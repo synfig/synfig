@@ -24,13 +24,13 @@ jobs:
         include:
         # includes a new variable of npm with a value of 2
         # for the matrix leg matching the os and version
-        - os: macos-13
-          name: macOS 13 Ventura (Autotools)
+        - os: macos-14
+          name: macOS 14 Sonoma (Autotools)
           toolchain: autotools
           allow_failures: false
 
-        - os: macos-13
-          name: macOS 13 Ventura (CMake+Ninja)
+        - os: macos-14
+          name: macOS 14 Sonoma (CMake+Ninja)
           toolchain: cmake-ninja
           allow_failures: true
 
