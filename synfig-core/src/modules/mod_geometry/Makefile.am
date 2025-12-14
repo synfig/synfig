@@ -59,9 +59,9 @@ TESTS = \
 
 testadvancedline_CXXFLAGS=@CXXFLAGS@ @ETL_CFLAGS@ @SYNFIG_CFLAGS@
 testadvancedline_LDADD = \
-	libmod_geometry.la \
 	$(top_builddir)/src/synfig/libsynfig.la \
-	@SYNFIG_LIBS@
+	@SYNFIG_LIBS@ \
+	libmod_geometry.la
 
 testadvancedline_SOURCES=test/advancedline.cpp
 
