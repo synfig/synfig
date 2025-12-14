@@ -103,6 +103,17 @@ synfig::Target::set_canvas(Canvas::Handle c)
 	set_rend_desc(&desc);
 }
 
+bool
+Target::is_multiple_files() const
+{
+	return false;
+}
+
+filesystem::Path
+Target::get_filename() const
+{
+	return {};
+}
 
 Target::Handle
 Target::create(const String& name, const filesystem::Path& filename,

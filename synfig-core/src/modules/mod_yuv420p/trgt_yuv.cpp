@@ -85,6 +85,18 @@ yuv::init(synfig::ProgressCallback * /* cb */)
 }
 
 bool
+yuv::is_multiple_files() const
+{
+	return false;
+}
+
+filesystem::Path
+yuv::get_filename() const
+{
+	return filename;
+}
+
+bool
 yuv::set_rend_desc(RendDesc *given_desc)
 {
 	given_desc->clear_flags();

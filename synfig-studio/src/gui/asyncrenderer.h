@@ -66,8 +66,11 @@ private:
 	//! An error message is passed as argument in case of error;
 	//! it's empty otherwise
 	sigc::signal<void, std::string> signal_finished_;
-	//! Signal emitted when target has succeeded
-	sigc::signal<void> signal_success_;
+	/**
+	 * Signal emitted when target has succeeded.
+	 * The filepath of rendered document is passed as argument
+	 */
+	sigc::signal<void, synfig::filesystem::Path> signal_success_;
 
 	//! Seems to be unused
 	std::list<sigc::connection> activity_connection_list;
@@ -110,8 +113,14 @@ public:
 	synfig::Real get_execution_time() const { return (finish_time - start_time).as_double(); }
 	synfig::Real get_execution_clock() const { return (synfig::Real)(finish_clock - start_clock)/(synfig::Real)CLOCKS_PER_SEC; }
 
+	etl::handle<const synfig::Target> get_target() const { return target; };
+
 	sigc::signal<void, std::string>& signal_finished() { return signal_finished_; }
-	sigc::signal<void>& signal_success() { return signal_success_; }
+	/**
+	 * Signal emitted when target has succeeded.
+	 * The filepath of rendered document is passed as argument
+	 */
+	sigc::signal<void, synfig::filesystem::Path>& signal_success() { return signal_success_; }
 
 private:
 

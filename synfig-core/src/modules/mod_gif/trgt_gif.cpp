@@ -84,6 +84,18 @@ gif::~gif()
 }
 
 bool
+gif::is_multiple_files() const
+{
+	return false;
+}
+
+filesystem::Path
+gif::get_filename() const
+{
+	return filename;
+}
+
+bool
 gif::set_rend_desc(RendDesc *given_desc)
 {
 	if(given_desc->get_frame_rate()>MAX_FRAME_RATE)

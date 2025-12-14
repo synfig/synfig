@@ -162,6 +162,16 @@ public:
 		return r;
 	}
 
+	bool is_multiple_files() const override
+	{
+		return warm_target->is_multiple_files();
+	}
+
+	filesystem::Path get_filename() const override
+	{
+		return warm_target->get_filename();
+	}
+
 	virtual bool wait_render_tiles(ProgressCallback* cb = nullptr)
 	{
 		if(!alive_flag)
@@ -346,6 +356,16 @@ public:
 		alive_flag=false;
 	}
 
+	bool is_multiple_files() const override
+	{
+		return warm_target->is_multiple_files();
+	}
+
+	filesystem::Path get_filename() const override
+	{
+		return warm_target->get_filename();
+	}
+
 	virtual bool start_frame(synfig::ProgressCallback *cb)
 	{
 		this->cb = cb;
@@ -489,13 +509,9 @@ AsyncRenderer::stop(AsyncRenderer::Interaction interaction)
 			if(interaction == INTERACTION_UNDEFINED)
 			{
 				if(status == RENDERING_SUCCESS)
-					signal_success_();
+					signal_success_(target->get_filename());
 				else
 					error_message = _("Animation couldn't be rendered");
-
-				target=0;
-				render_thread=0;
-				lock.release();
 
 				if(status == RENDERING_ERROR)
 				{
@@ -503,12 +519,10 @@ AsyncRenderer::stop(AsyncRenderer::Interaction interaction)
 						error_message += "\n" + logger->get_error_message();
 				}
 			}
-			else
-			{
-				target=0;
-				render_thread=0;
-				lock.release();
-			}
+
+			target = nullptr;
+			render_thread = nullptr;
+			lock.release();
 
 			signal_finished_(error_message);
 		}
