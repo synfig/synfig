@@ -29,8 +29,8 @@ jobs:
           toolchain: autotools
           allow_failures: false
 
-        - os: macos-14
-          name: macOS 14 Sonoma (CMake+Ninja)
+        - os: macos-26
+          name: macOS 26 Tahoe (CMake+Ninja)
           toolchain: cmake-ninja
           allow_failures: true
 
