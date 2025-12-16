@@ -6,7 +6,7 @@ AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/modules/mod_geometry
 
 AM_CXXFLAGS = \
-	@SYNFIG_CFLAGS@
+	@CXXFLAGS@ @ETL_CFLAGS@ @SYNFIG_CFLAGS@
 
 check_PROGRAMS=$(TESTS)
 
