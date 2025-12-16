@@ -2,8 +2,8 @@ MAINTAINERCLEANFILES = \
 	Makefile.in
 
 AM_CPPFLAGS = \
-	-I$(top_srcdir)/src \
 	-I$(top_builddir)/src \
+	-I$(top_srcdir)/src \
 	-I$(top_srcdir)/src/modules/mod_geometry
 
 AM_CXXFLAGS = \
