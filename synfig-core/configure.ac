@@ -559,6 +559,7 @@ src/modules/mod_dv/Makefile
 src/modules/mod_ffmpeg/Makefile
 src/modules/mod_filter/Makefile
 src/modules/mod_geometry/Makefile
+src/modules/mod_geometry/test/Makefile
 src/modules/mod_gif/Makefile
 src/modules/mod_gradient/Makefile
 src/modules/mod_imagemagick/Makefile

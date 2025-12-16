@@ -51,17 +51,6 @@ libmod_geometry_la_LDFLAGS = \
 EXTRA_DIST = \
 	mod_geometry.nsh \
 	unmod_geometry.nsh
-	
-check_PROGRAMS=$(TESTS)
 
-TESTS = \
-	testadvancedline
-
-testadvancedline_CXXFLAGS=@CXXFLAGS@ @ETL_CFLAGS@ @SYNFIG_CFLAGS@
-testadvancedline_LDADD = \
-	$(top_builddir)/src/synfig/libsynfig.la \
-	@SYNFIG_LIBS@ \
-	libmod_geometry.la
-
-testadvancedline_SOURCES=test/advancedline.cpp
+SUBDIRS = . test
 
