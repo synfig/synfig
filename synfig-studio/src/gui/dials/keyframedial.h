@@ -57,7 +57,14 @@ public:
 	void on_mode_changed(synfigapp::EditMode mode); // Updates button icons/state
 	Glib::SignalProxy0<void> signal_toggle_keyframe_past() { return toggle_keyframe_past->signal_toggled(); }
 	Glib::SignalProxy0<void> signal_toggle_keyframe_future() { return toggle_keyframe_future->signal_toggled(); }
+	
+	// Getter and Setter for past toggle
+	void set_past_toggle(bool active);
+    bool get_past_toggle() const;
 
+    // Getter and Setter for future toggle
+    void set_future_toggle(bool active);
+    bool get_future_toggle() const;
 }; // END of class KeyFrameDial
 
 } // END of namespace studio
