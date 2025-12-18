@@ -61,13 +61,9 @@ add_executable(test_synfig_valuenode_maprange valuenode_maprange.cpp)
 target_link_libraries(test_synfig_valuenode_maprange PRIVATE libsynfig)
 add_test(NAME test_synfig_valuenode_maprange COMMAND test_synfig_valuenode_maprange)
 
-add_executable(test_synfig_mod_geometry_advancedline ../src/modules/mod_geometry/test/advancedline.cpp ../src/modules/mod_geometry/advancedline.cpp)
-target_link_libraries(test_synfig_mod_geometry_advancedline PRIVATE libsynfig)
-add_test(NAME test_synfig_mod_geometry_advancedline COMMAND test_synfig_mod_geometry_advancedline)
-
 if (NOT WIN32)
 set_target_properties(
-        test_synfig_angle test_synfig_benchmark test_synfig_bezier test_synfig_bline test_synfig_bone test_synfig_clock test_synfig_filesystem_path test_synfig_handle test_synfig_keyframe test_synfig_node test_synfig_pen test_synfig_reference_counter test_synfig_string test_synfig_surface_etl test_synfig_valuenode_maprange test_synfig_mod_geometry_advancedline
+        test_synfig_angle test_synfig_benchmark test_synfig_bezier test_synfig_bline test_synfig_bone test_synfig_clock test_synfig_filesystem_path test_synfig_handle test_synfig_keyframe test_synfig_node test_synfig_pen test_synfig_reference_counter test_synfig_string test_synfig_surface_etl test_synfig_valuenode_maprange
         PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test
 )

@@ -16,3 +16,8 @@ install (
     TARGETS mod_geometry
     DESTINATION lib/synfig/modules
 )
+
+if (${ENABLE_TESTS})
+    add_subdirectory(test)
+endif()
+
