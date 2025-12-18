@@ -295,7 +295,7 @@ CellRenderer_TimeTrack::render_vfunc(
 			//find the coordinate in the drawable space...
 			Time t = (*i - time_offset)*time_k;
 			if (time_plot_data.is_time_visible_extra(t)) {
-				cr->arc(cell_area.get_x()+1+time_plot_data.get_pixel_t_coord(*i), yc, 2, 0, 2*3.1415);
+				cr->arc(cell_area.get_x()+1+time_plot_data.get_pixel_t_coord(*i), yc, 2, 0, 2*M_PI);
 				cr->fill();
 			}
 		}

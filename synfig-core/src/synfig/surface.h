@@ -87,7 +87,7 @@ public:
 	typedef Color value_type;
 	class alpha_pen;
 
-	Surface() { }
+	Surface() = default;
 
 	Surface(const size_type::value_type &w, const size_type::value_type &h):
 		surface<Color, ColorPrep>(w,h) { }
@@ -144,7 +144,7 @@ struct _BlendFunc
 class Surface::alpha_pen : public synfig::alpha_pen< synfig::generic_pen<Color>, Color::value_type, _BlendFunc<Color> >
 {
 public:
-	alpha_pen() { }
+	alpha_pen() = default;
 	alpha_pen(const synfig::alpha_pen< generic_pen<Color>, Color::value_type, _BlendFunc<Color> > &x):
 		synfig::alpha_pen< generic_pen<Color>, Color::value_type, _BlendFunc<Color> >(x)
 	{ }

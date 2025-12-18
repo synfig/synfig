@@ -2885,7 +2885,7 @@ CanvasView::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& con
 					String errors, warnings;
 					if(canvas_interface()->import(filename, errors, warnings, App::resize_imported_images))
 						success=true;
-					if (warnings != "")
+					if (!warnings.empty())
 						App::dialog_message_1b(
 							"WARNING",
 							synfig::strprintf("%s:\n\n%s",_("Warning"),warnings.c_str()),

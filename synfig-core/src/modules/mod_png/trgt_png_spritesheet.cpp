@@ -122,8 +122,7 @@ png_trgt_spritesheet::~png_trgt_spritesheet()
 			delete []color_data[i];
 		delete []color_data;
 	}
-	if (overflow_buff)
-		delete []overflow_buff;
+	delete []overflow_buff;
 }
 
 bool
