@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*! \file angle.cpp
-**  \brief Test Angle class
+/*! \file test/advancedline.cpp
+**  \brief Test AdvancedLine class
 **
 ** Copyright (c) 2002 Robert B. Quattlebaum Jr.
 ** Copyright (c) 2025 Synfig Contributors

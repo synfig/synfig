@@ -28,8 +28,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_ADVANCED_LINE_H
-#define __SYNFIG_ADVANCED_LINE_H
+#ifndef SYNFIG_ADVANCED_LINE_H
+#define SYNFIG_ADVANCED_LINE_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -141,4 +141,4 @@ public:
 
 /* === E N D =============================================================== */
 
-#endif // ADVANCEDLINE_H
+#endif // SYNFIG_ADVANCEDLINE_H
