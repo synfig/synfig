@@ -61,7 +61,7 @@ add_executable(test_synfig_valuenode_maprange valuenode_maprange.cpp)
 target_link_libraries(test_synfig_valuenode_maprange PRIVATE libsynfig)
 add_test(NAME test_synfig_valuenode_maprange COMMAND test_synfig_valuenode_maprange)
 
-add_executable(test_synfig_mod_geometry_advancedline src/modules/mod_geometry/test/advancedline.cpp src/modules/mod_geometry/advancedline.cpp)
+add_executable(test_synfig_mod_geometry_advancedline ../src/modules/mod_geometry/test/advancedline.cpp ../src/modules/mod_geometry/advancedline.cpp)
 target_link_libraries(test_synfig_mod_geometry_advancedline PRIVATE libsynfig)
 add_test(NAME test_synfig_mod_geometry_advancedline COMMAND test_synfig_mod_geometry_advancedline)
 
