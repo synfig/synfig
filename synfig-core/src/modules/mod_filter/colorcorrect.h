@@ -31,9 +31,9 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/layer.h>
 #include <synfig/angle.h>
 #include <synfig/color.h>
+#include <synfig/layer.h>
 #include <synfig/rect.h>
 #include <synfig/rendering/common/task/taskpixelprocessor.h>
 #include <synfig/rendering/software/task/tasksw.h>
@@ -48,76 +48,73 @@ namespace synfig {
 namespace modules {
 namespace mod_filter {
 
-
 //! Task for RGB-based saturation adjustment
-class TaskSaturation: public rendering::TaskPixelProcessor
-{
+class TaskSaturation : public rendering::TaskPixelProcessor {
 public:
-	typedef etl::handle<TaskSaturation> Handle;
-	static Token token;
-	virtual Token::Handle get_token() const { return token.handle(); }
+  typedef etl::handle<TaskSaturation> Handle;
+  static Token token;
+  virtual Token::Handle get_token() const { return token.handle(); }
 
-	Real saturation;
+  Real saturation;
+  Gamma canvas_gamma; //!< Canvas gamma for linearization
 
-	TaskSaturation(): saturation(1.0) { }
+  TaskSaturation() : saturation(1.0), canvas_gamma(1.0) {}
 
-	bool is_transparent() const
-		{ return approximate_equal_lp(saturation, Real(1.0)); }
+  bool is_transparent() const {
+    return approximate_equal_lp(saturation, Real(1.0));
+  }
 };
-
 
 //! Software implementation of TaskSaturation
-class TaskSaturationSW: public TaskSaturation, public rendering::TaskSW
-{
+class TaskSaturationSW : public TaskSaturation, public rendering::TaskSW {
 public:
-	typedef etl::handle<TaskSaturationSW> Handle;
-	static Token token;
-	virtual Token::Handle get_token() const { return token.handle(); }
+  typedef etl::handle<TaskSaturationSW> Handle;
+  static Token token;
+  virtual Token::Handle get_token() const { return token.handle(); }
 
-	virtual bool run(RunParams &params) const;
+  virtual bool run(RunParams &params) const;
+
 private:
-	void apply_saturation(Color &dst, const Color &src) const;
+  void apply_saturation(Color &dst, const Color &src) const;
 };
 
-
-class Layer_ColorCorrect : public Layer
-{
-	SYNFIG_LAYER_MODULE_EXT
+class Layer_ColorCorrect : public Layer {
+  SYNFIG_LAYER_MODULE_EXT
 
 private:
-	//! Parameter: (Angle)
-	ValueBase param_hue_adjust;
-	//! Parameter: (Real)
-	ValueBase param_brightness;
-	//! Parameter: (Real)
-	ValueBase param_contrast;
-	//! Parameter: (Real)
-	ValueBase param_exposure;
-	//! Parameter: (Real)
-	ValueBase param_saturation;
-	//! Parameter: (Real)
-	ValueBase param_gamma;
-	// This gamma member is kept to avoid need to recalculate the gamma table
-	// on each pixel
-	Gamma gamma;
+  //! Parameter: (Angle)
+  ValueBase param_hue_adjust;
+  //! Parameter: (Real)
+  ValueBase param_brightness;
+  //! Parameter: (Real)
+  ValueBase param_contrast;
+  //! Parameter: (Real)
+  ValueBase param_exposure;
+  //! Parameter: (Real)
+  ValueBase param_saturation;
+  //! Parameter: (Real)
+  ValueBase param_gamma;
+  // This gamma member is kept to avoid need to recalculate the gamma table
+  // on each pixel
+  Gamma gamma;
 
-	Color correct_color(const Color &in)const;
+  Color correct_color(const Color &in) const;
 
 public:
+  Layer_ColorCorrect();
 
-	Layer_ColorCorrect();
+  virtual bool set_param(const String &param, const synfig::ValueBase &value);
 
-	virtual bool set_param(const String & param, const synfig::ValueBase &value);
+  virtual ValueBase get_param(const String &param) const;
 
-	virtual ValueBase get_param(const String & param)const;
+  virtual Color get_color(Context context, const Point &pos) const;
 
-	virtual Color get_color(Context context, const Point &pos)const;
+  virtual Rect get_full_bounding_rect(Context context) const;
 
-	virtual Rect get_full_bounding_rect(Context context)const;
+  virtual Vocab get_param_vocab() const;
 
-	virtual Vocab get_param_vocab()const;
-
-	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context)const;
+  virtual rendering::Task::Handle
+  build_rendering_task_vfunc(Context context) const;
 }; // END of class Layer_ColorCorrect
 
 }; // END of namespace mod_filter

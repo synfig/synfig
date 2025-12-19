@@ -27,21 +27,21 @@
 /* === H E A D E R S ======================================================= */
 
 #ifdef USING_PCH
-#	include "pch.h"
+#include "pch.h"
 #else
 #ifdef HAVE_CONFIG_H
-#	include <config.h>
+#include <config.h>
 #endif
 
 #include <synfig/localization.h>
 
 #include "colorcorrect.h"
-#include <synfig/string.h>
-#include <synfig/time.h>
+#include <synfig/canvas.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
-#include <synfig/surface.h>
+#include <synfig/string.h>
+#include <synfig/time.h>
 #include <synfig/value.h>
 
 #include <synfig/rendering/common/task/taskpixelprocessor.h>
@@ -64,307 +64,296 @@ SYNFIG_LAYER_SET_LOCAL_NAME(Layer_ColorCorrect,N_("Color Correct"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_ColorCorrect,N_("Filters"));
 SYNFIG_LAYER_SET_VERSION(Layer_ColorCorrect,"0.1");
 
-// Task tokens for HSV saturation
-rendering::Task::Token TaskSaturation::token(
-	DescAbstract<TaskSaturation>("Saturation") );
+// Task tokens for saturation
+rendering::Task::Token
+    TaskSaturation::token(DescAbstract<TaskSaturation>("Saturation"));
 rendering::Task::Token TaskSaturationSW::token(
-	DescReal<TaskSaturationSW, TaskSaturation>("SaturationSW") );
+    DescReal<TaskSaturationSW, TaskSaturation>("SaturationSW"));
 
 /* === P R O C E D U R E S ================================================= */
 
-void
-TaskSaturationSW::apply_saturation(Color &dst, const Color &src) const
-{
-	dst = src;
+void TaskSaturationSW::apply_saturation(Color &dst, const Color &src) const {
+  dst = src;
 
-	if (approximate_equal_lp(saturation, Real(1.0)))
-		return;
+  if (approximate_equal_lp(saturation, Real(1.0)))
+    return;
 
-	// Find the max (Value) and min of RGB components
-	ColorReal max_val = std::max({dst.get_r(), dst.get_g(), dst.get_b()});
-	ColorReal min_val = std::min({dst.get_r(), dst.get_g(), dst.get_b()});
+  // Linearize colors using canvas gamma (inverse gamma)
+  // This ensures saturation is computed in linear color space
+  Gamma inv_gamma = canvas_gamma.get_inverted();
+  Color linear = inv_gamma.apply(dst);
 
-	// Only adjust if there's actual saturation (max != min) and max > 0
-	if (max_val > 0 && max_val != min_val)
-	{
-		// Move each component toward max_val based on saturation factor
-		// At saturation=0, all components become max_val (grayscale at Value)
-		// At saturation=1, no change
-		// At saturation>1, components move away from max_val (more saturated)
-		// Clamp results to [0,1] range for saturation > 1.0
-		ColorReal sat = static_cast<ColorReal>(saturation);
-		dst.set_r(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - dst.get_r()) * sat)));
-		dst.set_g(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - dst.get_g()) * sat)));
-		dst.set_b(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - dst.get_b()) * sat)));
-	}
+  // Find the max (Value) and min of RGB components in linear space
+  ColorReal max_val =
+      std::max({linear.get_r(), linear.get_g(), linear.get_b()});
+  ColorReal min_val =
+      std::min({linear.get_r(), linear.get_g(), linear.get_b()});
+
+  // Only adjust if there's actual saturation (max != min) and max > 0
+  if (max_val > 0 && max_val != min_val) {
+    // Move each component toward max_val based on saturation factor
+    // At saturation=0, all components become max_val (grayscale at Value)
+    // At saturation=1, no change
+    // At saturation>1, components move away from max_val (more saturated)
+    // Clamp results to [0,1] range for saturation > 1.0
+    ColorReal sat = static_cast<ColorReal>(saturation);
+    linear.set_r(std::max(
+        ColorReal(0),
+        std::min(ColorReal(1), max_val - (max_val - linear.get_r()) * sat)));
+    linear.set_g(std::max(
+        ColorReal(0),
+        std::min(ColorReal(1), max_val - (max_val - linear.get_g()) * sat)));
+    linear.set_b(std::max(
+        ColorReal(0),
+        std::min(ColorReal(1), max_val - (max_val - linear.get_b()) * sat)));
+
+    // Reapply gamma to return to gamma-corrected space
+    dst = canvas_gamma.apply(linear);
+  }
 }
 
-bool
-TaskSaturationSW::run(RunParams&) const
-{
-	RectInt r = target_rect;
-	if (r.valid())
-	{
-		VectorInt offset = get_offset();
-		RectInt ra = sub_task()->target_rect + r.get_min() + get_offset();
-		if (ra.valid())
-		{
-			rect_set_intersect(ra, ra, r);
-			if (ra.valid())
-			{
-				LockWrite ldst(this);
-				if (!ldst) return false;
-				LockRead lsrc(sub_task());
-				if (!lsrc) return false;
-
-				const synfig::Surface &a = lsrc->get_surface();
-				synfig::Surface &c = ldst->get_surface();
-
-				for(int y = ra.miny; y < ra.maxy; ++y)
-				{
-					const Color *ca = &a[y - r.miny - offset[1]][ra.minx - r.minx - offset[0]];
-					Color *cc = &c[y][ra.minx];
-					for(int x = ra.minx; x < ra.maxx; ++x, ++ca, ++cc)
-						apply_saturation(*cc, *ca);
-				}
-			}
-		}
-	}
-
-	return true;
+bool TaskSaturationSW::run(RunParams &) const {
+  RectInt r = target_rect;
+  if (r.valid()) {
+    VectorInt offset = get_offset();
+    RectInt ra = r + offset;
+    if (ra.valid()) {
+      LockWrite ldst(this);
+      if (!ldst)
+        return false;
+      LockRead lsrc(sub_task());
+      if (!lsrc)
+        return false;
+      const synfig::Surface &a = lsrc->get_surface();
+      synfig::Surface &c = ldst->get_surface();
+      for (int y = r.miny; y < r.maxy; ++y) {
+        const Color *ca = &a[y + offset[1]][r.minx + offset[0]];
+        Color *cc = &c[y][r.minx];
+        for (int x = r.minx; x < r.maxx; ++x, ++ca, ++cc)
+          apply_saturation(*cc, *ca);
+      }
+    }
+  }
+  return true;
 }
 
 /* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */
 
-Layer_ColorCorrect::Layer_ColorCorrect():
-	param_hue_adjust(ValueBase(Angle::zero())),
-	param_brightness(ValueBase(Real(0))),
-	param_contrast(ValueBase(Real(1.0))),
-	param_exposure(ValueBase(Real(0.0))),
-	param_saturation(ValueBase(Real(1.0))),
-	param_gamma(ValueBase(Real(1.0)))
-{
-	SET_INTERPOLATION_DEFAULTS();
-	SET_STATIC_DEFAULTS();
+Layer_ColorCorrect::Layer_ColorCorrect()
+    : param_hue_adjust(ValueBase(Angle::zero())),
+      param_brightness(ValueBase(Real(0))),
+      param_contrast(ValueBase(Real(1.0))),
+      param_exposure(ValueBase(Real(0.0))),
+      param_saturation(ValueBase(Real(1.0))),
+      param_gamma(ValueBase(Real(1.0))) {
+  SET_INTERPOLATION_DEFAULTS();
+  SET_STATIC_DEFAULTS();
 }
 
-inline Color
-Layer_ColorCorrect::correct_color(const Color &in)const
-{
-	Angle hue_adjust=param_hue_adjust.get(Angle());
-	Real _brightness=param_brightness.get(Real());
-	Real contrast=param_contrast.get(Real());
-	Real exposure=param_exposure.get(Real());
-	
-	Real brightness((_brightness-0.5)*contrast+0.5);
+inline Color Layer_ColorCorrect::correct_color(const Color &in) const {
+  Angle hue_adjust = param_hue_adjust.get(Angle());
+  Real _brightness = param_brightness.get(Real());
+  Real contrast = param_contrast.get(Real());
+  Real exposure = param_exposure.get(Real());
 
-	// Apply RGB-based saturation adjustment BEFORE gamma correction
-	// Saturation should be computed in linear color space for correct results
-	Color ret = in;
-	Real saturation = param_saturation.get(Real());
-	if (!approximate_equal_lp(saturation, Real(1.0)))
-	{
-		// Find the max (Value) and min of RGB components
-		ColorReal max_val = std::max({ret.get_r(), ret.get_g(), ret.get_b()});
-		ColorReal min_val = std::min({ret.get_r(), ret.get_g(), ret.get_b()});
+  Real brightness((_brightness - 0.5) * contrast + 0.5);
 
-		// Only adjust if there's actual saturation (max != min) and max > 0
-		if (max_val > 0 && max_val != min_val)
-		{
-			// Move each component toward max_val based on saturation factor
-			// At saturation=0, all components become max_val (grayscale at Value)
-			// At saturation=1, no change
-			// At saturation>1, components move away from max_val (more saturated)
-			// Clamp results to [0,1] range for saturation > 1.0
-			ColorReal sat = static_cast<ColorReal>(saturation);
-			ret.set_r(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - ret.get_r()) * sat)));
-			ret.set_g(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - ret.get_g()) * sat)));
-			ret.set_b(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - ret.get_b()) * sat)));
-		}
-	}
+  // Apply RGB-based saturation adjustment BEFORE gamma correction
+  // Saturation should be computed in linear color space for correct results
+  Color ret = in;
+  Real saturation = param_saturation.get(Real());
+  if (!approximate_equal_lp(saturation, Real(1.0))) {
+    // Get canvas gamma for linearization
+    Gamma canvas_gamma(1.0);
+    if (get_canvas())
+      canvas_gamma = get_canvas()->get_root()->rend_desc().get_gamma();
 
-	// Apply gamma after saturation
-	ret = gamma.apply(ret);
+    // Linearize colors using inverse canvas gamma
+    Gamma inv_gamma = canvas_gamma.get_inverted();
+    Color linear = inv_gamma.apply(ret);
 
-	assert(!std::isnan(ret.get_r()));
-	assert(!std::isnan(ret.get_g()));
-	assert(!std::isnan(ret.get_b()));
-	assert(!std::isnan(ret.get_a()));
+    // Find the max (Value) and min of RGB components in linear space
+    ColorReal max_val =
+        std::max({linear.get_r(), linear.get_g(), linear.get_b()});
+    ColorReal min_val =
+        std::min({linear.get_r(), linear.get_g(), linear.get_b()});
 
-	if(exposure!=0.0)
-	{
-		const float factor(exp(exposure));
-		ret.set_r(ret.get_r()*factor);
-		ret.set_g(ret.get_g()*factor);
-		ret.set_b(ret.get_b()*factor);
-	}
+    // Only adjust if there's actual saturation (max != min) and max > 0
+    if (max_val > 0 && max_val != min_val) {
+      // Move each component toward max_val based on saturation factor
+      ColorReal sat = static_cast<ColorReal>(saturation);
+      linear.set_r(std::max(
+          ColorReal(0),
+          std::min(ColorReal(1), max_val - (max_val - linear.get_r()) * sat)));
+      linear.set_g(std::max(
+          ColorReal(0),
+          std::min(ColorReal(1), max_val - (max_val - linear.get_g()) * sat)));
+      linear.set_b(std::max(
+          ColorReal(0),
+          std::min(ColorReal(1), max_val - (max_val - linear.get_b()) * sat)));
 
-	// Adjust Contrast
-	if(contrast!=1.0)
-	{
-		ret.set_r(ret.get_r()*contrast);
-		ret.set_g(ret.get_g()*contrast);
-		ret.set_b(ret.get_b()*contrast);
-	}
+      // Reapply gamma to return to gamma-corrected space
+      ret = canvas_gamma.apply(linear);
+    }
+  }
 
-	if(brightness)
-	{
-		// Adjust R Channel Brightness
-		if(ret.get_r()>-brightness)
-			ret.set_r(ret.get_r()+brightness);
-		else if(ret.get_r()<brightness)
-			ret.set_r(ret.get_r()-brightness);
-		else
-			ret.set_r(0);
+  // Apply gamma after saturation
+  ret = gamma.apply(ret);
 
-		// Adjust G Channel Brightness
-		if(ret.get_g()>-brightness)
-			ret.set_g(ret.get_g()+brightness);
-		else if(ret.get_g()<brightness)
-			ret.set_g(ret.get_g()-brightness);
-		else
-			ret.set_g(0);
+  assert(!std::isnan(ret.get_r()));
+  assert(!std::isnan(ret.get_g()));
+  assert(!std::isnan(ret.get_b()));
+  assert(!std::isnan(ret.get_a()));
 
-		// Adjust B Channel Brightness
-		if(ret.get_b()>-brightness)
-			ret.set_b(ret.get_b()+brightness);
-		else if(ret.get_b()<brightness)
-			ret.set_b(ret.get_b()-brightness);
-		else
-			ret.set_b(0);
-	}
+  if (exposure != 0.0) {
+    const float factor(exp(exposure));
+    ret.set_r(ret.get_r() * factor);
+    ret.set_g(ret.get_g() * factor);
+    ret.set_b(ret.get_b() * factor);
+  }
 
-	// Return the color, adjusting the hue if necessary
-	if(!!hue_adjust)
-		return ret.rotate_uv(hue_adjust);
-	else
-		return ret;
+  // Adjust Contrast
+  if (contrast != 1.0) {
+    ret.set_r(ret.get_r() * contrast);
+    ret.set_g(ret.get_g() * contrast);
+    ret.set_b(ret.get_b() * contrast);
+  }
+
+  if (brightness) {
+    // Adjust R Channel Brightness
+    if (ret.get_r() > -brightness)
+      ret.set_r(ret.get_r() + brightness);
+    else if (ret.get_r() < brightness)
+      ret.set_r(ret.get_r() - brightness);
+    else
+      ret.set_r(0);
+
+    // Adjust G Channel Brightness
+    if (ret.get_g() > -brightness)
+      ret.set_g(ret.get_g() + brightness);
+    else if (ret.get_g() < brightness)
+      ret.set_g(ret.get_g() - brightness);
+    else
+      ret.set_g(0);
+
+    // Adjust B Channel Brightness
+    if (ret.get_b() > -brightness)
+      ret.set_b(ret.get_b() + brightness);
+    else if (ret.get_b() < brightness)
+      ret.set_b(ret.get_b() - brightness);
+    else
+      ret.set_b(0);
+  }
+
+  // Return the color, adjusting the hue if necessary
+  if (!!hue_adjust)
+    return ret.rotate_uv(hue_adjust);
+  else
+    return ret;
 }
 
-bool
-Layer_ColorCorrect::set_param(const String & param, const ValueBase &value)
-{
-	IMPORT_VALUE(param_hue_adjust);
-	IMPORT_VALUE(param_brightness);
-	IMPORT_VALUE(param_contrast);
-	IMPORT_VALUE(param_exposure);
-	IMPORT_VALUE(param_saturation);
+bool Layer_ColorCorrect::set_param(const String &param,
+                                   const ValueBase &value) {
+  IMPORT_VALUE(param_hue_adjust);
+  IMPORT_VALUE(param_brightness);
+  IMPORT_VALUE(param_contrast);
+  IMPORT_VALUE(param_exposure);
+  IMPORT_VALUE(param_saturation);
 
-	IMPORT_VALUE_PLUS(param_gamma,
-		{
-			gamma.set(1.0/param_gamma.get(Real()));
-			return true;
-		});
-	return false;
+  IMPORT_VALUE_PLUS(param_gamma, {
+    gamma.set(1.0 / param_gamma.get(Real()));
+    return true;
+  });
+  return false;
 }
 
-ValueBase
-Layer_ColorCorrect::get_param(const String &param)const
-{
-	EXPORT_VALUE(param_hue_adjust);
-	EXPORT_VALUE(param_brightness);
-	EXPORT_VALUE(param_contrast);
-	EXPORT_VALUE(param_exposure);
-	EXPORT_VALUE(param_saturation);
+ValueBase Layer_ColorCorrect::get_param(const String &param) const {
+  EXPORT_VALUE(param_hue_adjust);
+  EXPORT_VALUE(param_brightness);
+  EXPORT_VALUE(param_contrast);
+  EXPORT_VALUE(param_exposure);
+  EXPORT_VALUE(param_saturation);
 
-	if(param=="gamma")
-	{
-		ValueBase ret=param_gamma;
-		ret.set(1.0/gamma.get());
-		return ret;
-	}
+  if (param == "gamma") {
+    ValueBase ret = param_gamma;
+    ret.set(1.0 / gamma.get());
+    return ret;
+  }
 
-	EXPORT_NAME();
-	EXPORT_VERSION();
+  EXPORT_NAME();
+  EXPORT_VERSION();
 
-	return ValueBase();
+  return ValueBase();
 }
 
-Layer::Vocab
-Layer_ColorCorrect::get_param_vocab()const
-{
-	Layer::Vocab ret;
+Layer::Vocab Layer_ColorCorrect::get_param_vocab() const {
+  Layer::Vocab ret;
 
-	ret.push_back(ParamDesc("hue_adjust")
-		.set_local_name(_("Hue Adjust"))
-	);
+  ret.push_back(ParamDesc("hue_adjust").set_local_name(_("Hue Adjust")));
 
-	ret.push_back(ParamDesc("brightness")
-		.set_local_name(_("Brightness"))
-	);
+  ret.push_back(ParamDesc("brightness").set_local_name(_("Brightness")));
 
-	ret.push_back(ParamDesc("contrast")
-		.set_local_name(_("Contrast"))
-	);
+  ret.push_back(ParamDesc("contrast").set_local_name(_("Contrast")));
 
-	ret.push_back(ParamDesc("exposure")
-		.set_local_name(_("Exposure Adjust"))
-	);
+  ret.push_back(ParamDesc("exposure").set_local_name(_("Exposure Adjust")));
 
-	ret.push_back(ParamDesc("saturation")
-		.set_local_name(_("Saturation"))
-	);
+  ret.push_back(ParamDesc("saturation").set_local_name(_("Saturation")));
 
-	ret.push_back(ParamDesc("gamma")
-		.set_local_name(_("Gamma Adjustment"))
-	);
+  ret.push_back(ParamDesc("gamma").set_local_name(_("Gamma Adjustment")));
 
-	return ret;
+  return ret;
 }
 
-Color
-Layer_ColorCorrect::get_color(Context context, const Point &pos)const
-{
-	return correct_color(context.get_color(pos));
+Color Layer_ColorCorrect::get_color(Context context, const Point &pos) const {
+  return correct_color(context.get_color(pos));
 }
 
-Rect
-Layer_ColorCorrect::get_full_bounding_rect(Context context)const
-{
-	return context.get_full_bounding_rect();
+Rect Layer_ColorCorrect::get_full_bounding_rect(Context context) const {
+  return context.get_full_bounding_rect();
 }
 
 rendering::Task::Handle
-Layer_ColorCorrect::build_rendering_task_vfunc(Context context)const
-{
-	rendering::Task::Handle task = context.build_rendering_task();
+Layer_ColorCorrect::build_rendering_task_vfunc(Context context) const {
+  rendering::Task::Handle task = context.build_rendering_task();
 
-	// Apply RGB-based saturation adjustment first (before gamma)
-	// Saturation should be applied in linear color space for correct results
-	Real saturation = param_saturation.get(Real());
-	if (!approximate_equal_lp(saturation, Real(1.0)))
-	{
-		TaskSaturation::Handle task_saturation(new TaskSaturation());
-		task_saturation->saturation = saturation;
-		task_saturation->sub_task() = task;
-		task = task_saturation;
-	}
+  // Apply RGB-based saturation adjustment first (before gamma)
+  // Saturation should be applied in linear color space for correct results
+  Real saturation = param_saturation.get(Real());
+  if (!approximate_equal_lp(saturation, Real(1.0))) {
+    TaskSaturation::Handle task_saturation(new TaskSaturation());
+    task_saturation->saturation = saturation;
+    // Pass canvas gamma so saturation can linearize colors before adjustment
+    if (get_canvas())
+      task_saturation->canvas_gamma =
+          get_canvas()->get_root()->rend_desc().get_gamma();
+    task_saturation->sub_task() = task;
+    task = task_saturation;
+  }
 
-	ColorReal gamma = param_gamma.get(Real());
-	if (!approximate_equal_lp(gamma, ColorReal(1.0)))
-	{
-		rendering::TaskPixelGamma::Handle task_gamma(new rendering::TaskPixelGamma());
-		task_gamma->gamma = Gamma(gamma).get_inverted();
-		task_gamma->sub_task() = task;
-		task = task_gamma;
-	}
+  ColorReal gamma = param_gamma.get(Real());
+  if (!approximate_equal_lp(gamma, ColorReal(1.0))) {
+    rendering::TaskPixelGamma::Handle task_gamma(
+        new rendering::TaskPixelGamma());
+    task_gamma->gamma = Gamma(gamma).get_inverted();
+    task_gamma->sub_task() = task;
+    task = task_gamma;
+  }
 
-	// Apply remaining linear color transformations via ColorMatrix
-	ColorMatrix matrix;
-	matrix *= ColorMatrix().set_hue( param_hue_adjust.get(Angle()) );
-	matrix *= ColorMatrix().set_exposure( param_exposure.get(Real()) );
-	matrix *= ColorMatrix().set_brightness( param_brightness.get(Real()) );
-	matrix *= ColorMatrix().set_contrast( param_contrast.get(Real()) );
+  ColorMatrix matrix;
+  matrix *= ColorMatrix().set_hue(param_hue_adjust.get(Angle()));
+  matrix *= ColorMatrix().set_exposure(param_exposure.get(Real()));
+  matrix *= ColorMatrix().set_brightness(param_brightness.get(Real()));
+  matrix *= ColorMatrix().set_contrast(param_contrast.get(Real()));
 
-	if (!matrix.is_copy())
-	{
-		rendering::TaskPixelColorMatrix::Handle task_matrix(new rendering::TaskPixelColorMatrix());
-		task_matrix->matrix = matrix;
-		task_matrix->sub_task() = task;
-		task = task_matrix;
-	}
+  if (!matrix.is_copy()) {
+    rendering::TaskPixelColorMatrix::Handle task_matrix(
+        new rendering::TaskPixelColorMatrix());
+    task_matrix->matrix = matrix;
+    task_matrix->sub_task() = task;
+    task = task_matrix;
+  }
 
-	return task;
+  return task;
 }
