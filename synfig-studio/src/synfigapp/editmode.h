@@ -74,6 +74,21 @@ inline EditMode
 operator&(const EditMode& lhs, const EditMode& rhs)
 { return static_cast<EditMode>(int(lhs)&int(rhs)); }
 
+// Check if the given flag is set in mode
+inline bool 
+has_flag(const EditMode& mode, const EditMode& flag)
+{ return (int(mode) & int(flag)) != 0; }
+
+// Set (enable) the given flag.
+inline EditMode 
+set_flag(const EditMode& mode, const EditMode& flag)
+{ return static_cast<EditMode>(int(mode) | int(flag)); }
+
+// Clear (disable) the given flag.
+inline EditMode 
+clear_flag(const EditMode& mode, const EditMode& flag)
+{ return static_cast<EditMode>(int(mode) & ~int(flag)); }
+
 //!	Flag Comparison. THIS IS NOT LESS-THAN-OR-EQUAL-TO.
 /*!	This function will return true of all of the flags
 **	in the \a rhs are set in the \a lhs */
