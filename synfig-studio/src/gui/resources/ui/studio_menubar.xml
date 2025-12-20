@@ -603,6 +603,14 @@
 						    <attribute name="label" translatable="yes">_Animating</attribute>
 						    <attribute name="action">win.workspace-animating</attribute>
 						</item>
+						<item>
+						    <attribute name="label" translatable="yes">_Previous Workspace</attribute>
+						    <attribute name="action">win.workspace-previous</attribute>
+						</item>
+						<item>
+						    <attribute name="label" translatable="yes">Switch to favorite</attribute>
+						    <attribute name="action">win.workspace-favorite</attribute>
+						</item>
 					</section>
 					<section id="menu-window-custom-workspaces">
 					</section>
