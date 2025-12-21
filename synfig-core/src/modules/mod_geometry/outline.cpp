@@ -143,8 +143,8 @@ Outline::sync_vfunc()
 		const ValueBase::List &bline = bline_segment.is_valid() ? bline_segment.get_list() : param_bline.get_list();
 
 		std::vector<BLinePoint> points;
-		for(ValueBase::List::const_iterator i = bline.begin(); i != bline.end(); ++i)
-			points.push_back(i->get(blank));
+		for (const auto & i : bline)
+			points.push_back(i.get(blank));
 
 		for (size_t i = 0; i < points.size(); ++i) {
 
@@ -173,7 +173,7 @@ Outline::sync_vfunc()
 		
 		Real w = 0, w0 = 0;
 		// Draw body only (no tips)
-		for (std::vector<BLinePoint>::iterator i = points.begin(); i != points.end(); ++i) {
+		for (auto i = points.begin(); i != points.end(); ++i) {
 			const BLinePoint &point = *i;
 
 			bend.add(
@@ -230,8 +230,10 @@ Outline::sync_vfunc()
 					tangent * tip_w * ROUND_END_FACTOR, -tangent * tip_w * ROUND_END_FACTOR);
 
 				shape_contour().move_to(curve(0.0f));
-				for (float n=0; n<1.0f; n+=1.0f/TIP_SAMPLES)
-					shape_contour().line_to(curve(n));
+
+				for (int i = 1; i <= TIP_SAMPLES; ++i) {
+					shape_contour().line_to(curve(static_cast<float>(i) / TIP_SAMPLES));
+				}
 
 				shape_contour().line_to(curve(1.0f));
 				shape_contour().close();
