@@ -50,4 +50,11 @@ set(CPACK_NSIS_MUI_FINISHPAGE_RUN "synfigstudio") # TODO: this results in instan
 set(CPACK_NSIS_COMPRESSOR "${CPACK_NSIS_COMPRESSOR}\n  SetCompressorDictSize 64") # hack (improve compression)
 set(CPACK_NSIS_COMPRESSOR "${CPACK_NSIS_COMPRESSOR}\n  BrandingText '${CPACK_PACKAGE_DESCRIPTION_SUMMARY}'") # hack (overwrite BrandingText)
 
+if(APPLE)
+    set(CPACK_GENERATOR "DragNDrop")
+    set(CPACK_COMPONENTS_ALL applications)
+    set(CPACK_IGNORE_FILES "/.DS_Store")
+    set(CPACK_COMPONENTS_IGNORE_GROUPS 1)
+endif()
+
 include(CPack)
