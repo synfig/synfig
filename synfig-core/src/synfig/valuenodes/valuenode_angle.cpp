@@ -73,6 +73,11 @@ ValueNode_Angle::ValueNode_Angle(const ValueBase &value):
 		set_link("link", ValueNode_Const::create(Angle::deg(value.get(Real()))));
 	}
 	else
+	if (value.get_type() == type_integer)
+	{
+		set_link("link", ValueNode_Const::create(Angle::deg(value.get(int()))));
+	}
+	else
 	{
 		throw Exception::BadType(value.get_type().description.local_name);
 	}
@@ -104,6 +109,8 @@ ValueNode_Angle::operator()(Time t)const
 	const Type& type(get_type());
 	if (type == type_real)
 		return Angle::deg((*angle_)(t).get(Angle())).get();
+	if (type == type_integer)
+		return int(Angle::deg((*angle_)(t).get(Angle())).get());
 
 	assert(0);
 	throw std::runtime_error(get_local_name() + _(":Bad type ") + get_type().description.local_name);
@@ -112,7 +119,7 @@ ValueNode_Angle::operator()(Time t)const
 bool
 ValueNode_Angle::check_type(Type &type)
 {
-	return type==type_real;
+	return type == type_real || type == type_integer;
 }
 
 bool
