@@ -54,6 +54,7 @@ private:
 	std::list<synfig::Layer::Handle> layers;
         bool children_lock;
 
+	synfig::Layer::Handle new_layer;
 	int lowest_depth()const;
 
 public:
@@ -67,6 +68,7 @@ public:
 	virtual bool is_ready()const;
 
 	virtual void prepare();
+	virtual void perform();
 
 	ACTION_MODULE_EXT
 };
