@@ -144,7 +144,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateMirror::StateMirror():
-	Smach::state<StateMirror_Context>("mirror", N_("Mirror Tool"))
+	Smach::state<StateMirror_Context>("mirror", N_("Mirror"))
 {
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateMirror_Context::event_refresh_tool_options));
 	insert(event_def(EVENT_STOP,&StateMirror_Context::event_stop_handler));

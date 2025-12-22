@@ -214,7 +214,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateBone::StateBone() :
-	Smach::state<StateBone_Context>("bone", N_("Skeleton Tool"))
+	Smach::state<StateBone_Context>("bone", N_("Skeleton"))
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,		&StateBone_Context::event_layer_selection_changed_handler));
 	insert(event_def(EVENT_REFRESH_DUCKS,				&StateBone_Context::event_hijack));
