@@ -82,6 +82,7 @@ class studio::StateSketch_Context : public sigc::trackable
 	Gtk::Label title_label;
 	Gtk::Button button_clear_sketch;
 	Gtk::Button button_undo_stroke;
+	Gtk::Button button_redo_stroke;
 	Gtk::Button button_save_sketch;
 	Gtk::Button button_load_sketch;
 
@@ -93,6 +94,7 @@ class studio::StateSketch_Context : public sigc::trackable
 	void save_sketch();
 	void load_sketch();
 	void undo_stroke();
+	void redo_stroke();
 	void toggle_show_sketch();
 
 public:
@@ -203,10 +205,28 @@ StateSketch_Context::undo_stroke()
 {
 	if(!get_work_area()->persistent_stroke_list().empty())
 	{
+		get_work_area()->redo_stroke_list().push_back(get_work_area()->persistent_stroke_list().back());
 		get_work_area()->persistent_stroke_list().pop_back();
 
 		// if the sketch is currently shown, make sure it is updated
 		//! \todo is there a better way than this of getting Duckmatic to update its stroke_list_?
+		if (show_sketch_checkbutton.get_active())
+		{
+			get_work_area()->set_show_persistent_strokes(false);
+			get_work_area()->set_show_persistent_strokes(true);
+			get_canvas_view()->get_smach().process_event(EVENT_REFRESH);
+		}
+	}
+}
+
+void
+StateSketch_Context::redo_stroke()
+{
+	if(!get_work_area()->redo_stroke_list().empty())
+	{
+		get_work_area()->persistent_stroke_list().push_back(get_work_area()->redo_stroke_list().back());
+		get_work_area()->redo_stroke_list().pop_back();
+
 		if (show_sketch_checkbutton.get_active())
 		{
 			get_work_area()->set_show_persistent_strokes(false);
@@ -232,6 +252,7 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 
 	button_clear_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::clear_sketch));
 	button_undo_stroke.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::undo_stroke));
+	button_redo_stroke.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::redo_stroke));
 	button_save_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::save_sketch));
 	button_load_sketch.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::load_sketch));
 	show_sketch_checkbutton.signal_clicked().connect(sigc::mem_fun(*this,&studio::StateSketch_Context::toggle_show_sketch));
@@ -332,6 +353,15 @@ StateSketch_Context::refresh_tool_options()
 		)
 	);
 	App::dialog_tool_options->add_button(
+		"edit-redo",
+		_("Redo Last Stroke")
+	)->signal_clicked().connect(
+		sigc::mem_fun(
+			*this,
+			&studio::StateSketch_Context::redo_stroke
+		)
+	);
+	App::dialog_tool_options->add_button(
 		"edit-clear",
 		_("Clear Sketch")
 	)->signal_clicked().connect(
@@ -408,6 +438,8 @@ StateSketch_Context::event_stroke(const Smach::event& x)
 	assert(event.stroke_data);
 
 	get_work_area()->add_persistent_stroke(event.stroke_data,synfigapp::Main::get_outline_color());
+
+	get_work_area()->redo_stroke_list().clear();
 
 	return Smach::RESULT_ACCEPT;
 }
