@@ -1243,6 +1243,7 @@ void
 Duckmatic::clear_persistent_strokes()
 {
 	persistent_stroke_list_.clear();
+	redo_stroke_list_.clear();
 }
 
 void
