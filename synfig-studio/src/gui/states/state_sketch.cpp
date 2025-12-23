@@ -203,15 +203,19 @@ StateSketch_Context::clear_sketch()
 void
 StateSketch_Context::undo_stroke()
 {
-	if(!get_work_area()->persistent_stroke_list().empty())
-	{
-		get_work_area()->redo_stroke_list().push_back(get_work_area()->persistent_stroke_list().back());
-		get_work_area()->persistent_stroke_list().pop_back();
+	if (!get_work_area()->persistent_stroke_list().empty()) {
+		auto& undo_stroke_list = get_work_area()->persistent_stroke_list();
+		auto& redo_stroke_list = get_work_area()->redo_stroke_list();
+
+		redo_stroke_list.splice(
+			redo_stroke_list.end(),
+			undo_stroke_list,
+			std::prev(undo_stroke_list.end())
+		);
 
 		// if the sketch is currently shown, make sure it is updated
 		//! \todo is there a better way than this of getting Duckmatic to update its stroke_list_?
-		if (show_sketch_checkbutton.get_active())
-		{
+		if (show_sketch_checkbutton.get_active()) {
 			get_work_area()->set_show_persistent_strokes(false);
 			get_work_area()->set_show_persistent_strokes(true);
 			get_canvas_view()->get_smach().process_event(EVENT_REFRESH);
@@ -222,13 +226,17 @@ StateSketch_Context::undo_stroke()
 void
 StateSketch_Context::redo_stroke()
 {
-	if(!get_work_area()->redo_stroke_list().empty())
-	{
-		get_work_area()->persistent_stroke_list().push_back(get_work_area()->redo_stroke_list().back());
-		get_work_area()->redo_stroke_list().pop_back();
+	if (!get_work_area()->redo_stroke_list().empty()) {
+		auto& redo_stroke_list = get_work_area()->redo_stroke_list();
+		auto& undo_stroke_list = get_work_area()->persistent_stroke_list();
 
-		if (show_sketch_checkbutton.get_active())
-		{
+		undo_stroke_list.splice(
+			undo_stroke_list.end(),
+			redo_stroke_list,
+			std::prev(redo_stroke_list.end())
+		);
+
+		if (show_sketch_checkbutton.get_active()) {
 			get_work_area()->set_show_persistent_strokes(false);
 			get_work_area()->set_show_persistent_strokes(true);
 			get_canvas_view()->get_smach().process_event(EVENT_REFRESH);

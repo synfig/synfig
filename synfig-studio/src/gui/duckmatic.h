@@ -173,7 +173,7 @@ private:
 
 	std::list<etl::handle<Stroke> > persistent_stroke_list_;
 
-	std::list<etl::handle<Stroke> > redo_stroke_list_;
+	std::list<etl::handle<Stroke>> redo_stroke_list_;
 
 	synfig::GUIDSet selected_ducks;
 
@@ -333,9 +333,9 @@ public:
 
 	std::list<etl::handle<Stroke> >& persistent_stroke_list() { return persistent_stroke_list_; }
 
-	std::list<etl::handle<Stroke> >& redo_stroke_list() { return redo_stroke_list_; }
+	std::list<etl::handle<Stroke>>& redo_stroke_list() { return redo_stroke_list_; }
 
-	const std::list<etl::handle<Stroke> >& redo_stroke_list()const { return redo_stroke_list_; }
+	const std::list<etl::handle<Stroke>>& redo_stroke_list() const { return redo_stroke_list_; }
 
     /*
  -- ** -- D U C K  S E L E C T I O N  M E T H O D S----------------------------
