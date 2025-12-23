@@ -85,6 +85,7 @@ private:
 	void select_outline_color(int i);
 	synfig::Color get_color(int i)const;
 	void edit_color(int i);
+        bool confirm_duplicate_color_addition();
 
 public:
 	void set_palette(const synfig::Palette& x);
