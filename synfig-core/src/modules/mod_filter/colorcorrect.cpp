@@ -42,8 +42,11 @@
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
 #include <synfig/value.h>
+#include <synfig/canvas.h>
 
 #include <synfig/rendering/common/task/taskpixelprocessor.h>
+
+#include <algorithm>
 
 #endif
 
@@ -61,7 +64,83 @@ SYNFIG_LAYER_SET_LOCAL_NAME(Layer_ColorCorrect,N_("Color Correct"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_ColorCorrect,N_("Filters"));
 SYNFIG_LAYER_SET_VERSION(Layer_ColorCorrect,"0.1");
 
+// Task tokens for saturation
+rendering::Task::Token TaskSaturation::token(
+	DescAbstract<TaskSaturation>("Saturation") );
+rendering::Task::Token TaskSaturationSW::token(
+	DescReal<TaskSaturationSW, TaskSaturation>("SaturationSW") );
+
 /* === P R O C E D U R E S ================================================= */
+
+void
+TaskSaturationSW::apply_saturation(Color &dst, const Color &src) const
+{
+	dst = src;
+
+	if (approximate_equal_lp(saturation, Real(1.0)))
+		return;
+
+	// Linearize colors using canvas gamma (inverse gamma)
+	// This ensures saturation is computed in linear color space
+	Gamma inv_gamma = canvas_gamma.get_inverted();
+	Color linear = inv_gamma.apply(dst);
+
+	// Find the max (Value) and min of RGB components in linear space
+	ColorReal max_val = std::max({linear.get_r(), linear.get_g(), linear.get_b()});
+	ColorReal min_val = std::min({linear.get_r(), linear.get_g(), linear.get_b()});
+
+	// Only adjust if there's actual saturation (max != min) and max > 0
+	if (max_val > 0 && max_val != min_val)
+	{
+		// Move each component toward max_val based on saturation factor
+		// At saturation=0, all components become max_val (grayscale at Value)
+		// At saturation=1, no change
+		// At saturation>1, components move away from max_val (more saturated)
+		// Clamp results to [0,1] range for saturation > 1.0
+		ColorReal sat = static_cast<ColorReal>(saturation);
+		linear.set_r(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - linear.get_r()) * sat)));
+		linear.set_g(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - linear.get_g()) * sat)));
+		linear.set_b(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - linear.get_b()) * sat)));
+
+		// Reapply gamma to return to gamma-corrected space
+		dst = canvas_gamma.apply(linear);
+	}
+}
+
+bool
+TaskSaturationSW::run(RunParams&) const
+{
+	// Validation checks matching TaskPixelGammaSW pattern
+	if (!is_valid() || !sub_task() || !sub_task()->is_valid())
+		return true;
+
+	RectInt rd = target_rect;
+	VectorInt offset = get_offset();
+	RectInt rs = sub_task()->target_rect + rd.get_min() + offset;
+	rect_set_intersect(rs, rs, rd);
+	if (rs.is_valid())
+	{
+		LockWrite ldst(this);
+		if (!ldst)
+			return false;
+		LockRead lsrc(sub_task());
+		if (!lsrc)
+			return false;
+
+		synfig::Surface &dst = ldst->get_surface();
+		const synfig::Surface &src = lsrc->get_surface();
+
+		for(int y = rs.miny; y < rs.maxy; ++y)
+		{
+			const Color *src_ptr = &src[y - rd.miny - offset[1]][rs.minx - rd.minx - offset[0]];
+			Color *dst_ptr = &dst[y][rs.minx];
+			for(int x = rs.minx; x < rs.maxx; ++x, ++src_ptr, ++dst_ptr)
+				apply_saturation(*dst_ptr, *src_ptr);
+		}
+	}
+
+	return true;
+}
 
 /* === M E T H O D S ======================================================= */
 
@@ -72,6 +151,7 @@ Layer_ColorCorrect::Layer_ColorCorrect():
 	param_brightness(ValueBase(Real(0))),
 	param_contrast(ValueBase(Real(1.0))),
 	param_exposure(ValueBase(Real(0.0))),
+	param_saturation(ValueBase(Real(1.0))),
 	param_gamma(ValueBase(Real(1.0)))
 {
 	SET_INTERPOLATION_DEFAULTS();
@@ -88,7 +168,41 @@ Layer_ColorCorrect::correct_color(const Color &in)const
 	
 	Real brightness((_brightness-0.5)*contrast+0.5);
 
-	Color ret = gamma.apply(in);
+	// Apply RGB-based saturation adjustment BEFORE gamma correction
+	// Saturation should be computed in linear color space for correct results
+	Color ret = in;
+	Real saturation = param_saturation.get(Real());
+	if (!approximate_equal_lp(saturation, Real(1.0)))
+	{
+		// Get canvas gamma for linearization
+		Gamma canvas_gamma(1.0);
+		if (get_canvas())
+			canvas_gamma = get_canvas()->get_root()->rend_desc().get_gamma();
+
+		// Linearize colors using inverse canvas gamma
+		Gamma inv_gamma = canvas_gamma.get_inverted();
+		Color linear = inv_gamma.apply(ret);
+
+		// Find the max (Value) and min of RGB components in linear space
+		ColorReal max_val = std::max({linear.get_r(), linear.get_g(), linear.get_b()});
+		ColorReal min_val = std::min({linear.get_r(), linear.get_g(), linear.get_b()});
+
+		// Only adjust if there's actual saturation (max != min) and max > 0
+		if (max_val > 0 && max_val != min_val)
+		{
+			// Move each component toward max_val based on saturation factor
+			ColorReal sat = static_cast<ColorReal>(saturation);
+			linear.set_r(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - linear.get_r()) * sat)));
+			linear.set_g(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - linear.get_g()) * sat)));
+			linear.set_b(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - linear.get_b()) * sat)));
+
+			// Reapply gamma to return to gamma-corrected space
+			ret = canvas_gamma.apply(linear);
+		}
+	}
+
+	// Apply gamma after saturation
+	ret = gamma.apply(ret);
 
 	assert(!std::isnan(ret.get_r()));
 	assert(!std::isnan(ret.get_g()));
@@ -152,6 +266,7 @@ Layer_ColorCorrect::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_brightness);
 	IMPORT_VALUE(param_contrast);
 	IMPORT_VALUE(param_exposure);
+	IMPORT_VALUE(param_saturation);
 
 	IMPORT_VALUE_PLUS(param_gamma,
 		{
@@ -168,6 +283,7 @@ Layer_ColorCorrect::get_param(const String &param)const
 	EXPORT_VALUE(param_brightness);
 	EXPORT_VALUE(param_contrast);
 	EXPORT_VALUE(param_exposure);
+	EXPORT_VALUE(param_saturation);
 
 	if(param=="gamma")
 	{
@@ -203,6 +319,10 @@ Layer_ColorCorrect::get_param_vocab()const
 		.set_local_name(_("Exposure Adjust"))
 	);
 
+	ret.push_back(ParamDesc("saturation")
+		.set_local_name(_("Saturation"))
+	);
+
 	ret.push_back(ParamDesc("gamma")
 		.set_local_name(_("Gamma Adjustment"))
 	);
@@ -226,6 +346,20 @@ rendering::Task::Handle
 Layer_ColorCorrect::build_rendering_task_vfunc(Context context)const
 {
 	rendering::Task::Handle task = context.build_rendering_task();
+
+	// Apply RGB-based saturation adjustment first (before gamma)
+	// Saturation should be applied in linear color space for correct results
+	Real saturation = param_saturation.get(Real());
+	if (!approximate_equal_lp(saturation, Real(1.0)))
+	{
+		TaskSaturation::Handle task_saturation(new TaskSaturation());
+		task_saturation->saturation = saturation;
+		// Pass canvas gamma so saturation can linearize colors before adjustment
+		if (get_canvas())
+			task_saturation->canvas_gamma = get_canvas()->get_root()->rend_desc().get_gamma();
+		task_saturation->sub_task() = task;
+		task = task_saturation;
+	}
 
 	ColorReal gamma = param_gamma.get(Real());
 	if (!approximate_equal_lp(gamma, ColorReal(1.0)))
