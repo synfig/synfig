@@ -39,6 +39,7 @@
 #include <synfig/time.h>
 #include "random_noise.h"
 #include <synfig/rendering/common/task/taskdistort.h>
+#include <synfig/rendering/common/task/tasktransformation.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -101,7 +102,7 @@ public:
 }; // EOF of class NoiseDistort
 
 class TaskNoiseDistort
-	: public synfig::rendering::TaskDistort
+	: public synfig::rendering::TaskDistort, public synfig::rendering::TaskInterfaceTransformationGetAndPass
 {
 public:
 	typedef etl::handle<TaskNoiseDistort> Handle;
@@ -111,6 +112,13 @@ public:
 	NoiseDistort::Internal internal;
 
 	synfig::Rect compute_required_source_rect(const synfig::Rect& source_rect, const synfig::Matrix& /*vector_to_raster*/) const override;
+
+	synfig::rendering::Transformation::Handle get_transformation() const override {
+		return transformation.handle();
+	}
+
+protected:
+	synfig::rendering::Holder<synfig::rendering::TransformationAffine> transformation;
 };
 /* === E N D =============================================================== */
 
