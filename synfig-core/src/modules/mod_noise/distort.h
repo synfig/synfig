@@ -69,14 +69,14 @@ private:
 public:
 	NoiseDistort();
 
-	virtual bool set_param(const synfig::String &param, const synfig::ValueBase &value);
-	virtual synfig::ValueBase get_param(const synfig::String &param)const;
-	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+	bool set_param(const synfig::String &param, const synfig::ValueBase &value) override;
+	synfig::ValueBase get_param(const synfig::String &param) const override;
+	synfig::Color get_color(synfig::Context context, const synfig::Point &pos) const override;
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point) const override;
 	using Layer::get_bounding_rect;
 	virtual synfig::Rect get_bounding_rect(synfig::Context context)const;
-	virtual Vocab get_param_vocab()const;
-	virtual bool reads_context()const { return true; }
+	Vocab get_param_vocab() const override;
+	bool reads_context() const override { return true; }
 
 protected:
 	synfig::rendering::Task::Handle build_composite_fork_task_vfunc(synfig::ContextParams /* context_params */, synfig::rendering::Task::Handle sub_task) const override;
