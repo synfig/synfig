@@ -36,15 +36,12 @@
 
 #include "distort.h"
 
-#include <synfig/localization.h>
+#include <ctime> // for time() C function
 
-#include <synfig/string.h>
-#include <synfig/time.h>
 #include <synfig/context.h>
+#include <synfig/localization.h>
 #include <synfig/paramdesc.h>
 #include <synfig/renddesc.h>
-#include <synfig/value.h>
-#include <ctime>
 #include <synfig/rendering/software/task/taskdistortsw.h>
 
 #endif

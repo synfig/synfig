@@ -27,19 +27,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_NOISE_DISTORT_H
-#define __SYNFIG_NOISE_DISTORT_H
+#ifndef SYNFIG_NOISE_DISTORT_H
+#define SYNFIG_NOISE_DISTORT_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/vector.h>
-#include <synfig/valuenode.h>
 #include <synfig/layers/layer_composite_fork.h>
-#include <synfig/gradient.h>
-#include <synfig/time.h>
-#include "random_noise.h"
 #include <synfig/rendering/common/task/taskdistort.h>
 #include <synfig/rendering/common/task/tasktransformation.h>
+#include "random_noise.h"
 
 /* === M A C R O S ========================================================= */
 
