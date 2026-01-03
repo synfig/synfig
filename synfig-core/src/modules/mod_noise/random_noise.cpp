@@ -239,8 +239,8 @@ RandomNoise::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf
 		int y((int)floor(yf));
 		float a=xf-x;
 		float b=yf-y;
-		a=(1.0f-cos(a*PI))*0.5f;
-		b=(1.0f-cos(b*PI))*0.5f;
+		a=(1.0f-cos(a*M_PI))*0.5f;
+		b=(1.0f-cos(b*M_PI))*0.5f;
 		float c=1.0-a;
 		float d=1.0-b;
 		int x2=x+1,y2=y+1;
@@ -256,8 +256,8 @@ RandomNoise::operator()(SmoothType smooth,int subseed,float xf,float yf,float tf
 		float b=yf-y;
 		float c=tf-t;
 
-		a=(1.0f-cos(a*PI))*0.5f;
-		b=(1.0f-cos(b*PI))*0.5f;
+		a=(1.0f-cos(a*M_PI))*0.5f;
+		b=(1.0f-cos(b*M_PI))*0.5f;
 
 		// We don't perform this on the time axis, otherwise we won't
 		// get smooth motion

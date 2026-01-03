@@ -3471,7 +3471,7 @@ CanvasParser::parse_canvas(xmlpp::Element *element,Canvas::Handle parent,bool in
 		for (ValueNodeList::const_iterator iter = canvas->value_node_list().begin(); iter != canvas->value_node_list().end(); ++iter) {
 			if(PlaceholderValueNode::Handle::cast_dynamic(*iter))
 			{
-				if (nodes != "") nodes += ", ";
+				if (!nodes.empty()) nodes += ", ";
 				nodes += "'" + (*iter)->get_id() + "'";
 			}
 		}

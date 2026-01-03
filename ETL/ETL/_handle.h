@@ -737,7 +737,7 @@ public:
 
 	loose_handle(const handle<value_type> &x) noexcept : obj(x.get()) { }
 
-	~loose_handle() {}
+	~loose_handle() = default;
 
 	template <class U> const loose_handle<value_type>&
 	operator=(const handle<U>& x) noexcept
