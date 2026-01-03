@@ -37,6 +37,8 @@
 #include <gtkmm/spinbutton.h>
 #include <gui/app.h>
 #include <gui/widgets/widget_distance.h>
+#include <gui/widgets/widget_spin.h>
+#include <gui/widgets/widget_entry.h>
 #include <synfig/general.h>
 #include <synfig/string_helper.h>
 #endif
@@ -79,13 +81,13 @@ void Widget_Vector::init() {
 
 	int width_chars = 5;
 
-	entry_x=manage(new class Gtk::Entry());
+	entry_x=Gtk::manage(new Widget_Entry);
 	entry_x->set_width_chars(width_chars);
 	entry_x->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Vector::on_entry_x_changed));
 	pack_start(*entry_x, Gtk::PACK_EXPAND_WIDGET);
 	entry_x->show();
 
-	spinbutton_x=manage(new class Gtk::SpinButton(x_adjustment,0.05,DIGITS));
+	spinbutton_x=manage(new Widget_Spin(x_adjustment,0.05,DIGITS));
 	spinbutton_x->set_alignment(1);
 	spinbutton_x->set_update_policy(Gtk::UPDATE_ALWAYS);
 	spinbutton_x->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Vector::on_value_changed));
@@ -97,13 +99,13 @@ void Widget_Vector::init() {
 	distance_x->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Vector::on_value_changed));
 	pack_start(*distance_x, Gtk::PACK_EXPAND_WIDGET);
 
-	entry_y=manage(new class Gtk::Entry());
+	entry_y=Gtk::manage(new Widget_Entry);
 	entry_y->set_width_chars(width_chars);
 	entry_y->signal_changed().connect(sigc::mem_fun(*this,&studio::Widget_Vector::on_entry_y_changed));
 	pack_start(*entry_y, Gtk::PACK_EXPAND_WIDGET);
 	entry_y->show();
 
-	spinbutton_y=manage(new class Gtk::SpinButton(y_adjustment,0.05,DIGITS));
+	spinbutton_y=manage(new Widget_Spin(y_adjustment,0.05,DIGITS));
 	spinbutton_y->set_alignment(1);
 	spinbutton_y->set_update_policy(Gtk::UPDATE_ALWAYS);
 	spinbutton_y->signal_value_changed().connect(sigc::mem_fun(*this,&studio::Widget_Vector::on_value_changed));
