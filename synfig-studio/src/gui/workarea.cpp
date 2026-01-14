@@ -139,6 +139,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	show_rulers(true),
 	show_grid(false),
 	show_guides(true),
+	lock_guides(false),
 	background_size(15,15),
 	background_first_color(0.88, 0.88, 0.88),  /* light gray */
 	background_second_color(0.65, 0.65, 0.65),  /* dark gray */
@@ -221,9 +222,23 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	// Create the menu button
 
 	menubutton_box = manage(new Gtk::Button());
-	menubutton_box->set_image_from_icon_name("pan-end-symbolic");
+	menubutton_box->set_image_from_icon_name(get_lock_guides()?"changes-prevent-symbolic":"changes-allow-symbolic");
 	menubutton_box->set_relief(Gtk::RELIEF_NONE);
-	menubutton_box->signal_clicked().connect(sigc::mem_fun(*this, &WorkArea::popup_menu));
+	menubutton_box->add_events(Gdk::BUTTON_PRESS_MASK);
+	menubutton_box->signal_clicked().connect(sigc::track_obj([this](){
+							toggle_lock_guides();
+						 }, *this));
+
+	menubutton_box->signal_button_press_event().connect(
+		sigc::track_obj([this](GdkEventButton* event) -> bool {
+			if (event->type == GDK_BUTTON_PRESS && event->button == 3) {
+					popup_menu();
+					return true; 
+				}
+				return false; // Allow propagation
+			},
+			*this));
+
 	menubutton_box->show_all();
 
 	// Create scrollbars
@@ -282,6 +297,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	get_canvas()->signal_meta_data_changed("grid_snap").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("grid_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("status_ruler").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
+	get_canvas()->signal_meta_data_changed("guide_lock").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide_show").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("guide").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
 	get_canvas()->signal_meta_data_changed("background_rendering").connect(sigc::mem_fun(*this,&WorkArea::load_meta_data));
@@ -359,6 +375,7 @@ WorkArea::save_meta_data()
 	canvas_interface->set_meta_data("guide_snap", get_guide_snap() ? "1" : "0");
 	canvas_interface->set_meta_data("guide_show", get_show_guides() ? "1" : "0");
 	canvas_interface->set_meta_data("grid_show", show_grid ? "1" : "0");
+	canvas_interface->set_meta_data("guide_lock", get_lock_guides() ? "1" : "0");
 	canvas_interface->set_meta_data("status_ruler", show_rulers ? "1" : "0");
 	canvas_interface->set_meta_data("jack_offset", strprintf("%f", (double)jack_offset));
 	canvas_interface->set_meta_data("onion_skin", onion_skin ? "1" : "0");
@@ -405,23 +422,40 @@ WorkArea::have_meta_data()
 	data_size=canvas->get_meta_data("grid_size");
 	data_show=canvas->get_meta_data("grid_show");
 
-	if(data_size.empty() && !data_show.size())
+	if(data_size.empty() && data_show.empty())
 		return false;
 
 	return true;
 }
 
-void WorkArea::grab_focus()
+void
+WorkArea::grab_focus()
 {
 	if (drawing_area)
 		drawing_area->grab_focus();
 }
 
+bool
+WorkArea::get_bool_from_meta_data(const std::string &metaname, bool &value)
+{
+    String data = canvas->get_meta_data(metaname);
+    if (data.empty()) return false;
+    if (data == "1" || data[0] == 't' || data[0] == 'T') {
+	value = true;
+	return true;
+    }
+    if (data == "0" || data[0] == 'f' || data[0] == 'F') {
+	value = false;
+	return true;
+    }
+    return false; // Existing data but unknown format
+}
+
 void
 WorkArea::load_meta_data()
 {
-	// we need to set locale careful, without calling functions and signals,
-	// otherwise it can affect strings in GUI
+    // we need to set locale careful, without calling functions and signals,
+    // otherwise it can affect strings in GUI
     // ChangeLocale change_locale(LC_NUMERIC, "C");
 
     if(meta_data_lock)
@@ -429,6 +463,7 @@ WorkArea::load_meta_data()
 	meta_data_lock=true;
 
 	String data;
+        bool   bool_value; //for get_bool_from_meta_data
 
 	data=canvas->get_meta_data("grid_size");
 	if(!data.empty())
@@ -521,51 +556,18 @@ WorkArea::load_meta_data()
 		set_guides_color(synfig::Color(gr,gg,gb));
 	}
 
-	data=canvas->get_meta_data("status_ruler");
-	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
-		show_rulers=true;
-	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
-		show_rulers=false;
-
-	data=canvas->get_meta_data("grid_show");
-	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
-		show_grid=true;
-	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
-		show_grid=false;
-
-	data=canvas->get_meta_data("solid_lines");
-	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
-		solid_lines=true;
-	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
-		solid_lines=false;
-
-	data=canvas->get_meta_data("guide_show");
-	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
-		show_guides=true;
-	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
-		show_guides=false;
-
-	data=canvas->get_meta_data("grid_snap");
-	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
-		set_grid_snap(true);
-	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
-		set_grid_snap(false);
-
-	data=canvas->get_meta_data("guide_snap");
-	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
-		set_guide_snap(true);
-	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
-		set_guide_snap(false);
-
-	data=canvas->get_meta_data("onion_skin");
-	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
-		set_onion_skin(true);
-	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
-		set_onion_skin(false);
+	if (get_bool_from_meta_data("status_ruler", bool_value)) show_rulers=bool_value;
+	if (get_bool_from_meta_data("grid_show",    bool_value)) show_grid  =bool_value;
+	if (get_bool_from_meta_data("solid_lines",  bool_value)) solid_lines=bool_value;
+	if (get_bool_from_meta_data("guide_show",   bool_value)) show_guides=bool_value;
+	if (get_bool_from_meta_data("guide_lock",   bool_value)) set_lock_guides(bool_value);
+	if (get_bool_from_meta_data("grid_snap",    bool_value)) set_grid_snap(bool_value);
+	if (get_bool_from_meta_data("guide_snap",   bool_value)) set_guide_snap(bool_value);
+	if (get_bool_from_meta_data("onion_skin",   bool_value)) set_onion_skin(bool_value);
 
 	bool render_required = false;
 	data=canvas->get_meta_data("onion_skin_past");
-	if(data.size())
+	if(!data.empty())
 	{
 		int past_kf = stratoi(data);
 		if (past_kf > ONION_SKIN_PAST) past_kf = ONION_SKIN_PAST;
@@ -578,7 +580,7 @@ WorkArea::load_meta_data()
 		}
 	}
 	data=canvas->get_meta_data("onion_skin_future");
-	if(data.size())
+	if(!data.empty())
 	{
 		int future_kf = stratoi(data);
 		if (future_kf > ONION_SKIN_FUTURE) future_kf = ONION_SKIN_FUTURE;
@@ -591,20 +593,12 @@ WorkArea::load_meta_data()
 		}
 	}
 
-	data=canvas->get_meta_data("onion_skin_keyframes");
-	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
-		set_onion_skin_keyframes(true);
-	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
-		set_onion_skin_keyframes(false);
+	if (get_bool_from_meta_data("onion_skin_keyframes", bool_value)) set_onion_skin_keyframes(bool_value);
 
 	// Update the canvas
 	if (onion_skin && render_required) queue_render();
 
-	data=canvas->get_meta_data("background_rendering");
-	if(data.size() && (data=="1" || data[0]=='t' || data[0]=='T'))
-		set_background_rendering(true);
-	if(data.size() && (data=="0" || data[0]=='f' || data[0]=='F'))
-		set_background_rendering(false);
+	if (get_bool_from_meta_data("background_rendering", bool_value)) set_background_rendering(bool_value);
 
 	//for the guide to be stored we have to store 2 floats x,y + 1 float angle in rad
 	data=canvas->get_meta_data("guide");
@@ -824,6 +818,15 @@ void
 WorkArea::set_show_guides(bool x)
 {
 	show_guides=x;
+	save_meta_data();
+	queue_draw();
+}
+
+void
+WorkArea::set_lock_guides(bool locked)
+{
+	lock_guides=locked;
+	menubutton_box->set_image_from_icon_name(locked?"changes-prevent-symbolic":"changes-allow-symbolic");
 	save_meta_data();
 	queue_draw();
 }
@@ -1299,7 +1302,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				//}
 
 				// Check for a guide click
-				if (show_guides) {
+				if (show_guides && !lock_guides) {
 					GuideList::iterator iter = find_guide(mouse_pos,radius);
 
 					if (iter != get_guide_list().end()) {
@@ -1356,19 +1359,37 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			if(guide_highlighted){
 				Gtk::Menu* guide_menu(manage(new Gtk::Menu()));
 				guide_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), guide_menu));
-				Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("_Edit Guide")));
+				
+				Gtk::MenuItem* item;
+
+				String lock_unlock_msg = get_lock_guides() ? _("_Unlock Guides") : _("_Lock Guides");
+				item = manage(new Gtk::MenuItem(lock_unlock_msg));
+				item->set_use_underline(true);
+				item->show();
+				item->signal_activate().connect(sigc::track_obj([this](){
+					toggle_lock_guides();
+				}, *this));
+				guide_menu->append(*item);
+				
+				item = manage(new Gtk::MenuItem(_("_Edit Guide")));
 				item->set_use_underline(true);
 				item->show();
 				item->signal_activate().connect(
 						sigc::mem_fun(guide_dialog,&Gtk::Widget::show));
 				guide_menu->append(*item);
+				
 				item = manage(new Gtk::MenuItem(_("_Delete")));
 				item->set_use_underline(true);
 				item->show();
 				item->signal_activate().connect(sigc::track_obj([this](){
 					get_guide_list().erase(this->curr_guide);
+					//Unlock if there is no guide left
+					if (get_guide_list().empty()) {
+						set_lock_guides(false);
+					}
 				}, *this));
 				guide_menu->append(*item);
+				
 				guide_menu->popup(3, gtk_get_current_event_time());
 				guide_dialog.set_current_guide(curr_guide);
 				return true;
@@ -1748,7 +1769,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
 		from_ruler_event = true;
-		if (get_drag_mode() == DRAG_NONE && show_guides) {
+		if (get_drag_mode() == DRAG_NONE && show_guides && !lock_guides) {
 			set_drag_mode(DRAG_GUIDE);
 			curr_guide = get_guide_list().insert(get_guide_list().begin(),{synfig::Point(((1.0/2.0)*(drawing_area->get_window()->get_width())*get_pw())+ get_window_tl()[0], 0),
 																			   synfig::Angle::rad(0)});
@@ -1756,7 +1777,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		return true;
 	case GDK_MOTION_NOTIFY:
 		// Guide movement
-		if (get_drag_mode() == DRAG_GUIDE) {
+		if (get_drag_mode() == DRAG_GUIDE && !lock_guides) {
 			// Event is in the hruler, which has a slightly different
 			// coordinate system from the canvas.
 			event->motion.y -= hruler->get_height()+2;
@@ -1767,7 +1788,7 @@ WorkArea::on_hruler_event(GdkEvent *event)
 		return true;
 	case GDK_BUTTON_RELEASE:
 		from_ruler_event = false;
-		if (get_drag_mode() == DRAG_GUIDE) {
+		if (get_drag_mode() == DRAG_GUIDE && !lock_guides) {
 			set_drag_mode(DRAG_NONE);
 			save_meta_data();
 		}
@@ -1786,7 +1807,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 	switch(event->type) {
 	case GDK_BUTTON_PRESS:
 		from_ruler_event = true;
-		if (get_drag_mode() == DRAG_NONE && show_guides) {
+		if (get_drag_mode() == DRAG_NONE && show_guides && !lock_guides) {
 			set_drag_mode(DRAG_GUIDE);
 			curr_guide = get_guide_list().insert(get_guide_list().begin(),{synfig::Point(0 ,((1.0/2.0)*(drawing_area->get_window()->get_height())*get_ph())+ get_window_tl()[1]),
 																			   synfig::Angle::deg(90)});
@@ -1794,7 +1815,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		return true;
 	case GDK_MOTION_NOTIFY:
 		// Guide movement
-		if (get_drag_mode() == DRAG_GUIDE) {
+		if (get_drag_mode() == DRAG_GUIDE  && !lock_guides) {
 			// Event is in the vruler, which has a slightly different
 			// coordinate system from the canvas.
 			event->motion.x -= vruler->get_width()+2;
@@ -1804,7 +1825,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		return true;
 	case GDK_BUTTON_RELEASE:
 		from_ruler_event = false;
-		if (get_drag_mode() == DRAG_GUIDE) {
+		if (get_drag_mode() == DRAG_GUIDE && !lock_guides) {
 			set_drag_mode(DRAG_NONE);
 			save_meta_data();
 		}
