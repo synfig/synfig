@@ -438,17 +438,17 @@ WorkArea::grab_focus()
 bool
 WorkArea::get_bool_from_meta_data(const std::string &metaname, bool &value)
 {
-    String data = canvas->get_meta_data(metaname);
-    if (data.empty()) return false;
-    if (data == "1" || data[0] == 't' || data[0] == 'T') {
-	value = true;
-	return true;
-    }
-    if (data == "0" || data[0] == 'f' || data[0] == 'F') {
-	value = false;
-	return true;
-    }
-    return false; // Existing data but unknown format
+	String data = canvas->get_meta_data(metaname);
+	if (data.empty()) return false;
+	if (data == "1" || data[0] == 't' || data[0] == 'T') {
+		value = true;
+		return true;
+	}
+	if (data == "0" || data[0] == 'f' || data[0] == 'F') {
+		value = false;
+		return true;
+	}
+	return false; // Existing data but unknown format
 }
 
 void
@@ -1815,7 +1815,7 @@ WorkArea::on_vruler_event(GdkEvent *event)
 		return true;
 	case GDK_MOTION_NOTIFY:
 		// Guide movement
-		if (get_drag_mode() == DRAG_GUIDE  && !lock_guides) {
+		if (get_drag_mode() == DRAG_GUIDE && !lock_guides) {
 			// Event is in the vruler, which has a slightly different
 			// coordinate system from the canvas.
 			event->motion.x -= vruler->get_width()+2;
