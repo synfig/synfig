@@ -398,7 +398,7 @@ public:
 	void toggle_show_guides() { set_show_guides(!get_show_guides()); }
 	//! Returns the state of the lock_guides flag
 	bool get_lock_guides()const { return lock_guides; }
-	//! Sets the showing of the grid
+	//! Sets the showing of the guides
 	void set_lock_guides(bool locked);
 	//! Toggles the showing of the guides
 	void toggle_lock_guides() { set_lock_guides(!get_lock_guides()); }
