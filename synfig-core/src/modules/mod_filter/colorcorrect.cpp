@@ -75,7 +75,7 @@ rendering::Task::Token TaskSaturationSW::token(
 //! Shared implementation for saturation adjustment
 //! Used by both TaskSaturationSW and Layer_ColorCorrect::correct_color()
 static inline void
-apply_saturation_impl(Color &dst, const Color &src, Real saturation, const Gamma &canvas_gamma)
+apply_saturation_impl(Color& dst, const Color& src, Real saturation, const Gamma& canvas_gamma)
 {
 	dst = src;
 
@@ -92,17 +92,16 @@ apply_saturation_impl(Color &dst, const Color &src, Real saturation, const Gamma
 	ColorReal min_val = std::min({linear.get_r(), linear.get_g(), linear.get_b()});
 
 	// Only adjust if there's actual saturation (max != min) and max > 0
-	if (max_val > 0 && max_val != min_val)
-	{
+	if (max_val > 0 && max_val != min_val) {
 		// Move each component toward max_val based on saturation factor
 		// At saturation=0, all components become max_val (grayscale at Value)
 		// At saturation=1, no change
 		// At saturation>1, components move away from max_val (more saturated)
 		// Clamp results to [0,1] range for saturation > 1.0
 		ColorReal sat = static_cast<ColorReal>(saturation);
-		linear.set_r(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - linear.get_r()) * sat)));
-		linear.set_g(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - linear.get_g()) * sat)));
-		linear.set_b(std::max(ColorReal(0), std::min(ColorReal(1), max_val - (max_val - linear.get_b()) * sat)));
+		linear.set_r(synfig::clamp(max_val - (max_val - linear.get_r()) * sat, ColorReal(0), ColorReal(1)));
+		linear.set_g(synfig::clamp(max_val - (max_val - linear.get_g()) * sat, ColorReal(0), ColorReal(1)));
+		linear.set_b(synfig::clamp(max_val - (max_val - linear.get_b()) * sat, ColorReal(0), ColorReal(1)));
 
 		// Reapply gamma to return to gamma-corrected space
 		dst = canvas_gamma.apply(linear);
@@ -110,7 +109,7 @@ apply_saturation_impl(Color &dst, const Color &src, Real saturation, const Gamma
 }
 
 void
-TaskSaturationSW::apply_saturation(Color &dst, const Color &src) const
+TaskSaturationSW::apply_saturation(Color& dst, const Color& src) const
 {
 	apply_saturation_impl(dst, src, saturation, canvas_gamma);
 }
@@ -126,8 +125,7 @@ TaskSaturationSW::run(RunParams&) const
 	VectorInt offset = get_offset();
 	RectInt rs = sub_task()->target_rect + rd.get_min() + offset;
 	rect_set_intersect(rs, rs, rd);
-	if (rs.is_valid())
-	{
+	if (rs.is_valid()) {
 		LockWrite ldst(this);
 		if (!ldst)
 			return false;
@@ -138,14 +136,11 @@ TaskSaturationSW::run(RunParams&) const
 		synfig::Surface &dst = ldst->get_surface();
 		const synfig::Surface &src = lsrc->get_surface();
 
-		for(int y = rs.miny; y < rs.maxy; ++y)
-		{
-			for(int x = rs.minx; x < rs.maxx; ++x)
-			{
-				const Color& src_color = src[y - rd.miny - offset[1]][x - rd.minx - offset[0]];
-				Color& dst_color = dst[y][x];
-				apply_saturation(dst_color, src_color);
-			}
+		for (int y = rs.miny; y < rs.maxy; ++y) {
+			const Color* src_ptr = &src[y - rd.miny - offset[1]][rs.minx - rd.minx - offset[0]];
+			Color* dst_ptr = &dst[y][rs.minx];
+			for (int x = rs.minx; x < rs.maxx; ++x, ++src_ptr, ++dst_ptr)
+				apply_saturation(*dst_ptr, *src_ptr);
 		}
 	}
 
@@ -312,6 +307,7 @@ Layer_ColorCorrect::get_param_vocab()const
 
 	ret.push_back(ParamDesc("saturation")
 		.set_local_name(_("Saturation"))
+		.set_description(_("Color saturation adjustment. 0.0 = grayscale, 1.0 = no change, >1.0 = more saturated"))
 	);
 
 	ret.push_back(ParamDesc("gamma")

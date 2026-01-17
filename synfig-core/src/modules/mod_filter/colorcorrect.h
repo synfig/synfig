@@ -54,7 +54,7 @@ class TaskSaturation: public rendering::TaskPixelProcessor
 public:
 	typedef etl::handle<TaskSaturation> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token.handle(); }
+	Token::Handle get_token() const override { return token.handle(); }
 
 	Real saturation;
 	Gamma canvas_gamma;  //!< Canvas gamma for linearization
@@ -72,11 +72,11 @@ class TaskSaturationSW: public TaskSaturation, public rendering::TaskSW
 public:
 	typedef etl::handle<TaskSaturationSW> Handle;
 	static Token token;
-	virtual Token::Handle get_token() const { return token.handle(); }
+	Token::Handle get_token() const override { return token.handle(); }
 
-	virtual bool run(RunParams &params) const;
+	bool run(RunParams& params) const override;
 private:
-	void apply_saturation(Color &dst, const Color &src) const;
+	void apply_saturation(Color& dst, const Color& src) const;
 };
 
 
