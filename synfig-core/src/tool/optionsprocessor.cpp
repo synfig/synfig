@@ -162,10 +162,10 @@ SynfigCommandLineParser::SynfigCommandLineParser() :
 	add_option(og_set, "sequence-separator", ' ', set_sequence_separator, _("Output file sequence separator string (Use double quotes if you want to use spaces)"), "string");
 	add_option(og_set, "canvas",      'c', set_canvas_id, 	_("Render the canvas with the given id instead of the root."), "id");
 	add_option(og_set, "fps",         ' ', set_fps, 		_("Set the frame rate"), "NUM");
-	add_option(og_set, "time",        ' ', set_time, 		_("Render a single frame at <seconds>"), "seconds");
-	add_option(og_set, "begin-time",  ' ', set_begin_time, 	_("Set the starting time"), "seconds");
-	add_option(og_set, "start-time",  ' ', set_start_time,	_("Set the starting time"), "seconds");
-	add_option(og_set, "end-time",    ' ', set_end_time, 	_("Set the ending time"), "seconds");
+	add_option(og_set, "time",        ' ', set_time, 		_("Render a single frame at <time> in synfig format (e.g. \"0s 6f\")"), "time");
+	add_option(og_set, "begin-time",  ' ', set_begin_time, 	_("Set the starting time in synfig format (e.g. \"0s 6f\")"), "time");
+	add_option(og_set, "start-time",  ' ', set_start_time,	_("Set the starting time in synfig format (e.g. \"0s 6f\")"), "time");
+	add_option(og_set, "end-time",    ' ', set_end_time, 	_("Set the ending time in synfig format (e.g. \"1m 10s 12f\")"), "time");
 	add_option(og_set, "dpi",         ' ', set_dpi, 		_("Set the physical resolution (Dots-per-inch)"), "NUM");
 	add_option(og_set, "dpi-x",       ' ', set_dpi_x, 		_("Set the physical X resolution (Dots-per-inch)"), "NUM");
 	add_option(og_set, "dpi-y",       ' ', set_dpi_y, 		_("Set the physical Y resolution (Dots-per-inch)"), "NUM");
