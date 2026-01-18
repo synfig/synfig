@@ -6,10 +6,10 @@ DIRNAME=`dirname "$0"`
 cd $DIRNAME
 DIRNAME=`pwd`
 
-if ! ( git branch |grep "* testing" ); then
-	echo "ERROR: You should be on branch 'testing' to invoke this command."
-	exit 1
-fi
+#if ! ( git branch |grep "* testing" ); then
+#	echo "ERROR: You should be on branch 'testing' to invoke this command."
+#	exit 1
+#fi
 
 # Get current version
 VERSION_CURRENT=`cat synfig-studio/configure.ac | grep "AC_INIT(\[Synfig Studio\]" | sed 's/.*Studio\],\[\(.*\)\],\[http.*/\1/'`
@@ -34,9 +34,9 @@ git add \
 	# end
 
 git commit -m "Release version ${VERSION_CURRENT}"
-git push upstream testing --force
+git push
 
 #git tag v${VERSION_CURRENT}
 #git push --tags upstream
 
-echo "Done! Now go and create a PR from branch 'testing' to 'master' or 'relevant stable branch."
+echo "Done! Now go and create a PR from your branch to 'master' or relevant stable branch of official Synfig repo."
