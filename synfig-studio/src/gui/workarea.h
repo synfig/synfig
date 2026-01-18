@@ -397,7 +397,7 @@ public:
 	//! Toggles the showing of the guides
 	void toggle_show_guides() { set_show_guides(!get_show_guides()); }
 	//! Returns the state of the lock_guides flag
-	bool get_lock_guides()const { return lock_guides; }
+	bool get_lock_guides() const { return lock_guides; }
 	//! Sets the showing of the guides
 	void set_lock_guides(bool locked);
 	//! Toggles the showing of the guides
@@ -494,7 +494,7 @@ public:
 
 	Gtk::DrawingArea* get_drawing_area() { return drawing_area; }
 	
-	bool get_bool_from_meta_data(const std::string &metaname, bool &value);
+	bool get_bool_from_meta_data(const std::string& metaname, bool& value);
 
 private:
 	/*
