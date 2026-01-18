@@ -1,3 +1,9 @@
+## Version 1.5.4
+- [`3762c11`](https://github.com/synfig/synfig/commit/3762c1108f6a46cd27a59ab376bb594140999028) build(ETL): cleanup dismissed ETL dependencies ([#3523](https://github.com/synfig/synfig/issues/3523))
+- [`ba12519`](https://github.com/synfig/synfig/commit/ba12519bbcc7a9b5c741c7aaa07a45e5b3f6177a) fix: some Coverity Scan reports ([#3507](https://github.com/synfig/synfig/issues/3507))
+- [`3d9c023`](https://github.com/synfig/synfig/commit/3d9c023a08f4d5aff6f129ea283d35cbc3ac9f3d) fix: possible double free due to multithreading with Contour ([#3496](https://github.com/synfig/synfig/issues/3496))
+- [`02b4d08`](https://github.com/synfig/synfig/commit/02b4d0835638b6564d1192a2cc930fd4ff466ea7) refactor: add move constructor to handle/loose_handle/rhandle ([#3417](https://github.com/synfig/synfig/issues/3417))
+- [`41aff7b`](https://github.com/synfig/synfig/commit/41aff7b18ee2150b6627b2b8d5a912134f95ad77) chore: Release version 1.5.3 ([#3410](https://github.com/synfig/synfig/issues/3410))
 ## Version 1.5.3
 - [`4422c5c`](https://github.com/synfig/synfig/commit/4422c5c95b4302afbe59dd2ef7ad6bb679487bde) Bump version to 1.5.3 ([#3402](https://github.com/synfig/synfig/issues/3402))
 - [`f54fada`](https://github.com/synfig/synfig/commit/f54fadad55f2553d46d379ea08cff305cf99ad57) chore: Fix generation of source packages using Autotools ([#3399](https://github.com/synfig/synfig/issues/3399))
