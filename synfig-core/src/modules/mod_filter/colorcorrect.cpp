@@ -97,11 +97,10 @@ apply_saturation_impl(Color& dst, const Color& src, Real saturation, const Gamma
 		// At saturation=0, all components become max_val (grayscale at Value)
 		// At saturation=1, no change
 		// At saturation>1, components move away from max_val (more saturated)
-		// Clamp results to [0,1] range for saturation > 1.0
 		ColorReal sat = static_cast<ColorReal>(saturation);
-		linear.set_r(synfig::clamp(max_val - (max_val - linear.get_r()) * sat, ColorReal(0), ColorReal(1)));
-		linear.set_g(synfig::clamp(max_val - (max_val - linear.get_g()) * sat, ColorReal(0), ColorReal(1)));
-		linear.set_b(synfig::clamp(max_val - (max_val - linear.get_b()) * sat, ColorReal(0), ColorReal(1)));
+		linear.set_r(max_val - (max_val - linear.get_r()) * sat);
+		linear.set_g(max_val - (max_val - linear.get_g()) * sat);
+		linear.set_b(max_val - (max_val - linear.get_b()) * sat);
 
 		// Reapply gamma to return to gamma-corrected space
 		dst = canvas_gamma.apply(linear);
@@ -133,8 +132,8 @@ TaskSaturationSW::run(RunParams&) const
 		if (!lsrc)
 			return false;
 
-		synfig::Surface &dst = ldst->get_surface();
-		const synfig::Surface &src = lsrc->get_surface();
+		synfig::Surface& dst = ldst->get_surface();
+		const synfig::Surface& src = lsrc->get_surface();
 
 		for (int y = rs.miny; y < rs.maxy; ++y) {
 			const Color* src_ptr = &src[y - rd.miny - offset[1]][rs.minx - rd.minx - offset[0]];
