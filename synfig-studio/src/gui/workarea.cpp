@@ -222,7 +222,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	// Create the menu button
 
 	menubutton_box = manage(new Gtk::Button());
-	menubutton_box->set_image_from_icon_name(get_lock_guides()?"changes-prevent-symbolic":"changes-allow-symbolic");
+	menubutton_box->set_image_from_icon_name(get_lock_guides() ? "changes-prevent-symbolic" : "changes-allow-symbolic");
 	menubutton_box->set_relief(Gtk::RELIEF_NONE);
 	menubutton_box->add_events(Gdk::BUTTON_PRESS_MASK);
 	menubutton_box->signal_clicked().connect(sigc::track_obj([this](){
@@ -436,7 +436,7 @@ WorkArea::grab_focus()
 }
 
 bool
-WorkArea::get_bool_from_meta_data(const std::string &metaname, bool &value)
+WorkArea::get_bool_from_meta_data(const std::string& metaname, bool& value)
 {
 	String data = canvas->get_meta_data(metaname);
 	if (data.empty()) return false;
@@ -454,16 +454,16 @@ WorkArea::get_bool_from_meta_data(const std::string &metaname, bool &value)
 void
 WorkArea::load_meta_data()
 {
-    // we need to set locale careful, without calling functions and signals,
-    // otherwise it can affect strings in GUI
-    // ChangeLocale change_locale(LC_NUMERIC, "C");
+	// we need to set locale careful, without calling functions and signals,
+	// otherwise it can affect strings in GUI
+	// ChangeLocale change_locale(LC_NUMERIC, "C");
 
     if(meta_data_lock)
 		return;
 	meta_data_lock=true;
 
 	String data;
-        bool   bool_value; //for get_bool_from_meta_data
+	bool   bool_value; //for get_bool_from_meta_data
 
 	data=canvas->get_meta_data("grid_size");
 	if(!data.empty())
@@ -567,8 +567,7 @@ WorkArea::load_meta_data()
 
 	bool render_required = false;
 	data=canvas->get_meta_data("onion_skin_past");
-	if(!data.empty())
-	{
+	if (!data.empty()) {
 		int past_kf = stratoi(data);
 		if (past_kf > ONION_SKIN_PAST) past_kf = ONION_SKIN_PAST;
 		else if (past_kf < 0) past_kf =  0;
@@ -580,8 +579,7 @@ WorkArea::load_meta_data()
 		}
 	}
 	data=canvas->get_meta_data("onion_skin_future");
-	if(!data.empty())
-	{
+	if (!data.empty()) {
 		int future_kf = stratoi(data);
 		if (future_kf > ONION_SKIN_FUTURE) future_kf = ONION_SKIN_FUTURE;
 		else if (future_kf < 0) future_kf =  0;
@@ -826,7 +824,7 @@ void
 WorkArea::set_lock_guides(bool locked)
 {
 	lock_guides=locked;
-	menubutton_box->set_image_from_icon_name(locked?"changes-prevent-symbolic":"changes-allow-symbolic");
+	menubutton_box->set_image_from_icon_name(locked ? "changes-prevent-symbolic" : "changes-allow-symbolic");
 	save_meta_data();
 	queue_draw();
 }
@@ -1356,26 +1354,26 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				return true;
 			}
 
-			if(guide_highlighted){
+			if (guide_highlighted) {
 				Gtk::Menu* guide_menu(manage(new Gtk::Menu()));
 				guide_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), guide_menu));
 				
 				Gtk::MenuItem* item;
-
 				String lock_unlock_msg = get_lock_guides() ? _("_Unlock Guides") : _("_Lock Guides");
-				item = manage(new Gtk::MenuItem(lock_unlock_msg));
-				item->set_use_underline(true);
-				item->show();
-				item->signal_activate().connect(sigc::track_obj([this](){
-					toggle_lock_guides();
-				}, *this));
-				guide_menu->append(*item);
 				
 				item = manage(new Gtk::MenuItem(_("_Edit Guide")));
 				item->set_use_underline(true);
 				item->show();
 				item->signal_activate().connect(
 						sigc::mem_fun(guide_dialog,&Gtk::Widget::show));
+				guide_menu->append(*item);
+				
+				item = manage(new Gtk::MenuItem(lock_unlock_msg));
+				item->set_use_underline(true);
+				item->show();
+				item->signal_activate().connect(sigc::track_obj([this](){
+					toggle_lock_guides();
+				}, *this));
 				guide_menu->append(*item);
 				
 				item = manage(new Gtk::MenuItem(_("_Delete")));
