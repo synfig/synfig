@@ -432,7 +432,7 @@ Dock_PalEdit::copy_color(int i)
 		synfig::error(_("Trying to get hex code from an invalid index for the palette: %i"), i);
 		return;
 	}
-	// Taking first 7 characters of the color string as they contain the formated #hexadecimal color
+	// Taking first 7 characters of the color string as they contain the formatted #hexadecimal color
 	Glib::RefPtr<Gtk::Clipboard> refClipboard = Gtk::Clipboard::get();
 	refClipboard->set_text(palette_[i].color.get_string().substr(0, 7));
 }
