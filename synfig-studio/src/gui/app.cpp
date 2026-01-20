@@ -1293,7 +1293,7 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 		Gtk::AccelKey accel_key(accel_item.first, accel_item.second);
 		if (accel_key.get_key() == 0)
 			synfig::warning(_("Invalid accelerator: %s (for action: %s)"), accel_item.first, accel_item.second);
-		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());
+		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());		
 	}
 }
 
@@ -4134,3 +4134,13 @@ studio::App::check_python_version(const std::string& path)
 	synfig::warning(err_msg, (std_out + '\n' + std_err).c_str());
 	return false;
 }
+
+void App::focus_tool_options()
+{
+    if (!dialog_tool_options->is_visible()) {
+        dialog_tool_options->present(); 
+    } else {
+        dialog_tool_options->focus_primary_widget();
+    }
+}
+
