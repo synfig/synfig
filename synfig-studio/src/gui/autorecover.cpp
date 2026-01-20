@@ -74,7 +74,7 @@ AutoRecover::set_timer(bool enabled, int timeout_ms)
 	if (timeout_ms < 0) timeout_ms = 0;
 	if (this->enabled != enabled || this->timeout_ms != timeout_ms)
 	{
-		bool env_enabled = !getenv("SYNFIG_DISABLE_AUTO_SAVE");
+		bool env_enabled = !DEBUG_GETENV("SYNFIG_DISABLE_AUTO_SAVE");
 		// if the timer was enabled then disconnect it
 		if (this->enabled && this->timeout_ms > 0 && env_enabled)
 			connection.disconnect();
