@@ -850,7 +850,7 @@ Widget_Timetrack::draw_discrete_animated_times(const Cairo::RefPtr<Cairo::Contex
 	}
 	const double yc = row_info.get_geometry().y + row_info.get_geometry().h/2.;
 	for(std::set<synfig::Time>::const_iterator i = times.begin(); i != times.end(); ++i) {
-		cr->arc(1+time_plot_data->get_pixel_t_coord(*i), yc, 2, 0, 2*3.1415);
+		cr->arc(1+time_plot_data->get_pixel_t_coord(*i), yc, 2, 0, 2*M_PI);
 		cr->fill();
 	}
 }

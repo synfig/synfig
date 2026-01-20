@@ -100,10 +100,6 @@ Keyframe::apply_model(const Waypoint::Model &x)
     has_waypoint_model_ = true;
 }
 
-Keyframe::~Keyframe()
-{
-}
-
 void
 KeyframeList::sync()
 {

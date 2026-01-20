@@ -416,8 +416,7 @@ Intersector::Intersector()
 
 // destroying of MonoSegmentList and CurveArrayList
 // can be done only in this .cpp file
-Intersector::~Intersector()
-	{ }
+Intersector::~Intersector() = default;
 
 void
 Intersector::clear()

@@ -78,7 +78,7 @@ public:
 	Keyframe();
 	Keyframe(const Time &time);
 
-	~Keyframe();
+	~Keyframe() = default;
 
 	void set_time(Time x) { time_=x; }
 	Time get_time() const { return time_; }

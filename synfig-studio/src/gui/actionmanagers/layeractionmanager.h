@@ -91,7 +91,7 @@ public:
 	void queue_refresh();
 
 	LayerActionManager();
-	~LayerActionManager();
+	~LayerActionManager() = default;
 
 	void set_ui_manager(const Glib::RefPtr<Gtk::UIManager> &x);
 	Glib::RefPtr<Gtk::UIManager> get_ui_manager()const { return ui_manager_; }

@@ -47,7 +47,7 @@ struct CurvePoint
 	Point	p;
 	Point	l,r;
 
-	CurvePoint () {}
+	CurvePoint () = default;
 	CurvePoint(const Point &pin, const Vector &left, const Vector &right);
 
 	CurvePoint(const BLinePoint &bpoint);
@@ -68,7 +68,7 @@ public:
 	void SetClamp(int &i, int &si);
 
 	//actual stuff
-	CurveSet() {} //: invert() { }
+	CurveSet() = default; //: invert() { }
 
 	//anything supporting iterator type operations
 	template < typename Iterator >

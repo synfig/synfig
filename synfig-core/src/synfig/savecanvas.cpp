@@ -541,12 +541,10 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 	std::vector<ValueNode_DynamicList::ListEntry> corrected_valuenode_list = value_node->list;
 
 	if (must_rotate_point_list) {
-		if (must_rotate_point_list) {
-			if (corrected_valuenode_list.size() > 0) {
-				auto node = corrected_valuenode_list.front();
-				corrected_valuenode_list.push_back(node);
-				corrected_valuenode_list.erase(corrected_valuenode_list.begin());
-			}
+		if (corrected_valuenode_list.size() > 0) {
+			auto node = corrected_valuenode_list.front();
+			corrected_valuenode_list.push_back(node);
+			corrected_valuenode_list.erase(corrected_valuenode_list.begin());
 		}
 	}
 

@@ -60,7 +60,7 @@ public:
 	{
 		Vector position;
 		Vector tex_coords;
-		Vertex() { }
+		Vertex() = default;
 		Vertex(const Vector &position, const Vector &tex_coords):
 			position(position), tex_coords(tex_coords) { }
 	};

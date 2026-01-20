@@ -122,7 +122,7 @@ public:
 	Color color;
 
 	Contour();
-	~Contour();
+	~Contour() = default;
 
 	inline bool closed() const
 		{ return (int)chunks.size() <= first; }

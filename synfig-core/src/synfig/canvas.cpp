@@ -1171,7 +1171,7 @@ Canvas::set_file_name(const String &file_name_orig)
 		// when a canvas is made, its name is ""
 		// then, before it's saved or even edited, it gets a name like "Synfig Animation 23", in the local language
 		// we don't want to register the canvas' filename in the canvas map until it gets a real filename
-		if (old_name != "")
+		if (!old_name.empty())
 		{
 			const auto& canvas_map = get_open_canvas_map();
 			if (canvas_map.find(this) == canvas_map.end())

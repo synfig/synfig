@@ -64,7 +64,7 @@ class Rect;
 class IndependentContext: public CanvasBase::const_iterator
 {
 public:
-	IndependentContext() { }
+	IndependentContext() = default;
 
 	//! Constructor based on other CanvasBase iterator
 	IndependentContext(const CanvasBase::const_iterator &x):CanvasBase::const_iterator(x) { }
@@ -126,7 +126,7 @@ private:
 
 public:
 
-	Context() { }
+	Context() = default;
 
 	//! Constructor based on IndependentContext.
 	Context(const IndependentContext &x, const ContextParams &params):

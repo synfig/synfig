@@ -289,7 +289,7 @@ void SynfigCommandLineParser::extract_canvas_info(Job& job)
 		if (pos == std::string::npos)
 		{
 			value = values;
-			values = "";
+			values.clear();
 		}
 		else
 		{

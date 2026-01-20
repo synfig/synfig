@@ -137,7 +137,7 @@ namespace synfig
 		public:
 			FileSystem::Handle file_system;
 			filesystem::Path filename;
-			Identifier() { }
+			Identifier() = default;
 			Identifier(const FileSystem::Handle &file_system, const String &filename):
 				file_system(file_system), filename(filename) { }
 

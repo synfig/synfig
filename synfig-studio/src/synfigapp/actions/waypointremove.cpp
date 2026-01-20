@@ -145,7 +145,7 @@ Action::WaypointRemove::perform()
 
 		// fix 2256600 (and 2321845) : deleting the last waypoint of an exported valuenode unexported it
 		// if the waypoint's value isn't exported, set its id to be the id of the parent node
-		if (value_node_ref->get_id() == "" && value_node->get_id() != "")
+		if (value_node_ref->get_id().empty() && !value_node->get_id().empty())
 		{
 			const String id(value_node->get_id());
 			Canvas::LooseHandle canvas(value_node->get_parent_canvas());
@@ -173,7 +173,7 @@ Action::WaypointRemove::undo()
 		if(value_node->waypoint_list().size()!=0)
 			throw Error(_("This animated value node should be empty, but for some reason it isn't. This is a bug. (1)"));
 
-		if (value_node->get_id() == "" && value_node_ref->get_id() != "")
+		if (value_node->get_id().empty() && !value_node_ref->get_id().empty())
 		{
 			const String id(value_node_ref->get_id());
 			Canvas::LooseHandle canvas(value_node_ref->get_parent_canvas());

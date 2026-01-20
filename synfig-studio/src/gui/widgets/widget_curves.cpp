@@ -147,7 +147,7 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 	void add_channel(const String &name, const std::string& color, const std::string& dark_theme_color)
 		{ add_channel(name, Gdk::RGBA(color), Gdk::RGBA(dark_theme_color)); }
 
-	CurveStruct() { }
+	CurveStruct() = default;
 
 	explicit CurveStruct(const ValueDesc& x, std::string name)
 		: name(name)

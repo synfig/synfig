@@ -70,7 +70,7 @@ exr_trgt::exr_trgt(const synfig::filesystem::Path& Filename, const synfig::Targe
 
 exr_trgt::~exr_trgt()
 {
-	if(exr_file) delete exr_file;
+	delete exr_file;
 }
 
 bool
@@ -107,8 +107,7 @@ exr_trgt::start_frame(synfig::ProgressCallback *cb)
 {
 	int w=desc.get_w(),h=desc.get_h();
 
-	if (exr_file)
-		delete exr_file;
+	delete exr_file;
 
 	synfig::filesystem::Path frame_name = filename;
 

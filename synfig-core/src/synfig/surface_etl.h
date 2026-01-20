@@ -32,6 +32,7 @@
 
 #include <algorithm>
 #include <cstring>
+#include <math.h>
 
 #include <synfig/misc.h>
 #include <synfig/pen.h>
@@ -123,8 +124,8 @@ public:
 		int u, v; float_type a, b;
 		prepare_coords(x, y, u, v, a, b);
 
-		a=(float_type(1) - cos(a*float_type(3.1415927)))*float_type(0.5);
-		b=(float_type(1) - cos(b*float_type(3.1415927)))*float_type(0.5);
+		a=(float_type(1) - cos(a*float_type(M_PI)))*float_type(0.5);
+		b=(float_type(1) - cos(b*float_type(M_PI)))*float_type(0.5);
 
 		const float_type c(float_type(1)-a), d(float_type(1)-b);
 

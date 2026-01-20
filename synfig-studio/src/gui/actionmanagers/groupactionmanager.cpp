@@ -69,9 +69,6 @@ GroupActionManager::GroupActionManager():
 	queued(false)
 { }
 
-GroupActionManager::~GroupActionManager()
-{ }
-
 void
 GroupActionManager::set_ui_manager(const Glib::RefPtr<Gtk::UIManager> &x)
 {

@@ -199,7 +199,7 @@ void Dock_Timetrack2::setup_toolbar()
 
 	const std::vector<ActionButtonInfo> tools_info {
 		{"tool_smooth_move_icon", _("Move waypoints\n\nSelect waypoints and drag them along the timetrack."),
-					std::string(""), Widget_Timetrack::ActionState::MOVE},
+					std::string(), Widget_Timetrack::ActionState::MOVE},
 		{"duplicate_icon", _("Duplicate waypoints\n\nAfter selecting waypoints, drag to duplicate them and place them in another time point."),
 					_("Shift"), Widget_Timetrack::ActionState::COPY},
 		{"tool_scale_icon", _("Scale waypoints\n\nAfter selecting more than one waypoint, drag them to change their timepoint regarding current time."),
