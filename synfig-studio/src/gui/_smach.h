@@ -475,16 +475,22 @@ public:
 		curr_state = nextstate;
 		if (curr_state) {
 			state_context = curr_state->enter_state(machine_context);
-			if (state_context)
+			if (state_context) {
 				return true;
+			} else {
+				return false;
+			}
 		}
 		
 		// If we had a previous state, enter it
 		curr_state = prev_state;
 		if (curr_state) {
 			state_context = curr_state->enter_state(machine_context);
-			if (!state_context)
-				curr_state = 0;
+			if (!state_context) {
+				return false;
+			} else {
+				return true;
+			}
 		}
 
 		// At this point we are not in the

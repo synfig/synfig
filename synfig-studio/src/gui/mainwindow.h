@@ -82,6 +82,8 @@ namespace studio {
 		void save_custom_workspace();
 		static void edit_custom_workspace_list();
 
+		void refresh_menu_icon_offset();
+
 	protected:
 		virtual bool on_key_press_event(GdkEventKey *key_event);
 
