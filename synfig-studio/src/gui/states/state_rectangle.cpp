@@ -257,7 +257,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateRectangle::StateRectangle():
-	Smach::state<StateRectangle_Context>("rectangle", N_("Rectangle Tool"))
+	Smach::state<StateRectangle_Context>("rectangle", N_("Rectangle"))
 {
 	insert(event_def(EVENT_STOP,&StateRectangle_Context::event_stop_handler));
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateRectangle_Context::event_layer_selection_changed_handler));
