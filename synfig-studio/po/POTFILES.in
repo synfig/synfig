@@ -285,6 +285,7 @@ src/gui/instance.h
 src/gui/keymapsettings.cpp
 src/gui/keymapsettings.h
 src/gui/main.cpp
+src/gui/main_win32.cpp
 src/gui/mainwindow.cpp
 src/gui/mainwindow.h
 src/gui/onemoment.cpp
