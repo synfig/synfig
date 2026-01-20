@@ -44,6 +44,45 @@
 
 using namespace studio;
 
+static std::string
+escape_name(const std::string& name) {
+	std::string escaped_name;
+	for (char c : name) {
+		if (c == '*') {
+			escaped_name += "\\*";  // Escapa o asterisco com a barra invertida
+		} else if (c == '\\') {
+			escaped_name += "\\\\"; // Escapa a barra invertida
+		} else {
+			escaped_name += c; // Mantém os outros caracteres inalterados
+		}
+	}
+	return escaped_name;
+}
+
+static std::string
+unescape_name(const std::string& escaped_name)
+{
+	std::string name;
+	size_t i = 0;
+	while (i < escaped_name.size()) {
+		if (escaped_name[i] == '\\' && i + 1 < escaped_name.size()) {
+			if (escaped_name[i + 1] == '*') {
+				name += '*';
+			} else if (escaped_name[i + 1] == '\\') {
+				name += '\\';
+			} else {
+				name += '_';
+			}
+			i += 2;
+		} else {
+			name += escaped_name[i];
+			i++;
+		}
+	}
+	return name;
+}
+
+
 WorkspaceHandler::WorkspaceHandler()
 {
 }
@@ -128,8 +167,11 @@ WorkspaceHandler::save(const synfig::filesystem::Path& filename)
 		synfig::error(_("Can't save custom workspaces"));
 		return false;
 	}
-	for (auto it = workspaces.begin(); it != workspaces.end(); ++it)
-		ofs << it->first << "=" << it->second << std::endl;
+	for (auto it = workspaces.begin(); it != workspaces.end(); ++it) {
+		if (is_favorite(it->first))
+			ofs << '*';
+		ofs << escape_name(it->first) << "=" << it->second << std::endl;
+	}
 	ofs.close();
 	return true;
 }
@@ -152,6 +194,13 @@ WorkspaceHandler::load(const synfig::filesystem::Path& filename)
 		}
 
 		std::string name = line.substr(0, pos);
+		bool is_favorite = !name.empty() && name[0] == '*';
+		if (is_favorite)
+			name = name.substr(1);
+		name = unescape_name(name);
+		if (is_favorite)
+			favorite_workspace_name_ = name;
+
 		if (has_workspace(name)) {
 			synfig::warning(_("ignoring duplicated workspace name: %s"), name.c_str());
 			continue;
@@ -163,6 +212,35 @@ WorkspaceHandler::load(const synfig::filesystem::Path& filename)
 	}
 	if (count > 0)
 		signal_list_changed_.emit();
+}
+
+bool
+WorkspaceHandler::favorite(const std::string& name)
+{
+	if (name.empty())
+		return false;
+	favorite_workspace_name_ = name;
+	signal_list_changed_.emit();
+	return true;
+}
+
+void
+studio::WorkspaceHandler::clear_favorite()
+{
+	favorite_workspace_name_.clear();
+	signal_list_changed_.emit();
+}
+
+std::string
+studio::WorkspaceHandler::get_favorite() const
+{
+	return favorite_workspace_name_;
+}
+
+bool
+studio::WorkspaceHandler::is_favorite(const std::string& name) const
+{
+	return name == favorite_workspace_name_;
 }
 
 sigc::signal<void>& WorkspaceHandler::signal_list_changed()
