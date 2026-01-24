@@ -76,6 +76,7 @@
 #include <gui/autorecover.h>
 #include <gui/canvasview.h>
 #include <gui/devicetracker.h>
+#include <gui/updatechecker.h>
 
 #include <gui/dialogs/about.h>
 #include <gui/dialogs/dialog_color.h>
@@ -1792,6 +1793,8 @@ void App::init(const synfig::String& rootpath)
 		main_window->present();
 
 		splash_screen.hide();
+
+		update_checker::start_async();
 	}
 	catch(String &x)
 	{

@@ -33,6 +33,10 @@
 #include <gtkmm/actiongroup.h>
 #include <gtkmm/applicationwindow.h>
 
+#include <string>
+
+namespace Gtk { class MenuItem; }
+
 #include <synfig/filesystem_path.h>
 #include <synfig/string.h>
 
@@ -53,6 +57,8 @@ namespace studio {
 		Gtk::Bin *bin_;
 		DockBook *main_dock_book_;
 		Glib::RefPtr<Gtk::ActionGroup> window_action_group;
+		Gtk::MenuItem* update_menu_item_;
+		std::string update_landing_url_;
 
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
@@ -67,6 +73,7 @@ namespace studio {
 		void on_dockable_unregistered(Dockable* dockable);
 		void toggle_show_menubar();
 		void toggle_show_toolbar();
+		void on_update_notification_clicked();
 
 		static void save_all();
 
@@ -88,6 +95,8 @@ namespace studio {
 	public:
 		MainWindow(const Glib::RefPtr<Gtk::Application>& application);
 		virtual ~MainWindow();
+
+		void show_update_notification(const std::string& url, const std::string& version_text);
 
 		Gtk::Bin& root() { return *bin_; }
 		const Gtk::Bin& root() const { return *bin_; }

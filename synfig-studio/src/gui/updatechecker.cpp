@@ -1,0 +1,179 @@
+/* === S Y N F I G ========================================================= */
+/*! \file gui/updatechecker.cpp
+**  \brief Online update checker
+**
+**  \legal
+**	Copyright (c) 2026 036006
+**
+**	This file is part of Synfig.
+**
+**	Synfig is free software: you can redistribute it and/or modify
+**	it under the terms of the GNU General Public License as published by
+**	the Free Software Foundation, either version 2 of the License, or
+**	(at your option) any later version.
+**
+**	Synfig is distributed in the hope that it will be useful,
+**	but WITHOUT ANY WARRANTY; without even the implied warranty of
+**	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+**	GNU General Public License for more details.
+**
+**	You should have received a copy of the GNU General Public License
+**	along with Synfig.  If not, see <https://www.gnu.org/licenses/>.
+**	\endlegal
+*/
+/* ========================================================================= */
+
+/* === H E A D E R S ======================================================= */
+
+#ifdef USING_PCH
+#  include "pch.h"
+#else
+#ifdef HAVE_CONFIG_H
+#  include <config.h>
+#endif
+
+#include "gui/updatechecker.h"
+
+#include <autorevision.h>
+#include <gui/app.h>
+#include <gui/mainwindow.h>
+
+#include <synfig/general.h>
+
+#include <giomm/file.h>
+#include <glibmm/main.h>
+
+#include <algorithm>
+#include <atomic>
+#include <cstdlib>
+#include <regex>
+#include <string>
+#include <thread>
+#include <vector>
+
+#endif
+
+/* === U S I N G =========================================================== */
+
+using namespace studio;
+using namespace synfig;
+
+/* === M A C R O S ========================================================= */
+
+/* === G L O B A L S ======================================================= */
+
+namespace {
+
+#if defined(DEVELOPMENT_SNAPSHOT) && DEVELOPMENT_SNAPSHOT
+static constexpr bool is_development_snapshot = true;
+#else
+static constexpr bool is_development_snapshot = false;
+#endif
+
+std::atomic<bool> update_checker_started(false);
+
+} // anonymous namespace
+
+namespace studio { namespace update_checker {
+
+std::string check_url_dev = "https://synfig.org/download/latest-dev.txt";
+std::string landing_url_dev = "https://www.synfig.org/download-development/";
+std::string check_url_stable = "https://synfig.org/download/latest-stable.txt";
+std::string landing_url_stable = "https://www.synfig.org/download-stable/";
+
+} } // namespace studio::update_checker
+
+/* === P R O C E D U R E S ================================================= */
+
+namespace {
+
+std::vector<int> version_parts(const std::string& value)
+{
+	std::vector<int> result;
+	std::regex number_re("\\d+");
+	for (std::sregex_iterator it(value.begin(), value.end(), number_re); it != std::sregex_iterator(); ++it)
+		result.push_back(std::stoi(it->str()));
+	return result;
+}
+
+int compare_versions(const std::string& lhs, const std::string& rhs)
+{
+	const std::vector<int> lparts = version_parts(lhs);
+	const std::vector<int> rparts = version_parts(rhs);
+	const size_t count = std::max(lparts.size(), rparts.size());
+	for (size_t i = 0; i < count; ++i) {
+		const int l = i < lparts.size() ? lparts[i] : 0;
+		const int r = i < rparts.size() ? rparts[i] : 0;
+		if (l < r) return -1;
+		if (l > r) return 1;
+	}
+	return 0;
+}
+
+std::string fetch_uri_content(const std::string& uri)
+{
+	try {
+		auto file = Gio::File::create_for_uri(uri);
+		auto stream = file->read();
+		if (!stream)
+			return std::string();
+		std::string buffer;
+		char chunk[4096];
+		while (true) {
+			const gssize read_bytes = stream->read(chunk, sizeof(chunk));
+			if (read_bytes <= 0) break;
+			buffer.append(chunk, static_cast<size_t>(read_bytes));
+		}
+		return buffer;
+	} catch (const Glib::Error& err) {
+		synfig::warning("Update check failed: %s", err.what().c_str());
+	} catch (const std::exception& ex) {
+		synfig::warning("Update check exception: %s", ex.what());
+	}
+	return std::string();
+}
+
+std::string extract_plain_version(const std::string& body)
+{
+	const auto pos = body.find_first_not_of(" \t\r\n");
+	if (pos == std::string::npos)
+		return std::string();
+	const auto end = body.find_first_of("\r\n", pos);
+	return body.substr(pos, end == std::string::npos ? body.size() - pos : end - pos);
+}
+
+} // anonymous namespace
+
+namespace studio { namespace update_checker {
+
+void start_async()
+{
+	if (update_checker_started.exchange(true))
+		return;
+
+	std::thread([]() {
+		const std::string check_url = is_development_snapshot ? check_url_dev : check_url_stable;
+		const std::string landing_url = is_development_snapshot ? landing_url_dev : landing_url_stable;
+
+		const std::string body = fetch_uri_content(check_url);
+		if (body.empty())
+			return;
+
+		// Plain-text format: first non-empty line is version string
+		const std::string remote_version = extract_plain_version(body);
+		if (remote_version.empty())
+			return;
+
+		const std::string local_version = VERSION;
+		if (compare_versions(local_version, remote_version) >= 0)
+			return;
+
+		Glib::signal_idle().connect_once([remote_version, landing_url]() {
+			if (!App::main_window)
+				return;
+			App::main_window->show_update_notification(landing_url, remote_version);
+		});
+	}).detach();
+}
+
+} } // namespace studio::update_checker

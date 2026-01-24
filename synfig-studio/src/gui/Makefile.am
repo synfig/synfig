@@ -63,6 +63,7 @@ OTHER_HH = \
 	splash.h \
 	statemanager.h \
 	timeplotdata.h \
+	updatechecker.h \
 	waypointrenderer.h \
 	workarea.h \
 	workspacehandler.h \
@@ -92,6 +93,7 @@ OTHER_CC = \
 	splash.cpp \
 	statemanager.cpp \
 	timeplotdata.cpp \
+	updatechecker.cpp \
 	waypointrenderer.cpp \
 	workarea.cpp \
 	workspacehandler.cpp \

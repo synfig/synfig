@@ -35,6 +35,8 @@
 #include <gui/mainwindow.h>
 
 #include <gtkmm/box.h>
+#include <gtkmm/menubar.h>
+#include <gtkmm/menuitem.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
@@ -87,7 +89,7 @@ escape_underline(const std::string& raw)
 
 MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
 	: Gtk::ApplicationWindow(application),
-	  save_workspace_merge_id(0), custom_workspaces_merge_id(0)
+	  save_workspace_merge_id(0), custom_workspaces_merge_id(0), update_menu_item_(nullptr)
 {
 	register_custom_widget_types();
 
@@ -294,6 +296,38 @@ MainWindow::toggle_show_toolbar()
 		const Instance::CanvasViewList& views = instance->canvas_view_list();
 		for (auto& canvas_view : views)
 			canvas_view->set_show_toolbars(App::enable_mainwin_toolbar);
+	}
+}
+
+void
+MainWindow::on_update_notification_clicked()
+{
+	if (update_landing_url_.empty())
+		return;
+	App::open_uri(update_landing_url_);
+}
+
+void
+MainWindow::show_update_notification(const std::string& url, const std::string& version_text)
+{
+	update_landing_url_ = url;
+	const std::string label = version_text.empty()
+			? _("Update available")
+			: synfig::strprintf("%s (%s)", _("Update available"), version_text.c_str());
+	
+	if (!update_menu_item_) {
+		auto menubar_widget = App::ui_manager()->get_widget("/menubar-main");
+		auto menubar = dynamic_cast<Gtk::MenuBar*>(menubar_widget);
+		if (!menubar)
+			return;
+
+		update_menu_item_ = Gtk::manage(new Gtk::MenuItem(label, false));
+		update_menu_item_->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_update_notification_clicked));
+		menubar->append(*update_menu_item_);
+		update_menu_item_->show();
+	} else {
+		update_menu_item_->set_label(label);
+		update_menu_item_->show();
 	}
 }
 
