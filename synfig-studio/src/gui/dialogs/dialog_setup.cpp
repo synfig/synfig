@@ -252,6 +252,13 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	toggle_enable_experimental_features.set_halign(Gtk::ALIGN_START);
 	toggle_enable_experimental_features.set_hexpand(false);
 
+	// System - online update check
+	attach_label_section(pi.grid, _("Online updates"), ++row);
+	pi.grid->attach(toggle_enable_update_check, 1, row, 1, 1);
+	toggle_enable_update_check.set_halign(Gtk::ALIGN_START);
+	toggle_enable_update_check.set_hexpand(false);
+	toggle_enable_update_check.set_active(App::enable_update_check);
+
 	// System - clear_redo_stack_on_new_action
 	attach_label_section(pi.grid, _("Clear redo history on new action"), ++row);
 	pi.grid->attach(toggle_clear_redo_stack_on_new_action, 1, row, 1, 1);
@@ -1088,6 +1095,9 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set the use of a render done sound
 	App::use_render_done_sound  = toggle_play_sound_on_render_done.get_active();
+
+	// Set whether update checks are performed on startup
+	App::enable_update_check = toggle_enable_update_check.get_active();
 	
 	// Set the preview background color
 	m_color = preview_background_color_button.get_rgba();
@@ -1288,6 +1298,9 @@ Dialog_Setup::refresh()
 
 	// Refresh the status of the experimental features flag
 	toggle_enable_experimental_features.set_active(App::enable_experimental_features);
+
+	// Refresh the status of the online update check flag
+	toggle_enable_update_check.set_active(App::enable_update_check);
 
 	// Refresh the status of the experimental features flag
 	{
