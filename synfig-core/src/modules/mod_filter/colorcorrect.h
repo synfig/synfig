@@ -35,6 +35,8 @@
 #include <synfig/angle.h>
 #include <synfig/color.h>
 #include <synfig/rect.h>
+#include <synfig/rendering/common/task/taskpixelprocessor.h>
+#include <synfig/rendering/software/task/tasksw.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -45,6 +47,38 @@
 namespace synfig {
 namespace modules {
 namespace mod_filter {
+
+//! Task for RGB-based saturation adjustment
+class TaskSaturation: public rendering::TaskPixelProcessor
+{
+public:
+	typedef etl::handle<TaskSaturation> Handle;
+	static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Real saturation;
+	Gamma canvas_gamma;  //!< Canvas gamma for linearization
+
+	TaskSaturation(): saturation(1.0), canvas_gamma(1.0) { }
+
+	bool is_transparent() const
+		{ return approximate_equal_lp(saturation, Real(1.0)); }
+};
+
+
+//! Software implementation of TaskSaturation
+class TaskSaturationSW: public TaskSaturation, public rendering::TaskSW
+{
+public:
+	typedef etl::handle<TaskSaturationSW> Handle;
+	static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	bool run(RunParams& params) const override;
+private:
+	void apply_saturation(Color& dst, const Color& src) const;
+};
+
 
 class Layer_ColorCorrect : public Layer
 {
@@ -59,6 +93,8 @@ private:
 	ValueBase param_contrast;
 	//! Parameter: (Real)
 	ValueBase param_exposure;
+	//! Parameter: (Real)
+	ValueBase param_saturation;
 	//! Parameter: (Real)
 	ValueBase param_gamma;
 	// This gamma member is kept to avoid need to recalculate the gamma table
