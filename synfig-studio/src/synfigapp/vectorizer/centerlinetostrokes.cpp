@@ -704,7 +704,7 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
   KyL         = (ellProd(a, y) / 15.0) + (ellProd(f, y) / 10.0);
   MxO         = ((e * x) / 15.0) + (ellProd(f, x) / 10.0);
 
-  // Infine, ho il termine noto
+  // Finally, we have the known term
   l = synfig::Point(ellProd(IH, x) - HxL + ellProd(IM, x) - MxO,
               ellProd(IK, y) - KyL + ellProd(IN_, y) - NyO);
   M.m20 = -l[0];

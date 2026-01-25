@@ -615,7 +615,7 @@ public:
 	//! Get the needed renddesc for context layers.
 	/*!
 	 * For the given renddesc argument, returns the computed
-	 * neeed renddesc for the underlying layer.
+	 * need renddesc for the underlying layer.
 	 * It basically sets the vector rectangle coordinates of
 	 * the context/underlying layer.
 	 *

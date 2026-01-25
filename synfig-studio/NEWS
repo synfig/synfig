@@ -1089,7 +1089,7 @@
   * Guides are not dragged if not visible. Fix bug
   * Add undo capability for guides.
   * Snap to guides is now relative to zoom.
-  * OptionMenu (deprecatd) has been replaced by ComboBox.
+  * OptionMenu (deprecated) has been replaced by ComboBox.
   * When change the Setup Dialog, spread it immediately to the canvas's rules.
   * Circle, Rectangle, Star and Polygon Tools allows create Advanced Outlines Layers.
   * Linked to BLine has the option of be curve length based. On by default.
@@ -1540,7 +1540,7 @@
 2003-10-21 (darco) : A dialog box will now pop up whenever it is unable to open a composition
 2003-10-21 (darco) : Added placeholders for icons
 2003-10-21 (darco) : Fixed most (all?) of the crazy Gtk/Glib errors.
-2003-10-19 (darco) : Fixed a bug where the "Use Current Frame" option in the Render Dialog was not being checked properly (meaning you couldn't render animatons)
+2003-10-19 (darco) : Fixed a bug where the "Use Current Frame" option in the Render Dialog was not being checked properly (meaning you couldn't render animations)
 2003-10-15 (darco) : Added eyedrop tool icon
 2003-10-15 (darco) : Improved scrolling of work area
 2003-10-15 (darco) : Added Eyedrop tool
