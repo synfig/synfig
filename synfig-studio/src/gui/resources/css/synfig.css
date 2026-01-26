@@ -119,3 +119,15 @@
 #layers_panel .even {
 	background-color: rgba(0,0,0,0.05);
 }
+
+/* Highlight update notification menu item */
+menuitem.update-available,
+menuitem.update-available:hover,
+menuitem.update-available:active {
+	background: #ffd666;
+	color: #1f1f1f;
+}
+
+menuitem.update-available * {
+	color: #1f1f1f;
+}

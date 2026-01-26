@@ -35,6 +35,7 @@
 #include <gui/mainwindow.h>
 
 #include <gtkmm/box.h>
+#include <gtkmm/stylecontext.h>
 #include <gtkmm/menubar.h>
 #include <gtkmm/menuitem.h>
 #include <gtkmm/messagedialog.h>
@@ -322,6 +323,7 @@ MainWindow::show_update_notification(const std::string& url, const std::string& 
 			return;
 
 		update_menu_item_ = Gtk::manage(new Gtk::MenuItem(label, false));
+		update_menu_item_->get_style_context()->add_class("update-available");
 		update_menu_item_->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_update_notification_clicked));
 		menubar->append(*update_menu_item_);
 		update_menu_item_->show();
