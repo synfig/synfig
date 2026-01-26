@@ -1,5 +1,10 @@
 @import url("synfig_dialog.css");
 
+/* Highlight update notification menu item */
+menuitem.update-available * {
+	color: #1f1f1f;
+}
+
 #render-progress * {
 	min-height: 30px;
 }
@@ -125,9 +130,5 @@ menuitem.update-available,
 menuitem.update-available:hover,
 menuitem.update-available:active {
 	background: #ffd666;
-	color: #1f1f1f;
-}
-
-menuitem.update-available * {
 	color: #1f1f1f;
 }
