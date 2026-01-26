@@ -36,10 +36,10 @@
 
 namespace studio { namespace update_checker {
 
-extern std::string check_url_dev;
-extern std::string landing_url_dev;
-extern std::string check_url_stable;
-extern std::string landing_url_stable;
+extern const std::string check_url_dev;
+extern const std::string landing_url_dev;
+extern const std::string check_url_stable;
+extern const std::string landing_url_stable;
 
 // Starts asynchronous online update check (no-op if already started)
 void start_async();

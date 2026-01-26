@@ -76,10 +76,10 @@ std::atomic<bool> update_checker_started(false);
 
 namespace studio { namespace update_checker {
 
-std::string check_url_dev = "https://synfig.org/download/latest-dev.txt";
-std::string landing_url_dev = "https://www.synfig.org/download-development/";
-std::string check_url_stable = "https://synfig.org/download/latest-stable.txt";
-std::string landing_url_stable = "https://www.synfig.org/download-stable/";
+const std::string check_url_dev = "https://synfig.org/download/latest-dev.txt";
+const std::string landing_url_dev = "https://www.synfig.org/download-development/";
+const std::string check_url_stable = "https://synfig.org/download/latest-stable.txt";
+const std::string landing_url_stable = "https://www.synfig.org/download-stable/";
 
 } } // namespace studio::update_checker
 
