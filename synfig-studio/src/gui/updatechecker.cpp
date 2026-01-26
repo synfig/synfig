@@ -46,7 +46,7 @@
 #include <algorithm>
 #include <atomic>
 #include <cstdlib>
-#include <regex>
+#include <cctype>
 #include <string>
 #include <thread>
 #include <vector>
@@ -90,9 +90,18 @@ namespace {
 std::vector<int> version_parts(const std::string& value)
 {
 	std::vector<int> result;
-	std::regex number_re("\\d+");
-	for (std::sregex_iterator it(value.begin(), value.end(), number_re); it != std::sregex_iterator(); ++it)
-		result.push_back(std::stoi(it->str()));
+	int current = -1;
+	for (char ch : value) {
+		if (std::isdigit(static_cast<unsigned char>(ch))) {
+			if (current < 0) current = 0;
+			current = current * 10 + (ch - '0');
+		} else if (current >= 0) {
+			result.push_back(current);
+			current = -1;
+		}
+	}
+	if (current >= 0)
+		result.push_back(current);
 	return result;
 }
 
