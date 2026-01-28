@@ -217,6 +217,7 @@ public:
 	static bool enable_experimental_features;
 	static bool use_dark_theme;
 	static bool show_file_toolbar;
+	static bool enable_update_check;
 
 	static PluginManager plugin_manager;
 	static synfig::String image_editor_path;

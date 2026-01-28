@@ -8,6 +8,10 @@ AM_SILENT_RULES([yes])
 
 AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, true)
 
+AS_IF([test "x$DEVELOPMENT_SNAPSHOT_TRUE" != "x#"], [
+    AC_DEFINE([DEVELOPMENT_SNAPSHOT], [1], [Build is development snapshot])
+])
+
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
