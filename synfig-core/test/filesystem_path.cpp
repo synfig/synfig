@@ -258,10 +258,13 @@ test_compare_path_both_has_same_relative_path_size()
 	Path q1("/a/b");
 	Path q2("/a/c");
 	ASSERT_EQUAL(0, q1.compare(q1))
-	ASSERT_EQUAL(-1, q1.compare(q2))
-	ASSERT_EQUAL(1, q2.compare(q1))
+	ASSERT(0 > q1.compare(q2))
+	ASSERT(0 < q2.compare(q1))
 
 	ASSERT(0 > Path("/aa/").compare(Path("/ac/")))
+	ASSERT(0 < Path("/ac/").compare(Path("/aa/")))
+
+	ASSERT(0 > Path("/aa").compare(Path("/ac")))
 	ASSERT(0 < Path("/ac").compare(Path("/aa")))
 
 	ASSERT(0 > Path("aa/abb").compare(Path("aa/c")))
