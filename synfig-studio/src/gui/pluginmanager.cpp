@@ -219,14 +219,14 @@ studio::ImportExport studio::ImportExport::load(const xmlpp::Node& node)
 			ie.extensions.push_back("." + text->get_content());
 	}
 
-	ie.description = PluginString::load(node, "description");
+	ie.metadata.description = PluginString::load(node, "description");
 
 	return ie;
 }
 
 bool studio::ImportExport::is_valid() const
 {
-	return !description.fallback().empty() && !extensions.empty();
+	return !metadata.description.fallback().empty() && !extensions.empty();
 }
 
 bool studio::ImportExport::has_extension(const std::string& ext) const
@@ -294,13 +294,13 @@ studio::PluginManager::load_plugin( const synfig::filesystem::Path& file, const 
 			plugin.id = id;
 			plugin.dir = plugindir;
 
-			plugin.release = PluginString::load(*pNode, "release");
+			plugin.metadata.release = PluginString::load(*pNode, "release");
 			for ( const xmlpp::Node* node : pNode->find("./author") )
 			{
 				if ( node ) {
 					const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
 					if ( const xmlpp::TextNode* text = element->get_child_text() )
-						plugin.author = text->get_content();
+						plugin.metadata.author = text->get_content();
 				}
 			}
 			for ( const xmlpp::Node* node : pNode->find("./version") )
@@ -308,7 +308,7 @@ studio::PluginManager::load_plugin( const synfig::filesystem::Path& file, const 
 				if ( node ) {
 					const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
 					if ( const xmlpp::TextNode* text = element->get_child_text() )
-						plugin.version = std::atoi(text->get_content().c_str());
+						plugin.metadata.version = std::atoi(text->get_content().c_str());
 				}
 			}
 			for ( const xmlpp::Node* node : pNode->find("./url") )
@@ -316,10 +316,10 @@ studio::PluginManager::load_plugin( const synfig::filesystem::Path& file, const 
 				if ( node ) {
 					const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
 					if ( const xmlpp::TextNode* text = element->get_child_text() )
-						plugin.url = text->get_content();
+						plugin.metadata.url = text->get_content();
 				}
 			}
-			plugin.description = PluginString::load(*pNode, "description");
+			plugin.metadata.description = PluginString::load(*pNode, "description");
 
 			if ( !plugin.is_valid() || !script.is_valid() ) {
 				synfig::warning(_("Invalid plugin metadata description"));

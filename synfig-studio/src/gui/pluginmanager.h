@@ -98,12 +98,23 @@ struct PluginScript
 	bool is_valid() const;
 };
 
+class PluginMetadata
+{
+public:
+	std::string author;
+	PluginString release;
+	int version;
+	std::string url;
+
+	PluginString description;
+};
+
 class ImportExport
 {
 public:
 	std::string id;
 	std::vector<std::string> extensions;
-	PluginString description;
+	PluginMetadata metadata;
 
 	static ImportExport load(const xmlpp::Node& node);
 
@@ -119,12 +130,7 @@ public:
 	synfig::filesystem::Path dir;
 	PluginString name;
 
-	std::string author;
-	PluginString release;
-	int version;
-	std::string url;
-
-	PluginString description;
+	PluginMetadata metadata;
 
 	bool is_valid() const;
 
