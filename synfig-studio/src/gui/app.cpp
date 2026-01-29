@@ -2739,7 +2739,7 @@ App::dialog_select_importer(const synfig::filesystem::Path& filename, std::strin
 		if ( importer.has_extension(ext) )
 		{
 			plugin = importer.id;
-			combo_importers.append(importer.id, importer.description.get());
+			combo_importers.append(importer.id, importer.metadata.description.get());
 			if ( count == 0 )
 				combo_importers.set_active_id(importer.id);
 			count++;
@@ -2797,7 +2797,7 @@ App::dialog_open_file_with_history_button(const std::string& title, filesystem::
 	for ( const ImportExport& exp : plugin_manager.importers() )
 	{
 		Glib::RefPtr<Gtk::FileFilter> filter = Gtk::FileFilter::create();
-		filter->set_name(exp.description.get());
+		filter->set_name(exp.metadata.description.get());
 		for ( const std::string& extension : exp.extensions )
 		{
 			filter->add_pattern("*" + extension);
@@ -2831,7 +2831,7 @@ App::dialog_open_file_with_history_button(const std::string& title, filesystem::
 		{
 			for ( const auto& importer : App::plugin_manager.importers() )
 			{
-				if ( filter->get_name() == importer.description.get() )
+				if ( filter->get_name() == importer.metadata.description.get() )
 				{
 					plugin_importer = importer.id;
 					break;
@@ -3067,7 +3067,7 @@ App::dialog_export_file(const std::string& title, synfig::filesystem::Path& file
 	for ( const ImportExport& exp : App::plugin_manager.exporters() )
 	{
 		Glib::RefPtr<Gtk::FileFilter> filter = Gtk::FileFilter::create();
-		filter->set_name(exp.description.get());
+		filter->set_name(exp.metadata.description.get());
 		for ( const std::string& extension : exp.extensions )
 			filter->add_pattern("*" + extension);
 		dialog->add_filter(filter);
@@ -3095,7 +3095,7 @@ App::dialog_export_file(const std::string& title, synfig::filesystem::Path& file
 		auto filter = dialog->get_filter();
 		for ( const auto& exporter : App::plugin_manager.exporters() )
 		{
-			if ( filter->get_name() == exporter.description.get() )
+			if ( filter->get_name() == exporter.metadata.description.get() )
 			{
 				if ( !exporter.has_extension(filename.extension().u8string()) )
 					filename += exporter.extensions[0];

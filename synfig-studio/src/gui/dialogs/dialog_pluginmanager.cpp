@@ -495,7 +495,8 @@ Dialog_PluginManager::build_listbox()
 	plugin_list_box.show_all_children();
 }
 
-std::string extract_plugin_name(std::istream& fileStream)
+static std::string
+extract_plugin_name(std::istream& fileStream)
 {
 	xmlpp::DomParser parser;
 	parser.set_substitute_entities();
@@ -510,10 +511,11 @@ std::string extract_plugin_name(std::istream& fileStream)
 	auto execlist = pNode->find("./exec");
 	if (!execlist.empty()) {
 		for (const xmlpp::Node* node : pNode->find("./name") ) {
-			const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
-			std::string lang = element->get_attribute_value("lang");
-			if (lang.empty()) {
-				return element->get_child_text()->get_content();
+			if (const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node)) {
+				std::string lang = element->get_attribute_value("lang");
+				if (lang.empty()) {
+					return element->get_child_text()->get_content();
+				}
 			}
 		}
 	}
