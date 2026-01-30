@@ -153,7 +153,7 @@ GroupActionManager::refresh()
 
 	{
 		action_group_->add_action("group_add",
-			sigc::mem_fun(*this, &GroupActionManager::on_action_add)
+			sigc::mem_fun(*this, &GroupActionManager::on_group_add_actioned)
 		);
 
 
@@ -211,7 +211,7 @@ GroupActionManager::refresh()
 }
 
 void
-GroupActionManager::on_action_add()
+GroupActionManager::on_group_add_actioned()
 {
 	LayerGroupTreeStore::Model model;
 

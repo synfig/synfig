@@ -60,7 +60,7 @@ class GroupActionManager
 
 private:
 
-	void on_action_add();
+	void on_group_add_actioned();
 
 public:
 	void queue_refresh();
