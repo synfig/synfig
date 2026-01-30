@@ -863,12 +863,14 @@ LayerTree::on_param_tree_event(GdkEvent *event)
 					{
 						synfigapp::ValueDesc value_desc(row[param_model.value_desc]);
 						Gtk::Menu* menu(manage(new Gtk::Menu()));
+						menu->attach_to_widget(*this);
 						menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 						App::get_instance(param_tree_store_->canvas_interface()->get_canvas())->make_param_menu(menu,param_tree_store_->canvas_interface()->get_canvas(),value_desc,0.5f);
 						menu->popup(event->button.button,gtk_get_current_event_time());
 						return true;
 					}
 					Gtk::Menu* menu(manage(new Gtk::Menu()));
+					menu->attach_to_widget(*this);
 					menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 					std::list<synfigapp::ValueDesc> value_desc_list;
 					ParamDesc param_desc(row[param_model.param_desc]);

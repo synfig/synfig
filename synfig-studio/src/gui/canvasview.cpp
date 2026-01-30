@@ -2550,7 +2550,10 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 	case 2:
 	{
 		Gtk::Menu* waypoint_menu(manage(new Gtk::Menu()));
-		waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));
+		if (waypoint_menu) {
+			waypoint_menu->attach_to_widget(*this);
+			waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));
+		}
 
 		Gtk::Menu* interp_menu_in(manage(new Gtk::Menu()));
 		Gtk::Menu* interp_menu_out(manage(new Gtk::Menu()));
