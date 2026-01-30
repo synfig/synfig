@@ -442,9 +442,6 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 
 	get_work_area()->refresh_cursor();
 
-	// Hide the tables if they are showing
-	get_canvas_view()->hide_tables();
-
 	// Disable the time bar
 	//get_canvas_view()->set_sensitive_timebar(false);
 
@@ -484,15 +481,10 @@ StateGradient_Context::~StateGradient_Context()
 	// Enable the time bar
 	//get_canvas_view()->set_sensitive_timebar(true);
 
-	// Bring back the tables if they were out before
-	//if(prev_table_status)get_canvas_view()->show_tables();
-
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
 	get_canvas_view()->queue_rebuild_ducks();
-
-	//get_canvas_view()->show_tables();
 
 	get_work_area()->refresh_cursor();
 

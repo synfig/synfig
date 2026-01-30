@@ -640,7 +640,6 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 	drag_dest_set(listTargets);
 	signal_drag_data_received().connect(sigc::mem_fun(*this, &CanvasView::on_drop_drag_data_received));
 
-	hide_tables();
 	show();
 
 	instance->canvas_view_list().push_front(this);
@@ -1690,7 +1689,6 @@ CanvasView::popup_main_menu()
 void
 CanvasView::on_refresh_pressed()
 {
-	rebuild_tables();
 	rebuild_ducks();
 	work_area->queue_render();
 }
@@ -1886,27 +1884,6 @@ CanvasView::focused_widget_has_priority(Gtk::Widget * focused)
 	if(dynamic_cast<Gtk::Entry*>(focused))
 		return true;
 	return false;
-}
-
-void
-CanvasView::refresh_tables()
-{
-//	if(layer_tree_store_)layer_tree_store_->refresh();
-//	if(children_tree_store_)children_tree_store_->refresh();
-}
-
-void
-CanvasView::rebuild_tables()
-{
-//	layer_tree_store_->rebuild();
-//	children_tree_store_->rebuild();
-}
-
-void
-CanvasView::build_tables()
-{
-//	layer_tree_store_->rebuild();
-//	children_tree_store_->rebuild();
 }
 
 void
