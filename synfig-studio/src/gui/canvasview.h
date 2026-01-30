@@ -403,8 +403,11 @@ private:
 	// Constructor is private to force the use of the "create()" constructor
 	CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigapp::CanvasInterface> canvas_interface);
 
-	//! Constructor Helper - Initializes all of the menus
-	void init_menus();
+	/** Constructor Helper - Initializes document-related actions.
+	 *
+	 * It must be called after creating WorkArea.
+	 */
+	void init_doc_actions();
 
 	bool duck_change_param(const synfig::Point &value,synfig::Layer::Handle layer, synfig::String param_name);
 
