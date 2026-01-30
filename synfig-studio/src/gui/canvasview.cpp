@@ -564,7 +564,9 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 
 	Gtk::Widget *widget_work_area = create_work_area();
 	widget_work_area->set_margin_top(4);
-	init_menus();
+
+	init_doc_actions();
+
 	Gtk::Widget *widget_top_bar = create_top_toolbar();
 	Gtk::Widget *widget_stopbutton = create_stop_button();
 	Gtk::Widget *widget_right_bar = create_right_toolbar();
@@ -1306,20 +1308,16 @@ CanvasView::on_set_end_time_widget_changed()
 }
 
 void
-CanvasView::init_menus()
+CanvasView::init_doc_actions()
 {
-	//cache the position of desired widgets
-
-	/*Menus to worry about:
-	- filemenu
-	- editmenu
-	- layermenu
-	- duckmaskmenu
-	- mainmenu
-	- canvasmenu
-	- viewmenu
-	*/
-
+	if (!canvas_interface_) {
+		synfig::error(_("Internal error: canvas_interface is required to initialize document actions"));
+		return;
+	}
+	if (!work_area) {
+		synfig::error(_("Internal error: workarea is required to initialize document actions"));
+		return;
+	}
 	struct ActionMetadata {
 		std::string name;
 		std::string icon;
@@ -1454,7 +1452,7 @@ CanvasView::init_menus()
 		{"toggle-keyframe-lock-future", "keyframe_lock_future_on_icon","<Control>Right", N_("Lock Future Keyframes"),N_("When a parameter is changed, waypoints will be created in the immediately following keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode."), &WorkArea::get_keyframe_lock_future, &CanvasView::on_future_keyframe_lock_toggled, future_keyframe_lock_toggle },
 	};
 
-	for (auto& item : bool_action_list) {
+	for (const auto& item : bool_action_list) {
 		bool current_value = (work_area->*item.slot_to_get)();
 		auto action_name = item.name;
 		item.action = action_group_->add_action_bool(action_name, sigc::mem_fun(*this, item.slot_to_toogle), current_value);
