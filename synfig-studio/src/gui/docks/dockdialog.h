@@ -52,8 +52,6 @@ class DockDialog : public Gtk::Window
 	friend class DockBook;
 	friend class Dockable;
 
-	sigc::connection empty_sig;
-
 	bool is_deleting;
 
 private:
