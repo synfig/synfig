@@ -35,11 +35,12 @@
 #	include <config.h>
 #endif
 
+#include "valuenode_absolute.h"
+#include "valuenode_const.h"
+
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
-#include "valuenode_absolute.h"
-#include "valuenode_const.h"
 #include <stdexcept>
 #include <synfig/misc.h>
 #include <synfig/angle.h>
@@ -61,12 +62,12 @@ REGISTER_VALUENODE(ValueNode_Absolute, RELEASE_VERSION_1_6_0, "absolute", N_("Ab
 
 /* === M E T H O D S ======================================================= */
 
-ValueNode_Absolute::ValueNode_Absolute(const ValueBase &value):
+ValueNode_Absolute::ValueNode_Absolute(const ValueBase& value):
 	LinkableValueNode( value.get_type() )
 {
 	init_children_vocab();
 
-	Type &type( value.get_type() );
+	Type& type( value.get_type() );
 		
 	if (type == type_angle)
 		set_link("link", ValueNode_Const::create( value.get( Angle() ) ) );
@@ -105,7 +106,7 @@ synfig::ValueNode_Absolute::~ValueNode_Absolute()
 }
 
 synfig::ValueBase
-synfig::ValueNode_Absolute::operator()(Time t)const
+synfig::ValueNode_Absolute::operator()(Time t) const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
 		"%s:%d operator()\n", __FILE__, __LINE__);
@@ -138,7 +139,7 @@ synfig::ValueNode_Absolute::operator()(Time t)const
 }
 
 synfig::ValueBase
-synfig::ValueNode_Absolute::get_inverse(const Time& t, const synfig::ValueBase &target_value) const
+synfig::ValueNode_Absolute::get_inverse(const Time& t, const synfig::ValueBase& target_value) const
 {
 	const Type& target_type = target_value.get_type();
 	
@@ -186,7 +187,7 @@ ValueNode_Absolute::set_link_vfunc(int i, ValueNode::Handle value)
 
 	switch(i)
 	{
-		case 0: CHECK_TYPE_AND_SET_VALUE(value_node, get_type() );
+		case 0: CHECK_TYPE_AND_SET_VALUE(value_node, get_type());
 	}
 	return false;
 }
@@ -198,7 +199,7 @@ ValueNode_Absolute::get_link_vfunc(int i) const
 
 	if (i == 0) return value_node;
 	
-	return 0;
+	return nullptr;
 }
 
 bool
