@@ -5,8 +5,8 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
-**      Copyright (c) 2011 Carlos López
-**      Copyright (c) 2025 BobSynfig
+**  Copyright (c) 2011 Carlos López
+**  Copyright (c) 2025 BobSynfig
 **
 **	This file is part of Synfig.
 **
