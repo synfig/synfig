@@ -51,47 +51,40 @@ public:
 	typedef etl::handle<ValueNode_Absolute> Handle;
 	typedef etl::handle<const ValueNode_Absolute> ConstHandle;
 
-	static ValueNode_Absolute*
-            create(const ValueBase& x, etl::loose_handle<Canvas> canvas=nullptr);
-	
-        virtual ~ValueNode_Absolute();
+	static ValueNode_Absolute* create(const ValueBase& x, etl::loose_handle<Canvas> canvas = nullptr);
+	virtual ~ValueNode_Absolute();
 
-	virtual String
-            get_name()       const override;
-	
-        virtual String
-            get_local_name() const override;
-	
-        static bool
-            check_type(Type &type);
+	virtual String get_name() const override;
+	virtual String get_local_name() const override;
+	static bool check_type(Type &type);
 
 	//! Checks if it is possible to call get_inverse() for target_value at time t.
 	//! If so, return the link_index related to the return value provided by get_inverse()
 	virtual InvertibleStatus
-            is_invertible(const Time& t,
-                          const ValueBase& target_value,
-                          int* link_index = nullptr) const override;
-	
-        //! Returns the modified Link to match the target value at time t
+	        is_invertible(const Time& t,
+	                      const ValueBase& target_value,
+	                      int* link_index = nullptr) const override;
+
+	//! Returns the modified Link to match the target value at time t
 	virtual ValueBase
-            get_inverse(const Time& t,
-                        const synfig::ValueBase &target_value) const override;
+	        get_inverse(const Time& t,
+	        const synfig::ValueBase &target_value) const override;
 
 	virtual ValueBase
-            operator()(Time t) const override;
+	        operator()(Time t) const override;
 
 protected:
 	virtual LinkableValueNode*
-            create_new() const override;
+	        create_new() const override;
 
 	virtual bool 
-            set_link_vfunc(int i, ValueNode::Handle x) override;
+	        set_link_vfunc(int i, ValueNode::Handle x) override;
 	
-        virtual ValueNode::LooseHandle
-            get_link_vfunc(int i) const override;
+	virtual ValueNode::LooseHandle
+	        get_link_vfunc(int i) const override;
 
 	virtual Vocab
-            get_children_vocab_vfunc() const override;
+	        get_children_vocab_vfunc() const override;
 }; // END of class ValueNode_Absolute
 
 }; // END of namespace synfig
