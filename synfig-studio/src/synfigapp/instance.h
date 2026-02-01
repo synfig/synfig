@@ -103,7 +103,7 @@ private:
 
 	std::list< synfig::Layer::Handle > layers_to_save;
 
-	bool import_external_canvas(synfig::Canvas::Handle canvas, std::map<synfig::Canvas*, synfig::Canvas::Handle> &imported);
+	bool import_external_canvas(synfig::Canvas::Handle canvas, std::map<synfig::Canvas*, synfig::Canvas::Handle>& imported);
 	Action::Group::Handle import_external_canvases();
 
 	struct ProcessFilenamesParams
@@ -122,9 +122,9 @@ private:
 
 		ProcessFilenamesParams(): embed_files(), save_files() { }
 		ProcessFilenamesParams(
-			const synfig::Canvas::Handle &canvas,
-			const synfig::FileSystem::Handle &previous_canvas_filesystem,
-			const synfig::String &previous_canvas_filename,
+			const synfig::Canvas::Handle& canvas,
+			const synfig::FileSystem::Handle& previous_canvas_filesystem,
+			const synfig::String& previous_canvas_filename,
 			bool embed_files,
 			bool save_files
 		):
@@ -137,9 +137,9 @@ private:
 	};
 
 	// embed and refine filenames used in layers and valuenodes in current instance
-	void process_filename(const ProcessFilenamesParams &params, const synfig::String &filename, synfig::String &out_filename);
-	void process_filenames(const ProcessFilenamesParams &params, const synfig::NodeHandle &node, bool self = false);
-	void process_filenames_undo(const ProcessFilenamesParams &params);
+	void process_filename(const ProcessFilenamesParams& params, const synfig::String& filename, synfig::String& out_filename);
+	void process_filenames(const ProcessFilenamesParams& params, const synfig::NodeHandle& node, bool self = false);
+	void process_filenames_undo(const ProcessFilenamesParams& params);
 
 protected:
 	Instance(synfig::Canvas::Handle, synfig::FileSystem::Handle container);
@@ -151,53 +151,53 @@ protected:
 public:
 	~Instance();
 
-	void set_selection_manager(const etl::handle<SelectionManager> &sm) { assert(sm); selection_manager_=sm; }
+	void set_selection_manager(const etl::handle<SelectionManager>& sm) { assert(sm); selection_manager_=sm; }
 	void unset_selection_manager() { selection_manager_=new NullSelectionManager(); }
-	const etl::handle<SelectionManager> &get_selection_manager() { return selection_manager_; }
+	const etl::handle<SelectionManager>& get_selection_manager() { return selection_manager_; }
 
 	synfig::FileSystem::Handle get_container() const { return container_; };
-	bool save_surface(const synfig::rendering::SurfaceResource::Handle &surface, const synfig::String &filename);
-	bool save_surface(const synfig::Surface &surface, const synfig::String &filename);
-	bool save_layer(const synfig::Layer::Handle &layer);
+	bool save_surface(const synfig::rendering::SurfaceResource::Handle& surface, const synfig::String& filename);
+	bool save_surface(const synfig::Surface& surface, const synfig::String& filename);
+	bool save_layer(const synfig::Layer::Handle& layer);
 	void save_all_layers();
-	void find_unsaved_layers(std::vector<synfig::Layer::Handle> &out_layers, const synfig::Canvas::Handle canvas);
-	void find_unsaved_layers(std::vector<synfig::Layer::Handle> &out_layers)
+	void find_unsaved_layers(std::vector<synfig::Layer::Handle>& out_layers, const synfig::Canvas::Handle canvas);
+	void find_unsaved_layers(std::vector<synfig::Layer::Handle>& out_layers)
 		{ find_unsaved_layers(out_layers, get_canvas()); }
 
 	etl::handle<CanvasInterface> find_canvas_interface(synfig::Canvas::Handle canvas);
 
 	const synfig::Canvas::Handle& get_canvas()const { return canvas_; }
 
-	void convert_animated_filenames(const synfig::Canvas::Handle &canvas, const synfig::String &old_path, const synfig::String &new_path);
+	void convert_animated_filenames(const synfig::Canvas::Handle& canvas, const synfig::String& old_path, const synfig::String& new_path);
 
 	//! Saves the instance to filename_
 	bool save();
 
-	bool save_as(const synfig::String &filename);
+	bool save_as(const synfig::String& filename);
 
 	//! Saves the instance to current temporary container
 	bool backup(bool save_even_if_unchanged = false);
 
 	//! generate layer name (also known in code as 'description')
-	synfig::String generate_new_description(const synfig::Layer::Handle &layer);
+	synfig::String generate_new_description(const synfig::Layer::Handle& layer);
 
 	//! create unique file name for an embedded image layer (if image filename is empty, description layer is used)
 	void generate_new_name(
-		const synfig::Layer::Handle &layer,
-		synfig::String &out_description,
-		synfig::String &out_filename,
-		synfig::String &out_filename_param );
+		const synfig::Layer::Handle& layer,
+		synfig::String& out_description,
+		synfig::String& out_filename,
+		synfig::String& out_filename_param );
 
 public:	// Interfaces to internal information
 	sigc::signal<void>& signal_filename_changed() { return signal_filename_changed_; }
 	sigc::signal<void>& signal_saved() { return signal_saved_; }
 
-	CanvasInterfaceList & canvas_interface_list() { return canvas_interface_list_; }
-	const CanvasInterfaceList & canvas_interface_list()const { return canvas_interface_list_; }
+	CanvasInterfaceList& canvas_interface_list() { return canvas_interface_list_; }
+	const CanvasInterfaceList& canvas_interface_list()const { return canvas_interface_list_; }
 
 	synfig::String get_file_name()const;
 
-	void set_file_name(const synfig::String &name);
+	void set_file_name(const synfig::String& name);
 
 public:
 

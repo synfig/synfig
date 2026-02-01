@@ -47,6 +47,7 @@
 #include <synfig/filesystem.h>
 #include <synfig/filesystemnative.h>
 #include <synfig/filesystemtemporary.h>
+#include <synfig/valuenodes/valuenode_absolute.h>
 #include <synfig/valuenodes/valuenode_add.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 #include <synfig/valuenodes/valuenode_const.h>
@@ -97,8 +98,9 @@ static std::map<Canvas::LooseHandle, etl::loose_handle<Instance>> instance_map_;
 bool
 synfigapp::is_editable(synfig::ValueNode::Handle value_node)
 {
-	if(ValueNode_Const::Handle::cast_dynamic(value_node)
+	if (ValueNode_Const::Handle::cast_dynamic(value_node)
 		|| ValueNode_Animated::Handle::cast_dynamic(value_node)
+		|| ValueNode_Absolute::Handle::cast_dynamic(value_node)
 		|| ValueNode_Add::Handle::cast_dynamic(value_node)
 		|| ValueNode_Composite::Handle::cast_dynamic(value_node)
 		|| ValueNode_RadialComposite::Handle::cast_dynamic(value_node)
@@ -124,7 +126,7 @@ synfigapp::is_editable(synfig::ValueNode::Handle value_node)
 etl::handle<Instance>
 synfigapp::find_instance(Canvas::Handle canvas)
 {
-	if(instance_map_.count(canvas)==0)
+	if (instance_map_.count(canvas) == 0)
 		return 0;
 	return instance_map_[canvas];
 }
@@ -156,7 +158,7 @@ Instance::get_file_name()const
 }
 
 void
-Instance::set_file_name(const synfig::String &name)
+Instance::set_file_name(const synfig::String& name)
 {
 	get_canvas()->set_file_name(name);
 }
@@ -172,24 +174,24 @@ Instance::~Instance()
 etl::handle<CanvasInterface>
 Instance::find_canvas_interface(synfig::Canvas::Handle canvas)
 {
-	if(!canvas)
+	if (!canvas)
 		return 0;
-	while(canvas->is_inline())
-		canvas=canvas->parent();
+	while (canvas->is_inline())
+		canvas = canvas->parent();
 
 	for (CanvasInterfaceList::iterator iter = canvas_interface_list().begin(); iter != canvas_interface_list().end(); ++iter)
-		if((*iter)->get_canvas()==canvas)
+		if ((*iter)->get_canvas() == canvas)
 			return *iter;
 
 	return CanvasInterface::create(this,canvas);
 }
 
 bool
-Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas::Handle> &imported)
+Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas::Handle>& imported)
 {
 	etl::handle<CanvasInterface> canvas_interface;
 
-	for(IndependentContext i = canvas->get_independent_context(); *i; i++)
+	for (IndependentContext i = canvas->get_independent_context(); *i; i++)
 	{
 		Layer_PasteCanvas::Handle paste_canvas = Layer_PasteCanvas::Handle::cast_dynamic(*i);
 		if (!paste_canvas) continue;
@@ -204,8 +206,7 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 			if (!new_canvas) continue;
 
 			// Action to link canvas
-			try
-			{
+			try {
 				Action::Handle action(Action::LayerParamSet::create());
 				if (!action) continue;
 				canvas_interface = find_canvas_interface(canvas);
@@ -214,11 +215,10 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 				action->set_param("layer",Layer::Handle(paste_canvas));
 				action->set_param("param","canvas");
 				action->set_param("new_value",ValueBase(new_canvas));
-				if(!action->is_ready()) continue;
-				if(!perform_action(action)) continue;
+				if (!action->is_ready()) continue;
+				if (!perform_action(action)) continue;
 			}
-			catch(...)
-			{
+			catch(...) {
 				continue;
 			}
 		} else {
@@ -227,7 +227,7 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 			// generate name
 			std::string fname = filesystem::Path::filename_sans_extension(filesystem::Path::basename(sub_canvas->get_file_name()));
 			static const char bad_chars[]=" :#@$^&()*";
-			for(std::string::iterator j = fname.begin(); j != fname.end(); ++j)
+			for (std::string::iterator j = fname.begin(); j != fname.end(); ++j)
 				for (const char* k = bad_chars; *k != 0; ++k)
 					if (*j == *k) { *j = '_'; break; }
 			if (fname.empty()) fname = "canvas";
@@ -236,14 +236,12 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 
 			std::string name;
 			bool found = false;
-			for(int j = 1; j < 1000; j++)
-			{
+			for (int j = 1; j < 1000; j++) {
 				name = j == 1 ? fname : strprintf("%s_%d", fname.c_str(), j);
-				if (canvas->value_node_list().count(name) == false)
-				{
+				if (canvas->value_node_list().count(name) == false)	{
 					found = true;
 					for (std::list<Canvas::Handle>::const_iterator iter = canvas->children().begin(); iter != canvas->children().end(); ++iter)
-						if(name==(*iter)->get_id())
+						if (name == (*iter)->get_id())
 							{ found = false; break; }
 					if (found) break;
 				}
@@ -260,13 +258,12 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 				action->set_param("canvas_interface",canvas_interface);
 				action->set_param("value_desc",ValueDesc(Layer::Handle(paste_canvas),std::string("canvas")));
 				action->set_param("name",name);
-				if(!action->is_ready()) continue;
-				if(!perform_action(action)) continue;
+				if (!action->is_ready()) continue;
+				if (!perform_action(action)) continue;
 				std::string warnings;
 				imported[sub_canvas.get()] = canvas->find_canvas(name, warnings);
 			}
-			catch(...)
-			{
+			catch(...) {
 				continue;
 			}
 
@@ -286,18 +283,18 @@ Instance::import_external_canvases()
 {
 	synfigapp::Action::PassiveGrouper group(this, _("Import external canvases"));
 	std::map<Canvas*, Canvas::Handle> imported;
-	while(import_external_canvas(get_canvas(), imported));
+	while (import_external_canvas(get_canvas(), imported));
 	return group.finish();
 }
 
-bool Instance::save_surface(const rendering::SurfaceResource::Handle &surface, const synfig::String &filename)
+bool Instance::save_surface(const rendering::SurfaceResource::Handle& surface, const synfig::String& filename)
 {
 	rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(surface);
 	if (!lock) return false;
 	return save_surface(lock->get_surface(), filename);
 }
 
-bool Instance::save_surface(const synfig::Surface &surface, const synfig::String &filename)
+bool Instance::save_surface(const synfig::Surface& surface, const synfig::String& filename)
 {
 	if (surface.get_h() <= 0 || surface.get_w() <= 0)
 		return false;
@@ -340,7 +337,7 @@ bool Instance::save_surface(const synfig::Surface &surface, const synfig::String
 }
 
 void
-Instance::process_filename(const ProcessFilenamesParams &params, const synfig::String &filename, synfig::String &out_filename)
+Instance::process_filename(const ProcessFilenamesParams& params, const synfig::String& filename, synfig::String& out_filename)
 {
 	String full_filename = CanvasFileNaming::make_full_filename(params.previous_canvas_filename, filename);
 	std::map<String, String>::const_iterator i = params.processed_files.find(full_filename);
@@ -378,7 +375,7 @@ Instance::process_filename(const ProcessFilenamesParams &params, const synfig::S
 }
 
 void
-Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::NodeHandle &node, bool self)
+Instance::process_filenames(const ProcessFilenamesParams& params, const synfig::NodeHandle& node, bool self)
 {
 	if (!node || params.processed_nodes.count(node)) return;
 	params.processed_nodes.insert(node);
@@ -393,15 +390,12 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 
 		ValueBase value = value_node->get_value();
 
-		if (self)
-		{
-			if (value.same_type_as(String()))
-			{
+		if (self) {
+			if (value.same_type_as(String())) {
 				String filename = value.get(String());
 				String new_filename;
 				process_filename(params, filename, new_filename);
-				if (filename != new_filename)
-				{
+				if (filename != new_filename) {
 					params.processed_valuenodes[value_node] = filename;
 					value_node->set_value(new_filename);
 				}
@@ -416,10 +410,9 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 	}
 
 	// ValueNode_Animated
-	if (ValueNode_Animated::Handle animated = ValueNode_Animated::Handle::cast_dynamic(node))
-	{
-		const WaypointList &waypoints = animated->waypoint_list();
-		for(WaypointList::const_iterator i = waypoints.begin(); i != waypoints.end(); ++i)
+	if (ValueNode_Animated::Handle animated = ValueNode_Animated::Handle::cast_dynamic(node)) {
+		const WaypointList& waypoints = animated->waypoint_list();
+		for (WaypointList::const_iterator i = waypoints.begin(); i != waypoints.end(); ++i)
 			process_filenames(params, i->get_value_node(), self);
 		return;
 	}
@@ -434,15 +427,14 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 		if (canvas->get_root() != params.canvas) return;
 
 		// exported values
-		if (canvas->is_inline())
-		{
-			const ValueNodeList &list = canvas->value_node_list();
-			for(ValueNodeList::const_iterator i = list.begin(); i != list.end(); ++i)
+		if (canvas->is_inline()) {
+			const ValueNodeList& list = canvas->value_node_list();
+			for (ValueNodeList::const_iterator i = list.begin(); i != list.end(); ++i)
 				process_filenames(params, *i);
 		}
 
 		// layers
-		for(Canvas::const_iterator i = canvas->begin(); i != canvas->end(); ++i)
+		for (Canvas::const_iterator i = canvas->begin(); i != canvas->end(); ++i)
 			process_filenames(params, *i);
 
 		return;
@@ -457,15 +449,14 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 			return;
 
 		const ParamVocab vocab = layer->get_param_vocab();
-		const Layer::DynamicParamList &dynamic_params = layer->dynamic_param_list();
-		for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
+		const Layer::DynamicParamList& dynamic_params = layer->dynamic_param_list();
+		for (ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
 		{
 			Layer::DynamicParamList::const_iterator j = dynamic_params.find(i->get_name());
 			ValueNode::Handle value_node = j == dynamic_params.end() ? ValueNode::Handle() : ValueNode::Handle(j->second);
 
 			bool is_filename = i->get_hint() == "filename";
-			if (value_node)
-			{
+			if (value_node) {
 				process_filenames(params, value_node, is_filename);
 				continue;
 			}
@@ -481,8 +472,7 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 			String filename = value.get(String());
 			String new_filename;
 			process_filename(params, filename, new_filename);
-			if (filename != new_filename)
-			{
+			if (filename != new_filename) {
 				params.processed_params[std::make_pair(layer, i->get_name())] = filename;
 				layer->set_param(i->get_name(), new_filename);
 			}
@@ -499,7 +489,7 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 			return;
 
 		const ParamVocab& vocab = linkable->get_children_vocab();
-		for(ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
+		for (ParamVocab::const_iterator i = vocab.begin(); i != vocab.end(); ++i)
 			process_filenames(params, ValueNode::Handle(linkable->get_link(i->get_name())), i->get_hint() == "filename");
 
 		return;
@@ -507,20 +497,20 @@ Instance::process_filenames(const ProcessFilenamesParams &params, const synfig::
 }
 
 void
-Instance::process_filenames_undo(const ProcessFilenamesParams &params)
+Instance::process_filenames_undo(const ProcessFilenamesParams& params)
 {
 	// restore layer params
-	for(std::map<std::pair<Layer::Handle, String>, String>::const_iterator i = params.processed_params.begin(); i != params.processed_params.end(); ++i)
+	for (std::map<std::pair<Layer::Handle, String>, String>::const_iterator i = params.processed_params.begin(); i != params.processed_params.end(); ++i)
 		i->first.first->set_param(i->first.second, i->second);
 	// restore value nodes
-	for(std::map<ValueNode_Const::Handle, String>::const_iterator i = params.processed_valuenodes.begin(); i != params.processed_valuenodes.end(); ++i)
+	for (std::map<ValueNode_Const::Handle, String>::const_iterator i = params.processed_valuenodes.begin(); i != params.processed_valuenodes.end(); ++i)
 		i->first->set_value(i->second);
 }
 
 void
-Instance::find_unsaved_layers(std::vector<synfig::Layer::Handle> &out_layers, const synfig::Canvas::Handle canvas)
+Instance::find_unsaved_layers(std::vector<synfig::Layer::Handle>& out_layers, const synfig::Canvas::Handle canvas)
 {
-	for(Canvas::const_iterator i = canvas->begin(); i != canvas->end(); ++i)
+	for (Canvas::const_iterator i = canvas->begin(); i != canvas->end(); ++i)
 	{
 		if (Layer_PasteCanvas::Handle layer_pastecanvas = Layer_PasteCanvas::Handle::cast_dynamic(*i))
 			if (Canvas::Handle sub_canvas = layer_pastecanvas->get_sub_canvas())
@@ -538,7 +528,7 @@ Instance::save()
 }
 
 bool
-Instance::save_layer(const synfig::Layer::Handle &layer)
+Instance::save_layer(const synfig::Layer::Handle& layer)
 {
 	if (Layer_Bitmap::Handle layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layer))
 	{
@@ -546,8 +536,7 @@ Instance::save_layer(const synfig::Layer::Handle &layer)
 		  && layer_bitmap->get_param_list().count("filename"))
 		{
 			ValueBase value = layer_bitmap->get_param("filename");
-			if (value.same_type_as(String()))
-			{
+			if (value.same_type_as(String())) {
 				String filename = value.get(String());
 				if (save_surface(layer_bitmap->rendering_surface, filename))
 					return true;
@@ -565,7 +554,7 @@ Instance::save_all_layers()
 {
 	std::vector<Layer::Handle> layers;
 	find_unsaved_layers(layers);
-	for(std::vector<Layer::Handle>::const_iterator i = layers.begin(); i != layers.end(); ++i)
+	for (std::vector<Layer::Handle>::const_iterator i = layers.begin(); i != layers.end(); ++i)
 		save_layer(*i);
 }
 
@@ -576,8 +565,7 @@ Instance::backup(bool save_even_if_unchanged)
 		return true;
 	FileSystemTemporary::Handle temporary_filesystem = FileSystemTemporary::Handle::cast_dynamic(get_canvas()->get_file_system());
 
-	if (!temporary_filesystem)
-	{
+	if (!temporary_filesystem) {
 		warning("Cannot backup, canvas was not attached to temporary file system: %s", get_file_name().c_str());
 		return false;
 	}
@@ -591,7 +579,7 @@ Instance::backup(bool save_even_if_unchanged)
 }
 
 bool
-Instance::save_as(const synfig::String &file_name)
+Instance::save_as(const synfig::String& file_name)
 {
 	Canvas::Handle canvas = get_canvas();
 
@@ -610,14 +598,12 @@ Instance::save_as(const synfig::String &file_name)
 	{
 		// new canvas filesystem
 		FileSystem::Handle new_container = CanvasFileNaming::make_filesystem_container(new_canvas_filename, 0, true);
-		if (!new_container)
-		{
+		if (!new_container) {
 			warning("Cannot create container: %s", new_canvas_filename.c_str());
 			return false;
 		}
 		new_canvas_filesystem = CanvasFileNaming::make_filesystem(new_container);
-		if (!new_canvas_filesystem)
-		{
+		if (!new_canvas_filesystem) {
 			warning("Cannot create canvas filesystem for: %s", new_canvas_filename.c_str());
 			return false;
 		}
@@ -694,8 +680,7 @@ Instance::save_as(const synfig::String &file_name)
 	if (success)
 		reset_action_count();
 
-	if (success)
-	{
+	if (success) {
 		signal_saved_();
 		signal_filename_changed_();
 		return true;
@@ -718,10 +703,10 @@ Instance::save_as(const synfig::String &file_name)
 
 void
 Instance::generate_new_name(
-	const Layer::Handle &layer,
-	String &out_description,
-	String &out_filename,
-	String &out_filename_param )
+	const Layer::Handle& layer,
+	String& out_description,
+	String& out_filename,
+	String& out_filename_param )
 {
 	String filename;
 	if (layer->get_param_list().count("filename")) {

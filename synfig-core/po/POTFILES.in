@@ -322,6 +322,8 @@ src/synfig/value.h
 src/synfig/valuenode.cpp
 src/synfig/valuenode.h
 src/synfig/valuenode_registry.cpp
+src/synfig/valuenodes/valuenode_absolute.cpp
+src/synfig/valuenodes/valuenode_absolute.h
 src/synfig/valuenodes/valuenode_add.cpp
 src/synfig/valuenodes/valuenode_add.h
 src/synfig/valuenodes/valuenode_and.cpp
