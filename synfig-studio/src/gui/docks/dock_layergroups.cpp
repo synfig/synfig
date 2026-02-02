@@ -39,6 +39,7 @@
 #include <synfig/general.h>
 
 #include <gui/actionmanagers/groupactionmanager.h>
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/localization.h>
@@ -58,29 +59,6 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
-static Gtk::ToolButton*
-create_action_toolbutton(const std::string& action_name, const std::string& icon_name, const std::string& tooltip)
-{
-	Gtk::ToolButton* button = Gtk::manage(new Gtk::ToolButton());
-	gtk_actionable_set_action_name(GTK_ACTIONABLE(button->gobj()), action_name.c_str());
-	button->set_icon_name(icon_name);
-	button->set_tooltip_text(tooltip);
-	button->show();
-	return button;
-}
-
-static Gtk::ToolButton*
-create_synfigapp_action_toolbutton(const std::string& group_prefix, const std::string& action_name)
-{
-	auto action_it = synfigapp::Action::book().find(action_name);
-	if (action_it == synfigapp::Action::book().end()) {
-		synfig::error(_("Internal error: can't find synfigapp action to create its button: '%s'"), action_name.c_str());
-		return nullptr; // FIXME: SHOULD RETURN NULL OR an empty ToolButton?
-	}
-	;
-	return create_action_toolbutton(strprintf("%s.action-%s", group_prefix.c_str(), action_name.c_str()), get_action_icon_name(action_it->second), action_it->second.local_name);
-}
-
 /* === M E T H O D S ======================================================= */
 
 Dock_LayerGroups::Dock_LayerGroups():
@@ -95,8 +73,8 @@ Dock_LayerGroups::Dock_LayerGroups():
 	group_action_manager->set_action_widget(App::main_window);
 
 	auto toolbar = Gtk::manage(new Gtk::Toolbar());
-	toolbar->append(*create_synfigapp_action_toolbutton("layer-set", "GroupRemove"));
-	toolbar->append(*create_action_toolbutton("layer-set.group_add", "list-add", _("Add a New Set")));
+	toolbar->append(*ActionWidgetHelper::create_synfigapp_action_toolbutton("layer-set", "GroupRemove"));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("layer-set.group_add", "list-add", "", _("Add a New Set")));
 	toolbar->show_all();
 	set_toolbar(*toolbar);
 }

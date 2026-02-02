@@ -219,8 +219,7 @@ MainWindow::init_menus()
 		}
 	}
 
-
-
+	add_action_radio_string("show-panel", sigc::mem_fun(*App::dock_manager, &DockManager::present), "layers");
 }
 
 void MainWindow::register_custom_widget_types()
@@ -629,17 +628,14 @@ MainWindow::on_dockable_registered(Dockable* dockable)
 
 	const CanvasView* canvas_view = dynamic_cast<CanvasView*>(dockable);
 
-//	auto panel_group = Gio::SimpleActionGroup::create();
-	/*panel_group->*/add_action("panel-"+dockable->get_name(), sigc::mem_fun(*dockable, &Dockable::present));
+	// Action created to help add shortcuts to it
+	add_action("panel-"+dockable->get_name(), sigc::mem_fun(*dockable, &Dockable::present));
 	App::get_action_database()->add({"win.panel-"+dockable->get_name(), strprintf(_("Panel %s"), escaped_local_name.c_str()), ""});
 
 	if (canvas_view)
-		App::menu_window_canvas->append(escaped_local_name, "win.panel-" + dockable->get_name());
+		App::menu_window_canvas->append(escaped_local_name, "win.show-panel('" + dockable->get_name() + "')");
 	else
-		App::menu_window_docks->append(escaped_local_name, "win.panel-" + dockable->get_name());
-
-//FIXME
-//	insert_action_group("panel", panel_group);
+		App::menu_window_docks->append(escaped_local_name, "win.show-panel('" + dockable->get_name() + "')");
 }
 
 void

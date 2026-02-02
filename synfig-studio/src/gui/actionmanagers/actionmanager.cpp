@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*! \file actionmanager.h
-**  \brief Header for a visual info database for GActions
+/*! \file actionmanager.cpp
+**  \brief Implementation of a visual info database for GActions
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley

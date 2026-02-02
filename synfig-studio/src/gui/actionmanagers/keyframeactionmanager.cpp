@@ -41,6 +41,7 @@
 
 #include <synfig/general.h>
 
+#include <gui/actionwidgethelper.h>
 #include <gui/iconcontroller.h>
 #include <gui/instance.h>
 #include <gui/localization.h>
@@ -60,31 +61,6 @@ using namespace studio;
 static const std::string group_name {"keyframe"};
 
 /* === P R O C E D U R E S ================================================= */
-
-static Glib::RefPtr<Gio::MenuItem>
-create_menu_item_for_synfigapp_action(const std::string& group_prefix, const std::string& action_name)
-{
-	auto action_it = synfigapp::Action::book().find(action_name);
-	if (action_it == synfigapp::Action::book().end()) {
-		synfig::error(_("Internal error: can't find synfigapp action to create its menu item: '%s'"), action_name.c_str());
-		return {}; // FIXME: SHOULD RETURN NULL OR an empty MenuItem?
-	}
-
-	const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
-	auto item = Gio::MenuItem::create(action_it->second.local_name, strprintf("%s.action-%s", group_prefix.c_str(), action_name.c_str()));
-	item->set_icon(Gio::ThemedIcon::create(get_action_icon_name(action_it->second) + symbolic_suffix));
-	return item;
-}
-
-static Glib::RefPtr<Gio::MenuItem>
-create_menu_item_for_action(const std::string& action_name, const std::string& icon_name, const std::string& label)
-{
-	const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
-	auto item = Gio::MenuItem::create(label, action_name);
-	if (!icon_name.empty())
-		item->set_icon(Gio::ThemedIcon::create(icon_name + symbolic_suffix));
-	return item;
-}
 
 /* === M E T H O D S ======================================================= */
 
@@ -297,17 +273,17 @@ KeyframeActionManager::refresh()
 	// this popup menu is used from widget_keyframe_list
 
 	const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
-	auto item = create_menu_item_for_synfigapp_action("keyframe", "KeyframeAdd");
+	auto item = ActionWidgetHelper::create_menu_item_for_synfigapp_action("keyframe", "KeyframeAdd");
 	menu_keyframe_->append_item(item);
-	item = create_menu_item_for_synfigapp_action("keyframe", "KeyframeDuplicate");
+	item = ActionWidgetHelper::create_menu_item_for_synfigapp_action("keyframe", "KeyframeDuplicate");
 	menu_keyframe_->append_item(item);
-	item = create_menu_item_for_synfigapp_action("keyframe", "KeyframeRemove");
+	item = ActionWidgetHelper::create_menu_item_for_synfigapp_action("keyframe", "KeyframeRemove");
 	menu_keyframe_->append_item(item);
-	item = create_menu_item_for_action("keyframe.properties", "document-properties", _("Keyframe Properties"));
+	item = ActionWidgetHelper::create_menu_item_for_action("keyframe.properties", "document-properties", _("Keyframe Properties"));
 	menu_keyframe_->append_item(item);
-	item = create_menu_item_for_action("keyframe.toggle", "", _("Toggle Keyframe"));
+	item = ActionWidgetHelper::create_menu_item_for_action("keyframe.toggle", "", _("Toggle Keyframe"));
 	menu_keyframe_->append_item(item);
-	item = create_menu_item_for_action("keyframe.description-set", "", _("Set Keyframe Description"));
+	item = ActionWidgetHelper::create_menu_item_for_action("keyframe.description-set", "", _("Set Keyframe Description"));
 	menu_keyframe_->append_item(item);
 
 	action_widget_->insert_action_group(group_name, action_group_);
