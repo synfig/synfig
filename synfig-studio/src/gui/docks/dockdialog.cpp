@@ -105,8 +105,6 @@ DockDialog::DockDialog():
 
 DockDialog::~DockDialog()
 {
-	empty_sig.disconnect();
-
 	is_deleting=true;
 
 	// Remove us from the dock manager
@@ -164,7 +162,6 @@ DockDialog::close()
 	DEBUG_LOG("SYNFIG_DEBUG_DESTRUCTORS",
 		"DockDialog::close(): Deleted");
 
-	empty_sig.disconnect();
 	//get_dock_book().clear();
 	delete this;
 	return false;
