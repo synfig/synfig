@@ -100,8 +100,6 @@ class studio::StateLasso_Context : public sigc::trackable
 
 	WorkArea::PushState push_state;
 
-	bool prev_table_status;
-
 	int nested;
 	sigc::connection process_queue_connection;
 
@@ -683,10 +681,6 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	// Turn off duck clicking
 	get_work_area()->set_allow_duck_clicks(false);
 
-	// Hide the tables if they are showing
-	prev_table_status=get_canvas_view()->tables_are_visible();
-	//if(prev_table_status)get_canvas_view()->hide_tables();
-
 	// Disable the time bar
 	get_canvas_view()->set_sensitive_timebar(false);
 
@@ -757,9 +751,6 @@ StateLasso_Context::~StateLasso_Context()
 
 	// Enable the time bar
 	get_canvas_view()->set_sensitive_timebar(true);
-
-	// Bring back the tables if they were out before
-	if(prev_table_status)get_canvas_view()->show_tables();
 
 	// Refresh the work area
 	get_work_area()->queue_draw();

@@ -91,7 +91,6 @@ class studio::StateBLine_Context : public sigc::trackable
 	CanvasView::Handle canvas_view_;
 	CanvasView::IsWorking is_working;
 
-	bool prev_table_status;
 	bool loop_;
 	bool prev_workarea_layer_status_;
 
@@ -451,7 +450,6 @@ StateBLine_Context::increment_id()
 StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-	prev_table_status(false),
 	loop_(false),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	depth(-1),
@@ -603,10 +601,6 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
-	// Hide the tables if they are showing
-	prev_table_status=get_canvas_view()->tables_are_visible();
-	if(prev_table_status)get_canvas_view()->hide_tables();
-
 	// Disable the time bar
 	get_canvas_view()->set_sensitive_timebar(false);
 
@@ -669,9 +663,6 @@ StateBLine_Context::~StateBLine_Context()
 
 	// Enable the time bar
 	get_canvas_view()->set_sensitive_timebar(true);
-
-	// Bring back the tables if they were out before
-	if(prev_table_status)get_canvas_view()->show_tables();
 
 	// Refresh the work area
 	get_work_area()->queue_draw();

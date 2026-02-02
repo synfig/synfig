@@ -76,8 +76,6 @@ class studio::StateSketch_Context : public sigc::trackable
 
 	WorkArea::PushState push_state;
 
-	bool prev_table_status;
-
 	Gtk::Grid options_grid;
 	Gtk::Label title_label;
 	Gtk::Button button_clear_sketch;
@@ -283,10 +281,6 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	// Refresh the work area
 	//get_work_area()->queue_draw();
 
-	// Hide the tables if they are showing
-	prev_table_status=get_canvas_view()->tables_are_visible();
-	//if(prev_table_status)get_canvas_view()->hide_tables();
-
 	// Disable the time bar
 	//get_canvas_view()->set_sensitive_timebar(false);
 
@@ -304,9 +298,6 @@ StateSketch_Context::~StateSketch_Context()
 
 	// Enable the time bar
 	//get_canvas_view()->set_sensitive_timebar(true);
-
-	// Bring back the tables if they were out before
-	if(prev_table_status)get_canvas_view()->show_tables();
 
 	// Refresh the work area
 	//get_work_area()->queue_draw();
