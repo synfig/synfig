@@ -37,6 +37,7 @@
 
 #include <gtkmm/stylecontext.h>
 
+#include <gui/actionmanagers/actionmanager.h>
 #include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
@@ -65,10 +66,26 @@ Dock_MetaData::Dock_MetaData():
 	// Make Canvas MetaData toolbar small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
+	struct ActionMetadata {
+		std::string name;
+		std::string icon;
+		std::string shortcut;
+		std::string label;
+		std::string tooltip;
+		// std::function<void()> slot;
+	};
+
+	const std::vector<ActionMetadata> action_list = {
+		{"doc.add-metadata", "list-add", {}, _("New Metadata Entry"), _("Add a new MetaData entry to the canvas")},
+		{"doc.remove-metadata", "edit-delete", {}, _("Remove Metadata Entry"), _("Remove the selected MetaData entry")}
+	};
+	for (const auto& entry : action_list)
+		App::get_action_database()->add({entry.name, entry.label, entry.shortcut, entry.icon, entry.tooltip});
+
 	auto toolbar = Gtk::manage(new Gtk::Toolbar());
 	toolbar->show_all();
-	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.add-metadata", "list-add", "", _("Add a new MetaData entry to the canvas")));
-	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.remove-metadata", "edit-delete", "", _("Remove the selected MetaData entry")));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.add-metadata"));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.remove-metadata"));
 	set_toolbar(*toolbar);
 }
 
