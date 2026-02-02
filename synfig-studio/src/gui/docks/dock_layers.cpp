@@ -40,6 +40,7 @@
 #include <gtkmm/stylecontext.h>
 
 #include <gui/actionmanagers/layeractionmanager.h>
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/exception_guard.h>
@@ -59,28 +60,6 @@ using namespace studio;
 /* === G L O B A L S ======================================================= */
 
 /* === P R O C E D U R E S ================================================= */
-
-static Gtk::ToolButton*
-create_action_toolbutton(const std::string& action_name, const std::string& icon_name, const std::string& tooltip)
-{
-	Gtk::ToolButton* button = Gtk::manage(new Gtk::ToolButton());
-	gtk_actionable_set_action_name(GTK_ACTIONABLE(button->gobj()), action_name.c_str());
-	button->set_icon_name(icon_name);
-	button->set_tooltip_text(tooltip);
-	button->show();
-	return button;
-}
-
-static Gtk::ToolButton*
-create_synfigapp_action_toolbutton(const std::string& action_name)
-{
-	auto action_it = synfigapp::Action::book().find(action_name);
-	if (action_it == synfigapp::Action::book().end()) {
-		synfig::error(_("Internal error: can't find synfigapp action to create its button: '%s'"), action_name.c_str());
-		return nullptr; // FIXME: SHOULD RETURN NULL OR an empty ToolButton?
-	}
-	return create_action_toolbutton("layer.action-" + action_name, get_action_icon_name(action_it->second), action_it->second.local_name);
-}
 
 static Gtk::SeparatorToolItem*
 create_separator_toolitem()
@@ -151,26 +130,26 @@ Dock_Layers::Dock_Layers():
 
 	auto toolbar = Gtk::manage(new Gtk::Toolbar());
 	toolbar->show_all();
-	toolbar->append(*create_action_toolbutton("doc.popup-layer-new", "list-add", _("New Layer")));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.popup-layer-new", "list-add", "", _("New Layer")));
 
 	toolbar->append(*create_separator_toolitem());
 
-	toolbar->append(*create_synfigapp_action_toolbutton("LayerRaise"));
-	toolbar->append(*create_synfigapp_action_toolbutton("LayerLower"));
+	toolbar->append(*ActionWidgetHelper::create_synfigapp_action_toolbutton("layer", "LayerRaise"));
+	toolbar->append(*ActionWidgetHelper::create_synfigapp_action_toolbutton("layer", "LayerLower"));
 
 	toolbar->append(*create_separator_toolitem());
 
-	toolbar->append(*create_synfigapp_action_toolbutton("LayerDuplicate"));
-	toolbar->append(*create_synfigapp_action_toolbutton("LayerEncapsulate"));
-	toolbar->append(*create_action_toolbutton("layer.select-all-child-layers", "select_all_child_layers_icon", _("Select All Child Layers")));
-	toolbar->append(*create_synfigapp_action_toolbutton("LayerRemove"));
+	toolbar->append(*ActionWidgetHelper::create_synfigapp_action_toolbutton("layer", "LayerDuplicate"));
+	toolbar->append(*ActionWidgetHelper::create_synfigapp_action_toolbutton("layer", "LayerEncapsulate"));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("layer.select-all-child-layers", "select_all_child_layers_icon", "", _("Select All Child Layers")));
+	toolbar->append(*ActionWidgetHelper::create_synfigapp_action_toolbutton("layer", "LayerRemove"));
 
 
 	toolbar->append(*create_separator_toolitem());
 
-	toolbar->append(*create_action_toolbutton("layer.cut", "edit-cut", _("Cut")));
-	toolbar->append(*create_action_toolbutton("layer.copy", "edit-copy", _("Copy")));
-	toolbar->append(*create_action_toolbutton("layer.paste", "edit-paste", _("Paste")));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("layer.cut", "edit-cut", "", _("Cut")));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("layer.copy", "edit-copy", "", _("Copy")));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("layer.paste", "edit-paste", "", _("Paste")));
 
 	set_toolbar(*toolbar);
 }

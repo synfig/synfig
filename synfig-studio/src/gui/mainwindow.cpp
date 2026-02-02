@@ -84,6 +84,19 @@ escape_underline(const std::string& raw)
 	return quoted;
 }
 
+static void
+on_show_panel_actionated(const Glib::VariantBase& v)
+{
+	if (!App::dock_manager)
+		return;
+
+	const auto panel_name_vrt = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(v);
+	if (panel_name_vrt)
+		App::dock_manager->present(panel_name_vrt.get());
+	else
+		synfig::warning(_("Action show-panel: panel name should be a string"));
+}
+
 /* === M E T H O D S ======================================================= */
 
 MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
@@ -219,8 +232,7 @@ MainWindow::init_menus()
 		}
 	}
 
-
-
+	add_action_with_parameter("show-panel", Glib::Variant<Glib::ustring>().variant_type(), sigc::ptr_fun(on_show_panel_actionated));
 }
 
 void MainWindow::register_custom_widget_types()
@@ -629,17 +641,14 @@ MainWindow::on_dockable_registered(Dockable* dockable)
 
 	const CanvasView* canvas_view = dynamic_cast<CanvasView*>(dockable);
 
-//	auto panel_group = Gio::SimpleActionGroup::create();
-	/*panel_group->*/add_action("panel-"+dockable->get_name(), sigc::mem_fun(*dockable, &Dockable::present));
+	// Action created to help add shortcuts to it
+	add_action("panel-"+dockable->get_name(), sigc::mem_fun(*dockable, &Dockable::present));
 	App::get_action_database()->add({"win.panel-"+dockable->get_name(), strprintf(_("Panel %s"), escaped_local_name.c_str()), ""});
 
 	if (canvas_view)
-		App::menu_window_canvas->append(escaped_local_name, "win.panel-" + dockable->get_name());
+		App::menu_window_canvas->append(escaped_local_name, "win.show-panel('" + dockable->get_name() + "')");
 	else
-		App::menu_window_docks->append(escaped_local_name, "win.panel-" + dockable->get_name());
-
-//FIXME
-//	insert_action_group("panel", panel_group);
+		App::menu_window_docks->append(escaped_local_name, "win.show-panel('" + dockable->get_name() + "')");
 }
 
 void

@@ -44,6 +44,7 @@
 #include <gtkmm/menu.h>
 #include <gtkmm/stylecontext.h>
 
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/dialogs/dialog_color.h>
 #include <gui/localization.h>
@@ -118,18 +119,6 @@ public:
 */
 /* === P R O C E D U R E S ================================================= */
 
-
-static Gtk::ToolButton*
-create_action_toolbutton(const std::string& action_name, const std::string& icon_name, const std::string& tooltip)
-{
-	Gtk::ToolButton* button = Gtk::manage(new Gtk::ToolButton());
-	gtk_actionable_set_action_name(GTK_ACTIONABLE(button->gobj()), action_name.c_str());
-	button->set_icon_name(icon_name);
-	button->set_tooltip_text(tooltip);
-	button->show();
-	return button;
-}
-
 /* === M E T H O D S ======================================================= */
 
 Dock_PalEdit::Dock_PalEdit():
@@ -166,7 +155,7 @@ Dock_PalEdit::Dock_PalEdit():
 
 	auto toolbar = Gtk::manage(new Gtk::Toolbar());
 	for (const auto& action : action_list) {
-		toolbar->append(*create_action_toolbutton("palette." + action.name, action.icon, action.tooltip));
+		toolbar->append(*ActionWidgetHelper::create_action_toolbutton("palette." + action.name, action.icon, "", action.tooltip));
 	}
 	toolbar->show_all();
 

@@ -53,10 +53,10 @@ class GroupActionManager
 
 	Glib::RefPtr<Gio::SimpleActionGroup> action_group_;
 
-	sigc::connection selection_changed_connection;
+	sigc::connection group_selection_changed_connection;
+	sigc::connection layer_selection_changed_connection;
 
 	bool queued;
-	sigc::connection queue_refresh_connection;
 
 private:
 

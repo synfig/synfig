@@ -38,7 +38,7 @@
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/stylecontext.h>
 
-#include <gui/actionmanagers/actionmanager.h>
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/exception_guard.h>
@@ -62,17 +62,6 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
-static Gtk::ToolButton*
-create_action_toolbutton(const std::string& action_name, const std::string& icon_name, const std::string& tooltip)
-{
-	Gtk::ToolButton* button = Gtk::manage(new Gtk::ToolButton());
-	gtk_actionable_set_action_name(GTK_ACTIONABLE(button->gobj()), action_name.c_str());
-	button->set_icon_name(icon_name);
-	button->set_tooltip_text(tooltip);
-	button->show();
-	return button;
-}
-
 /* === M E T H O D S ======================================================= */
 
 Dock_History::Dock_History():
@@ -86,11 +75,11 @@ Dock_History::Dock_History():
 
 	auto toolbar = Gtk::manage(new Gtk::Toolbar());
 	toolbar->show_all();
-	toolbar->append(*create_action_toolbutton("doc.undo", "action_doc_undo_icon", _("Undo the previous action")));
-	toolbar->append(*create_action_toolbutton("doc.redo", "action_doc_redo_icon", _("Redo the previously undone action")));
-	toolbar->append(*create_action_toolbutton("doc.clear-undo", "clear_undo_icon", _("Clear the undo stack")));
-	toolbar->append(*create_action_toolbutton("doc.clear-redo", "clear_redo_icon", _("Clear the redo stack")));
-	toolbar->append(*create_action_toolbutton("doc.clear-undo-and-redo", "edit-clear", _("Clear the undo and redo stacks")));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.undo", "action_doc_undo_icon", "", _("Undo the previous action")));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.redo", "action_doc_redo_icon", "", _("Redo the previously undone action")));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.clear-undo", "clear_undo_icon", "", _("Clear the undo stack")));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.clear-redo", "clear_redo_icon", "", _("Clear the redo stack")));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.clear-undo-and-redo", "edit-clear", "", _("Clear the undo and redo stacks")));
 
 	set_toolbar(*toolbar);
 

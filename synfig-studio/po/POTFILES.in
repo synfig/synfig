@@ -14,6 +14,7 @@ src/gui/actionmanagers/keyframeactionmanager.cpp
 src/gui/actionmanagers/keyframeactionmanager.h
 src/gui/actionmanagers/layeractionmanager.cpp
 src/gui/actionmanagers/layeractionmanager.h
+src/gui/actionwidgethelper.cpp
 src/gui/cellrenderer/cellrenderer_gradient.cpp
 src/gui/cellrenderer/cellrenderer_gradient.h
 src/gui/cellrenderer/cellrenderer_time.cpp

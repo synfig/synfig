@@ -37,6 +37,7 @@
 
 #include <gtkmm/stylecontext.h>
 
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/localization.h>
@@ -56,17 +57,6 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
-static Gtk::ToolButton*
-create_action_toolbutton(const std::string& action_name, const std::string& icon_name, const std::string& tooltip)
-{
-	Gtk::ToolButton* button = Gtk::manage(new Gtk::ToolButton());
-	gtk_actionable_set_action_name(GTK_ACTIONABLE(button->gobj()), action_name.c_str());
-	button->set_icon_name(icon_name);
-	button->set_tooltip_text(tooltip);
-	button->show();
-	return button;
-}
-
 /* === M E T H O D S ======================================================= */
 
 Dock_MetaData::Dock_MetaData():
@@ -77,8 +67,8 @@ Dock_MetaData::Dock_MetaData():
 
 	auto toolbar = Gtk::manage(new Gtk::Toolbar());
 	toolbar->show_all();
-	toolbar->append(*create_action_toolbutton("doc.add-metadata", "list-add", _("Add a new MetaData entry to the canvas")));
-	toolbar->append(*create_action_toolbutton("doc.remove-metadata", "edit-delete", _("Remove the selected MetaData entry")));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.add-metadata", "list-add", "", _("Add a new MetaData entry to the canvas")));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.remove-metadata", "edit-delete", "", _("Remove the selected MetaData entry")));
 	set_toolbar(*toolbar);
 }
 

@@ -59,6 +59,7 @@
 #include <gtkmm/toolitem.h>
 
 #include <gui/actionmanagers/actionmanager.h>
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/dialogs/dialog_canvasdependencies.h>
 #include <gui/dials/keyframedial.h>
@@ -998,46 +999,6 @@ CanvasView::create_work_area()
 	return work_area;
 }
 
-Gtk::ToolButton*
-CanvasView::create_action_toolbutton(const std::string& action)
-{
-	Gtk::ToolButton* button = Gtk::manage(new Gtk::ToolButton());
-	gtk_actionable_set_action_name(GTK_ACTIONABLE(button->gobj()), action.c_str());
-	try {
-		ActionDatabase::Entry action_entry = App::get_action_database()->get(action);
-		if (!action_entry.icon_.empty())
-			button->set_icon_name(action_entry.icon_);
-		if (!action_entry.label_.empty())
-			button->set_label(_(action_entry.label_.c_str()));
-		if (!action_entry.tooltip_.empty())
-			button->set_tooltip_text(_(action_entry.tooltip_.c_str()));
-	} catch (...) {
-		synfig::warning(_("Couldn't find action: %s"), action.c_str());
-	}
-	button->show();
-	return button;
-}
-
-Gtk::ToolButton*
-CanvasView::create_action_toggletoolbutton(const std::string& action)
-{
-	Gtk::ToggleToolButton* button = Gtk::manage(new Gtk::ToggleToolButton());
-	gtk_actionable_set_action_name(GTK_ACTIONABLE(button->gobj()), action.c_str());
-	try {
-		ActionDatabase::Entry action_entry = App::get_action_database()->get(action);
-		if (!action_entry.icon_.empty())
-			button->set_icon_name(action_entry.icon_);
-		if (!action_entry.label_.empty())
-			button->set_label(_(action_entry.label_.c_str()));
-		if (!action_entry.tooltip_.empty())
-			button->set_tooltip_text(_(action_entry.tooltip_.c_str()));
-	} catch (...) {
-		synfig::warning(_("Couldn't find action: %s"), action.c_str());
-	}
-	button->show();
-	return button;
-}
-
 Gtk::SeparatorToolItem*
 CanvasView::create_tool_separator()
 {
@@ -1063,30 +1024,30 @@ CanvasView::create_top_toolbar()
 
 	// File buttons
 	if (App::show_file_toolbar) {
-		top_toolbar->append(*create_action_toolbutton("app.new"));
-		top_toolbar->append(*create_action_toolbutton("app.open"));
-		top_toolbar->append(*create_action_toolbutton("doc.save"));
-		top_toolbar->append(*create_action_toolbutton("doc.save-as"));
-		top_toolbar->append(*create_action_toolbutton("win.save-all"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("app.new"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("app.open"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.save"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.save-as"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("win.save-all"));
 
 		// Separator
 		top_toolbar->append( *create_tool_separator() );
 	}
 
 	// Undo/Redo buttons
-	top_toolbar->append(*create_action_toolbutton("doc.undo"));
-	top_toolbar->append(*create_action_toolbutton("doc.redo"));
+	top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.undo"));
+	top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.redo"));
 
 	// Separator
 	top_toolbar->append(*create_tool_separator());
 
 	{ // Preview Settings dialog button
-		top_toolbar->append(*create_action_toolbutton("doc.preview"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.preview"));
 
 	}
 
 	{ // Render Settings dialog button
-		top_toolbar->append(*create_action_toolbutton("doc.render"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.render"));
 
 	}
 
@@ -1094,7 +1055,7 @@ CanvasView::create_top_toolbar()
 	top_toolbar->append(*create_tool_separator());
 
 	{ // Refresh button
-		top_toolbar->append(*create_action_toolbutton("doc.refresh"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.refresh"));
 
 	}
 
@@ -1117,7 +1078,7 @@ CanvasView::create_top_toolbar()
 	}
 
 	{ // Background rendering button
-		top_toolbar->append(*create_action_toggletoolbutton("doc.toggle-background-rendering"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-background-rendering"));
 
 	}
 
@@ -1132,7 +1093,7 @@ CanvasView::create_top_toolbar()
 	top_toolbar->append(*create_tool_separator());
 
 	{ // Onion skin toggle button
-		top_toolbar->append(*create_action_toggletoolbutton("doc.toggle-onion-skin"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-onion-skin"));
 
 	}
 
@@ -1169,7 +1130,7 @@ CanvasView::create_top_toolbar()
 	}
 
 	{ // Onion skin on Keyframes/Frames toggle button
-		top_toolbar->append(*create_action_toggletoolbutton("doc.toggle-onion-skin-keyframes"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-onion-skin-keyframes"));
 
 	}
 
@@ -1205,19 +1166,19 @@ CanvasView::create_right_toolbar()
 	right_toolbar->set_property("orientation", Gtk::ORIENTATION_VERTICAL);
 
 	{ // Show grid toggle button
-		right_toolbar->append(*create_action_toggletoolbutton("doc.toggle-grid-show"));
+		right_toolbar->append(*ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-grid-show"));
 	}
 
 	{ // Snap to grid toggle button
-		right_toolbar->append(*create_action_toggletoolbutton("doc.toggle-grid-snap"));
+		right_toolbar->append(*ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-grid-snap"));
 	}
 
 	{ // Show guide toggle button
-		right_toolbar->append(*create_action_toggletoolbutton("doc.toggle-guide-show"));
+		right_toolbar->append(*ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-guide-show"));
 	}
 
 	{ // Snap to guides toggle button
-		right_toolbar->append(*create_action_toggletoolbutton("doc.toggle-guide-snap"));
+		right_toolbar->append(*ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-guide-snap"));
 	}
 
 	// Separator
