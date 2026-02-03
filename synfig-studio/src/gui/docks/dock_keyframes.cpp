@@ -40,9 +40,10 @@
 
 #include <synfig/general.h>
 
+#include <gui/actionmanagers/actionmanager.h>
+#include <gui/actionmanagers/keyframeactionmanager.h>
 #include <gui/actionwidgethelper.h>
 #include <gui/app.h>
-#include <gui/actionmanagers/keyframeactionmanager.h>
 #include <gui/canvasview.h>
 #include <gui/localization.h>
 #include <gui/trees/keyframetree.h>
@@ -73,6 +74,21 @@ Dock_Keyframes::Dock_Keyframes():
 
 	if (keyframe_action_manager)
 		keyframe_action_manager->set_action_widget_and_menu(App::main_window, App::menu_keyframe);
+
+	if (App::get_action_database()) {
+		// Register all synfigapp actions of Keyframe category with 'keyframe' prefix: 'keyframe.action-SYNFIGAPP_ACTION_NAME'
+		for (const auto& item : synfigapp::Action::book()) {
+			const auto& entry = item.second;
+			if (entry.category & synfigapp::Action::CATEGORY_KEYFRAME && !(entry.category & synfigapp::Action::CATEGORY_HIDDEN)) {
+				const std::string full_action_name = synfig::strprintf("%s.action-%s", "keyframe", entry.name.c_str());
+				App::get_action_database()->add({full_action_name, entry.local_name, {}, studio::get_action_icon_name(entry)});
+			}
+		}
+
+		// Register custom actions of this dock with 'keyframe' prefix: 'keyframe.CUSTOM_ACTION_NAME'
+		App::get_action_database()->add({"keyframe.properties", _("Keyframe Properties"), {}, "document-properties"});
+	}
+
 
 	auto toolbar = Gtk::manage(new Gtk::Toolbar());
 	toolbar->append(*ActionWidgetHelper::create_synfigapp_action_toolbutton("keyframe", "KeyframeAdd"));
