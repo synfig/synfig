@@ -38,6 +38,7 @@
 
 #include <synfig/general.h>
 
+#include <gui/actionmanagers/actionmanager.h>
 #include <gui/actionmanagers/groupactionmanager.h>
 #include <gui/actionwidgethelper.h>
 #include <gui/app.h>
@@ -72,9 +73,28 @@ Dock_LayerGroups::Dock_LayerGroups():
 
 	group_action_manager->set_action_widget(App::main_window);
 
+	if (App::get_action_database()) {
+		// Register all synfigapp actions of Group category with 'layer-set' prefix: 'layer-set.action-SYNFIGAPP_ACTION_NAME'
+		// for (const auto& item : synfigapp::Action::book()) {
+		// 	const auto& entry = item.second;
+		// 	if (entry.category & synfigapp::Action::CATEGORY_GROUP && !(entry.category & synfigapp::Action::CATEGORY_HIDDEN)) {
+		// 		const std::string full_action_name = synfig::strprintf("%s.action-%s", "layer-set", entry.name.c_str());
+		// 		App::get_action_database()->add({full_action_name, entry.local_name, {}, studio::get_action_icon_name(entry)});
+		// 	}
+		// }
+		const auto synfigapp_groupremove_it = synfigapp::Action::book().find("GroupRemove");
+		if (synfigapp_groupremove_it != synfigapp::Action::book().end()) {
+			const auto entry = synfigapp_groupremove_it->second;
+			App::get_action_database()->add({"layer-set.GroupRemove", entry.local_name, {}, studio::get_action_icon_name(entry)});
+		}
+
+		// Register custom actions of this dock with 'layer-set' prefix: 'layer-set.CUSTOM_ACTION_NAME'
+		App::get_action_database()->add({"layer-set.group-add", _("Add a New Set"), {}, "list-add", _("Add a New Layer Set")});
+	}
+
 	auto toolbar = Gtk::manage(new Gtk::Toolbar());
 	toolbar->append(*ActionWidgetHelper::create_synfigapp_action_toolbutton("layer-set", "GroupRemove"));
-	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("layer-set.group_add", "list-add", "", _("Add a New Set")));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("layer-set.group-add", "list-add", "", _("Add a New Set")));
 	toolbar->show_all();
 	set_toolbar(*toolbar);
 }

@@ -150,7 +150,7 @@ GroupActionManager::refresh()
 		return;
 	}
 	
-	action_group_->add_action("group_add",
+	action_group_->add_action("group-add",
 		sigc::mem_fun(*this, &GroupActionManager::on_group_add_actioned)
 	);
 
