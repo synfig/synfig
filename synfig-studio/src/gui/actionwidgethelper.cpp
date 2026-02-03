@@ -136,8 +136,10 @@ ActionWidgetHelper::create_synfigapp_action_toolbutton(const std::string& group_
 void
 ActionWidgetHelper::init_toolbutton(Gtk::ToolButton& button, const std::string& action_name, const std::string& icon_name, const std::string& label, const std::string& tooltip)
 {
-	if (!icon_name.empty())
-		button.set_icon_name(icon_name);
+	if (!icon_name.empty()) {
+		const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
+		button.set_icon_name(icon_name + symbolic_suffix);
+	}
 	if (!label.empty())
 		button.set_label(label);
 	button.set_tooltip_text(tooltip);
@@ -187,18 +189,58 @@ ActionWidgetHelper::create_action_togglebutton(const std::string& action_name, c
 	Gtk::ToggleButton* button = manage(new Gtk::ToggleButton());
 	if (!button)
 		return nullptr;
-	button->set_tooltip_text(tooltip);
-	if (!icon_name.empty())
-		button->set_image_from_icon_name(icon_name);
-	if (!label.empty())
-		button->set_label(label);
+	init_button(*button, action_name, icon_name, label, tooltip);
 	button->set_relief(Gtk::RELIEF_NONE);
-	button->set_active();
-	button->show();
-
-	gtk_actionable_set_detailed_action_name(GTK_ACTIONABLE(button->gobj()), action_name.c_str());
 
 	return button;
+}
+
+void
+ActionWidgetHelper::init_button(Gtk::Button& button, const std::string& action_name)
+{
+	try {
+		ActionDatabase::Entry action_entry = App::get_action_database()->get(action_name);
+		init_button(button, action_name, action_entry.icon_, action_entry.label_, action_entry.get_tooltip(App::instance()));
+	} catch (...) {
+		synfig::warning(_("Couldn't find action: %s"), action_name.c_str());
+	}
+}
+
+void
+ActionWidgetHelper::init_label_only_button(Gtk::Button& button, const std::string& action_name)
+{
+	try {
+		ActionDatabase::Entry action_entry = App::get_action_database()->get(action_name);
+		init_button(button, action_name, {}, action_entry.label_, action_entry.get_tooltip(App::instance()));
+	} catch (...) {
+		synfig::warning(_("Couldn't find action: %s"), action_name.c_str());
+	}
+}
+
+void
+ActionWidgetHelper::init_icon_only_button(Gtk::Button& button, const std::string& action_name)
+{
+	try {
+		ActionDatabase::Entry action_entry = App::get_action_database()->get(action_name);
+		init_button(button, action_name, action_entry.icon_, {}, action_entry.get_tooltip(App::instance()));
+	} catch (...) {
+		synfig::warning(_("Couldn't find action: %s"), action_name.c_str());
+	}
+}
+
+void
+ActionWidgetHelper::init_button(Gtk::Button& button, const std::string& action_name, const std::string& icon_name, const std::string& label, const std::string& tooltip)
+{
+	if (!icon_name.empty()) {
+		const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
+		button.set_image_from_icon_name(icon_name + symbolic_suffix);
+	}
+	if (!label.empty())
+		button.set_label(label);
+	button.set_tooltip_text(tooltip);
+	button.show();
+
+	gtk_actionable_set_detailed_action_name(GTK_ACTIONABLE(button.gobj()), action_name.c_str());
 }
 
 /* === M E T H O D S ======================================================= */

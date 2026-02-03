@@ -64,6 +64,11 @@ Gtk::ToggleButton* create_action_togglebutton(const std::string& action, const s
 
 void init_toolbutton(Gtk::ToolButton& button, const std::string& action, const std::string& icon_name, const std::string& label, const std::string& tooltip);
 
+void init_button(Gtk::Button& button, const std::string& action_name);
+void init_label_only_button(Gtk::Button& button, const std::string& action_name);
+void init_icon_only_button(Gtk::Button& button, const std::string& action_name);
+void init_button(Gtk::Button& button, const std::string& action_name, const std::string& icon_name, const std::string& label, const std::string& tooltip);
+
 };
 
 /* === C L A S S E S & S T R U C T S ======================================= */
