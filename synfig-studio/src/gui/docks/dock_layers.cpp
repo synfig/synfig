@@ -39,6 +39,7 @@
 #include <glibmm/markup.h>
 #include <gtkmm/stylecontext.h>
 
+#include <gui/actionmanagers/actionmanager.h>
 #include <gui/actionmanagers/layeractionmanager.h>
 #include <gui/actionwidgethelper.h>
 #include <gui/app.h>
@@ -121,6 +122,23 @@ Dock_Layers::Dock_Layers():
 	}
 
 
+	if (App::get_action_database()) {
+		// Register all synfigapp actions of Group category with 'layer' prefix: 'layer.action-SYNFIGAPP_ACTION_NAME'
+		for (const auto& item : synfigapp::Action::book()) {
+			const auto& entry = item.second;
+			if (entry.category & synfigapp::Action::CATEGORY_LAYER && !(entry.category & synfigapp::Action::CATEGORY_HIDDEN)) {
+				const std::string full_action_name = synfig::strprintf("%s.action-%s", "layer", entry.name.c_str());
+				App::get_action_database()->add({full_action_name, entry.local_name, {}, studio::get_action_icon_name(entry)});
+			}
+		}
+
+		// Register custom actions of this dock with 'layer' prefix: 'layer.CUSTOM_ACTION_NAME'
+		App::get_action_database()->add({"layer.select-all-child-layers", _("Select All Child Layers"), {}, "select_all_child_layers_icon", _("Select all child layers of the selected layer group")});
+		App::get_action_database()->add({"layer.cut", _("Cut"), {}, "edit-cut", _("Cut layer(s) to clipboard")});
+		App::get_action_database()->add({"layer.copy", _("Copy"), {}, "edit-copy", _("Copy layer(s) to clipboard")});
+		App::get_action_database()->add({"layer.paste", _("Paste"), {}, "edit-paste", _("Paste layer(s) from clipboard")});
+		App::get_action_database()->add({"doc.popup-layer-new", _("New Layer"), {}, "list-add", _("Pops up a menu to select a new layer")});
+	}
 
 
 	action_popup_new_layer = Gio::SimpleAction::create("popup-layer-new");
@@ -130,7 +148,7 @@ Dock_Layers::Dock_Layers():
 
 	auto toolbar = Gtk::manage(new Gtk::Toolbar());
 	toolbar->show_all();
-	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.popup-layer-new", "list-add", "", _("New Layer")));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.popup-layer-new"));
 
 	toolbar->append(*create_separator_toolitem());
 
