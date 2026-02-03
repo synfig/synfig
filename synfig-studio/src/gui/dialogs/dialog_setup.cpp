@@ -55,6 +55,8 @@
 #include <synfig/os.h>
 #include <synfig/general.h>
 #include <synfig/rendering/renderer.h>
+#include <gui/widgets/widget_interpolation.h>
+#include <gui/dials/keyframedial.h>  
 
 #include <synfigapp/main.h>
 
@@ -427,6 +429,36 @@ Dialog_Setup::create_document_page(PageInfo pi)
 	if (App::default_background_layer_type == "image")
 		def_background_image.set_active();
 
+
+	// Default Interpolation
+	attach_label_section(pi.grid, _("Default Interpolation"), ++row);
+
+	widget_interpolation = manage(new Widget_Interpolation(Widget_Interpolation::SIDE_BOTH));
+	widget_interpolation->set_value(App::default_interpolation);
+	widget_interpolation->set_tooltip_text(_("Default Interpolation"));
+	widget_interpolation->set_popup_fixed_width(false);
+	widget_interpolation->set_hexpand(true);
+	widget_interpolation->show();
+	widget_interpolation->signal_changed().connect(sigc::mem_fun(*this, &Dialog_Setup::on_interpolation_changed));
+	synfigapp::Main::signal_interpolation_changed().connect(sigc::mem_fun(*this, &Dialog_Setup::interpolation_refresh));
+	App::default_interpolation = widget_interpolation->get_value();
+	synfigapp::Main::set_interpolation(static_cast<synfig::Waypoint::Interpolation>(App::default_interpolation));
+	interpolation_refresh();
+
+	pi.grid->attach(*widget_interpolation, 1, ++row, 1, 1);
+
+	keyframedial = Gtk::manage(new KeyFrameDial());
+	keyframedial = Gtk::manage(new KeyFrameDial());
+	keyframedial->set_past_toggle(App::default_keyframedial_past);
+	keyframedial->set_future_toggle(App::default_keyframedial_future);
+	keyframedial->signal_toggle_keyframe_past().connect(sigc::mem_fun(*this, &Dialog_Setup::toggle_past_keyframe_button));
+	keyframedial->signal_toggle_keyframe_future().connect(sigc::mem_fun(*this, &Dialog_Setup::toggle_future_keyframe_button));
+	keyframedial->set_margin_start(4);
+	keyframedial->set_margin_end(4);
+	keyframedial->set_hexpand(true);
+	keyframedial->show();
+
+	pi.grid->attach(*keyframedial, 2, row, 1, 1); 
 }
 
 void
@@ -948,6 +980,16 @@ Dialog_Setup::on_restore_pressed()
 		toggle_handle_tooltip_transfo_name.set_active(false);
 		toggle_handle_tooltip_transfo_value.set_active(false);
 
+		// Reset Interpolation to Clamped
+        widget_interpolation->set_value(synfig::INTERPOLATION_CLAMPED);
+		App::default_interpolation = synfig::INTERPOLATION_CLAMPED;
+
+        // Reset Keyframe Dial Toggles to Lock Past and Lock Future
+        keyframedial->set_past_toggle(true);
+        keyframedial->set_future_toggle(true);
+        App::default_keyframedial_past = true;
+        App::default_keyframedial_future = true;
+
 		// Keyboard accels
 		auto accel_rows = treeview_accels->get_model()->children();
 		auto default_accel_map = App::get_default_accel_map();
@@ -1076,6 +1118,10 @@ Dialog_Setup::on_apply_pressed()
 	
 	// Set the background image
 	App::default_background_layer_image = fcbutton_image.get_filename();
+
+	App::default_keyframedial_past = keyframedial->get_past_toggle();
+	App::default_keyframedial_future = keyframedial->get_future_toggle();
+	App::default_interpolation = widget_interpolation->get_value();
 	
 	// Set the preferred image sequence separator
 	App::sequence_separator     = image_sequence_separator.get_text();
@@ -1312,6 +1358,9 @@ Dialog_Setup::refresh()
 		def_background_image.set_active();
 	
 	fcbutton_image.set_filename(App::default_background_layer_image);
+	keyframedial->set_past_toggle(App::default_keyframedial_past);
+	keyframedial->set_future_toggle(App::default_keyframedial_future);
+	widget_interpolation->set_value(App::default_interpolation);
 	
 	// Refresh the colors of background and preview background buttons
 	Gdk::RGBA m_color;
@@ -1503,4 +1552,55 @@ void
 Dialog_Setup::on_value_change(int valueflag)
 {
 	if(!refreshing) pref_modification_flag |= valueflag;
+}
+
+void
+Dialog_Setup::interpolation_refresh(){ 
+	widget_interpolation->set_value(synfigapp::Main::get_interpolation()); 
+}
+
+void
+Dialog_Setup::on_interpolation_changed(){ 
+	synfigapp::Main::set_interpolation(Waypoint::Interpolation(widget_interpolation->get_value())); 
+}
+
+
+void Dialog_Setup::toggle_past_keyframe_button()
+{
+    if (toggling_animate_mode_)
+        return;
+
+    auto canvas_view = App::get_selected_canvas_view();
+    if (!canvas_view)
+        return;
+
+    auto canvas_interface = canvas_view->canvas_interface(); // Correct replacement
+    if (!canvas_interface)
+        return;
+
+    synfigapp::CanvasInterface::Mode mode(canvas_interface->get_mode());
+    if ((mode & synfigapp::MODE_ANIMATE_PAST))
+        canvas_interface->set_mode(canvas_interface->get_mode() - synfigapp::MODE_ANIMATE_PAST);
+    else
+        canvas_interface->set_mode(canvas_interface->get_mode() | synfigapp::MODE_ANIMATE_PAST);
+}
+
+void Dialog_Setup::toggle_future_keyframe_button()
+{
+    if (toggling_animate_mode_)
+        return;
+
+    auto canvas_view = App::get_selected_canvas_view();
+    if (!canvas_view)
+        return;
+
+    auto canvas_interface = canvas_view->canvas_interface(); // Correct replacement
+    if (!canvas_interface)
+        return;
+
+    synfigapp::CanvasInterface::Mode mode(canvas_interface->get_mode());
+    if ((mode & synfigapp::MODE_ANIMATE_FUTURE))
+        canvas_interface->set_mode(canvas_interface->get_mode() - synfigapp::MODE_ANIMATE_FUTURE);
+    else
+        canvas_interface->set_mode(canvas_interface->get_mode() | synfigapp::MODE_ANIMATE_FUTURE);
 }

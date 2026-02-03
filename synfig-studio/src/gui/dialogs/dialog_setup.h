@@ -41,6 +41,9 @@
 #include <gtkmm/radiobutton.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/switch.h>
+#include <gui/widgets/widget_interpolation.h>
+#include <gui/dials/keyframedial.h>
+#include <synfigapp/canvasinterface.h>
 
 #include <gui/dialogs/dialog_template.h>
 #include <gui/widgets/widget_time.h>
@@ -109,6 +112,10 @@ class Dialog_Setup : public Dialog_Template
 	void on_plugin_path_change_clicked();
 	void on_choose_editor_pressed();
 	bool select_path_dialog(const std::string &title, std::string &filename);
+	void on_interpolation_changed();
+	void interpolation_refresh();
+    void toggle_past_keyframe_button();
+    void toggle_future_keyframe_button();
 
 	void create_system_page(PageInfo pi);
 	void create_document_page(PageInfo pi);
@@ -116,6 +123,7 @@ class Dialog_Setup : public Dialog_Template
 	void create_interface_page(PageInfo pi);
 	void create_editing_page(PageInfo pi);
 	void create_shortcuts_page(PageInfo pi);
+	bool toggling_animate_mode_;
 
 	synfigapp::Settings &input_settings;
 
@@ -131,6 +139,9 @@ class Dialog_Setup : public Dialog_Template
 	Widget_Enum *widget_enum;
 
 	Widget_Time auto_backup_interval;
+
+	Widget_Enum *widget_interpolation;
+	KeyFrameDial *keyframedial;
 
 	Gtk::Switch toggle_restrict_radius_ducks;
 	Gtk::Switch toggle_animation_thumbnail_preview;
