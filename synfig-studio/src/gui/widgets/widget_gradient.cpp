@@ -199,6 +199,7 @@ void
 Widget_Gradient::popup_menu(float x)
 {
 	Gtk::Menu* menu(manage(new Gtk::Menu()));
+	menu->attach_to_widget(*this);
 	menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 
 	std::vector<Gtk::Widget*> children = menu->get_children();

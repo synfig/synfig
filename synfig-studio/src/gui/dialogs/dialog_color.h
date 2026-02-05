@@ -53,7 +53,7 @@ class Dialog_Color : public Gtk::Dialog
 	synfigapp::ValueDesc value_desc;
 
 	void create_color_edit_widget();
-	void create_set_color_button(const char *stock_id,
+	void create_set_color_button(const char* icon_name,
 			const Glib::ustring& tip_text, int index,
 			const sigc::slot0<void>& callback);
 	void create_close_button();

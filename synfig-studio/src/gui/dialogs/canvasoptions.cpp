@@ -165,7 +165,7 @@ CanvasOptions::on_apply_pressed()
 	else
 		canvas_view_->get_work_area()->disable_grid_snap();
 
-	canvas_view_->set_grid_show_toggle(toggle_grid_show->get_active());
+	canvas_view_->set_grid_show(toggle_grid_show->get_active());
 	if(toggle_grid_show->get_active())
 		canvas_view_->get_work_area()->enable_grid();
 	else

@@ -58,6 +58,8 @@
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toolitem.h>
 
+#include <gui/actionmanagers/actionmanager.h>
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/dialogs/dialog_canvasdependencies.h>
 #include <gui/dials/keyframedial.h>
@@ -546,13 +548,6 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 	toggling_ducks_=false;
 	toggling_animate_mode_=false;
 	changing_resolution_=false;
-	toggling_show_grid=false;
-	toggling_snap_grid=false;
-	toggling_show_guides=false;
-	toggling_snap_guides=false;
-	toggling_onion_skin=false;
-	toggling_onion_skin_keyframes=false;
-	toggling_background_rendering=false;
 
 	set_use_scrolled(false);
 
@@ -570,7 +565,9 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 
 	Gtk::Widget *widget_work_area = create_work_area();
 	widget_work_area->set_margin_top(4);
-	init_menus();
+
+	init_doc_actions();
+
 	Gtk::Widget *widget_top_bar = create_top_toolbar();
 	Gtk::Widget *widget_stopbutton = create_stop_button();
 	Gtk::Widget *widget_right_bar = create_right_toolbar();
@@ -677,8 +674,9 @@ CanvasView::~CanvasView()
 	// but i didn't think it worth to spend time to it, because remove_action_group is deprecated
 	// and this code is required to rewrite.
 
-	if (!this->_action_group_removed)
-		App::ui_manager()->remove_action_group(action_group);
+	if (!this->_action_group_removed) {
+		App::main_window->remove_action_group("doc");
+	}
 
 	// Shut down the smach
 	smach_.egress();
@@ -706,7 +704,7 @@ void CanvasView::activate()
 {
 	activation_index_.activate();
 	get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
-	App::ui_manager()->insert_action_group(action_group);
+	App::main_window->insert_action_group("doc", action_group_);
 	this->_action_group_removed = false;
 	update_title();
 	present();
@@ -716,7 +714,7 @@ void CanvasView::activate()
 void CanvasView::deactivate()
 {
 	get_smach().process_event(EVENT_YIELD_TOOL_OPTIONS);
-	App::ui_manager()->remove_action_group(action_group);
+	App::main_window->remove_action_group("doc");
 	this->_action_group_removed = true;
 	update_title();
 }
@@ -787,13 +785,12 @@ void CanvasView::set_jack_enabled(bool value)
 }
 #endif
 
-std::list<int>&
+const std::vector<int>&
 CanvasView::get_pixel_sizes()
 {
 	// prime factors of 64 is 2, 2, 2, 2, 2, 2 - see TILE_SIZE in synfig-core/trunk/src/synfig/target_tile.h
 	// also see available low-res renderer engines in rendering::Renderer::initialize_renderers()
-	static int pixel_size_array[] = {2, 4, 8, 16};
-	static std::list<int> pixel_sizes(pixel_size_array, pixel_size_array + sizeof(pixel_size_array)/sizeof(int));
+	static const std::vector<int> pixel_sizes = {2, 4, 8, 16};
 	return pixel_sizes;
 }
 
@@ -844,9 +841,6 @@ CanvasView::create_time_bar()
 		animatebutton->set_image_from_icon_name("animate_mode_off_icon", iconsize);
 		animatebutton->set_tooltip_text(_("Turn on animate editing mode"));
 
-		// Set hotkey to toggle animate button on and off
-		auto accel_group = App::ui_manager()->get_accel_group();
-		animatebutton->set_accel_path("<Actions>/canvasview/animate", accel_group);
 
 		animatebutton->signal_toggled().connect(sigc::mem_fun(*this, &CanvasView::toggle_animatebutton));
 		animatebutton->set_relief(Gtk::RELIEF_NONE);
@@ -918,8 +912,6 @@ CanvasView::create_time_bar()
 
 	//Setup the KeyFrameDial widget
 	keyframedial = Gtk::manage(new KeyFrameDial());
-	keyframedial->signal_toggle_keyframe_past().connect(sigc::mem_fun(*this, &CanvasView::toggle_past_keyframe_button));
-	keyframedial->signal_toggle_keyframe_future().connect(sigc::mem_fun(*this, &CanvasView::toggle_future_keyframe_button));
 	keyframedial->set_margin_start(4);
 	keyframedial->set_margin_end(4);
 	keyframedial->show();
@@ -1007,15 +999,6 @@ CanvasView::create_work_area()
 	return work_area;
 }
 
-Gtk::ToolButton*
-CanvasView::create_action_toolbutton(const Glib::RefPtr<Gtk::Action> &action)
-{
-	Gtk::ToolButton *button = Gtk::manage(new Gtk::ToolButton());
-	button->set_related_action(action);
-	button->show();
-	return button;
-}
-
 Gtk::SeparatorToolItem*
 CanvasView::create_tool_separator()
 {
@@ -1041,59 +1024,39 @@ CanvasView::create_top_toolbar()
 
 	// File buttons
 	if (App::show_file_toolbar) {
-		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/new")));
-		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/open")));
-		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save")));
-		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save-as")));
-		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/save-all")));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("app.new"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("app.open"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.save"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.save-as"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("win.save-all"));
 
 		// Separator
 		top_toolbar->append( *create_tool_separator() );
 	}
 
 	// Undo/Redo buttons
-	top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/undo")));
-	top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/redo")));
+	top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.undo"));
+	top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.redo"));
 
 	// Separator
 	top_toolbar->append(*create_tool_separator());
 
 	{ // Preview Settings dialog button
-		preview_options_button = Gtk::manage(new Gtk::ToolButton());
-		preview_options_button->set_icon_name("preview_options_icon");
-		preview_options_button->signal_clicked().connect(
-			sigc::mem_fun(*this,&CanvasView::on_preview_option));
-		preview_options_button->set_label(_("Preview"));
-		preview_options_button->set_tooltip_text(_("Shows the Preview Settings Dialog"));
-		preview_options_button->show();
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.preview"));
 
-		top_toolbar->append(*preview_options_button);
 	}
 
 	{ // Render Settings dialog button
-		render_options_button = Gtk::manage(new Gtk::ToolButton());
-		render_options_button->set_icon_name("render_options_icon");
-		render_options_button->signal_clicked().connect(
-			sigc::mem_fun0(render_settings,&RenderSettings::present));
-		render_options_button->set_label(_("Render"));
-		render_options_button->set_tooltip_text(_("Shows the Render Settings Dialog"));
-		render_options_button->show();
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.render"));
 
-		top_toolbar->append(*render_options_button);
 	}
 
 	// Separator
 	top_toolbar->append(*create_tool_separator());
 
 	{ // Refresh button
-		refreshbutton = Gtk::manage(new Gtk::ToolButton());
-		refreshbutton->set_icon_name("view-refresh");
-		refreshbutton->signal_clicked().connect(SLOT_EVENT(EVENT_REFRESH));
-		refreshbutton->set_label(_("Refresh"));
-		refreshbutton->set_tooltip_text( _("Refresh workarea"));
-		refreshbutton->show();
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.refresh"));
 
-		top_toolbar->append(*refreshbutton);
 	}
 
 	{ // Rendering mode ComboBox
@@ -1115,16 +1078,8 @@ CanvasView::create_top_toolbar()
 	}
 
 	{ // Background rendering button
-		background_rendering_button = Gtk::manage(new Gtk::ToggleToolButton());
-		background_rendering_button->set_active(work_area->get_background_rendering());
-		background_rendering_button->set_icon_name("background_rendering_icon");
-		background_rendering_button->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_background_rendering));
-		background_rendering_button->set_label(_("Background rendering"));
-		background_rendering_button->set_tooltip_text(_("Render future and past frames in background when enabled"));
-		background_rendering_button->show();
+		top_toolbar->append(*ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-background-rendering"));
 
-		top_toolbar->append(*background_rendering_button);
 	}
 
 	// Separator
@@ -1132,28 +1087,14 @@ CanvasView::create_top_toolbar()
 
 	// ResolutionDial widget
 	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
-	resolutiondial_->signal_increase_resolution().connect(
-		sigc::mem_fun(*this, &CanvasView::decrease_low_res_pixel_size));
-	resolutiondial_->signal_decrease_resolution().connect(
-		sigc::mem_fun(*this, &CanvasView::increase_low_res_pixel_size));
-	resolutiondial_->signal_use_low_resolution().connect(
-		sigc::mem_fun(*this, &CanvasView::toggle_low_res_pixel_flag));
 	resolutiondial_->insert_to_toolbar(*top_toolbar);
 
 	// Separator
 	top_toolbar->append(*create_tool_separator());
 
 	{ // Onion skin toggle button
-		onion_skin = Gtk::manage(new Gtk::ToggleToolButton());
-		onion_skin->set_active(work_area->get_onion_skin());
-		onion_skin->set_icon_name("onion_skin_icon");
-		onion_skin->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_onion_skin));
-		onion_skin->set_label(_("Onion Skin"));
-		onion_skin->set_tooltip_text(_("Show Onion Skin when enabled"));
-		onion_skin->show();
+		top_toolbar->append(*ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-onion-skin"));
 
-		top_toolbar->append(*onion_skin);
 	}
 
 	{ // Past onion skin spin button
@@ -1189,16 +1130,8 @@ CanvasView::create_top_toolbar()
 	}
 
 	{ // Onion skin on Keyframes/Frames toggle button
-		onion_skin_keyframes = Gtk::manage(new Gtk::ToggleToolButton());
-		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
-		onion_skin_keyframes->set_icon_name("keyframe_icon");
-		onion_skin_keyframes->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_onion_skin_keyframes));
-		onion_skin_keyframes->set_label(_("Keyframes"));
-		onion_skin_keyframes->set_tooltip_text(_("Show Onion Skin on Keyframes when enabled, on Frames when disabled"));
-		onion_skin_keyframes->show();
+		top_toolbar->append(*ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-onion-skin-keyframes"));
 
-		top_toolbar->append(*onion_skin_keyframes);
 	}
 
 	if(App::enable_mainwin_toolbar)
@@ -1233,55 +1166,19 @@ CanvasView::create_right_toolbar()
 	right_toolbar->set_property("orientation", Gtk::ORIENTATION_VERTICAL);
 
 	{ // Show grid toggle button
-		show_grid = Gtk::manage(new Gtk::ToggleToolButton());
-		show_grid->set_active(work_area->grid_status());
-		show_grid->set_icon_name("show_grid_icon");
-		show_grid->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_show_grid));
-		show_grid->set_label(_("Show Grid"));
-		show_grid->set_tooltip_text(_("Show Grid when enabled"));
-		show_grid->show();
-
-		right_toolbar->append(*show_grid);
+		right_toolbar->append(*ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-grid-show"));
 	}
 
 	{ // Snap to grid toggle button
-		snap_grid = Gtk::manage(new Gtk::ToggleToolButton());
-		snap_grid->set_active(work_area->grid_status());
-		snap_grid->set_icon_name("snap_grid_icon");
-		snap_grid->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_snap_grid));
-		snap_grid->set_label(_("Snap to Grid"));
-		snap_grid->set_tooltip_text(_("Snap to Grid when enabled"));
-		snap_grid->show();
-
-		right_toolbar->append(*snap_grid);
+		right_toolbar->append(*ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-grid-snap"));
 	}
 
 	{ // Show guide toggle button
-		show_guides = Gtk::manage(new Gtk::ToggleToolButton());
-		show_guides->set_active(work_area->get_show_guides());
-		show_guides->set_icon_name("show_guideline_icon");
-		show_guides->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_show_guides));
-		show_guides->set_label(_("Show Guides"));
-		show_guides->set_tooltip_text(_("Show Guides when enabled"));
-		show_guides->show();
-
-		right_toolbar->append(*show_guides);
+		right_toolbar->append(*ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-guide-show"));
 	}
 
 	{ // Snap to guides toggle button
-		snap_guides = Gtk::manage(new Gtk::ToggleToolButton());
-		snap_guides->set_active(work_area->get_guide_snap());
-		snap_guides->set_icon_name("snap_guideline_icon");
-		snap_guides->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_snap_guides));
-		snap_guides->set_label(_("Snap to Guides"));
-		snap_guides->set_tooltip_text(_("Snap to Guides when enabled"));
-		snap_guides->show();
-
-		right_toolbar->append(*snap_guides);
+		right_toolbar->append(*ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-guide-snap"));
 	}
 
 	// Separator
@@ -1290,23 +1187,56 @@ CanvasView::create_right_toolbar()
 	// ToggleDuckDial widget
 	Duck::Type m = work_area->get_type_mask();
 	toggleducksdial.update_toggles(m);
-	toggleducksdial.signal_ducks_position().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_POSITION));
-	toggleducksdial.signal_ducks_vertex().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_VERTEX));
-	toggleducksdial.signal_ducks_tangent().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_TANGENT));
-	toggleducksdial.signal_ducks_radius().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_RADIUS));
-	toggleducksdial.signal_ducks_width().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_WIDTH));
-	toggleducksdial.signal_ducks_angle().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE));
 	toggleducksdial.insert_to_toolbar(*right_toolbar);
 
 	right_toolbar->show();
 
 	return right_toolbar;
+}
+
+void
+CanvasView::set_grid_snap_toggle(bool flag) {
+	grid_snap_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_grid_show(bool flag) {
+	grid_show_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_guides_snap_toggle(bool flag) {
+	guides_snap_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_guides_show_toggle(bool flag) {
+	guides_show_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_onion_skin_toggle(bool flag) {
+	onion_skin_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_onion_skin_keyframes_toggle(bool flag) {
+	onion_skin_keyframes_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_background_rendering_toggle(bool flag) {
+	background_rendering_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_past_keyframe_lock_toggle(bool flag) {
+	past_keyframe_lock_toggle->set_state(Glib::Variant<bool>::create(flag));
+}
+
+void
+CanvasView::set_future_keyframe_lock_toggle(bool flag) {
+	future_keyframe_lock_toggle->set_state(Glib::Variant<bool>::create(flag));
 }
 
 void CanvasView::grab_focus()
@@ -1339,193 +1269,182 @@ CanvasView::on_set_end_time_widget_changed()
 }
 
 void
-CanvasView::init_menus()
+CanvasView::init_doc_actions()
 {
-	//cache the position of desired widgets
-
-	/*Menus to worry about:
-	- filemenu
-	- editmenu
-	- layermenu
-	- duckmaskmenu
-	- mainmenu
-	- canvasmenu
-	- viewmenu
-	*/
-
+	if (!canvas_interface_) {
+		synfig::error(_("Internal error: canvas_interface is required to initialize document actions"));
+		return;
+	}
+	if (!work_area) {
+		synfig::error(_("Internal error: workarea is required to initialize document actions"));
+		return;
+	}
 	struct ActionMetadata {
 		std::string name;
 		std::string icon;
+		std::string shortcut;
 		std::string label;
 		std::string tooltip;
 		std::function<void()> slot;
 	};
 
 	const std::vector<ActionMetadata> action_list = {
-		{"save",    "action_doc_save_icon",   N_("Save"),      N_("Save"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::save)) },
-		{"save-as", "action_doc_saveas_icon", N_("Save As..."), N_("Save As"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_save_as)) },
+		{"save",    "action_doc_save_icon",   "<Primary>s", N_("Save"),      N_("Save"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::save)) },
+		{"save-as", "action_doc_saveas_icon", "<Primary><Shift>s", N_("Save As..."), N_("Save As"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_save_as)) },
 
-		{"export",            "action_doc_saveas_icon", N_("Export..."),            N_("Export"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_export)) },
-		{"revert",            "document-revert",        N_("Revert"),               N_("Revert document as it was last saved"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::safe_revert)) },
-		{"import",            "",                       N_("Import..."),            "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file)) },
-		{"import-sequence",   "",                       N_("Import Sequence..."),   "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence)) },
-		{"show-dependencies", "",                       N_("Show Dependencies..."), "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::show_dependencies)) },
-		{"render",            "render_options_icon",    N_("Render..."),            "", sigc::mem_fun0(render_settings, &RenderSettings::present) },
-		{"preview",           "preview_options_icon",   N_("Preview..."),           "", sigc::mem_fun(*this, &CanvasView::on_preview_option) },
-		{"options",           "",                       N_("Options..."),           "", sigc::mem_fun0(canvas_options, &CanvasOptions::present) },
-		{"close-document",    "window-close",           N_("Close Document"),       "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::close_instance)) },
-		{"quit",              "application-exit",       N_("Quit"),                 "",  sigc::hide_return(sigc::ptr_fun(&App::quit)) },
+		{"export",            "action_doc_saveas_icon", "",           N_("Export..."),            N_("Export"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_export)) },
+		{"revert",            "document-revert",        "",           N_("Revert"),               N_("Revert document as it was last saved"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::safe_revert)) },
+		{"import",            "",                       "<Primary>i", N_("Import..."),            "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file)) },
+		{"import-sequence",   "",                       "",           N_("Import Sequence..."),   "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence)) },
+		{"show-dependencies", "",                       "",           N_("Show Dependencies..."), "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::show_dependencies)) },
+		{"render",            "render_options_icon",    "F9",         N_("Render..."),            N_("Shows the Render Settings Dialog"), sigc::mem_fun0(render_settings, &RenderSettings::present) },
+		{"preview",           "preview_options_icon",   "F11",        N_("Preview..."),           N_("Shows the Preview Settings Dialog"), sigc::mem_fun(*this, &CanvasView::on_preview_option) },
+		{"options",           "",                       "F12",        N_("Options..."),           "", sigc::mem_fun0(canvas_options, &CanvasOptions::present) },
+		{"close-document",    "window-close",           "<Primary>w", N_("Close Document"),       "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::close_instance)) },
 
-		{"select-all-ducks",    "", N_("Select All Handles"), "", sigc::mem_fun(*work_area, &WorkArea::select_all_ducks) },
-		{"unselect-all-ducks",  "", N_("Unselect All Handles"), "", sigc::mem_fun(*work_area, &WorkArea::unselect_all_ducks) },
-		{"select-all-layers",   "", N_("Select All Layers"), "", sigc::mem_fun(*this, &CanvasView::on_select_layers) },
-		{"unselect-all-layers", "", N_("Unselect All Layers"), "", sigc::mem_fun(*this, &CanvasView::on_unselect_layers) },
-		{"select-parent-layer", "", N_("Select Parent Layer"), "", sigc::mem_fun(*this, &CanvasView::on_select_parent_layer) },
+		{"select-all-ducks",    "", "<Primary>a",        N_("Select All Handles"), "", sigc::mem_fun(*work_area, &WorkArea::select_all_ducks) },
+		{"unselect-all-ducks",  "", "<Primary>d",        N_("Unselect All Handles"), "", sigc::mem_fun(*work_area, &WorkArea::unselect_all_ducks) },
+		{"select-all-layers",   "", "<Primary><Shift>a", N_("Select All Layers"), "", sigc::mem_fun(*this, &CanvasView::on_select_layers) },
+		{"unselect-all-layers", "", "<Primary><Shift>d", N_("Unselect All Layers"), "", sigc::mem_fun(*this, &CanvasView::on_unselect_layers) },
+		{"select-parent-layer", "", "<Mod1>Page_Up",     N_("Select Parent Layer"), "", sigc::mem_fun(*this, &CanvasView::on_select_parent_layer) },
 
-		{"pause",               "animate_pause_icon",  N_("Pause"), "", sigc::mem_fun(*this, &CanvasView::stop_async) },
-		{"refresh",             "view-refresh",        N_("Refresh"), "", sigc::hide_return(sigc::bind(sigc::mem_fun(*this, &CanvasView::process_event_key), EVENT_REFRESH)) },
-		{"properties",          "document-properties", N_("Properties..."), "", sigc::mem_fun0(canvas_properties, &CanvasProperties::present) },
-		{"resize-canvas",       "",                    N_("Resize..."), "", sigc::mem_fun0(canvas_resize, &CanvasResize::present)},
+		{"stop-process",        "process-stop",        "",           N_("Stop"),    N_("Stop current operation"), SLOT_EVENT(EVENT_STOP) },
+		{"pause",               "animate_pause_icon",  "",           N_("Pause"),   "", sigc::mem_fun(*this, &CanvasView::stop_async) },
+		{"refresh",             "view-refresh",        "",           N_("Refresh"), N_("Refresh workarea"), sigc::hide_return(sigc::bind(sigc::mem_fun(*this, &CanvasView::process_event_key), EVENT_REFRESH)) },
+		{"properties",          "document-properties", "F8",         N_("Properties..."), "", sigc::mem_fun0(canvas_properties, &CanvasProperties::present) },
+		{"resize-canvas",       "",                    "",           N_("Resize..."), "", sigc::mem_fun0(canvas_resize, &CanvasResize::present)},
 
-		{"decrease-low-res-pixel-size", "", N_("Decrease Low-Res Pixel Size"), "", sigc::mem_fun(this, &CanvasView::decrease_low_res_pixel_size) },
-		{"increase-low-res-pixel-size", "", N_("Increase Low-Res Pixel Size"), "",  sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size) },
+		{"decrease-lowres-pixel-size", "", "<Primary>parenleft",  N_("Increase Resolution"), N_("Increase Display Resolution"), sigc::mem_fun(this, &CanvasView::decrease_low_res_pixel_size) },
+		{"increase-lowres-pixel-size", "", "<Primary>parenright", N_("Decrease Resolution"), N_("Decrease Display Resolution"),  sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size) },
 
-		{"play",            "media-playback-start", N_("_Play"),          N_("Play"), sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed) },
-		{"dialog-flipbook", "",                     N_("Preview Window"), "", sigc::mem_fun0(preview_dialog, &Dialog_Preview::present) },
+		{"play",            "media-playback-start", "", N_("_Play"),          N_("Play"), sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed) },
+		{"dialog-flipbook", "", "",                     N_("Preview Window"), "", sigc::mem_fun0(preview_dialog, &Dialog_Preview::present) },
 
-		{"canvas-zoom-fit",   "zoom-fit-best", N_("Best _Fit"),    N_("Best Fit"), sigc::mem_fun(*work_area, &WorkArea::zoom_fit) },
-		{"canvas-zoom-100",   "zoom-original", N_("_Normal Size"), N_("Normal Size"), sigc::mem_fun(*work_area, &WorkArea::zoom_norm) },
-		{"canvas-zoom-fit-2", "zoom-fit-best", N_("Best _Fit"),    N_("Best Fit"), sigc::mem_fun(*work_area, &WorkArea::zoom_fit) },
-		{"canvas-zoom-in",    "zoom-in",       N_("Zoom _In"),     N_("Zoom In"), sigc::mem_fun(*work_area, &WorkArea::zoom_in) },
-		{"canvas-zoom-in-2",  "zoom-in",       N_("Zoom _In"),     N_("Zoom In"), sigc::mem_fun(*work_area, &WorkArea::zoom_in) },
-		{"canvas-zoom-out",   "zoom-out",      N_("Zoom _Out"),    N_("Zoom Out"), sigc::mem_fun(*work_area, &WorkArea::zoom_out) },
-		{"canvas-zoom-out-2", "zoom-out",      N_("Zoom _Out"),    N_("Zoom Out"), sigc::mem_fun(*work_area, &WorkArea::zoom_out) },
+		{"canvas-zoom-fit",   "zoom-fit-best", "0",              N_("Best _Fit"),    N_("Best Fit"), sigc::mem_fun(*work_area, &WorkArea::zoom_fit) },
+		{"canvas-zoom-100",   "zoom-original", "",               N_("_Normal Size"), N_("Normal Size"), sigc::mem_fun(*work_area, &WorkArea::zoom_norm) },
+		{"canvas-zoom-fit-2", "zoom-fit-best", "<Primary>0",     N_("Best _Fit"),    N_("Best Fit"), sigc::mem_fun(*work_area, &WorkArea::zoom_fit) },
+		{"canvas-zoom-in",    "zoom-in",       "minus",          N_("Zoom _In"),     N_("Zoom In"), sigc::mem_fun(*work_area, &WorkArea::zoom_in) },
+		{"canvas-zoom-in-2",  "zoom-in",       "<Primary>minus", N_("Zoom _In"),     N_("Zoom In"), sigc::mem_fun(*work_area, &WorkArea::zoom_in) },
+		{"canvas-zoom-out",   "zoom-out",      "equal",          N_("Zoom _Out"),    N_("Zoom Out"), sigc::mem_fun(*work_area, &WorkArea::zoom_out) },
+		{"canvas-zoom-out-2", "zoom-out",      "<Primary>equal", N_("Zoom _Out"),    N_("Zoom Out"), sigc::mem_fun(*work_area, &WorkArea::zoom_out) },
 
-		{"time-zoom-in",  "zoom-in",  N_("Zoom In on Timeline"),  "", sigc::mem_fun(*this, &CanvasView::time_zoom_in) },
-		{"time-zoom-out", "zoom-out", N_("Zoom Out on Timeline"), "", sigc::mem_fun(*this, &CanvasView::time_zoom_out) },
+		{"time-zoom-in",  "zoom-in",  "<Primary>plus",       N_("Zoom In on Timeline"),  "", sigc::mem_fun(*this, &CanvasView::time_zoom_in) },
+		{"time-zoom-out", "zoom-out", "<Primary>underscore", N_("Zoom Out on Timeline"), "", sigc::mem_fun(*this, &CanvasView::time_zoom_out) },
 
-		{"seek-next-frame", "animate_seek_next_frame_icon", N_("Seek to Next frame"),     "", sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_frame),1) },
-		{"seek-prev-frame", "animate_seek_prev_frame_icon", N_("Seek to Previous Frame"), "", sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_frame),-1) },
+		{"seek-next-frame",    "animate_seek_next_frame_icon",    "period",                  N_("Seek to Next frame"),     N_("Seek to next frame"),     sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_frame),1) },
+		{"seek-prev-frame",    "animate_seek_prev_frame_icon",    "comma",                   N_("Seek to Previous Frame"), N_("Seek to previous frame"), sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_frame),-1) },
 
-		{"seek-next-second", "go-next",     N_("Seek Forward"),  N_("Seek Forward"), sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_time),Time(1)) },
-		{"seek-prev-second", "go-previous", N_("Seek Backward"), N_("Seek Backward"), sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_time),Time(-1)) },
+		{"seek-next-second",   "go-next",                         "<Shift>greater",          N_("Seek Forward"),  N_("Seek Forward"),  sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_time),Time(1)) },
+		{"seek-prev-second",   "go-previous",                     "<Shift>less",             N_("Seek Backward"), N_("Seek Backward"), sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_time),Time(-1)) },
 
-		{"seek-end",   "animate_seek_end_icon",   N_("Seek to End"),   "", sigc::mem_fun(*this, &CanvasView::on_seek_end_pressed) },
-		{"seek-begin", "animate_seek_begin_icon", N_("Seek to Begin"), "", sigc::mem_fun(*this, &CanvasView::on_seek_begin_pressed) },
+		{"seek-end",           "animate_seek_end_icon",           "<Primary><Shift>greater", N_("Seek to End"),   N_("Seek to End"),   sigc::mem_fun(*this, &CanvasView::on_seek_end_pressed) },
+		{"seek-begin",         "animate_seek_begin_icon",         "<Primary><Shift>less",    N_("Seek to Begin"), N_("Seek to Begin"), sigc::mem_fun(*this, &CanvasView::on_seek_begin_pressed) },
 
-		{"jump-next-keyframe", "animate_seek_next_keyframe_icon", N_("Seek to Next Keyframe"),      "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_next_keyframe) },
-		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", N_("Seek to Previous Keyframe") , "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_prev_keyframe) },
+		{"jump-next-keyframe", "animate_seek_next_keyframe_icon", "bracketright",            N_("Seek to Next Keyframe"),      N_("Seek to next keyframe"),     sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_next_keyframe) },
+		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", "bracketleft",             N_("Seek to Previous Keyframe") , N_("Seek to previous keyframe"), sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_prev_keyframe) },
 
+		{"undo", "edit-undo", "<Primary>z",        N_("Undo"), N_("Undo"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::undo))},
+#ifdef _WIN32
+		{"redo", "edit-redo", "<Primary>y",        N_("Redo"), N_("Redo"), sigc::ptr_fun(App::redo)},
+#else
+		{"redo", "edit-redo", "<Primary><Shift>z", N_("Redo"), N_("Redo"), sigc::ptr_fun(App::redo)},
+#endif
 	};
 
-	action_group = Gtk::ActionGroup::create("canvasview");
+	action_group_ = Gio::SimpleActionGroup::create();
 
 	for (const auto& item : action_list) {
-		if (!item.icon.empty()) {
-			action_group->add( Gtk::Action::create_with_icon_name(item.name, item.icon, _(item.label.c_str()), _(item.tooltip.c_str())),
-				item.slot
-			);
-		} else {
-			action_group->add( Gtk::Action::create(item.name, _(item.label.c_str()), _(item.tooltip.c_str())), item.slot);
-		}
+		App::get_action_database()->add(ActionDatabase::Entry{"doc." + item.name, item.label, item.shortcut, item.icon, item.tooltip});
+		action_group_->add_action(item.name, item.slot);
 	}
 
 	// Prevent call to preview window before preview option has created the preview window
-	action_group->get_action("dialog-flipbook")->set_sensitive(false);
 
+	Glib::RefPtr<Gio::SimpleAction>::cast_static(action_group_->lookup_action("dialog-flipbook"))->set_enabled(false);
+
+	// Undo/Redo
+	get_instance()->signal_undo_redo_status_changed().connect(sigc::track_obj([=](){
+		Glib::RefPtr<Gio::SimpleAction>::cast_static(action_group_->lookup_action("undo"))->set_enabled(get_instance()->get_undo_status());
+		Glib::RefPtr<Gio::SimpleAction>::cast_static(action_group_->lookup_action("redo"))->set_enabled(get_instance()->get_redo_status());
+	}, *this));
+	get_instance()->signal_undo_redo_status_changed().emit();
+
+	// Plugins
 	auto instance = get_instance().get();
 	for ( const auto& plugin : App::plugin_manager.plugins() )
 	{
-		std::string id = plugin.id;
-		action_group->add(
-			Gtk::Action::create(id, plugin.name.get()),
-			[instance, id](){instance->run_plugin(id, true);}
-		);
+		const std::string id = plugin.id;
+		const std::string action_name = "plugin-" + id;
+		App::get_action_database()->add(ActionDatabase::Entry{"doc." + action_name, plugin.name.get(), "", "", plugin.description.get()});
+		action_group_->add_action(action_name, [instance, id](){ instance->run_plugin(id, true); });
 	}
 
 	// Low-Res Quality Menu
-	for (int i : get_pixel_sizes()) {
-		Glib::RefPtr<Gtk::RadioAction> action = Gtk::RadioAction::create(
-			low_res_pixel_size_group,
-			synfig::strprintf("lowres-pixel-%d", i),
-			synfig::strprintf(_("Set Low-Res pixel size to %d"), i) );
-		if (i == 2) { // default pixel size
-			action->set_active();
-			work_area->set_low_res_pixel_size(i);
-		}
-		action_group->add(
-			action,
-			sigc::bind(sigc::mem_fun(*work_area, &WorkArea::set_low_res_pixel_size), i) );
-	}
+	const int initial_low_res_pixel_size = 2;
+	action_group_->add_action_radio_integer("set-lowres-pixel", sigc::track_obj([=](int n) {
+		action_group_->lookup_action("set-lowres-pixel")->change_state(n);
+		work_area->set_low_res_pixel_size(n);
+	}, *this), initial_low_res_pixel_size);
+	work_area->set_low_res_pixel_size(initial_low_res_pixel_size);
+
 
 	struct BoolActionMetadata {
-		std::string name;
-		std::string icon;
-		std::string label;
-		std::string tooltip;
+		const std::string name;
+		const std::string icon;
+		const std::string shortcut;
+		const std::string label;
+		const std::string tooltip;
 		bool (WorkArea::*slot_to_get)(void) const;
 		void (CanvasView::*slot_to_toogle)(void);
+		Glib::RefPtr<Gio::SimpleAction>& action;
 	};
 
-	static const std::vector<BoolActionMetadata> bool_action_list = {
-		{"toggle-rulers-show",          "",                          N_("Show Rulers"),             "", &WorkArea::get_show_rulers, &CanvasView::toggle_show_ruler },
-		{"toggle-grid-show",            "show_grid_icon",            N_("Show Grid"),               "", &WorkArea::grid_status, &CanvasView::toggle_show_grid },
-		{"toggle-grid-snap",            "snap_grid_icon",            N_("Snap to Grid"),            "", &WorkArea::get_grid_snap, &CanvasView::toggle_snap_grid },
-		{"toggle-guide-show",           "show_guideline_icon",       N_("Show Guides"),             "", &WorkArea::get_show_guides, &CanvasView::toggle_show_guides },
-		{"toggle-guide-snap",           "snap_guideline_icon",       N_("Snap to Guides"),          "", &WorkArea::get_guide_snap, &CanvasView::toggle_snap_guides },
-		{"toggle-low-res",              "",                          N_("Use Low-Res"),             "", &WorkArea::get_low_resolution_flag, &CanvasView::toggle_low_res_pixel_flag },
-		{"toggle-background-rendering", "background_rendering_icon", N_("Enable rendering in background"), "", &WorkArea::get_background_rendering, &CanvasView::toggle_background_rendering },
-		{"toggle-onion-skin",           "onion_skin_icon",           N_("Show Onion Skin"),         "", &WorkArea::get_onion_skin, &CanvasView::toggle_onion_skin },
-		{"toggle-onion-skin-keyframes", "keyframe_icon",             N_("Onion Skin on Keyframes"), "", &WorkArea::get_onion_skin_keyframes, &CanvasView::toggle_onion_skin_keyframes },
-		{"toggle-keyframe-lock-past",   "keyframe_lock_past_on_icon",   N_("Lock Past Keyframes"),    "", &WorkArea::get_keyframe_lock_past, &CanvasView::toggle_past_keyframe_button },
-		{"toggle-keyframe-lock-future", "keyframe_lock_future_on_icon", N_("Lock Future Keyframes"),  "", &WorkArea::get_keyframe_lock_future, &CanvasView::toggle_future_keyframe_button },
+	static std::vector<BoolActionMetadata> bool_action_list = {
+		{"toggle-rulers-show",          "",                          "",               N_("Show Rulers"),             "", &WorkArea::get_show_rulers, &CanvasView::on_show_ruler_toggled,  rulers_show_toggle },
+		{"toggle-grid-show",            "show_grid_icon",            "numbersign",     N_("Show Grid"),               N_("Show Grid when enabled"), &WorkArea::grid_status,     &CanvasView::on_show_grid_toggled,   grid_show_toggle },
+		{"toggle-grid-snap",            "snap_grid_icon",            "<Primary>l",     N_("Snap to Grid"),            N_("Snap to Grid when enabled"), &WorkArea::get_grid_snap,   &CanvasView::on_snap_grid_toggled,   grid_snap_toggle },
+		{"toggle-guide-show",           "show_guideline_icon",       "",               N_("Show Guides"),             N_("Show Guides when enabled"), &WorkArea::get_show_guides, &CanvasView::on_show_guides_toggled, guides_show_toggle },
+		{"toggle-guide-snap",           "snap_guideline_icon",       "",               N_("Snap to Guides"),          N_("Snap to Guides when enabled"), &WorkArea::get_guide_snap,  &CanvasView::on_snap_guides_toggled, guides_snap_toggle },
+		{"toggle-low-resolution",       "",                          "<Primary>grave", N_("Use Low-Res"),             N_("Use Low Resolution when enabled"), &WorkArea::get_low_resolution_flag, &CanvasView::on_low_resolution_toggled, low_resolution_toggle },
+		{"toggle-background-rendering", "background_rendering_icon", "",               N_("Enable rendering in background"), N_("Render future and past frames in background when enabled"), &WorkArea::get_background_rendering, &CanvasView::on_background_rendering_toggled, background_rendering_toggle },
+		{"toggle-onion-skin",           "onion_skin_icon",           "<Mod1>o",        N_("Show Onion Skin"),         N_("Show Onion Skin when enabled"), &WorkArea::get_onion_skin,  &CanvasView::on_onion_skin_toggled, onion_skin_toggle },
+		{"toggle-onion-skin-keyframes", "keyframe_icon",             "",               N_("Onion Skin on Keyframes"), N_("Show Onion Skin on Keyframes when enabled, on Frames when disabled"), &WorkArea::get_onion_skin_keyframes, &CanvasView::on_onion_skin_keyframes_toggled, onion_skin_keyframes_toggle },
+		{"toggle-keyframe-lock-past",   "keyframe_lock_past_on_icon",  "<Control>Left",  N_("Lock Past Keyframes"),  N_("When a parameter is changed, waypoints will be created in the immediately preceding keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode."), &WorkArea::get_keyframe_lock_past, &CanvasView::on_past_keyframe_lock_toggled, past_keyframe_lock_toggle },
+		{"toggle-keyframe-lock-future", "keyframe_lock_future_on_icon","<Control>Right", N_("Lock Future Keyframes"),N_("When a parameter is changed, waypoints will be created in the immediately following keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode."), &WorkArea::get_keyframe_lock_future, &CanvasView::on_future_keyframe_lock_toggled, future_keyframe_lock_toggle },
 	};
 
 	for (const auto& item : bool_action_list) {
 		bool current_value = (work_area->*item.slot_to_get)();
+		auto action_name = item.name;
+		item.action = action_group_->add_action_bool(action_name, sigc::mem_fun(*this, item.slot_to_toogle), current_value);
 
-		auto action = Gtk::ToggleAction::create(item.name, _(item.label.c_str()));
-		action->set_active(current_value);
-		if (!item.icon.empty())
-			action->set_icon_name(item.icon);
-		if (!item.tooltip.empty())
-			action->set_tooltip(_(item.tooltip.c_str()));
-		action_group->add(action, sigc::mem_fun(*this, item.slot_to_toogle));
+		App::get_action_database()->add(ActionDatabase::Entry{"doc." + item.name, item.label, item.shortcut, item.icon, item.tooltip});
 	}
-	work_area->set_show_rulers(work_area->get_show_rulers());
-
-	rulers_show_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-rulers-show"));
-	grid_show_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-grid-show"));
-	grid_snap_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-grid-snap"));
-	guides_show_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-guide-show"));
-	guides_snap_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-guide-snap"));
-	background_rendering_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-background-rendering"));
-	onion_skin_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-onion-skin"));
-	onion_skin_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-onion-skin-keyframes"));
-	past_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-keyframe-lock-past"));
-	future_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-keyframe-lock-future"));
 
 	{
-		Glib::RefPtr<Gtk::ToggleAction> action;
 		// toggle none/last visible
-		action= Gtk::ToggleAction::create("mask-none-ducks", _("Toggle None/Last visible Handles"));
-		action->set_active(false);
-		action_group->add(action,  sigc::mem_fun(*this,&CanvasView::toggle_duck_mask_all));
+		action_group_->add_action_bool("mask-none-ducks", sigc::mem_fun(*this, &CanvasView::toggle_duck_mask_all));
+		App::get_action_database()->add(ActionDatabase::Entry{"doc.mask-none-ducks", _("Toggle None/Last visible Handles"), "<Mod1>0", "", _("Toggle None/Last visible Handles")});
+
 		struct DuckActionMetaData {
 			std::string action;
 			Duck::Type type;
+			const char* icon;
+			const char* shortcut;
 			const char* label;
+			const char* tooltip;
 		};
 
 		static const std::vector<DuckActionMetaData> duck_action_list = {
-			{"mask-position-ducks",            Duck::TYPE_POSITION,            N_("Show Position Handles")},
-			{"mask-tangent-ducks",             Duck::TYPE_TANGENT,             N_("Show Tangent Handles")},
-			{"mask-vertex-ducks",              Duck::TYPE_VERTEX,              N_("Show Vertex Handles")},
-			{"mask-radius-ducks",              Duck::TYPE_RADIUS,              N_("Show Radius Handles")},
-			{"mask-width-ducks",               Duck::TYPE_WIDTH,               N_("Show Width Handles")},
-			{"mask-widthpoint-position-ducks", Duck::TYPE_WIDTHPOINT_POSITION, N_("Show WidthPoint Position Handles")},
-			{"mask-angle-ducks",               Duck::TYPE_ANGLE,               N_("Show Angle Handles")},
-			{"mask-bone-recursive-ducks",      Duck::TYPE_BONE_RECURSIVE,      N_("Show Recursive Scale Bone Handles")},
+			{"mask-position-ducks",            Duck::TYPE_POSITION,            "duck_position_icon", "<Mod1>1", N_("Position handles"), N_("Show Position Handles")},
+			{"mask-tangent-ducks",             Duck::TYPE_TANGENT,             "duck_tangent_icon",  "<Mod1>3", N_("Tangent handles"), N_("Show Tangent Handles")},
+			{"mask-vertex-ducks",              Duck::TYPE_VERTEX,              "duck_vertex_icon",   "<Mod1>2", N_("Vertex handles"), N_("Show Vertex Handles")},
+			{"mask-radius-ducks",              Duck::TYPE_RADIUS,              "duck_radius_icon",   "<Mod1>4", N_("Radius handles"), N_("Show Radius Handles")},
+			{"mask-width-ducks",               Duck::TYPE_WIDTH,               "duck_width_icon",    "<Mod1>5", N_("Width handles"), N_("Show Width Handles")},
+			{"mask-widthpoint-position-ducks", Duck::TYPE_WIDTHPOINT_POSITION, "",                   "<Mod1>5", N_("Width Position handles"), N_("Show WidthPoint Position Handles")},
+			{"mask-angle-ducks",               Duck::TYPE_ANGLE,               "duck_angle_icon",    "<Mod1>6", N_("Angle handles"), N_("Show Angle Handles")},
+			// {"mask-bone-setup",                Duck::TYPE_ANGLE,               "", "", "", ""},
+			{"mask-bone-recursive-ducks",      Duck::TYPE_BONE_RECURSIVE,      "",                   "<Mod1>8", N_("Recursive Bone handles"), N_("Show Recursive Scale Bone Handles")},
 		};
 
 		for (const auto& item : duck_action_list) {
@@ -1533,17 +1452,15 @@ CanvasView::init_menus()
 			auto duck_slot = sigc::bind(
 						sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),
 						item.type);
-			action=Gtk::ToggleAction::create(item.action, _(item.label));
-			action->set_active(duck_active);
-			action_group->add(action, duck_slot);
+			action_group_->add_action_bool(item.action, duck_slot, duck_active);
+			App::get_action_database()->add(ActionDatabase::Entry{"doc." + item.action, _(item.label), item.shortcut, item.icon, _(item.tooltip)});
 		}
-		action_mask_bone_setup_ducks = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("mask-angle-ducks"));
-		action_mask_bone_recursive_ducks = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("mask-bone-recursive-ducks"));
 
-		action_group->add(Gtk::Action::create("mask-bone-ducks", _("Next Bone Handles")),
-						  sigc::mem_fun(*this,&CanvasView::mask_bone_ducks));
+		action_group_->add_action("mask-bone-ducks", sigc::mem_fun(*this, &CanvasView::mask_bone_ducks));
+		App::get_action_database()->add(ActionDatabase::Entry{"doc.mask-bone-ducks", _("Next Bone Handles"), "<Mod1>9", "", ""});
 	}
 
+	insert_action_group("doc", action_group_);
 }
 
 void
@@ -1630,6 +1547,8 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 		return;
 
 	Gtk::Menu* menu(&parammenu);
+	if (!menu->get_attach_widget())
+		menu->attach_to_widget(*this);
 	std::vector<Widget*> children = menu->get_children();
 	for(std::vector<Widget*>::iterator i = children.begin(); i != children.end(); ++i)
 		menu->remove(**i);
@@ -1677,11 +1596,9 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 void
 CanvasView::popup_main_menu()
 {
-	Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-main"));
-	if(menu)
-	{
-		//menu->set_accel_group(App::ui_manager()->get_accel_group());
-		//menu->accelerate(*this);
+	if (auto menu = Gtk::manage(new Gtk::Menu(App::instance()->get_menubar()))) {
+		menu->get_style_context()->add_class("shift-icon");
+		menu->attach_to_widget(*this);
 		menu->popup(0,gtk_get_current_event_time());
 	}
 }
@@ -1866,11 +1783,11 @@ CanvasView::on_key_press_event(GdkEventKey* event)
 		switch (event->keyval) {
 		case GDK_KEY_Home:
 		case GDK_KEY_KP_Home:
-			action_group->get_action("seek-begin")->activate();
+			action_group_->lookup_action("seek-begin")->activate();
 			return  true;
 		case GDK_KEY_End:
 		case GDK_KEY_KP_End:
-			action_group->get_action("seek-end")->activate();
+			action_group_->lookup_action("seek-end")->activate();
 			return  true;
 		}
 	}
@@ -1943,15 +1860,15 @@ CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::Col
 	{
 	case 3:
 		{
-			Gtk::MenuItem* menu = dynamic_cast<Gtk::MenuItem*>(App::ui_manager()->get_widget("/menu-main/menu-layer"));
-			if(menu && menu->get_submenu())
-			{
+			Gtk::Menu* menu = Gtk::manage(new Gtk::Menu(App::menu_layer));
+			if (menu) {
+				menu->attach_to_widget(*this);
 				//menu->set_accel_group(App::ui_manager()->get_accel_group());
 				//menu->accelerate(*this);
 			#if GTK_CHECK_VERSION(3, 22, 0)
-				menu->get_submenu()->popup_at_pointer(nullptr);
+				menu->popup_at_pointer(nullptr);
 			#else
-				menu->get_submenu()->popup(button,gtk_get_current_event_time());
+				menu->popup(button, gtk_get_current_event_time());
 			#endif
 			}
 		}
@@ -2128,9 +2045,9 @@ CanvasView::toggle_timetrackbutton()
 }
 
 void
-CanvasView::toggle_past_keyframe_button()
+CanvasView::on_past_keyframe_lock_toggled()
 {
-	if(toggling_animate_mode_)
+	if (toggling_animate_mode_)
 		return;
 	CanvasInterface::Mode mode(get_mode());
 	bool enable = !synfigapp::has_flag(mode, MODE_ANIMATE_PAST);
@@ -2139,9 +2056,9 @@ CanvasView::toggle_past_keyframe_button()
 
 
 void
-CanvasView::toggle_future_keyframe_button()
+CanvasView::on_future_keyframe_lock_toggled()
 {
-	if(toggling_animate_mode_)
+	if (toggling_animate_mode_)
 		return;
 	CanvasInterface::Mode mode(get_mode());
 	bool enable = !synfigapp::has_flag(mode, MODE_ANIMATE_FUTURE);
@@ -2227,25 +2144,23 @@ CanvasView::decrease_low_res_pixel_size()
 	if(changing_resolution_)
 		return;
 	changing_resolution_=true;
-	std::list<int> sizes = CanvasView::get_pixel_sizes();
-	int pixel_size = work_area->get_low_res_pixel_size();
-	for (std::list<int>::iterator iter = sizes.begin(); iter != sizes.end(); ++iter)
-		if (*iter == pixel_size) {
+	const std::vector<int>& sizes = CanvasView::get_pixel_sizes();
+	const int current_pixel_size = work_area->get_low_res_pixel_size();
+	for (auto iter = sizes.begin(); iter != sizes.end(); ++iter)
+		if (*iter == current_pixel_size) {
 			if (iter == sizes.begin()) {
 				// we already have the smallest low-res pixels possible - turn off low-res instead
 				work_area->set_low_resolution_flag(false);
+				low_resolution_toggle->change_state(false);
 			} else {
 				--iter;
-				Glib::RefPtr<Gtk::Action> action = action_group->get_action(synfig::strprintf("lowres-pixel-%d", *iter));
-				assert(action);
-				action->activate(); // to make sure the radiobutton in the menu is updated too
 				work_area->set_low_resolution_flag(true);
+				low_resolution_toggle->change_state(true);
+				action_group_->lookup_action("set-lowres-pixel")->activate(*iter);
 			}
 			break;
 		}
 	// Update the "toggle-low-res" action
-	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
-	action->set_active(work_area->get_low_resolution_flag());
 	// Update toggle low res button
 	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
@@ -2257,59 +2172,51 @@ CanvasView::increase_low_res_pixel_size()
 	if(changing_resolution_)
 		return;
 	changing_resolution_=true;
-	std::list<int> sizes = CanvasView::get_pixel_sizes();
-	int pixel_size = work_area->get_low_res_pixel_size();
 	if (!work_area->get_low_resolution_flag())
 	{
 		// We were using "hi res" so change it to low res.
 		work_area->set_low_resolution_flag(true);
+		low_resolution_toggle->change_state(true);
 		// Update the "toggle-low-res" action
-		Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
-		action->set_active(true);
 		// Update the toggle low res button
 		resolutiondial_->update_lowres(true);
 		changing_resolution_=false;
 		return;
 	}
 
-	for (std::list<int>::iterator iter = sizes.begin(); iter != sizes.end(); ++iter)
-		if (*iter == pixel_size) {
+	const std::vector<int>& sizes = CanvasView::get_pixel_sizes();
+	const int current_pixel_size = work_area->get_low_res_pixel_size();
+	for (auto iter = sizes.begin(); iter != sizes.end(); ++iter)
+		if (*iter == current_pixel_size) {
 			if (++iter != sizes.end()) {
-				Glib::RefPtr<Gtk::Action> action = action_group->get_action(synfig::strprintf("lowres-pixel-%d", *iter));
-				assert(action);
-				action->activate(); // to make sure the radiobutton in the menu is updated too
 				work_area->set_low_resolution_flag(true);
+				low_resolution_toggle->change_state(true);
+				action_group_->lookup_action("set-lowres-pixel")->activate(*iter);
 			}
 			break;
 		}
 	// Update the "toggle-low-res" action
-	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
-	action->set_active(work_area->get_low_resolution_flag());
 	// Update toggle low res button
 	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
 }
 
 void
-CanvasView::toggle_low_res_pixel_flag()
+CanvasView::on_low_resolution_toggled()
 {
 	if(changing_resolution_)
 		return;
 	changing_resolution_=true;
 	work_area->toggle_low_resolution_flag();
 	// Update the toggle low res button
-	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
 	// Update the "toggle-low-res" action
-	Glib::RefPtr<Gtk::ToggleAction> action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-low-res"));
-	action->set_active(work_area->get_low_resolution_flag());
+	action_group_->lookup_action("toggle-low-resolution")->change_state(work_area->get_low_resolution_flag());
 	changing_resolution_=false;
 }
 
 void
 CanvasView::set_onion_skins()
 {
-	if(toggling_onion_skin)
-		return;
 	int onion_skins[2];
 	onion_skins[0]=past_onion_spin->get_value();
 	onion_skins[1]=future_onion_spin->get_value();
@@ -2317,102 +2224,61 @@ CanvasView::set_onion_skins()
 }
 
 void
-CanvasView::toggle_show_ruler()
+CanvasView::on_show_ruler_toggled()
 {
 	bool visible = !(work_area->get_show_rulers());
 	work_area->set_show_rulers(visible);
+	action_group_->lookup_action("toggle-rulers-show")->change_state(visible);
 }
 
 void
-CanvasView::toggle_show_grid()
+CanvasView::on_show_grid_toggled()
 {
-	if(toggling_show_grid)
-		return;
-	toggling_show_grid=true;
 	work_area->toggle_grid();
 	// Update the toggle grid show action
-	set_grid_show_toggle(work_area->grid_status());
-	// Update the toggle grid show check button
-	show_grid->set_active(work_area->grid_status());
-	toggling_show_grid=false;
+	action_group_->lookup_action("toggle-grid-show")->change_state(work_area->grid_status());
 }
 
 void
-CanvasView::toggle_snap_grid()
+CanvasView::on_snap_grid_toggled()
 {
-	if(toggling_snap_grid)
-		return;
-	toggling_snap_grid=true;
 	work_area->toggle_grid_snap();
-	// Update the toggle grid snap action
-	set_grid_snap_toggle(work_area->get_grid_snap());
-	// Update the toggle grid snap check button
-	snap_grid->set_active(work_area->get_grid_snap());
-	toggling_snap_grid=false;
+	action_group_->lookup_action("toggle-grid-snap")->change_state(work_area->get_grid_snap());
 }
 
 void
-CanvasView::toggle_show_guides()
+CanvasView::on_show_guides_toggled()
 {
-	if(toggling_show_guides)
-		return;
-	toggling_show_guides=true;
 	work_area->toggle_show_guides();
-	set_guides_show_toggle(work_area->get_show_guides());
-	show_guides->set_active(work_area->get_show_guides());
-	toggling_show_guides=false;
+	action_group_->lookup_action("toggle-guide-show")->change_state(work_area->get_show_guides());
 }
 
 void
-CanvasView::toggle_snap_guides()
+CanvasView::on_snap_guides_toggled()
 {
-	if(toggling_snap_guides)
-		return;
-	toggling_snap_guides=true;
 	work_area->toggle_guide_snap();
-	set_guides_snap_toggle(work_area->get_guide_snap());
-	snap_guides->set_active(work_area->get_guide_snap());
-	toggling_snap_guides=false;
+	action_group_->lookup_action("toggle-guide-snap")->change_state(work_area->get_guide_snap());
 }
 
 void
-CanvasView::toggle_onion_skin()
+CanvasView::on_onion_skin_toggled()
 {
-	if(toggling_onion_skin)
-		return;
-	toggling_onion_skin=true;
 	work_area->set_onion_skin(!work_area->get_onion_skin());
-	// Update the toggle onion skin action
-	set_onion_skin_toggle(work_area->get_onion_skin());
-	// Update the toggle onion skin button
-	onion_skin->set_active(work_area->get_onion_skin());
-	toggling_onion_skin=false;
+	action_group_->lookup_action("toggle-onion-skin")->change_state(work_area->get_onion_skin());
 }
 
 void
-CanvasView::toggle_onion_skin_keyframes()
+CanvasView::on_onion_skin_keyframes_toggled()
 {
-	if(toggling_onion_skin_keyframes)
-		return;
-	toggling_onion_skin_keyframes=true;
 	work_area->set_onion_skin_keyframes(!work_area->get_onion_skin_keyframes());
-	set_onion_skin_keyframes_toggle(work_area->get_onion_skin_keyframes());
-	onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
-	toggling_onion_skin_keyframes=false;
+	action_group_->lookup_action("toggle-onion-skin-keyframes")->change_state(work_area->get_onion_skin_keyframes());
 }
 
 void
-CanvasView::toggle_background_rendering()
+CanvasView::on_background_rendering_toggled()
 {
-	if(toggling_background_rendering)
-		return;
-	toggling_background_rendering=true;
 	work_area->set_background_rendering(!work_area->get_background_rendering());
-	// Update the toggle background rendering action
-	set_background_rendering_toggle(work_area->get_background_rendering());
-	// Update the toggle background rendering button
-	background_rendering_button->set_active(work_area->get_background_rendering());
-	toggling_background_rendering=false;
+	action_group_->lookup_action("toggle-background-rendering")->change_state(work_area->get_background_rendering());
 }
 
 void
@@ -2643,7 +2509,10 @@ CanvasView::on_waypoint_clicked_canvasview(ValueDesc value_desc,
 	case 2:
 	{
 		Gtk::Menu* waypoint_menu(manage(new Gtk::Menu()));
-		waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));
+		if (waypoint_menu) {
+			waypoint_menu->attach_to_widget(*this);
+			waypoint_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), waypoint_menu));
+		}
 
 		Gtk::Menu* interp_menu_in(manage(new Gtk::Menu()));
 		Gtk::Menu* interp_menu_out(manage(new Gtk::Menu()));
@@ -3050,21 +2919,15 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 	try
 	{
 		// Update the toggle ducks actions
-		Glib::RefPtr<Gtk::ToggleAction> action;
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-position-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_POSITION));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-tangent-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_TANGENT));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-vertex-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_VERTEX));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-radius-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_RADIUS));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-width-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_WIDTH));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-angle-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_ANGLE));
+
+		action_group_->lookup_action("mask-position-ducks")->change_state(bool(work_area->get_type_mask()&Duck::TYPE_POSITION));
+		action_group_->lookup_action("mask-tangent-ducks")->change_state(bool(work_area->get_type_mask()&Duck::TYPE_TANGENT));
+		action_group_->lookup_action("mask-vertex-ducks")->change_state(bool(work_area->get_type_mask()&Duck::TYPE_VERTEX));
+		action_group_->lookup_action("mask-radius-ducks")->change_state(bool(work_area->get_type_mask()&Duck::TYPE_RADIUS));
+		action_group_->lookup_action("mask-width-ducks")->change_state(bool(work_area->get_type_mask()&Duck::TYPE_WIDTH));
+		action_group_->lookup_action("mask-angle-ducks")->change_state(bool(work_area->get_type_mask()&Duck::TYPE_ANGLE));
+
 		// Update toggle ducks buttons
-		action->get_active();
 		toggleducksdial.update_toggles(work_area->get_type_mask());
 	}
 	catch(...)
@@ -3094,76 +2957,41 @@ CanvasView::toggle_duck_mask_all()
 void
 CanvasView::mask_bone_ducks()
 {
-	Duck::Type mask(work_area->get_type_mask());
-	bool recursive(mask & Duck::TYPE_BONE_RECURSIVE);
+	const Duck::Type mask(work_area->get_type_mask());
+	const bool recursive(mask & Duck::TYPE_BONE_RECURSIVE);
 
-	if (recursive)
-	{
-		action_mask_bone_setup_ducks->set_active(true);
-		action_mask_bone_recursive_ducks->set_active(false);
+	Glib::RefPtr<Gio::Action> action_mask_bone_recursive_ducks = action_group_->lookup_action("mask-bone-recursive-ducks");
+
+	if (recursive) {
+		Glib::RefPtr<Gio::Action> action_mask_bone_setup_ducks = action_group_->lookup_action("mask-angle-ducks");
+		action_mask_bone_recursive_ducks->change_state(true);
+		action_mask_bone_setup_ducks->change_state(true);
+	} else {
+		action_mask_bone_recursive_ducks->change_state(true);
 	}
-	else
-		action_mask_bone_recursive_ducks->set_active(true);
 }
 
 void
 CanvasView::on_meta_data_changed()
 {
 	// update the buttons and actions that are associated
-	toggling_show_grid=true;
-	toggling_snap_grid=true;
-	toggling_show_guides=true;
-	toggling_snap_guides=true;
-	toggling_onion_skin=true;
-	toggling_onion_skin_keyframes=true;
-	toggling_background_rendering=true;
+
 	try
 	{
-		// Update the toggle ducks actions
-		Glib::RefPtr<Gtk::ToggleAction> action;
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-background-rendering"));
-		action->set_active((bool)(work_area->get_background_rendering()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-onion-skin"));
-		action->set_active((bool)(work_area->get_onion_skin()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-onion-skin-keyframes"));
-		action->set_active((bool)(work_area->get_onion_skin_keyframes()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-grid-show"));
-		action->set_active((bool)(work_area->grid_status()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-grid-snap"));
-		action->set_active((bool)(work_area->get_grid_snap()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-guide-show"));
-		action->set_active((bool)(work_area->get_show_guides()));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-guide-snap"));
-		action->set_active((bool)(work_area->get_guide_snap()));
-		// Update the toggle buttons
-		background_rendering_button->set_active(work_area->get_background_rendering());
-		onion_skin->set_active(work_area->get_onion_skin());
-		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
-		snap_grid->set_active(work_area->get_grid_snap());
-		show_grid->set_active(work_area->grid_status());
-		snap_guides->set_active(work_area->get_guide_snap());
-		show_guides->set_active(work_area->get_show_guides());
+		background_rendering_toggle->set_state(Glib::Variant<bool>::create(work_area->get_background_rendering()));
+		onion_skin_toggle->set_state(Glib::Variant<bool>::create(work_area->get_onion_skin()));
+		onion_skin_keyframes_toggle->set_state(Glib::Variant<bool>::create(work_area->get_onion_skin_keyframes()));
+		grid_show_toggle->set_state(Glib::Variant<bool>::create(work_area->grid_status()));
+		grid_snap_toggle->set_state(Glib::Variant<bool>::create(work_area->get_grid_snap()));
+		guides_show_toggle->set_state(Glib::Variant<bool>::create(work_area->get_show_guides()));
+		guides_snap_toggle->set_state(Glib::Variant<bool>::create(work_area->get_guide_snap()));
 		// Update the onion skin spins
 		past_onion_spin->set_value(work_area->get_onion_skins()[0]);
 		future_onion_spin->set_value(work_area->get_onion_skins()[1]);
 	}
 	catch(...)
 	{
-		toggling_show_grid=false;
-		toggling_snap_grid=false;
-		toggling_show_guides=false;
-		toggling_snap_guides=false;
-		toggling_onion_skin=false;
-		toggling_onion_skin_keyframes=false;
-		toggling_background_rendering=false;
 	}
-	toggling_show_grid=false;
-	toggling_snap_grid=false;
-	toggling_show_guides=false;
-	toggling_snap_guides=false;
-	toggling_onion_skin=false;
-	toggling_onion_skin_keyframes=false;
-	toggling_background_rendering=false;
 }
 
 void
@@ -3349,10 +3177,7 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 	preview_dialog.present();
 
 	// Preview Window created, the action can be enabled
-	{
-		Glib::RefPtr< Gtk::Action > action = action_group->get_action("dialog-flipbook");
-		action->set_sensitive(true);
-	}
+	Glib::RefPtr<Gio::SimpleAction>::cast_static(action_group_->lookup_action("dialog-flipbook"))->set_enabled(true);
 
 }
 
@@ -3436,29 +3261,6 @@ CanvasView::set_adjustment_group(const synfig::String& x, AdjustmentGroup::Handl
 		adjustment_group_book_.erase(x);
 }
 
-Gtk::UIManager::ui_merge_id
-CanvasView::get_popup_id()
-{
-	return merge_id_popup_;
-}
-
-void
-CanvasView::set_popup_id(Gtk::UIManager::ui_merge_id popup_id)
-{
-	merge_id_popup_ = popup_id;
-}
-
-Gtk::UIManager::ui_merge_id
-CanvasView::get_toolbar_id()
-{
-	return merge_id_toolbar_;
-}
-
-void
-CanvasView::set_toolbar_id(Gtk::UIManager::ui_merge_id toolbar_id)
-{
-	merge_id_toolbar_ = toolbar_id;
-}
 
 bool
 CanvasView::on_delete_event(GdkEventAny* /*event*/)
