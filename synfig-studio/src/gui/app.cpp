@@ -272,6 +272,7 @@ String studio::App::icon_theme_name              = "";
 bool   studio::App::show_file_toolbar            = true;
 bool   studio::App::enable_update_check          = false;
 int    studio::App::update_check_consent         = update_checker::UPDATE_CHECK_CONSENT_UNKNOWN;
+String studio::App::skipped_update_version        ;
 String studio::App::custom_filename_prefix       (DEFAULT_FILENAME_PREFIX);
 int    studio::App::preferred_x_size             = 480;
 int    studio::App::preferred_y_size             = 270;
@@ -517,6 +518,11 @@ public:
 				value=strprintf("%i", App::update_check_consent);
 				return true;
 			}
+			if(key=="skipped_update_version")
+			{
+				value=App::skipped_update_version;
+				return true;
+			}
 			//! "Keep brushes_path" preferences entry for backward compatibility (15/12 - v1.0.3)
 			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
@@ -721,6 +727,11 @@ public:
 				App::update_check_consent = i;
 				return true;
 			}
+			if(key=="skipped_update_version")
+			{
+				App::skipped_update_version=value;
+				return true;
+			}
 			//! "Keep brushes_path" preferences entry for backward compatibility (15/12 - v1.0.3)
 			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
@@ -858,6 +869,7 @@ public:
 		ret.push_back("show_file_toolbar");
 		ret.push_back("enable_update_check");
 		ret.push_back("update_check_consent");
+		ret.push_back("skipped_update_version");
 		ret.push_back("brushes_path");
 		ret.push_back("custom_filename_prefix");
 		ret.push_back("ui_language");

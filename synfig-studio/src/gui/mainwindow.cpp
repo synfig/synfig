@@ -335,6 +335,13 @@ MainWindow::on_update_notification_clicked()
 		App::save_settings();
 	}
 
+	if (response == 0) {
+		App::skipped_update_version = update_remote_version_;
+		App::save_settings();
+		if (update_menu_item_)
+			update_menu_item_->hide();
+	}
+
 	if (response == 1)
 		App::open_uri(update_landing_url_);
 }

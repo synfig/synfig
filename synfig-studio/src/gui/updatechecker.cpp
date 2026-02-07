@@ -236,6 +236,11 @@ void start_async()
 		if (compare_versions(local_version, remote_version) >= 0)
 			return;
 
+		// Don't notify if user chose to skip this version
+		if (!App::skipped_update_version.empty()
+			&& compare_versions(App::skipped_update_version, remote_version) >= 0)
+			return;
+
 		Glib::signal_idle().connect_once([remote_version, landing_url]() {
 			if (!App::main_window)
 				return;
