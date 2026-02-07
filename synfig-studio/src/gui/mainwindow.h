@@ -59,6 +59,7 @@ namespace studio {
 		Glib::RefPtr<Gtk::ActionGroup> window_action_group;
 		Gtk::MenuItem* update_menu_item_;
 		std::string update_landing_url_;
+		std::string update_remote_version_;
 
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();

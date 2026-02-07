@@ -51,6 +51,7 @@
 #include <gui/docks/dockmanager.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
+#include <gui/updatechecker.h>
 #include <gui/widgets/widget_link.h>
 #include <gui/widgets/widget_time.h>
 #include <gui/widgets/widget_vector.h>
@@ -305,13 +306,44 @@ MainWindow::on_update_notification_clicked()
 {
 	if (update_landing_url_.empty())
 		return;
-	App::open_uri(update_landing_url_);
+
+	const std::string message = update_remote_version_.empty()
+		? _("A new version of Synfig Studio is available.")
+		: synfig::strprintf(_("A new version of Synfig Studio is available: %s"), update_remote_version_.c_str());
+
+	Gtk::MessageDialog dialog(
+		*this,
+		message,
+		false,
+		Gtk::MESSAGE_INFO,
+		Gtk::BUTTONS_NONE,
+		true);
+
+	dialog.get_action_area()->set_layout(Gtk::BUTTONBOX_SPREAD);
+
+	dialog.set_title(_("Update"));
+
+	dialog.add_button(_("Download new version"), 1);
+	dialog.add_button(_("Disable update check"), 2);
+	dialog.add_button(_("Skip this update"), 0);
+
+	const int response = dialog.run();
+
+	if (response == 2) {
+		App::enable_update_check = false;
+		App::update_check_consent = update_checker::UPDATE_CHECK_CONSENT_DENIED;
+		App::save_settings();
+	}
+
+	if (response == 1)
+		App::open_uri(update_landing_url_);
 }
 
 void
 MainWindow::show_update_notification(const std::string& url, const std::string& version_text)
 {
 	update_landing_url_ = url;
+	update_remote_version_ = version_text;
 	const std::string label = version_text.empty()
 			? _("Update available")
 			: synfig::strprintf("%s (%s)", _("Update available"), version_text.c_str());
