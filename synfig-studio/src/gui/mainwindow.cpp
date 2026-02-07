@@ -333,6 +333,8 @@ MainWindow::on_update_notification_clicked()
 		App::enable_update_check = false;
 		App::update_check_consent = update_checker::UPDATE_CHECK_CONSENT_DENIED;
 		App::save_settings();
+		if (update_menu_item_)
+			update_menu_item_->hide();
 	}
 
 	if (response == 0) {
