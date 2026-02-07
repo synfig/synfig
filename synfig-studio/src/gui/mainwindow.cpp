@@ -324,7 +324,8 @@ MainWindow::show_update_notification(const std::string& url, const std::string& 
 
 		update_menu_item_ = Gtk::manage(new Gtk::MenuItem(label, false));
 		update_menu_item_->get_style_context()->add_class("update-available");
-		update_menu_item_->signal_activate().connect(sigc::mem_fun(*this, &MainWindow::on_update_notification_clicked));
+		update_menu_item_->signal_button_release_event().connect(
+			sigc::hide(sigc::bind_return(sigc::mem_fun(*this, &MainWindow::on_update_notification_clicked), true)));
 		menubar->append(*update_menu_item_);
 		update_menu_item_->show();
 	} else {
