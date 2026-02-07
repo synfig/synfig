@@ -252,8 +252,8 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	toggle_enable_experimental_features.set_halign(Gtk::ALIGN_START);
 	toggle_enable_experimental_features.set_hexpand(false);
 
-	// System - online update check
-	attach_label_section(pi.grid, _("Online updates"), ++row);
+	// System - update check
+	attach_label_section(pi.grid, _("Update check"), ++row);
 	pi.grid->attach(toggle_enable_update_check, 1, row, 1, 1);
 	toggle_enable_update_check.set_halign(Gtk::ALIGN_START);
 	toggle_enable_update_check.set_hexpand(false);
