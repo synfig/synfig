@@ -270,7 +270,7 @@ bool   studio::App::enable_experimental_features = false;
 bool   studio::App::use_dark_theme               = false;
 String studio::App::icon_theme_name              = "";
 bool   studio::App::show_file_toolbar            = true;
-bool   studio::App::enable_update_check          = true;
+bool   studio::App::enable_update_check          = false;
 String studio::App::custom_filename_prefix       (DEFAULT_FILENAME_PREFIX);
 int    studio::App::preferred_x_size             = 480;
 int    studio::App::preferred_y_size             = 270;
