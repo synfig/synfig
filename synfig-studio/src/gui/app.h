@@ -218,6 +218,7 @@ public:
 	static bool use_dark_theme;
 	static bool show_file_toolbar;
 	static bool enable_update_check;
+	static int update_check_consent;
 
 	static PluginManager plugin_manager;
 	static synfig::String image_editor_path;

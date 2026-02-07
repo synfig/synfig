@@ -36,6 +36,12 @@
 
 namespace studio { namespace update_checker {
 
+enum UpdateCheckConsent {
+	UPDATE_CHECK_CONSENT_UNKNOWN  = -1,
+	UPDATE_CHECK_CONSENT_DENIED   =  0,
+	UPDATE_CHECK_CONSENT_ALLOWED  =  1,
+};
+
 extern const std::string check_url_dev;
 extern const std::string landing_url_dev;
 extern const std::string check_url_stable;

@@ -49,6 +49,7 @@
 #include <gui/duck.h>
 #include <gui/localization.h>
 #include <gui/resourcehelper.h>
+#include <gui/updatechecker.h>
 #include <gui/widgets/widget_enum.h>
 #include <gui/autorecover.h>
 #include <synfig/threadpool.h>
@@ -1098,6 +1099,10 @@ Dialog_Setup::on_apply_pressed()
 
 	// Set whether update checks are performed on startup
 	App::enable_update_check = toggle_enable_update_check.get_active();
+	if (App::enable_update_check)
+		App::update_check_consent = update_checker::UPDATE_CHECK_CONSENT_ALLOWED;
+	else
+		App::update_check_consent = update_checker::UPDATE_CHECK_CONSENT_DENIED;
 	
 	// Set the preview background color
 	m_color = preview_background_color_button.get_rgba();

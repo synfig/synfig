@@ -36,12 +36,14 @@
 
 #include <autorevision.h>
 #include <gui/app.h>
+#include <gui/localization.h>
 #include <gui/mainwindow.h>
 
 #include <synfig/general.h>
 
 #include <giomm/file.h>
 #include <glibmm/main.h>
+#include <gtkmm/messagedialog.h>
 
 #include <algorithm>
 #include <atomic>
@@ -151,12 +153,69 @@ std::string extract_plain_version(const std::string& body)
 	return body.substr(pos, end == std::string::npos ? body.size() - pos : end - pos);
 }
 
+using namespace update_checker;
+
+bool ensure_update_check_consent()
+{
+	if (App::update_check_consent != UPDATE_CHECK_CONSENT_UNKNOWN)
+		return App::update_check_consent == UPDATE_CHECK_CONSENT_ALLOWED;
+
+	if (!App::main_window)
+		return false;
+
+	Gtk::MessageDialog dialog(
+		*App::main_window,
+		"",
+		false,
+		Gtk::MESSAGE_QUESTION,
+		Gtk::BUTTONS_NONE,
+		true);
+	dialog.set_title(_("Check for Updates"));
+	dialog.get_action_area()->set_layout(Gtk::BUTTONBOX_SPREAD);
+	dialog.set_secondary_text(_(
+		"Would you like to enable check for new versions of the application at startup?"
+		"\n\n"
+		"You can always change this setting in Preferences > System > Update check."));
+	dialog.add_button(_("Enable"), 1);
+	dialog.add_button(_("Disable"), 0);
+
+	const int response = dialog.run();
+	if (response == 1)
+	{
+		App::update_check_consent = UPDATE_CHECK_CONSENT_ALLOWED;
+		App::enable_update_check = true;
+		App::save_settings();
+		return true;
+	}
+	if (response == 0)
+	{
+		App::update_check_consent = UPDATE_CHECK_CONSENT_DENIED;
+		App::enable_update_check = false;
+		App::save_settings();
+		return false;
+	}
+
+	return false;
+}
+
 } // anonymous namespace
 
 namespace studio { namespace update_checker {
 
 void start_async()
 {
+	// Early exit if already running — avoids re-showing the consent dialog
+	if (update_checker_started.load())
+		return;
+
+	if (!ensure_update_check_consent())
+		return;
+
+	// User previously consented but may have later disabled checks in Preferences
+	if (!App::enable_update_check)
+		return;
+
+	// Atomic acquire: guarantees only one thread proceeds even under a race
 	if (update_checker_started.exchange(true))
 		return;
 
