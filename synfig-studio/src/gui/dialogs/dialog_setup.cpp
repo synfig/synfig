@@ -49,7 +49,9 @@
 #include <gui/duck.h>
 #include <gui/localization.h>
 #include <gui/resourcehelper.h>
+#ifdef ENABLE_UPDATE_CHECKER
 #include <gui/updatechecker.h>
+#endif
 #include <gui/widgets/widget_enum.h>
 #include <gui/autorecover.h>
 #include <synfig/threadpool.h>
@@ -253,12 +255,14 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	toggle_enable_experimental_features.set_halign(Gtk::ALIGN_START);
 	toggle_enable_experimental_features.set_hexpand(false);
 
+#ifdef ENABLE_UPDATE_CHECKER
 	// System - update check
 	attach_label_section(pi.grid, _("Update check"), ++row);
 	pi.grid->attach(toggle_enable_update_check, 1, row, 1, 1);
 	toggle_enable_update_check.set_halign(Gtk::ALIGN_START);
 	toggle_enable_update_check.set_hexpand(false);
 	toggle_enable_update_check.set_active(App::enable_update_check);
+#endif
 
 	// System - clear_redo_stack_on_new_action
 	attach_label_section(pi.grid, _("Clear redo history on new action"), ++row);
@@ -1097,12 +1101,14 @@ Dialog_Setup::on_apply_pressed()
 	// Set the use of a render done sound
 	App::use_render_done_sound  = toggle_play_sound_on_render_done.get_active();
 
+#ifdef ENABLE_UPDATE_CHECKER
 	// Set whether update checks are performed on startup
 	App::enable_update_check = toggle_enable_update_check.get_active();
 	if (App::enable_update_check)
 		App::update_check_consent = update_checker::UPDATE_CHECK_CONSENT_ALLOWED;
 	else
 		App::update_check_consent = update_checker::UPDATE_CHECK_CONSENT_DENIED;
+#endif
 	
 	// Set the preview background color
 	m_color = preview_background_color_button.get_rgba();
@@ -1304,8 +1310,10 @@ Dialog_Setup::refresh()
 	// Refresh the status of the experimental features flag
 	toggle_enable_experimental_features.set_active(App::enable_experimental_features);
 
+#ifdef ENABLE_UPDATE_CHECKER
 	// Refresh the status of the online update check flag
 	toggle_enable_update_check.set_active(App::enable_update_check);
+#endif
 
 	// Refresh the status of the experimental features flag
 	{

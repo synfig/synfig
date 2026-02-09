@@ -51,7 +51,9 @@
 #include <gui/docks/dockmanager.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
+#ifdef ENABLE_UPDATE_CHECKER
 #include <gui/updatechecker.h>
+#endif
 #include <gui/widgets/widget_link.h>
 #include <gui/widgets/widget_time.h>
 #include <gui/widgets/widget_vector.h>
@@ -91,7 +93,10 @@ escape_underline(const std::string& raw)
 
 MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
 	: Gtk::ApplicationWindow(application),
-	  save_workspace_merge_id(0), custom_workspaces_merge_id(0), update_menu_item_(nullptr)
+	  save_workspace_merge_id(0), custom_workspaces_merge_id(0)
+#ifdef ENABLE_UPDATE_CHECKER
+	  , update_menu_item_(nullptr)
+#endif
 {
 	register_custom_widget_types();
 
@@ -301,6 +306,7 @@ MainWindow::toggle_show_toolbar()
 	}
 }
 
+#ifdef ENABLE_UPDATE_CHECKER
 void
 MainWindow::on_update_notification_clicked()
 {
@@ -374,6 +380,7 @@ MainWindow::show_update_notification(const std::string& url, const std::string& 
 		update_menu_item_->show();
 	}
 }
+#endif // ENABLE_UPDATE_CHECKER
 
 void
 MainWindow::save_all()

@@ -63,7 +63,6 @@ target_sources(synfigstudio
 		"${CMAKE_CURRENT_LIST_DIR}/splash.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/statemanager.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/timeplotdata.cpp"
-		"${CMAKE_CURRENT_LIST_DIR}/updatechecker.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/waypointrenderer.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/workarea.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/workspacehandler.cpp"
@@ -94,6 +93,11 @@ target_link_libraries(synfigstudio PRIVATE
 
 if (FONTCONFIG_FOUND)
 	target_link_libraries(synfigstudio PRIVATE PkgConfig::FONTCONFIG)
+endif ()
+
+if (ENABLE_UPDATE_CHECKER)
+	target_compile_definitions(synfigstudio PRIVATE ENABLE_UPDATE_CHECKER)
+	target_sources(synfigstudio PRIVATE "${CMAKE_CURRENT_LIST_DIR}/updatechecker.cpp")
 endif ()
 
 if (JACK_FOUND)

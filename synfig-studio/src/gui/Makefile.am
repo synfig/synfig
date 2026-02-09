@@ -63,7 +63,6 @@ OTHER_HH = \
 	splash.h \
 	statemanager.h \
 	timeplotdata.h \
-	updatechecker.h \
 	waypointrenderer.h \
 	workarea.h \
 	workspacehandler.h \
@@ -93,7 +92,6 @@ OTHER_CC = \
 	splash.cpp \
 	statemanager.cpp \
 	timeplotdata.cpp \
-	updatechecker.cpp \
 	waypointrenderer.cpp \
 	workarea.cpp \
 	workspacehandler.cpp \
@@ -113,6 +111,12 @@ synfigstudio_SOURCES = \
 	$(EVENTS_HH) \
 	$(OTHER_HH) \
 	$(OTHER_CC)
+
+if ENABLE_UPDATE_CHECKER
+synfigstudio_SOURCES += \
+	updatechecker.h \
+	updatechecker.cpp
+endif
 
 
 

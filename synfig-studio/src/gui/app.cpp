@@ -76,7 +76,9 @@
 #include <gui/autorecover.h>
 #include <gui/canvasview.h>
 #include <gui/devicetracker.h>
+#ifdef ENABLE_UPDATE_CHECKER
 #include <gui/updatechecker.h>
+#endif
 
 #include <gui/dialogs/about.h>
 #include <gui/dialogs/dialog_color.h>
@@ -270,9 +272,11 @@ bool   studio::App::enable_experimental_features = false;
 bool   studio::App::use_dark_theme               = false;
 String studio::App::icon_theme_name              = "";
 bool   studio::App::show_file_toolbar            = true;
+#ifdef ENABLE_UPDATE_CHECKER
 bool   studio::App::enable_update_check          = false;
 int    studio::App::update_check_consent         = update_checker::UPDATE_CHECK_CONSENT_UNKNOWN;
 String studio::App::skipped_update_version        ;
+#endif
 String studio::App::custom_filename_prefix       (DEFAULT_FILENAME_PREFIX);
 int    studio::App::preferred_x_size             = 480;
 int    studio::App::preferred_y_size             = 270;
@@ -508,6 +512,7 @@ public:
 				value=strprintf("%i",(int)App::show_file_toolbar);
 				return true;
 			}
+#ifdef ENABLE_UPDATE_CHECKER
 			if(key=="enable_update_check")
 			{
 				value=strprintf("%i", (int)App::enable_update_check);
@@ -523,6 +528,7 @@ public:
 				value=App::skipped_update_version;
 				return true;
 			}
+#endif
 			//! "Keep brushes_path" preferences entry for backward compatibility (15/12 - v1.0.3)
 			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
@@ -715,6 +721,7 @@ public:
 				App::show_file_toolbar=i;
 				return true;
 			}
+#ifdef ENABLE_UPDATE_CHECKER
 			if(key=="enable_update_check")
 			{
 				int i(atoi(value.c_str()));
@@ -732,6 +739,7 @@ public:
 				App::skipped_update_version=value;
 				return true;
 			}
+#endif
 			//! "Keep brushes_path" preferences entry for backward compatibility (15/12 - v1.0.3)
 			//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
 			if(key=="brushes_path")
@@ -867,9 +875,11 @@ public:
 		ret.push_back("use_dark_theme");
 		ret.push_back("icon_theme_name");
 		ret.push_back("show_file_toolbar");
+#ifdef ENABLE_UPDATE_CHECKER
 		ret.push_back("enable_update_check");
 		ret.push_back("update_check_consent");
 		ret.push_back("skipped_update_version");
+#endif
 		ret.push_back("brushes_path");
 		ret.push_back("custom_filename_prefix");
 		ret.push_back("ui_language");
@@ -1832,7 +1842,9 @@ void App::init(const synfig::String& rootpath)
 
 		splash_screen.hide();
 
+#ifdef ENABLE_UPDATE_CHECKER
 		update_checker::start_async();
+#endif
 	}
 	catch(String &x)
 	{
