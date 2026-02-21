@@ -62,7 +62,7 @@ public:
 	void init_icons(const synfig::filesystem::Path& path_to_icons);
 };
 
-std::string layer_icon_name(const synfig::String &layer);
+std::string layer_icon_name(const synfig::String& layer_name);
 Glib::RefPtr<Gdk::Pixbuf> get_tree_pixbuf_layer(const synfig::String &layer);
 
 std::string state_icon_name(const synfig::String& state);

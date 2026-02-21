@@ -66,3 +66,12 @@ if(TARGET desktop_file)
     add_dependencies(synfigstudio desktop_file)
 endif()
 endif()
+
+if(APPLE)
+    install(
+        DIRECTORY ${CMAKE_BINARY_DIR}/output/Debug/bin/SynfigStudio.app
+        DESTINATION .
+        COMPONENT applications
+        USE_SOURCE_PERMISSIONS
+    )
+endif()

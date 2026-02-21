@@ -1,9 +1,11 @@
 ACTION_MANAGERS_HH = \
+	actionmanagers/actionmanager.h \
 	actionmanagers/groupactionmanager.h \
 	actionmanagers/keyframeactionmanager.h \
 	actionmanagers/layeractionmanager.h
 
 ACTION_MANAGERS_CC = \
+	actionmanagers/actionmanager.cpp \
 	actionmanagers/groupactionmanager.cpp \
 	actionmanagers/keyframeactionmanager.cpp \
 	actionmanagers/layeractionmanager.cpp
