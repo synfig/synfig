@@ -112,7 +112,7 @@
     </param>
     <param name="canvas">
       <canvas>
-        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-forearm2">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-arm2">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -596,7 +596,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-arm2">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-forearm2">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -1690,7 +1690,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-forearm1">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-arm1">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
@@ -2174,7 +2174,7 @@
             <real value="0.0000000000"/>
           </param>
         </layer>
-        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-arm1">
+        <layer type="group" active="true" exclude_from_rendering="false" version="0.2" desc="(stk)-forearm1">
           <param name="z_depth">
             <real value="0.0000000000"/>
           </param>
