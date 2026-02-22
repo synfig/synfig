@@ -49,6 +49,7 @@
 #include <synfig/filesystemtemporary.h>
 #include <synfig/valuenodes/valuenode_absolute.h>
 #include <synfig/valuenodes/valuenode_add.h>
+#include <synfig/valuenodes/valuenode_subtract.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 #include <synfig/valuenodes/valuenode_const.h>
 #include <synfig/valuenodes/valuenode_radialcomposite.h>
@@ -102,6 +103,7 @@ synfigapp::is_editable(synfig::ValueNode::Handle value_node)
 		|| ValueNode_Animated::Handle::cast_dynamic(value_node)
 		|| ValueNode_Absolute::Handle::cast_dynamic(value_node)
 		|| ValueNode_Add::Handle::cast_dynamic(value_node)
+		|| ValueNode_Subtract::Handle::cast_dynamic(value_node)
 		|| ValueNode_Composite::Handle::cast_dynamic(value_node)
 		|| ValueNode_RadialComposite::Handle::cast_dynamic(value_node)
 		||(ValueNode_Reference::Handle::cast_dynamic(value_node) && !ValueNode_Greyed::Handle::cast_dynamic(value_node))
