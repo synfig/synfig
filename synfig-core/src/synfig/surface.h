@@ -59,7 +59,7 @@ public:
 	}
 	static Color uncook_static(Color x)
 	{
-		if(!x.get_a())
+		if (approximate_zero(x.get_a()))
 			return Color::alpha();
 
 		const float a(1.0f/x.get_a());
