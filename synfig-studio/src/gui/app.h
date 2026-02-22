@@ -238,6 +238,9 @@ public:
 	static synfig::String default_background_layer_type;
 	static synfig::Color  default_background_layer_color;
 	static synfig::String default_background_layer_image;
+	static bool default_keyframedial_past;
+	static bool default_keyframedial_future; 
+	static int default_interpolation;       
 	static synfig::Color  preview_background_color;
 
 	//The sound effects that will be used
