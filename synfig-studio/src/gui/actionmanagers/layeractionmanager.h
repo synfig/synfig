@@ -87,6 +87,7 @@ class LayerActionManager
 	/// \return false is user cancels the (possibly shown) dialog
 	bool query_user_about_foreign_exported_value_nodes(synfig::Canvas::Handle canvas, ValueNodeReplacementMap& answer) const;
 	void export_value_nodes(synfig::Canvas::Handle canvas, const ValueNodeReplacementMap& valuenodes) const;
+	void disconnect_bones_if_skeleton_not_selected(synfig::Layer::Handle layer, const synfigapp::SelectionManager::LayerList& selected_layers) const;
 public:
 	void queue_refresh();
 
