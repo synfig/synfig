@@ -80,6 +80,7 @@ static std::vector<String> tokenize(const String& str,const String& delimiters);
 static String unquote(const String& str);
 
 static float get_inkscape_version(const xmlpp::Element* svgNodeElement);
+static Glib::ustring fetch_element_label(const xmlpp::Element* svgNodeElement);
 
 /* === M E T H O D S ======================================================= */
 
@@ -271,7 +272,8 @@ Svg_parser::parser_canvas(const xmlpp::Node* node)
 void
 Svg_parser::parser_text(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style, const SVGMatrix& mtx)
 {
-	Glib::ustring text_id = nodeElement->get_attribute_value("id");
+	const Glib::ustring text_label = fetch_element_label(nodeElement);
+	const Glib::ustring text_id = nodeElement->get_attribute_value("id");
 	double text_x = style.compute("x", "0");
 	if (auto attr = nodeElement->get_attribute("x")) {
 		text_x = getDimension(attr->get_value());
@@ -398,7 +400,7 @@ Svg_parser::parser_text(const xmlpp::Element* nodeElement, xmlpp::Element* root,
 	text_node->set_attribute("type","text");
 	text_node->set_attribute("active","true");
 	text_node->set_attribute("version","0.5");
-	text_node->set_attribute("desc",text_id);
+	text_node->set_attribute("desc",text_label);
 
 	build_real(text_node->add_child("param"),"z_depth",0.0);
 	build_real(text_node->add_child("param"),"amount",1.0);
@@ -464,7 +466,8 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		enum FillType {FILL_TYPE_NONE, FILL_TYPE_SIMPLE, FILL_TYPE_GRADIENT};
 
 		//load sub-attributes
-		Glib::ustring id  = nodeElement->get_attribute_value("id");
+		const Glib::ustring id  = nodeElement->get_attribute_value("id");
+		const std::string label = fetch_element_label(nodeElement);
 
 		//style
 		String fill       = style.get("fill", "#000");
@@ -506,7 +509,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		if(typeFill != FILL_TYPE_NONE && typeStroke == FILL_TYPE_NONE) {
 			if (nodename.compare("rect") == 0 || nodename.compare("circle") == 0) {
 				if (!mtx.is_identity())
-					child_layer = initializeGroupLayerNode(root->add_child("layer"), id);
+					child_layer = initializeGroupLayerNode(root->add_child("layer"), label);
 				child_fill=child_layer;
 
 				if (nodename.compare("rect") == 0)
@@ -525,7 +528,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		// We will create a non-primitive shape
 
 		if (!SVG_RESOLVE_BLINE)
-			child_layer = initializeGroupLayerNode(root->add_child("layer"), id);
+			child_layer = initializeGroupLayerNode(root->add_child("layer"), label);
 		child_fill=child_layer;
 		child_stroke=child_layer;
 
@@ -562,7 +565,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 				child_fill=initializeGroupLayerNode(child_fill->add_child("layer"),"fill");
 			}
 
-			build_region(child_fill, style, k, id);
+			build_region(child_fill, style, k, label);
 
 			if(typeFill==FILL_TYPE_GRADIENT){ //gradient in onto mode (fill)
 				build_fill(child_fill, fill, bline_matrix);
@@ -578,7 +581,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 				child_stroke=initializeGroupLayerNode(child_stroke->add_child("layer"),"stroke");
 			}
 
-			build_outline(child_stroke, style, k, id, bline_matrix);
+			build_outline(child_stroke, style, k, label, bline_matrix);
 
 			if(typeStroke==FILL_TYPE_GRADIENT){ //gradient in onto mode (stroke)
 				build_fill(child_stroke, stroke, bline_matrix);
@@ -864,8 +867,8 @@ void
 Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx)
 {
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
-		Glib::ustring label		=nodeElement->get_attribute_value("label", "inkscape");
-		Glib::ustring id		=nodeElement->get_attribute_value("id");
+		Glib::ustring label = fetch_element_label(nodeElement);
+		Glib::ustring id = nodeElement->get_attribute_value("id");
 
 		style.merge(nodeElement);
 
@@ -873,7 +876,8 @@ Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style st
 		root->set_attribute("type","group");
 		root->set_attribute("active","true");
 		root->set_attribute("version","0.1");
-		if(label.empty()) label = !id.empty() ? id : _("Inline Canvas");
+		if (label.empty())
+			label = _("Inline Canvas");
 		root->set_attribute("desc", label);
 
 		build_real(root->add_child("param"),"z_depth",0.0);
@@ -900,11 +904,12 @@ Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style st
 void
 Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root, const Style& style)
 {
-	Glib::ustring rect_id = nodeElement->get_attribute_value("id");
-	double rect_x         = style.compute("x", "0");
-	double rect_y         = style.compute("y", "0");
-	double rect_width     = style.compute("width", "0");
-	double rect_height    = style.compute("height", "0");
+	const Glib::ustring rect_label = fetch_element_label(nodeElement);
+	const Glib::ustring rect_id = nodeElement->get_attribute_value("id");
+	const double rect_x         = style.compute("x", "0");
+	const double rect_y         = style.compute("y", "0");
+	const double rect_width     = style.compute("width", "0");
+	const double rect_height    = style.compute("height", "0");
 
 	Glib::ustring fill    = style.get("fill", "#000");
 	float fill_opacity    = style.compute("fill_opacity", "1");
@@ -914,7 +919,7 @@ Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root, 
 	child_rect->set_attribute("type","rectangle");
 	child_rect->set_attribute("active","true");
 	child_rect->set_attribute("version","0.2");
-	child_rect->set_attribute("desc",rect_id);
+	child_rect->set_attribute("desc", rect_label);
 
 	build_real(child_rect->add_child("param"),"z_depth",0.0);
 	build_real(child_rect->add_child("param"),"amount",1.0);
@@ -934,10 +939,11 @@ Svg_parser::parser_rect(const xmlpp::Element* nodeElement,xmlpp::Element* root, 
 void
 Svg_parser::parser_circle(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style)
 {
-	Glib::ustring circle_id = nodeElement->get_attribute_value("id");
-	float circle_x      = style.compute("cx", "0", style.compute("width", "0"));
-	float circle_y      = style.compute("cy", "0", style.compute("height", "0"));
-	float circle_radius = atof(style.get("r", "0").c_str()); // FIXME compute for %
+	const Glib::ustring circle_label = fetch_element_label(nodeElement);
+	const Glib::ustring circle_id = nodeElement->get_attribute_value("id");
+	const float circle_x = style.compute("cx", "0", style.compute("width", "0"));
+	const float circle_y = style.compute("cy", "0", style.compute("height", "0"));
+	const float circle_radius = atof(style.get("r", "0").c_str()); // FIXME compute for %
 
 	Glib::ustring fill  = style.get("fill", "#000");
 	float fill_opacity  = style.compute("fill_opacity", "1");
@@ -947,7 +953,7 @@ Svg_parser::parser_circle(const xmlpp::Element* nodeElement, xmlpp::Element* roo
 	child_circle->set_attribute("type","circle");
 	child_circle->set_attribute("active","true");
 	child_circle->set_attribute("version","0.2");
-	child_circle->set_attribute("desc",circle_id);
+	child_circle->set_attribute("desc", circle_label);
 
 	build_real(child_circle->add_child("param"),"z_depth",0.0);
 	build_real(child_circle->add_child("param"),"amount",1.0);
@@ -2900,6 +2906,15 @@ get_inkscape_version(const xmlpp::Element* svgNodeElement)
 	} catch (...) {
 	}
 	return 0; // not inkscape ;)
+}
+
+static Glib::ustring
+fetch_element_label(const xmlpp::Element* nodeElement)
+{
+	const Glib::ustring label = trim(nodeElement->get_attribute_value("label", "inkscape"));
+	if (!label.empty())
+		return label;
+	return nodeElement->get_attribute_value("id");
 }
 
 /**
