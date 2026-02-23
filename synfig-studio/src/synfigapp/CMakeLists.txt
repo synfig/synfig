@@ -21,6 +21,14 @@ target_sources(synfigapp
 
 target_link_libraries(synfigapp libsynfig)
 
+find_package(CURL REQUIRED)
+
+target_link_libraries(synfigapp
+    PRIVATE
+        libsynfig
+        CURL::libcurl
+)
+
 include(actions/CMakeLists.txt)
 include(vectorizer/CMakeLists.txt)
 
