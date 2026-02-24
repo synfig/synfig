@@ -538,6 +538,13 @@ LayerActionManager::paste()
 	{
 		layer=(*iter)->clone(canvas, guid);
 		layer_selection.push_back(layer);
+		// Fix: clear dangling parent pointer in pasted exported canvases
+		Layer_PasteCanvas::Handle paste_check = Layer_PasteCanvas::Handle::cast_dynamic(layer);
+		if (paste_check) {
+			Canvas::Handle sub = paste_check->get_sub_canvas();
+			if (sub && !sub->is_inline() && sub->parent() && sub->parent() != canvas)
+				sub->clear_parent();
+		}
 
 		replace_exported_value_nodes(layer, valuenode_replacements);
 
