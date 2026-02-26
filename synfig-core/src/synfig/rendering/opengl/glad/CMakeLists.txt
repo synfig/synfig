@@ -1,0 +1,6 @@
+set(GLAD_DIR "${CMAKE_CURRENT_LIST_DIR}")
+add_library("glad" "${GLAD_DIR}/src/glad.c")
+target_include_directories("glad" PRIVATE "${GLAD_DIR}/include")
+target_include_directories(libsynfig PRIVATE "${GLAD_DIR}/include")
+target_link_libraries(libsynfig PRIVATE "glad")
+target_compile_options("glad" PRIVATE -fPIC)

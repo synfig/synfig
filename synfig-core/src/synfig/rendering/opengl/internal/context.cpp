@@ -4,6 +4,7 @@
 **
 **	\legal
 **	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -32,10 +33,16 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-#include <synfig/localization.h>
+#include <cassert>
 
 #include "context.h"
+#include "headers.h"
+#include "framebuffer.h"
+
+#include "environment.h"
+
+#include "synfig/debug/measure.h"
+#include "synfig/general.h"
 
 #endif
 
@@ -44,192 +51,202 @@ using namespace rendering;
 
 /* === M A C R O S ========================================================= */
 
-#define GLX_CONTEXT_MAJOR_VERSION_ARB 0x2091
-#define GLX_CONTEXT_MINOR_VERSION_ARB 0x2092
-
 /* === G L O B A L S ======================================================= */
 
-typedef GLXContext (*GLXCREATECONTEXTATTRIBSARBPROC)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
+#ifdef OPENGL_DEBUG_OUTPUT
+void APIENTRY glDebugOutput(GLenum source, 
+                            GLenum type, 
+                            unsigned int id, 
+                            GLenum severity, 
+                            GLsizei length, 
+                            const char *message, 
+                            const void *userParam)
+{
+    if(id == 131169 || id == 131185 || id == 131218 || id == 131204) return; // ignore these non-significant error codes
+	
+	const char* sourceStr = "Other";
+	const char* typeStr = "Other";
+
+    switch (source)
+    {
+        case GL_DEBUG_SOURCE_API:             sourceStr = "API"; break;
+        case GL_DEBUG_SOURCE_WINDOW_SYSTEM:   sourceStr = "Window System"; break;
+        case GL_DEBUG_SOURCE_SHADER_COMPILER: sourceStr = "Shader Compiler"; break;
+        case GL_DEBUG_SOURCE_THIRD_PARTY:     sourceStr = "Third Party"; break;
+        case GL_DEBUG_SOURCE_APPLICATION:     sourceStr = "Application"; break;
+    }
+
+    switch (type)
+    {
+        case GL_DEBUG_TYPE_ERROR:               typeStr = "Error"; break;
+        case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: typeStr = "Deprecated Behaviour"; break;
+        case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:  typeStr = "Undefined Behaviour"; break; 
+        case GL_DEBUG_TYPE_PORTABILITY:         typeStr = "Portability"; break;
+        case GL_DEBUG_TYPE_PERFORMANCE:         typeStr = "Performance"; break;
+        case GL_DEBUG_TYPE_MARKER:              typeStr = "Marker"; break;
+        case GL_DEBUG_TYPE_PUSH_GROUP:          typeStr = "Push Group"; break;
+        case GL_DEBUG_TYPE_POP_GROUP:           typeStr = "Pop Group"; break;
+        case GL_DEBUG_TYPE_OTHER:               typeStr = "Other"; break;
+    }
+	
+	switch (severity) {
+		case GL_DEBUG_SEVERITY_HIGH:
+			error("Opengl[H](%s:%s:%u) -> %s", sourceStr, typeStr, id, message);
+			break;
+		case GL_DEBUG_SEVERITY_MEDIUM:
+			warning("Opengl[M](%s:%s:%u) -> %s", sourceStr, typeStr, id, message);
+			break;
+		case GL_DEBUG_SEVERITY_LOW:
+			warning("Opengl[L](%s:%s:%u) -> %s", sourceStr, typeStr, id, message);
+			break;
+		case GL_DEBUG_SEVERITY_NOTIFICATION:
+			info("Opengl[N](%s:%s:%u) -> %s", sourceStr, typeStr, id, message);
+			break;
+	}
+}
+#endif
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
-#define ADD_ENUM(x) std::pair<GLenum, const char *>(x, #x)
-std::pair<GLenum, const char*> gl::Context::enum_strings[] = {
-	// errors
-	ADD_ENUM(GL_INVALID_ENUM),
-	ADD_ENUM(GL_INVALID_VALUE),
-	ADD_ENUM(GL_INVALID_OPERATION),
-	ADD_ENUM(GL_INVALID_FRAMEBUFFER_OPERATION),
-	ADD_ENUM(GL_STACK_OVERFLOW),
-	ADD_ENUM(GL_STACK_UNDERFLOW),
-	ADD_ENUM(GL_OUT_OF_MEMORY),
-	// framebuffer statuses
-	ADD_ENUM(GL_FRAMEBUFFER_COMPLETE),
-	ADD_ENUM(GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT),
-	ADD_ENUM(GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT),
-	ADD_ENUM(GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER),
-	ADD_ENUM(GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER),
-	ADD_ENUM(GL_FRAMEBUFFER_UNSUPPORTED),
-	// end
-	ADD_ENUM(GL_NONE) };
-
-
-
-void
-gl::Context::ContextInfo::make_current() const
-{
-	glXMakeContextCurrent(display, drawable, read_drawable, context);
-	assert(*this == get_current(display));
-}
-
-gl::Context::ContextInfo
-gl::Context::ContextInfo::get_current(Display *default_display)
-{
-	ContextInfo ci;
-	ci.display = glXGetCurrentDisplay();
-	if (!ci.display) ci.display = default_display;
-	ci.drawable = glXGetCurrentDrawable();
-	ci.read_drawable = glXGetCurrentReadDrawable();
-	ci.context = glXGetCurrentContext();
-	return ci;
-}
-
-gl::Context::Context():
-	display(nullptr),
-	config(None),
-	pbuffer(None),
-	context(nullptr)
-{
-	// open display (we will use default display and screen 0)
-	display = XOpenDisplay(nullptr);
-	context_info.display = display;
-
-	// choose config
-	assert(display);
-	if (display)
-	{
-		int config_attribs[] = {
-			//GLX_DOUBLEBUFFER,      False,
-			GLX_RED_SIZE,          8,
-			GLX_GREEN_SIZE,        8,
-			GLX_BLUE_SIZE,         8,
-			GLX_ALPHA_SIZE,        8,
-			//GLX_DEPTH_SIZE,        24,
-			//GLX_STENCIL_SIZE,      8,
-			//GLX_ACCUM_RED_SIZE,    8,
-			//GLX_ACCUM_GREEN_SIZE,  8,
-			//GLX_ACCUM_BLUE_SIZE,   8,
-			//GLX_ACCUM_ALPHA_SIZE,  8,
-			GLX_DRAWABLE_TYPE,     GLX_PBUFFER_BIT,
-			None };
-		int nelements = 0;
-		GLXFBConfig *configs = glXChooseFBConfig(display, 0, config_attribs, &nelements);
-		if (configs && nelements > 0)
-			config = configs[0];
-	}
-
-	// create pbuffer
-	assert(config);
-	if (config)
-	{
-		int pbuffer_attribs[] = {
-			GLX_PBUFFER_WIDTH, 256,
-			GLX_PBUFFER_HEIGHT, 256,
-			None };
-		pbuffer = glXCreatePbuffer(display, config, pbuffer_attribs);
-		context_info.drawable = pbuffer;
-		context_info.read_drawable = pbuffer;
-	}
-
-	// create context
-	assert(pbuffer);
-	if (pbuffer)
-	{
-		int context_attribs[] = {
-			GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
-			GLX_CONTEXT_MINOR_VERSION_ARB, 3,
-			None };
-		GLXCREATECONTEXTATTRIBSARBPROC glXCreateContextAttribsARB = (GLXCREATECONTEXTATTRIBSARBPROC) glXGetProcAddress((const GLubyte*)"glXCreateContextAttribsARB");
-		context = glXCreateContextAttribsARB(display, config, nullptr, True, context_attribs);
-		context_info.context = context;
-	}
-
-	assert(context);
-	use();
-	check();
-	unuse();
-}
+gl::Context::Context() : initialized(false) {}
 
 gl::Context::~Context()
 {
-	if (context)
-		glXDestroyContext(display, context);
-	context = nullptr;
-	context_info.context = nullptr;
-	if (pbuffer)
-		glXDestroyPbuffer(display, pbuffer);
-	pbuffer = None;
-	context_info.drawable = None;
-	context_info.read_drawable = None;
-	config = None;
-	if (display)
-		XCloseDisplay(display);
-	display = nullptr;
-	context_info.display = None;
+	glfwDestroyWindow(glfwWindow);
+	if(programs)
+	{
+		programs->deinitialize();
+		delete programs;
+	}
+
+	if(shaders)
+	{
+		shaders->deinitialize();
+		delete shaders;
+	}
 }
 
 bool
-gl::Context::is_current() const
+gl::Context::initialize()
 {
-	return is_valid()
-		&& context_info == ContextInfo::get_current(display);
+	glfwInit();
+
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+#ifdef OPENGL_DEBUG_OUTPUT
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
+#endif
+
+#ifdef __APPLE__
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_COCOA_MENUBAR, GL_FALSE);
+#endif
+
+	glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
+
+    glfwWindow = glfwCreateWindow(400, 400, "opengl main hidden window", NULL, NULL);
+    if(glfwWindow == NULL)
+    {
+        error("Opengl[H] -> Failed to create opengl context");
+		return false;
+    }
+
+	info("Opengl[N] -> GLFW Initialized");
+
+	glfwMakeContextCurrent(glfwWindow);
+	if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	{
+		error("Opengl[H] -> Failed to initialize GLAD");
+		glfwMakeContextCurrent(NULL);
+		return false;
+	}
+	info("Opengl[N] -> GLAD Initialized");
+
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_DEPTH_TEST);
+
+#ifdef OPENGL_DEBUG_OUTPUT
+    int flags; glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+    if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
+    {
+        glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS); 
+        glDebugMessageCallback(glDebugOutput, NULL);
+        glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+    }
+#endif
+
+	shaders = new Shaders();
+	shaders->initialize();
+	assert(shaders->is_valid());
+	info("Opengl[N] -> Shaders loaded");
+
+	programs = new Programs();
+	programs->initialize(*shaders);
+
+	if(!programs->is_valid())
+	{
+		error("Opengl[H] -> Failed to initialize programs");
+		programs->deinitialize();
+		delete programs;
+		return false;
+	}
+
+	glfwMakeContextCurrent(NULL);
+
+	info("Opengl[N] -> Context initialized");
+	initialized = true;
+	return initialized;
+}
+
+gl::Programs::Program
+gl::Context::get_program(const std::string &str) const
+{
+	assert(initialized);
+
+	return programs->get_program(str);
+}
+
+gl::Programs::Program
+gl::Context::get_blend_program(Color::BlendMethod method) const
+{
+	assert(initialized);
+
+	return programs->get_blend_program(method);
 }
 
 void
 gl::Context::use()
 {
-	if (is_valid()) {
-		rec_mutex.lock();
-		context_stack.push_back(ContextInfo::get_current(display));
-		if (context_info != context_stack.back())
-			context_info.make_current();
-		check("gl::Context::use");
+	mutex.lock();
+	lock_count++;
+
+	// only lock the first time use is called on this thread
+	if(lock_count == 1)
+	{
+		if(!initialized) initialize();
+		assert(initialized);
+
+		glfwMakeContextCurrent(glfwWindow);
 	}
 }
 
 void
 gl::Context::unuse()
 {
-	assert(is_current());
-	if (is_valid()) {
-		assert(!context_stack.empty());
-		check("gl::Context::unuse");
-		if (context_stack.back() != context_info)
-		{
-			glFinish();
-			context_stack.back().make_current();
-		}
-		context_stack.pop_back();
-		rec_mutex.unlock();
+	lock_count--;
+
+	// only remove the context the last time unlock is called
+	if(lock_count == 0)
+	{
+		glfwMakeContextCurrent(NULL);
 	}
-}
 
-void
-gl::Context::check(const char *s)
-{
-	if (GLenum error = glGetError())
-		warning("%s GL error: 0x%x %s", s, error, get_enum_string(error));
-}
-
-const char *
-gl::Context::get_enum_string(GLenum x)
-{
-	for(int i = 0; i < (int)sizeof(enum_strings)/(int)sizeof(enum_strings[0]); ++i)
-		if (enum_strings[i].first == x)
-			return enum_strings[i].second;
-	return "";
+	mutex.unlock();
 }
 
 /* === E N T R Y P O I N T ================================================= */

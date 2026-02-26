@@ -4,6 +4,7 @@
 **
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -32,8 +33,9 @@
 
 #include "../../task.h"
 
+#include "../internal/environment.h"
+
 #include "../surfacegl.h"
-#include "../internal/predeclarations.h"
 
 /* === M A C R O S ========================================================= */
 

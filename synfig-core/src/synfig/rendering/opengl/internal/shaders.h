@@ -1,9 +1,10 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file synfig/rendering/opengl/internal/shaders.h
-**	\brief Environment Header
+**	\brief Shaders Header
 **
 **	\legal
 **	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -29,13 +30,15 @@
 #define __SYNFIG_RENDERING_GL_SHADERS_H
 
 /* === H E A D E R S ======================================================= */
+#include "synfig/color/color.h"
+#include "synfig/color/colormatrix.h"
+#include "synfig/vector.h"
 
-#include <cstring>
+#include "headers.h"
 
-#include <synfig/color.h>
-#include <synfig/vector.h>
-
-#include "context.h"
+#include <map>
+#include <string>
+#include <vector>
 
 /* === M A C R O S ========================================================= */
 
@@ -50,68 +53,74 @@ namespace rendering
 namespace gl
 {
 
+// Shaders are compiled on the main context but each context has its own programs
 class Shaders
 {
 public:
-	Context &context;
-
-	struct BlendProgramInfo {
+	struct Shader
+	{
 		GLuint id;
-		GLuint fragment_id;
-		GLuint amount_uniform;
-		GLuint sampler_dest_uniform;
-		GLuint sampler_src_uniform;
-		BlendProgramInfo()
-			{ memset(this, 0, sizeof(*this)); }
+		bool valid;
 	};
 
-	struct AntialiasedTexturedRectProgramInfo {
-		GLuint id;
-		GLuint fragment_id;
-		GLuint sampler_uniform;
-		GLuint aascale_uniform;
-		AntialiasedTexturedRectProgramInfo()
-			{ memset(this, 0, sizeof(*this)); }
-	};
+	bool initialize();
+	void deinitialize();
+
+	Shader get_shader(const std::string& str) const;
+	Shader get_blend_shader(Color::BlendMethod blend) const;
+
+	bool is_valid() const { return valid; }
 
 private:
-	GLuint simple_vertex_id;
-	GLuint simple_program_id;
+	bool valid = false;
 
-	GLuint color_fragment_id;
-	GLuint color_program_id;
-	GLint color_uniform;
-
-	BlendProgramInfo blend_programs[Color::BLEND_END];
-
-	GLuint texture_vertex_id;
-	GLuint texture_fragment_id;
-	GLuint texture_program_id;
-	GLuint texture_uniform;
-
-	GLuint antialiased_textured_rect_vertex_id;
-	AntialiasedTexturedRectProgramInfo antialiased_textured_rect_programs[Color::INTERPOLATION_COUNT];
-
-	String get_shader_path();
-	String get_shader_path(const String &filename);
-	String load_shader(const String &filename);
-	GLuint compile_shader(GLenum type, const String &src);
-	GLuint load_and_compile_shader(GLenum type, const String &filename);
-	void check_shader(GLuint id, const String &src);
-	void check_program(GLuint id, const String &name);
+	std::map<std::string, Shader> map;
+	Shader blend_shaders[Color::BLEND_END];
 
 	void load_blend(Color::BlendMethod method, const String &name);
-	void load_antialiased_textured_rect(Color::Interpolation interpolation, const String &name);
+};
 
+class Programs
+{
 public:
-	Shaders(Context &context);
-	~Shaders();
+	class Program
+	{
+	public:
+		GLuint id;
+		bool valid;
+		std::vector<Shaders::Shader> shaders;
 
-	void simple();
-	void color(const Color &c);
-	void blend(Color::BlendMethod method, Color::value_type amount);
-	void texture();
-	void antialiased_textured_rect(Color::Interpolation interpolation, const Vector &aascale);
+		void use();
+		void set_1i(const std::string& name, int value);
+		void set_1f(const std::string& name, float value);
+		void set_2i(const std::string& name, VectorInt value);
+        void set_2f(const std::string& name, Vector value);
+		void set_2f(const std::string& name, float a, float b);
+		void set_3f(const std::string &name, float a, float b, float c);
+		void set_4i(const std::string &name, int a, int b, int c, int d);
+		void set_color(const std::string& name, Color value);
+		void set_mat5x5(const std::string& name, ColorMatrix mat);
+
+	private:
+	};
+
+	bool initialize(const Shaders& shaders);
+	void deinitialize();
+
+	Programs clone() const;
+
+	Program get_program(const std::string& str) const;
+	Program get_blend_program(Color::BlendMethod blend) const;
+
+	bool is_valid() const { return valid; }
+
+private:
+	bool valid = false;
+
+	std::map<std::string, Program> map;
+	Program blend_programs[Color::BLEND_END];
+
+	void load_blend(const Shaders& shaders, Color::BlendMethod method, const String &name);
 };
 
 }; /* end namespace gl */

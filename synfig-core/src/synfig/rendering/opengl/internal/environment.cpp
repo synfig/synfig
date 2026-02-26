@@ -4,6 +4,7 @@
 **
 **	\legal
 **	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -25,6 +26,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include "synfig/rendering/opengl/internal/context.h"
 #ifdef USING_PCH
 #	include "pch.h"
 #else
@@ -32,7 +34,11 @@
 #	include <config.h>
 #endif
 
+#include "headers.h"
 #include "environment.h"
+#include "synfig/general.h"
+#include <chrono>
+#include <thread>
 
 #endif
 
@@ -49,4 +55,55 @@ using namespace rendering;
 
 gl::Environment* gl::Environment::instance = nullptr;
 
+gl::Environment::Environment()
+{
+	valid = true;
+}
+
+gl::Environment::~Environment()
+{
+	// mainThread.join();
+	std::lock_guard<std::mutex> lock(mutex);
+
+	delete mainContext;
+}
+
+gl::Context&
+gl::Environment::get_or_create_context()
+{
+	std::lock_guard<std::mutex> lock(mutex);
+	if(mainContext == nullptr)
+	{
+		mainContext = new gl::Context();
+		assert(mainContext);
+		mainContext->initialize();
+	}
+	return *mainContext;
+}
+
+// gl::Context& gl::Environment::get_or_create_context(std::thread::id id)
+// {
+// 	std::lock_guard<std::mutex> lock(mutex);
+//
+// 	if(mainContext == nullptr)
+// 	{
+// 		mainContext = new gl::Context(nullptr);
+// 		assert(mainContext);
+//
+// 		mainContext->use();
+// 		shaders = new Shaders();
+// 		shaders->initialize();
+// 		assert(shaders->is_valid());
+// 		info("Opengl[N]: Shaders loaded");
+// 		mainContext->unuse();
+//
+// 		valid = true;
+// 	}
+//
+// 	if(contexts.count(id) != 0) return *contexts[id];
+//
+// 	Context* context = new Context(instance->mainContext);
+// 	contexts[id] = context;
+// 	return *context;
+// }
 /* === E N T R Y P O I N T ================================================= */

@@ -1,9 +1,9 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/task/tasktransformationaffinegl.cpp
+/*!	\file synfig/rendering/software/task/tasktransformationaffinegl.cpp
 **	\brief TaskTransformationAffineGL
 **
 **	\legal
-**	......... ... 2015-2018 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -25,6 +25,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include "synfig/rendering/primitive/transformation.h"
 #ifdef USING_PCH
 #	include "pch.h"
 #else
@@ -32,13 +33,22 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-#include <synfig/localization.h>
+#include "taskgl.h"
+
+#include "synfig/general.h"
+#include "../surfacegl.h"
+#include "../internal/headers.h"
+
+#include "../internal/context.h"
+#include "../internal/environment.h"
+#include "../internal/shaders.h"
+#include "../internal/plane.h"
 
 #include "../../common/task/tasktransformation.h"
-#include "taskgl.h"
-#include "../internal/environment.h"
 
+#include <math.h>
+#include <vector>
+#include <algorithm>
 #endif
 
 using namespace synfig;
@@ -54,98 +64,98 @@ using namespace rendering;
 
 namespace {
 
-class TaskTransformationAffineGL: public TaskTransformationAffine, public TaskGL
+class TaskTransformationAffineGL: public TaskTransformationAffine,
+    public TaskGL
 {
 public:
 	typedef etl::handle<TaskTransformationAffineGL> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
-	virtual bool run(RunParams &params) const {
-		// TODO: remove antialiasing
+    bool downscale(
+            gl::Framebuffer& dest,
+            RectInt destRect,
+            gl::Framebuffer& src,
+            RectInt srcRect ) const
+    {
+        return false;
+    }
 
-		if (!is_valid() || !sub_task() || !sub_task()->is_valid())
-			return true;
+    bool resample(
+            gl::Framebuffer& dest, 
+            const RectInt& dest_bounds,
+            gl::Framebuffer& src,
+            const RectInt& src_bounds,
+            const Matrix& transformation ) const
+    {
+        return false;
+    }
 
-		gl::Context::Lock lock(env().context);
-
-		Vector rect_size = source_rect.get_size();
-		Matrix bounds_transformation;
-		bounds_transformation.m00 = approximate_equal(rect_size[0], 0.0) ? 0.0 : 2.0/rect_size[0];
-		bounds_transformation.m11 = approximate_equal(rect_size[1], 0.0) ? 0.0 : 2.0/rect_size[1];
-		bounds_transformation.m20 = -1.0 - source_rect.minx * bounds_transformation.m00;
-		bounds_transformation.m21 = -1.0 - source_rect.miny * bounds_transformation.m11;
-
-		Matrix matrix = bounds_transformation * transformation->matrix;
-
-		// prepare arrays
-		Vector k(target_surface->get_width(), target_surface->get_height());
-		Vector d( matrix.axis_x().multiply_coords(k).norm().divide_coords(k).mag() / matrix.axis_x().mag(),
-				  matrix.axis_y().multiply_coords(k).norm().divide_coords(k).mag() / matrix.axis_y().mag() );
-		d *= 4.0;
-		Vector coords[4][3];
-		for(int i = 0; i < 4; ++i)
-		{
-			coords[i][2] = Vector(i%2 ? 1.0 : -1.0, i/2 ? 1.0 : -1.0).multiply_coords(Vector(1.0, 1.0) + d);
-			coords[i][0] = matrix.get_transformed(coords[i][2]*0.5 + Vector(0.5, 0.5));
-			coords[i][1] = (coords[i][2] + Vector(1.0, 1.0))*0.5;
-		}
-		Vector aascale = d.one_divide_coords();
+	virtual bool run(RunParams&) const
+	{
+		if(!is_valid()) return true;
 
 		LockWrite ldst(this);
-		if (!ldst)
-			return false;
+		if(!ldst) return false;
 
-		gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.get_id());
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ldst->get_id(), 0);
-		glViewport(
-			target_rect.minx,
-			target_rect.miny,
-			target_rect.get_width(),
-			target_rect.get_height() );
-		env().context.check();
+		gl::Context::Lock lock(env().get_or_create_context());
+        LockRead lsrc(sub_task());
+        if(!lsrc) {
+            return false;
+        }
 
-		LockRead lsrc(sub_task());
-		if (!lsrc)
-			return false;
+		Vector src_upp = sub_task()->get_units_per_pixel();
+		Matrix src_pixels_to_units;
+		src_pixels_to_units.m00 = src_upp[0];
+		src_pixels_to_units.m11 = src_upp[1];
+		src_pixels_to_units.m20 = sub_task()->source_rect.minx - src_upp[0]*sub_task()->target_rect.minx;
+		src_pixels_to_units.m21 = sub_task()->source_rect.miny - src_upp[1]*sub_task()->target_rect.miny;
 
-		glBindTexture(GL_TEXTURE_2D, lsrc->get_id());
-		glBindSampler(0, env().samplers.get_interpolation(interpolation));
-		env().context.check();
+		Vector dst_ppu = get_pixels_per_unit();
+		Matrix dst_units_to_pixels;
+		dst_units_to_pixels.m00 = dst_ppu[0];
+		dst_units_to_pixels.m11 = dst_ppu[1];
+		dst_units_to_pixels.m20 = target_rect.minx - dst_ppu[0]*source_rect.minx;
+		dst_units_to_pixels.m21 = target_rect.miny - dst_ppu[1]*source_rect.miny;
 
-		gl::Buffers::BufferLock buf = env().buffers.get_array_buffer(coords);
-		gl::Buffers::VertexArrayLock va = env().buffers.get_vertex_array();
-		env().context.check();
+		Matrix matrix = dst_units_to_pixels * transformation->matrix * src_pixels_to_units;
 
-		glBindVertexArray(va.get_id());
-		glBindBuffer(GL_ARRAY_BUFFER, buf.get_id());
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(0, 2, GL_DOUBLE, GL_TRUE, sizeof(coords[0]), (const char*)buf.get_pointer() + 0*sizeof(coords[0][0]));
-		glVertexAttribPointer(1, 2, GL_DOUBLE, GL_TRUE, sizeof(coords[0]), (const char*)buf.get_pointer() + 1*sizeof(coords[0][0]));
-		glVertexAttribPointer(2, 2, GL_DOUBLE, GL_TRUE, sizeof(coords[0]), (const char*)buf.get_pointer() + 2*sizeof(coords[0][0]));
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		env().context.check();
+        RectInt dest_bounds = target_rect;
+        RectInt src_bounds = sub_task()->target_rect;
 
-		env().shaders.antialiased_textured_rect(interpolation, aascale);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		env().context.check();
+        gl::Framebuffer destBuf = ldst->get_framebuffer();
+        gl::Framebuffer srcBuf = lsrc.cast_handle()->get_framebuffer();
 
-		glDisableVertexAttribArray(0);
-		glDisableVertexAttribArray(1);
-		glDisableVertexAttribArray(2);
-		glBindVertexArray(0);
-		env().context.check();
+        if(interpolation != Color::INTERPOLATION_NEAREST)
+        {
+            synfig::rendering::Transformation::Bounds bounds =
+                TransformationAffine( matrix.get_inverted() )
+                .transform_bounds( Rect(0.0, 0.0, 1.0, 1.0), Vector(1.0, 1.0) );
+            bounds.resolution *= 1.20;
 
-		glBindSampler(0, 0);
-		glBindTexture(GL_TEXTURE_2D, 0);
-		env().context.check();
+            int sw = src_bounds.get_width();
+            int sh = src_bounds.get_height();
+            int w = synfig::clamp((int)ceil((Real)sw * bounds.resolution[0]), 1, sw);
+            int h = synfig::clamp((int)ceil((Real)sh * bounds.resolution[1]), 1, sh);
 
-		glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-		env().context.check();
+            if (w < sw || h < sh) {
+                gl::Framebuffer new_src;
+                new_src.from_dims(w, h);
+                downscale(new_src, RectInt(0, 0, w, h), srcBuf, src_bounds);
+
+                srcBuf = new_src;
+
+                Matrix new_transformation = matrix
+                    * Matrix().set_translate(src_bounds.minx, src_bounds.miny)
+                    * Matrix().set_scale((Real)sw/(Real)w, (Real)sh/(Real)h);
+
+                src_bounds = RectInt(0, 0, w, h);
+                // TODO: srfBuf mew
+                matrix = new_transformation;
+            }
+        }
+
+        resample(destBuf, dest_bounds, srcBuf, src_bounds, matrix);
 
 		return true;
 	}
@@ -153,10 +163,7 @@ public:
 
 
 Task::Token TaskTransformationAffineGL::token(
-	DescReal< TaskTransformationAffineGL,
-			  TaskTransformationAffine >
-				("TransformationAffineGL") );
-
+	DescReal<TaskTransformationAffineGL, TaskTransformationAffine>("TaskTransformationAffineGL") );
 } // end of anonimous namespace
 
 /* === E N T R Y P O I N T ================================================= */
