@@ -276,6 +276,9 @@ StateSmoothMove_Context::~StateSmoothMove_Context()
 
 DuckDrag_SmoothMove::DuckDrag_SmoothMove():radius(1.0f)
 {
+	if (const auto device = synfigapp::Main::get_selected_input_device()) {
+		radius = device->settings().get_value("smooth_move.radius", 1.0);
+	}
 }
 
 void
