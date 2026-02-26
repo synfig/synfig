@@ -27,16 +27,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_NOISE_DISTORT_H
-#define __SYNFIG_NOISE_DISTORT_H
+#ifndef SYNFIG_NOISE_DISTORT_H
+#define SYNFIG_NOISE_DISTORT_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/vector.h>
-#include <synfig/valuenode.h>
 #include <synfig/layers/layer_composite_fork.h>
-#include <synfig/gradient.h>
-#include <synfig/time.h>
+#include <synfig/rendering/common/task/taskdistort.h>
+#include <synfig/rendering/common/task/tasktransformation.h>
 #include "random_noise.h"
 
 /* === M A C R O S ========================================================= */
@@ -71,21 +69,53 @@ private:
 public:
 	NoiseDistort();
 
-	virtual bool set_param(const synfig::String &param, const synfig::ValueBase &value);
-	virtual synfig::ValueBase get_param(const synfig::String &param)const;
-	virtual synfig::Color get_color(synfig::Context context, const synfig::Point &pos)const;
-	//virtual bool accelerated_render(synfig::Context context,synfig::Surface *surface,int quality, const synfig::RendDesc &renddesc, synfig::ProgressCallback *cb)const;
-	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point)const;
+	bool set_param(const synfig::String &param, const synfig::ValueBase &value) override;
+	synfig::ValueBase get_param(const synfig::String &param) const override;
+	synfig::Color get_color(synfig::Context context, const synfig::Point &pos) const override;
+	synfig::Layer::Handle hit_check(synfig::Context context, const synfig::Point &point) const override;
 	using Layer::get_bounding_rect;
 	virtual synfig::Rect get_bounding_rect(synfig::Context context)const;
-	virtual Vocab get_param_vocab()const;
-	virtual bool reads_context()const { return true; }
+	Vocab get_param_vocab() const override;
+	bool reads_context() const override { return true; }
 
 protected:
-	virtual synfig::RendDesc get_sub_renddesc_vfunc(const synfig::RendDesc &renddesc) const;
-	virtual synfig::rendering::Task::Handle build_rendering_task_vfunc(synfig::Context context) const;
+	synfig::rendering::Task::Handle build_composite_fork_task_vfunc(synfig::ContextParams /* context_params */, synfig::rendering::Task::Handle sub_task) const override;
+
+public:
+	struct Internal
+	{
+		synfig::Vector displacement;
+		synfig::Vector size;
+		RandomNoise random;
+		RandomNoise::SmoothType smooth;
+		int detail;
+		synfig::Real speed;
+		bool turbulent;
+		synfig::Time time_mark;
+
+		synfig::Point transform(const synfig::Point& point) const;
+	};
 }; // EOF of class NoiseDistort
 
+class TaskNoiseDistort
+	: public synfig::rendering::TaskDistort, public synfig::rendering::TaskInterfaceTransformationGetAndPass
+{
+public:
+	typedef etl::handle<TaskNoiseDistort> Handle;
+	static Token token;
+	Token::Handle get_token() const override;
+
+	NoiseDistort::Internal internal;
+
+	synfig::Rect compute_required_source_rect(const synfig::Rect& source_rect, const synfig::Matrix& /*vector_to_raster*/) const override;
+
+	synfig::rendering::Transformation::Handle get_transformation() const override {
+		return transformation.handle();
+	}
+
+protected:
+	synfig::rendering::Holder<synfig::rendering::TransformationAffine> transformation;
+};
 /* === E N D =============================================================== */
 
 #endif
