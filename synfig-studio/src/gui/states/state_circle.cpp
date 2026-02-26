@@ -44,6 +44,8 @@
 #include <gui/event_mouse.h>
 #include <gui/localization.h>
 #include <gui/states/state_normal.h>
+#include <gui/widgets/widget_entry.h>
+#include <gui/widgets/widget_spin.h>
 #include <gui/widgets/widget_enum.h>
 #include <gui/widgets/widget_distance.h>
 #include <gui/workarea.h>
@@ -111,7 +113,7 @@ class studio::StateCircle_Context : public sigc::trackable
 	Gtk::Label title_label;
 
 	Gtk::Label id_label;
-	Gtk::Entry id_entry;
+	Widget_Entry id_entry;
 	Gtk::Box id_box;
 
 	Gtk::Label layer_types_label;
@@ -135,11 +137,11 @@ class studio::StateCircle_Context : public sigc::trackable
 
 	Gtk::Label bline_points_label;
 	Glib::RefPtr<Gtk::Adjustment> number_of_bline_points_adj;
-	Gtk::SpinButton	number_of_bline_points_spin;
+	Widget_Spin	number_of_bline_points_spin;
 
 	Gtk::Label bline_point_angle_offset_label;
 	Glib::RefPtr<Gtk::Adjustment> bline_point_angle_offset_adj;
-	Gtk::SpinButton	bline_point_angle_offset_spin;
+	Widget_Spin	bline_point_angle_offset_spin;
 	Gtk::Box bline_point_angle_offset_box;
 
 	Gtk::Label invert_label;
@@ -512,12 +514,15 @@ StateCircle_Context::StateCircle_Context(CanvasView* canvas_view):
 	bline_width_dist.set_digits(2);
 	bline_width_dist.set_range(0,10000000);
 	bline_width_dist.set_sensitive(false);
+//	bline_width_dist.signal_button_release_event().connect([&](GdkEventButton* ev){ bline_width_dist.select_region(0,-1)/*bline_width_dist.grab_focus()*/;return true;});
+
 
 	bline_points_label.set_label(_("Spline Points:"));
 	bline_points_label.set_halign(Gtk::ALIGN_START);
 	bline_points_label.set_valign(Gtk::ALIGN_CENTER);
 	bline_points_label.set_sensitive(false);
 	number_of_bline_points_spin.set_sensitive(false);
+//	number_of_bline_points_spin.signal_event_after().connect(sigc::mem_fun(number_of_bline_points_spin, &Gtk::Widget::grab_focus));
 
 	bline_point_angle_offset_label.set_label(_("Offset:"));
 	bline_point_angle_offset_label.set_halign(Gtk::ALIGN_START);

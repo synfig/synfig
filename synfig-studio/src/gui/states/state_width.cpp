@@ -44,6 +44,7 @@
 #include <gui/states/state_normal.h>
 #include <gui/states/state_width.h>
 #include <gui/widgets/widget_distance.h>
+#include <gui/widgets/widget_spin.h>
 #include <gui/workarea.h>
 
 #include <synfig/blinepoint.h>
@@ -99,7 +100,7 @@ class studio::StateWidth_Context : public sigc::trackable
 	Gtk::Label title_label;
 
 	Glib::RefPtr<Gtk::Adjustment> adj_delta;
-	Gtk::SpinButton	spin_delta;
+	Widget_Spin	spin_delta;
 
 	Widget_Distance *influence_radius;
 
