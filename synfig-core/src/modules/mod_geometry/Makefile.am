@@ -31,6 +31,8 @@ libmod_geometry_la_SOURCES = \
 	outline.cpp \
 	advanced_outline.h \
 	advanced_outline.cpp \
+	advancedline.h \
+	advancedline.cpp \
 	main.cpp
 
 libmod_geometry_la_CXXFLAGS = \
@@ -49,3 +51,6 @@ libmod_geometry_la_LDFLAGS = \
 EXTRA_DIST = \
 	mod_geometry.nsh \
 	unmod_geometry.nsh
+
+SUBDIRS = . test
+
