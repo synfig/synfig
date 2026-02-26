@@ -267,7 +267,7 @@ LayerTree::create_param_tree()
 		Gtk::CellRendererText* text_cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
 		column->pack_start(*text_cellrenderer,false);
 		column->add_attribute(text_cellrenderer->property_text(), param_model.label);
-		text_cellrenderer->property_attributes()=attr_list;
+		//text_cellrenderer->property_attributes()=attr_list;
 
 		text_cellrenderer->property_foreground()=Glib::ustring("#7f7f7f");
 		column->add_attribute(text_cellrenderer->property_foreground_set(),param_model.is_inconsistent);
@@ -301,7 +301,7 @@ LayerTree::create_param_tree()
 		column->add_attribute(cellrenderer_value->property_child_param_desc(), param_model.child_param_desc);
 		column->add_attribute(cellrenderer_value->property_inconsistent(),param_model.is_inconsistent);
 		//cellrenderer_value->property_canvas()=canvas_interface->get_canvas(); // Is this line necessary?
-		cellrenderer_value->property_attributes()=attr_list;
+		//cellrenderer_value->property_attributes()=attr_list;
 
 		// Finish setting up the column
 		param_tree_view().append_column(*column);
@@ -342,7 +342,7 @@ LayerTree::create_param_tree()
 		Gtk::CellRendererText* text_cellrenderer = Gtk::manage( new Gtk::CellRendererText() );
 		column->pack_start(*text_cellrenderer,false);
 		column->add_attribute(text_cellrenderer->property_text(), param_model.type);
-		text_cellrenderer->property_attributes()=attr_list;
+		//text_cellrenderer->property_attributes()=attr_list;
 
 		param_tree_view().append_column(*column);
 		column->set_reorderable();
