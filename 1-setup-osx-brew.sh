@@ -33,6 +33,7 @@ fftw \
 fontconfig \
 fribidi \
 gettext \
+gdb \
 glibmm \
 gtkmm3 \
 imagemagick \
