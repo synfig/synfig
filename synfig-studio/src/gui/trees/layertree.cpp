@@ -380,6 +380,11 @@ LayerTree::create_param_tree()
 	}
 #endif	// TIMETRACK_IN_PARAMS_PANEL
 
+
+	param_tree_view().set_enable_search(true);
+	param_tree_view().set_search_column(param_model.label);
+	param_tree_view().set_search_equal_func(sigc::mem_fun(*this, &LayerTree::search_param_tree));
+
 	// This makes things easier to read.
 	param_tree_view().set_rules_hint();
 
@@ -401,6 +406,30 @@ LayerTree::create_param_tree()
 	param_tree_header_height = 0;
 
 	//column_time_track->set_visible(false);
+}
+
+bool
+LayerTree::search_param_tree(const Glib::RefPtr<Gtk::TreeModel>& model,int column,const Glib::ustring& search_string,const Gtk::TreeModel::iterator& iter)
+{
+	Gtk::TreeModel::Row row = *iter;
+	Gtk::TreeModel::Children children = row.children();
+	Glib::ustring substr(search_string.uppercase());
+	Glib::ustring label((*iter)[param_model.label]);
+	label=label.uppercase();
+
+	for(Gtk::TreeModel::Children::iterator iter_child = children.begin(); iter_child != children.end(); ++iter_child ){//looking for a match in rows children
+		Gtk::TreePath path_child(iter_child);
+		Glib::ustring substr(search_string.uppercase());
+		Glib::ustring label_child((*iter_child)[param_model.label]);
+		label_child=label_child.uppercase();
+			if(label_child.find(substr)!=Glib::ustring::npos){
+				param_tree_view().expand_to_path(path_child);//this way expands matched row if its expandable, if not desired replace with previous path
+				break;
+			} else
+				search_param_tree(model,column,search_string,iter_child);//if not found inc search depth if possible on row
+	}
+
+	return (label.find(substr)==Glib::ustring::npos);
 }
 
 void
