@@ -195,11 +195,21 @@ class Dialog_Setup : public Dialog_Template
 	PrefsBrushPath prefs_brushpath;
 
 	Gtk::CellRendererAccel renderer_accel;
+	Gtk::CellRendererAccel renderer_mouse_accel;
+
 	Gtk::TreeView *treeview_accels;
+	Gtk::TreeView *treeview_mouse_accels;
 
 	void on_accel_edited(const Glib::ustring& path_string, guint accel_key, Gdk::ModifierType accel_mods, guint hardware_keycode);
 	void on_accel_cleared(const Glib::ustring& path_string);
 	void on_restore_default_accels_pressed();
+
+	// Signal handler for mouse shortcut editing
+	bool on_mouse_shortcut_clicked(GdkEventButton* event);
+
+	bool capturing_mouse_shortcut = false; // Flag for capturing mode
+	Gtk::TreeModel::Row current_row_for_mouse_binding;
+
 public:
 	/*
  -- ** -- S I G N A L S -------------------------------------------------------

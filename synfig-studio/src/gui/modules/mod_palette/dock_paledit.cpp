@@ -477,21 +477,35 @@ Dock_PalEdit::refresh()
 		Widget_Color* widget_color(manage(new Widget_Color()));
 		widget_color->set_value(get_color(i));
 		widget_color->set_size_request(12,12);
-		widget_color->signal_activate().connect(
+
+		synfig::String color_palette = "Color Palette";
+		
+		for(auto&& mouse_binding : App::get_current_mouse_binding_map()) {
+			synfig::String mouse_binding_full_action = mouse_binding.first;
+			std::pair<GdkModifierType, int> mouse_binding_shortcut = mouse_binding.second;
+
+			if(mouse_binding_full_action.find(color_palette) == 0) {
+				// color_palette.size() + 1 to account for the '/' character.
+				widget_color->push_mouse_binding(mouse_binding_full_action.substr(color_palette.size() + 1), mouse_binding_shortcut);
+			}
+		}
+
+		widget_color->signal_mouse_binding("Select Fill Color").connect(
 			sigc::bind(
-				sigc::mem_fun(*this,&studio::Dock_PalEdit::select_fill_color),
+				sigc::mem_fun(*this, &studio::Dock_PalEdit::select_fill_color),
 				i
 			)
 		);
-		widget_color->signal_middle_click().connect(
+		widget_color->signal_mouse_binding("Select Outline Color").connect(
 			sigc::bind(
-				sigc::mem_fun(*this,&studio::Dock_PalEdit::select_outline_color),
+				sigc::mem_fun(*this, &studio::Dock_PalEdit::select_outline_color),
 				i
 			)
 		);
+
 		widget_color->signal_right_click().connect(
 			sigc::bind(
-				sigc::mem_fun(*this,&studio::Dock_PalEdit::show_menu),
+				sigc::mem_fun(*this, &studio::Dock_PalEdit::show_menu),
 				i
 			)
 		);

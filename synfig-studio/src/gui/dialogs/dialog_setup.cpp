@@ -40,6 +40,7 @@
 
 #include <glibmm/fileutils.h>
 #include <glibmm/keyfile.h>
+#include <gtkmm/messagedialog.h>
 
 #include <gtkmm/accelmap.h>
 #include <gtkmm/filechooserdialog.h>
@@ -51,6 +52,7 @@
 #include <gui/resourcehelper.h>
 #include <gui/widgets/widget_enum.h>
 #include <gui/autorecover.h>
+#include <gui/modules/mod_palette/dock_paledit.h>
 #include <synfig/threadpool.h>
 #include <synfig/os.h>
 #include <synfig/general.h>
@@ -62,6 +64,7 @@
 
 #endif
 
+#include <sstream>
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
@@ -78,6 +81,44 @@ enum ShortcutsColumns{
 	SHORTCUT_COLUMN_ID_ACTION_SHORT_NAME = 3,
 	SHORTCUT_COLUMN_ID_IS_ACTION = 4,
 };
+
+// Function to convert std::pair<GdkModifierType, int> to readable std::string
+synfig::String 
+get_mouse_binding_string(GdkModifierType modifiers, int mouse_button)
+{
+	std::stringstream ss;
+
+	int mods = (int)modifiers;
+
+	while(mods != 0)
+	{
+		if (mods & GDK_CONTROL_MASK) {
+			ss << "Ctrl";
+			mods &= (~GDK_CONTROL_MASK);
+		}
+		else if (mods & GDK_SHIFT_MASK) {
+			ss << "Shift";
+			mods &= (~GDK_SHIFT_MASK);
+		}
+		else if (mods & GDK_MOD1_MASK) {
+			ss << "Alt";
+			mods &= (~GDK_MOD1_MASK);
+		}
+
+		ss << "+";
+	}
+
+	switch (mouse_button)
+	{
+	case 1: ss << "Left Click";   break;
+	case 2: ss << "Middle Click"; break;
+	case 3: ss << "Right Click";  break;
+	default:
+		break;
+	}
+
+	return ss.str();
+}
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -492,27 +533,28 @@ Dialog_Setup::create_shortcuts_page(Dialog_Template::PageInfo pi)
 	int row = 1;
 
 	Gtk::Label *label = manage(new Gtk::Label(_("To change a shortcut, double-click it and then type the new keys. "
-                                                "You can cancel a shortcut edition by pressing Esc.\n"
-                                                "To clear a shortcut, press Backspace when trying to change it.")));
+												"You can cancel a shortcut edition by pressing Esc.\n"
+												"To clear a shortcut, press Backspace when trying to change it.")));
 	label->set_halign(Gtk::ALIGN_START);
 	pi.grid->attach(*label, 0, row++, 1, 1);
 
+	// Keyboard shortcut settings: ------------------------------------------------------------------------------------------------
 	attach_label_section(pi.grid, _("Keyboard Shortcuts"), row++);
 
-	Gtk::TreeModelColumnRecord columns;
+	Gtk::TreeModelColumnRecord keyboard_shortcut_columns;
 	Gtk::TreeModelColumn<std::string> action_name_col;
 	Gtk::TreeModelColumn<guint> action_key_col;
 	Gtk::TreeModelColumn<Gdk::ModifierType> action_mods_col;
 	Gtk::TreeModelColumn<std::string> action_short_name_col;
 	Gtk::TreeModelColumn<bool> action_is_action_col;
-	columns.add(action_name_col);  //SHORTCUT_COLUMN_ID_ACTION_NAME
-	columns.add(action_key_col);   //SHORTCUT_COLUMN_ID_ACTION_KEY
-	columns.add(action_mods_col);  //SHORTCUT_COLUMN_ID_ACTION_MODS
-	columns.add(action_short_name_col);  //SHORTCUT_COLUMN_ID_ACTION_SHORT_NAME
-	columns.add(action_is_action_col);  //SHORTCUT_COLUMN_ID_IS_ACTION
-	auto model = Gtk::TreeStore::create(columns);
+	keyboard_shortcut_columns.add(action_name_col);  //SHORTCUT_COLUMN_ID_ACTION_NAME
+	keyboard_shortcut_columns.add(action_key_col);   //SHORTCUT_COLUMN_ID_ACTION_KEY
+	keyboard_shortcut_columns.add(action_mods_col);  //SHORTCUT_COLUMN_ID_ACTION_MODS
+	keyboard_shortcut_columns.add(action_short_name_col);  //SHORTCUT_COLUMN_ID_ACTION_SHORT_NAME
+	keyboard_shortcut_columns.add(action_is_action_col);  //SHORTCUT_COLUMN_ID_IS_ACTION
+	auto keyboard_shortcuts_tree_model = Gtk::TreeStore::create(keyboard_shortcut_columns);
 
-	treeview_accels = manage(new Gtk::TreeView(model));
+	treeview_accels = manage(new Gtk::TreeView(keyboard_shortcuts_tree_model));
 	treeview_accels->set_hexpand(true);
 	treeview_accels->set_vexpand(true);
 	treeview_accels->append_column(_("Action"), action_short_name_col);
@@ -545,7 +587,7 @@ Dialog_Setup::create_shortcuts_page(Dialog_Template::PageInfo pi)
 		// New section?
 		if (action_full_path.compare(0, current_section_name.size(), current_section_name) != 0) {
 			current_section_name = action_full_path.substr(0, separator_pos);
-			current_section_row = *model->append();
+			current_section_row = *keyboard_shortcuts_tree_model->append();
 
 			current_section_row.set_value(action_short_name_col, current_section_name);
 			current_section_row.set_value(action_key_col, guint(0));
@@ -553,7 +595,7 @@ Dialog_Setup::create_shortcuts_page(Dialog_Template::PageInfo pi)
 			current_section_row.set_value(action_is_action_col, false);
 		}
 
-		Gtk::TreeRow row = *model->append(current_section_row.children());
+		Gtk::TreeRow row = *keyboard_shortcuts_tree_model->append(current_section_row.children());
 
 		Gtk::AccelKey accel;
 		if (!Gtk::AccelMap::lookup_entry(action_full_path, accel))
@@ -572,6 +614,68 @@ Dialog_Setup::create_shortcuts_page(Dialog_Template::PageInfo pi)
 	scroll->add(*treeview_accels);
 
 	pi.grid->attach(*scroll, 0, row++, 1, 1);
+
+	// Mouse shortcut settings: ------------------------------------------------------------------
+	attach_label_section(pi.grid, _("Mouse Shortcuts"), row++);
+
+	Gtk::TreeModelColumnRecord mouse_shortcut_columns;
+	Gtk::TreeModelColumn<std::string> mouse_action_name_col;
+	Gtk::TreeModelColumn<std::string> mouse_action_short_name_col;
+	Gtk::TreeModelColumn<std::string> mouse_action_shortcut_string;
+
+	mouse_shortcut_columns.add(mouse_action_name_col);
+	mouse_shortcut_columns.add(mouse_action_short_name_col);
+	mouse_shortcut_columns.add(mouse_action_shortcut_string);
+
+	auto mouse_shortcuts_tree_model = Gtk::TreeStore::create(mouse_shortcut_columns);
+
+	treeview_mouse_accels = manage(new Gtk::TreeView(mouse_shortcuts_tree_model));
+	treeview_mouse_accels->set_hexpand(true);
+	treeview_mouse_accels->set_vexpand(true);
+	treeview_mouse_accels->append_column(_("Action"), mouse_action_short_name_col);
+	treeview_mouse_accels->set_search_column(mouse_action_short_name_col);
+	
+	treeview_mouse_accels->append_column(_("Shortcut"), mouse_action_shortcut_string); 
+
+	auto mouse_map = App::get_current_mouse_binding_map();
+
+	std::string current_mouse_section_name = "-";
+	Gtk::TreeRow current_mouse_section_row;
+
+	for (const auto& mouse_binding : mouse_map) {
+		std::string mouse_action_full_path = mouse_binding.first;
+		std::pair<GdkModifierType, int> mouse_shortcut = mouse_binding.second;
+		GdkModifierType mouse_modifiers = mouse_shortcut.first;
+		int mouse_button = mouse_shortcut.second;
+
+		const auto separator_pos = mouse_action_full_path.find_last_of('/');
+
+		if (mouse_action_full_path.compare(0, current_mouse_section_name.size(), current_mouse_section_name) != 0) {
+			current_mouse_section_name = mouse_action_full_path.substr(0, separator_pos);
+			current_mouse_section_row = *mouse_shortcuts_tree_model->append();
+
+			current_mouse_section_row.set_value(mouse_action_short_name_col, current_mouse_section_name);
+			current_mouse_section_row.set_value(mouse_action_shortcut_string, std::string());
+		}
+
+		Gtk::TreeRow mouse_row = *mouse_shortcuts_tree_model->append(current_mouse_section_row.children());
+
+		synfig::String display_mouse_shortcut = get_mouse_binding_string(mouse_modifiers, mouse_button);
+
+		mouse_row.set_value(mouse_action_name_col, mouse_action_full_path);
+		mouse_row.set_value(mouse_action_short_name_col, mouse_action_full_path.substr(separator_pos + 1));
+		mouse_row.set_value(mouse_action_shortcut_string, display_mouse_shortcut);
+	}
+
+	treeview_mouse_accels->expand_all();
+
+	treeview_mouse_accels->signal_button_press_event().connect(sigc::mem_fun(*this, &Dialog_Setup::on_mouse_shortcut_clicked));
+
+	Gtk::ScrolledWindow *mouse_scroll = manage(new Gtk::ScrolledWindow());
+	mouse_scroll->add(*treeview_mouse_accels);
+
+	pi.grid->attach(*mouse_scroll, 0, row++, 1, 1);
+	// ----------------------------------------------------------------------------
 
 	Gtk::Button *restore_default_accels = manage(new Gtk::Button(_("Restore default shortcuts")));
 	restore_default_accels->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Setup::on_restore_default_accels_pressed));
@@ -626,7 +730,7 @@ Dialog_Setup::on_accel_cleared(const Glib::ustring& path_string)
 void
 Dialog_Setup::on_restore_default_accels_pressed()
 {
-	std::string message = _("Do you really want to restore the default shortcuts?");
+	std::string message = _("Do you really want to restore the default shortcuts?") ;
 	bool accepted = App::dialog_message_2b(_("Restore Default Shortcuts"), message, Gtk::MESSAGE_QUESTION, _("Cancel"), _("OK"));
 	if (!accepted)
 		return;
@@ -653,6 +757,80 @@ Dialog_Setup::on_restore_default_accels_pressed()
 	}
 }
 
+bool 
+Dialog_Setup::on_mouse_shortcut_clicked(GdkEventButton* event)
+{
+	if(event->type == GDK_2BUTTON_PRESS && capturing_mouse_shortcut)
+	{
+		std::string action;
+		current_row_for_mouse_binding.get_value(0, action);
+
+		auto&& mouse_bindings = App::get_current_mouse_binding_map();
+
+		for(const auto& mouse_binding : mouse_bindings)
+		{
+			std::string mouse_action_full_path = mouse_binding.first;
+			std::pair<GdkModifierType, int> mouse_shortcut = mouse_binding.second;
+			GdkModifierType mouse_modifiers = mouse_shortcut.first;
+			int mouse_button = mouse_shortcut.second;
+
+			if(mouse_binding.first != action)
+			{
+				if(mouse_modifiers == event->state && guint(mouse_button) == event->button)
+				{
+					GdkModifierType prev_shortcut_mods = mouse_bindings.at(action).first;
+					int prev_shortcut_mouse_button = mouse_bindings.at(action).second;
+					synfig::String prev_shortcut_string = get_mouse_binding_string(prev_shortcut_mods, prev_shortcut_mouse_button);
+
+					synfig::String message = (synfig::String("The Following mouse binding is already used for: \n") 
+											+ mouse_binding.first 
+											+ synfig::String("\n\nThe Shortcut will be reset to :")
+											+ prev_shortcut_string).c_str();
+					if(!App::dialog_message_2b(_("Mouse Binding Already Used."), message, Gtk::MESSAGE_QUESTION, _("Cancel"), _("OK")))
+					{
+						current_row_for_mouse_binding.set_value(2, prev_shortcut_string);
+						
+						capturing_mouse_shortcut = false;
+						return true;
+					}
+				}
+			}
+		}
+		current_row_for_mouse_binding.set_value(2, get_mouse_binding_string((GdkModifierType)event->state, event->button));
+
+		App::set_mouse_binding(action, { (GdkModifierType)event->state, event->button });
+		App::dock_paledit->refresh();
+
+		capturing_mouse_shortcut = false;
+		return true;
+	}
+
+	if (event->type == GDK_2BUTTON_PRESS && event->state == 0 && !capturing_mouse_shortcut) {
+        int x = static_cast<int>(event->x);
+        int y = static_cast<int>(event->y);
+
+        Gtk::TreePath path;
+        Gtk::TreeViewColumn* column;
+        int cell_x, cell_y;
+
+        if (treeview_mouse_accels->get_path_at_pos(x, y, path, column, cell_x, cell_y)) {
+            auto model = treeview_mouse_accels->get_model();
+            auto iter = model->get_iter(path);
+            if (iter) {
+                Gtk::TreeModel::Row row = *iter; // Get the row
+                if (column == treeview_mouse_accels->get_column(1)) {
+                    current_row_for_mouse_binding = row;
+					capturing_mouse_shortcut = true;
+
+					row.set_value(2, std::string("New Mouse Binding..."));
+                    return true; 
+                }
+            }
+        }
+    }
+	return false;
+}
+
 void
 Dialog_Setup::on_choose_editor_pressed()
 {
@@ -672,10 +850,10 @@ Dialog_Setup::select_path_dialog(const std::string &title, std::string &filepath
 	dialog->set_current_folder("C:\\Program Files");
 
 	#elif defined(__APPLE__)
-    dialog->set_current_folder("/Applications");
+	dialog->set_current_folder("/Applications");
 
 	#else
-    	dialog->set_current_folder("/usr/bin");
+		dialog->set_current_folder("/usr/bin");
 	#endif
 
 	//Add response buttons the the dialog:
@@ -739,9 +917,9 @@ Dialog_Setup::create_render_page(PageInfo pi)
 
 	Gdk::RGBA m_color;
 	m_color.set_rgba( App::preview_background_color.get_r(),
-	                  App::preview_background_color.get_g(),
-	                  App::preview_background_color.get_b(),
-	                  App::preview_background_color.get_a());
+					  App::preview_background_color.get_g(),
+					  App::preview_background_color.get_b(),
+					  App::preview_background_color.get_a());
 	preview_background_color_button.set_rgba(m_color);
 	pi.grid->attach(preview_background_color_button, 1, row, 1, 1);
 	preview_background_color_button.signal_color_set().connect(
@@ -1504,3 +1682,19 @@ Dialog_Setup::on_value_change(int valueflag)
 {
 	if(!refreshing) pref_modification_flag |= valueflag;
 }
+
+// bool
+// Dialog_Setup::on_event(GdkEvent* event)
+// {
+// 	// Hide the dialog when X button is pressed.
+// 
+// 	if(event->type == GDK_BUTTON_PRESS && capturing_shortcut)
+// 	{
+// 		std::cout << "The Shorcut is: " << get_mouse_binding_string((GdkModifierType)event->button.state, event->button.button) << "\n";
+// 		capturing_shortcut = false;
+// 		return true;
+// 	}
+// 
+// 	return false;
+// }
+
