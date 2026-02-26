@@ -937,7 +937,7 @@ Instance::safe_close()
 						_("Close without Saving"),
 						_("Cancel"),
 						_("Save"),
-						true,
+						synfigapp::UIInterface::RESPONSE_NO,
 						synfigapp::UIInterface::RESPONSE_YES
 			);
 
