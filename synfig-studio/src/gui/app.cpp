@@ -217,6 +217,8 @@ int	 App::Busy::count;
 bool App::shutdown_in_progress;
 
 Glib::RefPtr<studio::UIManager>	App::ui_manager_;
+Glib::RefPtr<Gtk::Builder> App::ui_builder_;
+Glib::RefPtr<Gio::SimpleActionGroup> App::history_action_group;
 
 int        App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
@@ -1579,6 +1581,7 @@ void App::init(const synfig::String& rootpath)
 
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
+		ui_builder_ = Gtk::Builder::create();
 		init_ui_manager();
 
 		studio_init_cb.task(_("Init Dock Manager..."));
@@ -1859,6 +1862,8 @@ App::on_shutdown()
 	delete dock_manager;
 
 	instance_list.clear();
+
+	ui_builder_.reset();
 
 	if (sound_render_done) delete sound_render_done;
 	sound_render_done = nullptr;
@@ -4133,4 +4138,16 @@ studio::App::check_python_version(const std::string& path)
 	}
 	synfig::warning(err_msg, (std_out + '\n' + std_err).c_str());
 	return false;
+}
+
+Glib::RefPtr<Gio::SimpleActionGroup> 
+App::get_history_action_group() 
+{
+    return history_action_group;
+}
+
+void
+App::set_history_action_group(Glib::RefPtr<Gio::SimpleActionGroup> action_group) 
+{
+    history_action_group = action_group;
 }
