@@ -273,6 +273,8 @@ StateWidth_Context::StateWidth_Context(CanvasView* canvas_view):
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
+	App::dialog_tool_options->set_primary_focus_widget(&spin_delta);
+	
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
 	// Refresh the work area
