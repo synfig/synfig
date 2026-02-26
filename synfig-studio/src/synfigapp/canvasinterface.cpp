@@ -674,6 +674,12 @@ CanvasInterface::jump_to_next_keyframe()
 	KeyframeList::iterator iter;
 	if (get_canvas()->keyframe_list().find_next(get_time(), iter)) {
 		synfig::Keyframe keyframe(*iter);
+		synfig::Time end_time = get_canvas()->rend_desc().get_time_end();
+		// Ensure we don't go past the End Time
+		if (keyframe.get_time() > end_time) {
+			synfig::warning(_("Next keyframe is out of range (beyond End Time). Staying within limits."));
+			return;
+		}
 		synfig::info("Jumping to keyframe \"%s\" at %s",keyframe.get_description().c_str(),keyframe.get_time().get_string().c_str());
 		set_time(keyframe.get_time());
 	}
@@ -692,6 +698,12 @@ CanvasInterface::jump_to_prev_keyframe()
 	{
 		//synfig::Keyframe keyframe(*get_canvas()->keyframe_list().find_prev(get_time()));
 		synfig::Keyframe keyframe(*iter);
+		// Ensure we don't go past the Start Time
+		synfig::Time start_time = get_canvas()->rend_desc().get_time_start();
+		if (keyframe.get_time() < start_time) {
+			synfig::warning(_("Previous keyframe is out of range (before Start Time). Staying within limits."));
+			return;
+		}
 		synfig::info("Jumping to keyframe \"%s\" at %s",keyframe.get_description().c_str(),keyframe.get_time().get_string().c_str());
 		set_time(keyframe.get_time());
 	} else {
