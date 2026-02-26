@@ -39,6 +39,8 @@
 #include <synfig/general.h>
 #include <synfig/localization.h>
 #include <synfig/valuenode_registry.h>
+#include <synfig/angle.h>
+#include <synfig/value.h> 
 
 #endif
 
@@ -120,7 +122,22 @@ ValueNode_Logarithm::operator()(Time t)const
 	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
 		"%s:%d operator()\n", __FILE__, __LINE__);
 
-	Real link     = (*link_)    (t).get(Real());
+	ValueBase input_value = (*link_)(t);
+    Real link = 0;
+
+	switch (input_value.get_type())
+	{
+		case ValueBase::TYPE_REAL:
+			link = input_value.get(Real());
+			break;
+		case ValueBase::TYPE_ANGLE:
+			link = input_value.get(Angle()); // Angle → Real
+			break;
+		default:
+			synfig::warning("ValueNode_Logarithm: Unsupported type for input: %d", input_value.get_type());
+			return 0.0;
+	}
+
 	Real epsilon  = (*epsilon_) (t).get(Real());
 	Real infinite = (*infinite_)(t).get(Real());
 
@@ -138,7 +155,7 @@ ValueNode_Logarithm::operator()(Time t)const
 bool
 ValueNode_Logarithm::check_type(Type &type)
 {
-	return type==type_real;
+	return type == type_real || type == type_angle;
 }
 
 LinkableValueNode::Vocab
