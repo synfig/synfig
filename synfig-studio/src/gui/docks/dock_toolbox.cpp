@@ -92,6 +92,7 @@ Dock_Toolbox::Dock_Toolbox():
 	scrolled_window->show();
 
 	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
+	widget_defaults->set_size_request(-1, 100);
 
 	tool_box_paned = manage(new Gtk::Paned(Gtk::ORIENTATION_VERTICAL));
 	tool_box_paned->pack1(*scrolled_window, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, false);
