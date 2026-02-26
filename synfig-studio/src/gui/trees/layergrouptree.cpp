@@ -115,9 +115,7 @@ LayerGroupTree::LayerGroupTree()
 
 	set_reorderable(true);
 
-	tree_selection = get_selection();
-	tree_selection->set_mode(Gtk::SELECTION_MULTIPLE);
-	tree_selection->signal_changed().connect(sigc::mem_fun(*this, &LayerGroupTree::on_selection_changed));
+	get_selection()->set_mode(Gtk::SELECTION_MULTIPLE);
 }
 
 LayerGroupTree::~LayerGroupTree()
@@ -144,46 +142,50 @@ bool
 LayerGroupTree::on_button_press_event(GdkEventButton *event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
-    if (event->type == GDK_BUTTON_PRESS && event->button == 3)
-	{
-		Gtk::TreeModel::Path path;
-		Gtk::TreeViewColumn *column;
-		int cell_x, cell_y;
-		int wx(round_to_int(event->x)),wy(round_to_int(event->y));
-		//tree_to_widget_coords (,, wx, wy);
-		if(!get_path_at_pos(
-			   wx,wy,	// x, y
-			   path, // TreeModel::Path&
-			   column, //TreeViewColumn*&
-			   cell_x,cell_y //int&cell_x,int&cell_y
-			   )
+
+	Gtk::TreeModel::Path path;
+	Gtk::TreeViewColumn *column;
+	int cell_x, cell_y;
+	int wx(round_to_int(event->x)),wy(round_to_int(event->y));
+	//tree_to_widget_coords (,, wx, wy);
+	if(!get_path_at_pos(
+		   wx,wy,	// x, y
+		   path, // TreeModel::Path&
+		   column, //TreeViewColumn*&
+		   cell_x,cell_y //int&cell_x,int&cell_y
 		   )
-			return Gtk::TreeView::on_button_press_event(event);
+	   )
+		return Gtk::TreeView::on_button_press_event(event);
 
-		const Gtk::TreeRow row = *(get_model()->get_iter(path));
+	const Gtk::TreeRow row = *(get_model()->get_iter(path));
 
-		if(row[model.is_layer])
-		{
-			signal_popup_layer_menu()((Layer::Handle)row[model.layer]);
+	if (event->button == 3) {
+		if (row[model.is_layer]) {
+			Layer::Handle layer = row[model.layer];
+			if (layer) {
+				signal_popup_layer_menu()(layer);
+				return true;
+			}
+		}
+	} else if (event->button == 1) {
+		bool default_handler_response = Gtk::TreeView::on_button_press_event(event);
+
+		LayerList layer_list(row[model.all_layers]);
+		if (layer_list.empty()) {
+			return default_handler_response;
+		} else {
+			auto selection_manager = layer_group_tree_store_->canvas_interface()->get_selection_manager();
+			if (!(event->state & GDK_CONTROL_MASK))
+				selection_manager->clear_selected_layers();
+			selection_manager->set_selected_layers(layer_list);
 			return true;
 		}
 	}
+
 	return Gtk::TreeView::on_button_press_event(event);
+
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
-
-void
-LayerGroupTree::on_selection_changed()
-{
-	layer_group_tree_store_->canvas_interface()->get_selection_manager()->clear_selected_layers();
-
-	for (Gtk::TreePath path : tree_selection->get_selected_rows()) {
-		Gtk::TreeRow row = *get_model()->get_iter(path);
-		LayerList layer_list(row[model.all_layers]);
-		layer_group_tree_store_->canvas_interface()->get_selection_manager()->set_selected_layers(layer_list);
-	}
-}
-
 
 void
 LayerGroupTree::on_toggle(const Glib::ustring& path_string)
