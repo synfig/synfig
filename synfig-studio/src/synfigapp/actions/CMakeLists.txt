@@ -25,6 +25,8 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/layerresetpose.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layersetdesc.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layersetexcludefromrendering.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/layertobottom.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/layertotop.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerzdepthrangeset.cpp"
 
         "${CMAKE_CURRENT_LIST_DIR}/valuedescconnect.cpp"

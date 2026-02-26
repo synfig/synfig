@@ -60,6 +60,8 @@
 #include "actions/layerduplicate.h"
 #include "actions/layersetdesc.h"
 #include "actions/layersetexcludefromrendering.h"
+#include "actions/layertobottom.h"
+#include "actions/layertotop.h"
 #include "actions/layerzdepthrangeset.h"
 #include "actions/layerembed.h"
 #include "actions/layerextract.h"
@@ -194,7 +196,9 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerRemove);
 	ADD_ACTION(Action::LayerMove);
 	ADD_ACTION(Action::LayerRaise);
+	ADD_ACTION(Action::LayerToTop);
 	ADD_ACTION(Action::LayerLower);
+	ADD_ACTION(Action::LayerToBottom);
 	ADD_ACTION(Action::LayerAdd);
 	ADD_ACTION(Action::LayerActivate);
 	ADD_ACTION(Action::LayerFit);
