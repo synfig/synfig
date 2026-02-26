@@ -112,7 +112,7 @@ Action::ValueDescDisconnect::is_candidate(const ParamList &x)
 	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
 
 	// don't allow Bone ValueNodes to be disconnected
-	if(getenv("SYNFIG_DISALLOW_BONE_DISCONNECT") &&
+	if(DEBUG_GETENV("SYNFIG_DISALLOW_BONE_DISCONNECT") &&
 	   value_desc.is_value_node() &&
 	   ValueNode_Bone::Handle::cast_dynamic(value_desc.get_value_node()))
 		return false;

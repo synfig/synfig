@@ -847,7 +847,7 @@ check_xinitrc (void)
     if ([X11App prefs_get_boolean:@PREFS_DONE_XINIT_CHECK default:NO])
 	return;
 
-    tem = getenv ("HOME");
+    tem = getenv("HOME");
     if (tem == NULL)
 	goto done;
 

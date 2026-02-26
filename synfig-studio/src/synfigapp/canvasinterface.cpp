@@ -328,7 +328,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 						else
 						if (type == type_bone_object)
 						{
-							if (getenv("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
+							if (DEBUG_GETENV("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
 							{
 								value_node=ValueNodeRegistry::create("dynamic_list",iter->second);
 								ValueNode_DynamicList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
@@ -342,7 +342,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 						else
 						if (type == types_namespace::TypePair<Bone, Bone>::instance)
 						{
-							if (getenv("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
+							if (DEBUG_GETENV("SYNFIG_USE_DYNAMIC_LIST_FOR_BONES"))
 							{
 								value_node=ValueNodeRegistry::create("dynamic_list",iter->second);
 								ValueNode_DynamicList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
@@ -356,7 +356,7 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 						else
 						if (type == type_vector)
 						{
-							if (getenv("SYNFIG_USE_STATIC_LIST_FOR_VECTORS"))
+							if (DEBUG_GETENV("SYNFIG_USE_STATIC_LIST_FOR_VECTORS"))
 							{
 								value_node=ValueNodeRegistry::create("static_list",iter->second);
 								ValueNode_StaticList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
@@ -1119,7 +1119,7 @@ void CanvasInterface::waypoint_move(const ValueDesc& value_desc, const Time& tim
 
 	action->set_param("canvas", get_canvas());
 	action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
-	if (value_desc.get_value_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
+	if (value_desc.get_value_type() == type_canvas && !DEBUG_GETENV("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
 		action->set_param("addcanvas", value_desc.get_value().get(Canvas::Handle()));
 	} else {
 		action->set_param("addvaluedesc", value_desc);
