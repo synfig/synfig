@@ -978,6 +978,12 @@ WorkArea::on_key_press_event(GdkEventKey* event)
 	// Other possible actions if current state doesn't accept the event but not forbids it
 	// - Nudge selected ducks
 
+	if(!space_pressed && event->keyval==GDK_KEY_space)
+	{
+		space_pressed = true;
+		motion = true;
+	}
+
 	if(get_selected_ducks().empty())
 		return false;
 
@@ -1039,7 +1045,12 @@ WorkArea::on_key_release_event(GdkEventKey* event)
 
 	// Other possible actions if current state doesn't accept the event but not forbids it
 	// - currently none
-
+	if(event->keyval==GDK_KEY_space && space_pressed)
+	{
+		motion = false;
+		space_pressed = false;
+		set_drag_mode(DRAG_NONE);
+	}
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
@@ -1407,6 +1418,11 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 		signal_cursor_moved_();
 
+		if(motion) {
+			drag_point = mouse_pos;
+			set_drag_mode(DRAG_WINDOW);
+			motion = false;
+		}
 		// Guide/Duck highlights on hover
 		switch(get_drag_mode()) {
 		case DRAG_NONE: {
