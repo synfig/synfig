@@ -61,6 +61,8 @@ class Dock_Toolbox : public Dockable
 
 	Gtk::ToolItemGroup *tool_item_group;
 	Gtk::Paned *tool_box_paned;
+	Glib::RefPtr<Gtk::Action> action_new_layer;
+
 
 	std::map<synfig::String, Gtk::RadioToolButton*> state_button_map;
 
@@ -71,10 +73,12 @@ class Dock_Toolbox : public Dockable
 	void change_state_(const Smach::state_base *state);
 
 	void update_tools();
+	void popup_add_layer_menu();
 
 	void set_active_state(const synfig::String& statename);
 
 public:
+	void button_new_layer_creator();
 
 	void change_state(const synfig::String& statename, bool force = false);
 
