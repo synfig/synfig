@@ -7,7 +7,6 @@
     "gettext",
     "fftw3",
     "freetype",
-    "libtool",
     "zlib",
     "libpng",
     "libjpeg-turbo",
