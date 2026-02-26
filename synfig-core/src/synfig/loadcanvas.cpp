@@ -3132,6 +3132,22 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		layer->set_param("amount", 1.0);
 		layer->set_param("blend_method", Color::BLEND_STRAIGHT);
 	}
+	
+	// Handle old 'Shade' layer
+	// We need to insert 'transformation' parameter
+	if (layer->get_name() == "shade" && (version == "0.0" || version == "0.1" || version == "0.2"))
+	{
+		// Create default 'transformation' entry
+		ValueNode_Composite::Handle transformation_node;
+		transformation_node = ValueNode_Composite::create(ValueBase(Transformation()), canvas);
+		
+		// Now connect old origin parameter to offset,
+		// reset origin and connect transformation node to layer
+		ValueBase origin = layer->get_param("origin");
+		transformation_node->set_link("offset", ValueNode_Const::create(origin, canvas));
+		layer->set_param("origin", Vector(0,0));
+		layer->connect_dynamic_param("transformation", ValueNode::Handle(transformation_node));
+	}
 
 	layer->reset_version();
 	return layer;
