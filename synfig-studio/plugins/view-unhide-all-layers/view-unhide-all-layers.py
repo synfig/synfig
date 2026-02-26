@@ -2,6 +2,7 @@
 
 #
 # Copyright (c) 2012 by Konstantin Dmitriev <ksee.zelgadis@gmail.com>
+# Copyright (c) 2022 by Erwan le Gall <synfig@elegant.codes>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,23 +11,15 @@
 
 import os
 import sys
+import defusedxml.ElementTree as ET
 
 def process(filename):
 	
-	# Read the input file
-	inputfile_f = open(filename, 'r')
-	inputfile_contents = inputfile_f.readlines()
-	inputfile_f.close()
-	
-	# Now write results to the same file
-	inputfile_f = open(filename, 'w')
-
-	for line in inputfile_contents:
-		if "<layer " in line:
-			inputfile_f.write(line.replace(' active="false" ',' active="true" '))
-		else:
-			inputfile_f.write(line)
-	inputfile_f.close()
+	tree = ET.parse(filename)
+	root = tree.getroot()
+	for inactive_layer in root.findall('.//layer[@active="false"]'):
+		inactive_layer.set('active', 'true')
+	tree.write(filename, encoding='UTF-8')
 
 if len(sys.argv) < 2:
 	sys.exit()
