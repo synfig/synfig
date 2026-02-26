@@ -87,8 +87,15 @@ jobs:
           ninja
           ctest --output-on-failure
 
-      - name: Build (Autotools+Make)
-        if: matrix.toolchain == 'autotools'
+      - name: Build Linux (Autotools+Make)
+        if: matrix.toolchain == 'autotools' && runner.os == 'Linux'
+        run: |
+          export PATH="/usr/lib/ccache/:${PATH}"
+          echo ${PATH}
+          ./autobuild/synfigstudio-release.sh
+
+      - name: Build Non-Linux (Autotools+Make)
+        if: matrix.toolchain == 'autotools' && runner.os != 'Linux'
         run: |
           ulimit -c unlimited # enable core dumps
           export PATH="/usr/lib/ccache/:${PATH}"
