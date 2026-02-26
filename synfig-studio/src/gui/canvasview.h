@@ -73,6 +73,7 @@
 #include "dialogs/canvasproperties.h"
 #include "dialogs/canvasresize.h"
 #include "dialogs/dialog_keyframe.h"
+#include "dialogs/dialog_pluginmanager.h"
 #include "dialogs/dialog_preview.h"
 #include "dialogs/dialog_waypoint.h"
 #include "dials/framedial.h"
@@ -412,7 +413,6 @@ public:
 	Dialog_Waypoint waypoint_dialog;
 	Dialog_Keyframe keyframe_dialog;
 	Dialog_Preview preview_dialog;
-
 	/*
  -- ** -- P R I V A T E   M E T H O D S ---------------------------------------
 	*/
@@ -424,7 +424,8 @@ private:
 
 	//! Constructor Helper - Initializes all of the menus
 	void init_menus();
-
+	void update_plugin_menu();
+	
 	bool duck_change_param(const synfig::Point &value,synfig::Layer::Handle layer, synfig::String param_name);
 
 	void refresh_time_window();
