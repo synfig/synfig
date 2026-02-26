@@ -40,6 +40,7 @@ OTHER_HH = \
 	_smach.h \
 	smach.h \
 	timemodel.h \
+	actionwidgethelper.h \
 	app.h \
 	asyncrenderer.h \
 	autorecover.h \
@@ -72,6 +73,7 @@ OTHER_HH = \
 
 OTHER_CC = \
 	timemodel.cpp \
+	actionwidgethelper.cpp \
 	app.cpp \
 	asyncrenderer.cpp \
 	autorecover.cpp \

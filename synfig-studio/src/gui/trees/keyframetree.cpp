@@ -299,10 +299,12 @@ KeyframeTree::on_event(GdkEvent *event)
 				}
 			} else if (event->button.button == 3)
 			{
-				Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-keyframe"));
-				if(menu)
-				{
-					menu->popup(event->button.button,gtk_get_current_event_time());
+				if (App::menu_keyframe) {
+					Gtk::Menu* menu = Gtk::manage(new Gtk::Menu(App::menu_keyframe));
+					if (menu) {
+						menu->attach_to_widget(*this);
+						menu->popup(event->button.button, gtk_get_current_event_time());
+					}
 				}
 			}
 

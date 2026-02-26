@@ -34,7 +34,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/box.h>
-#include <gtkmm/uimanager.h>
 
 #include <gui/iconcontroller.h>
 #include <gui/mainwindow.h>
@@ -83,8 +82,6 @@ class Preferences;
 
 namespace studio {
 
-typedef Gtk::UIManager UIManager;
-
 class About;
 class MainWindow;
 class Instance;
@@ -117,6 +114,7 @@ class Dock_SoundWave;
 class Module;
 
 class StateManager;
+class ActionDatabase;
 
 class App : public Gtk::Application, private IconController
 {
@@ -171,8 +169,6 @@ private:
 
 	static etl::handle<Instance> selected_instance;
 	static etl::handle<CanvasView> selected_canvas_view;
-
-	static Glib::RefPtr<UIManager>	ui_manager_;
 
 	static int jack_locks_;
 
@@ -231,6 +227,17 @@ public:
 	static synfig::String navigator_renderer;
 	static synfig::String workarea_renderer;
 	static int number_of_threads;
+	static Glib::RefPtr<Gio::Menu> menu_recent_files;
+	static Glib::RefPtr<Gio::Menu> menu_plugins;
+	static Glib::RefPtr<Gio::Menu> menu_layer;
+	static Glib::RefPtr<Gio::Menu> menu_layers;
+	static Glib::RefPtr<Gio::Menu> menu_selected_layers;
+	static Glib::RefPtr<Gio::Menu> menu_special_layers;
+	static Glib::RefPtr<Gio::Menu> menu_tools;
+	static Glib::RefPtr<Gio::Menu> menu_window_custom_workspaces;
+	static Glib::RefPtr<Gio::Menu> menu_window_docks;
+	static Glib::RefPtr<Gio::Menu> menu_window_canvas;
+	static Glib::RefPtr<Gio::Menu> menu_keyframe;
 	static bool enable_mainwin_menubar;
 	static bool enable_mainwin_toolbar;
 	static synfig::String ui_language;
@@ -329,8 +336,7 @@ public:
 public:
 
 	static StateManager* get_state_manager();
-
-	static Glib::RefPtr<UIManager>& ui_manager() { return ui_manager_; }
+	static ActionDatabase* get_action_database();
 
 	static void add_recent_file(const etl::handle<Instance> instance);
 
@@ -341,8 +347,6 @@ public:
 	static bool load_settings(const synfig::String& key_filter = "");
 	static void load_accel_map();
 	static void save_accel_map();
-	/// \param[out] map Maps AccelKey to Action
-	static const std::map<const char*, const char*>& get_default_accel_map();
 	static void load_recent_files();
 	static void load_language_settings();
 	static void apply_gtk_settings();

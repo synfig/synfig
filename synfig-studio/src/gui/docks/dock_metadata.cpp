@@ -37,6 +37,8 @@
 
 #include <gtkmm/stylecontext.h>
 
+#include <gui/actionmanagers/actionmanager.h>
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/localization.h>
@@ -59,55 +61,32 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dock_MetaData::Dock_MetaData():
-	Dock_CanvasSpecific("meta_data",_("Canvas MetaData"),"meta_data_icon"),
-	action_group(Gtk::ActionGroup::create("action_group_dock_meta_data"))
+	Dock_CanvasSpecific("meta_data",_("Canvas MetaData"),"meta_data_icon")
 {
 	// Make Canvas MetaData toolbar small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"action-MetadataAdd",
-		"list-add",
-		_("Add new MetaData entry"),
-		_("Add a new MetaData entry to the canvas")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_MetaData::on_add_pressed
-		)
-	);
+	struct ActionMetadata {
+		std::string name;
+		std::string icon;
+		std::string shortcut;
+		std::string label;
+		std::string tooltip;
+		// std::function<void()> slot;
+	};
 
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"action-MetadataRemove",
-		"edit-delete",
-		_("Remove selected MetaData entry"),
-		_("Remove the selected MetaData entry")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_MetaData::on_delete_pressed
-		)
-	);
+	const std::vector<ActionMetadata> action_list = {
+		{"doc.add-metadata", "list-add", {}, _("New Metadata Entry"), _("Add a new MetaData entry to the canvas")},
+		{"doc.remove-metadata", "edit-delete", {}, _("Remove Metadata Entry"), _("Remove the selected MetaData entry")}
+	};
+	for (const auto& entry : action_list)
+		App::get_action_database()->add({entry.name, entry.label, entry.shortcut, entry.icon, entry.tooltip});
 
-	action_group->add( Gtk::Action::create("toolbar-meta_data", _("Canvas MetaData")) );
-	App::ui_manager()->insert_action_group(action_group);
-
-	Glib::ustring ui_info =
-	"<ui>"
-	"	<toolbar action='toolbar-meta_data'>"
-	"	<toolitem action='action-MetadataAdd' />"
-	"	<toolitem action='action-MetadataRemove' />"
-	"	</toolbar>"
-	"</ui>"
-	;
-
-	App::ui_manager()->add_ui_from_string(ui_info);
-
-	action_group->set_sensitive(false);
-
-	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-meta_data"))) {
-		set_toolbar(*toolbar);
-	}
+	auto toolbar = Gtk::manage(new Gtk::Toolbar());
+	toolbar->show_all();
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.add-metadata"));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.remove-metadata"));
+	set_toolbar(*toolbar);
 }
 
 Dock_MetaData::~Dock_MetaData()
@@ -124,22 +103,28 @@ Dock_MetaData::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 	metadata_tree->set_editable(true);
 	canvas_view->set_tree_model(get_name(),metadata_tree_store);
 	canvas_view->set_ext_widget(get_name(),metadata_tree);
+	// canvas_view->get_canvas()->signal_meta_data_changed().connect(sigc::mem_fun(*this, &Dock_MetaData::on_metadata_changed));
+
+	auto action_group = Glib::RefPtr<Gio::SimpleActionGroup>::cast_dynamic(canvas_view->get_action_group("doc"));
+	if (action_group) {
+		auto action = action_group->add_action("add-metadata", sigc::mem_fun(*this, &Dock_MetaData::on_add_pressed));
+		action->set_enabled(true);
+		action = action_group->add_action("remove-metadata", sigc::mem_fun(*this, &Dock_MetaData::on_delete_pressed));
+		action->set_enabled(true);
+	}
 }
 
 void
 Dock_MetaData::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
-	if(canvas_view)
-	{
+	if (canvas_view) {
 		Gtk::Widget* tree_view(canvas_view->get_ext_widget(get_name()));
 		add(*tree_view);
 		tree_view->show();
 
-		action_group->set_sensitive(true);
-	}
-	else
-	{
-		action_group->set_sensitive(false);
+		// action_group->set_sensitive(true);
+	} else {
+		// action_group->set_sensitive(false);
 	}
 }
 

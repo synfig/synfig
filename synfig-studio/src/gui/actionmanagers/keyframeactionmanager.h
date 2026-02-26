@@ -30,7 +30,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/uimanager.h>
+#include <giomm/menu.h>
+#include <giomm/simpleactiongroup.h>
+#include <gtkmm/widget.h>
+
 #include <synfigapp/canvasinterface.h>
 
 /* === M A C R O S ========================================================= */
@@ -49,13 +52,12 @@ class KeyframeActionManager
 	sigc::signal<void> signal_keyframe_toggle_;
 	sigc::signal<void> signal_keyframe_description_set_;
 
-	Glib::RefPtr<Gtk::UIManager> ui_manager_;
+	Gtk::Widget* action_widget_;
 	KeyframeTree* keyframe_tree_;
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 
-	Glib::RefPtr<Gtk::ActionGroup>	action_group_;
-	Gtk::UIManager::ui_merge_id 	popup_id_;
-
+	Glib::RefPtr<Gio::SimpleActionGroup> action_group_;
+	Glib::RefPtr<Gio::Menu> menu_keyframe_;
 
 	sigc::connection selection_changed_connection;
 
@@ -78,8 +80,7 @@ public:
 	KeyframeActionManager();
 	~KeyframeActionManager();
 
-	void set_ui_manager(const Glib::RefPtr<Gtk::UIManager> &x);
-	Glib::RefPtr<Gtk::UIManager> get_ui_manager()const { return ui_manager_; }
+	void set_action_widget_and_menu(Gtk::Widget* x, Glib::RefPtr<Gio::Menu>& menu_keyframe);
 
 	void set_keyframe_tree(KeyframeTree* x);
 	KeyframeTree* get_keyframe_tree()const { return keyframe_tree_; }
@@ -87,8 +88,13 @@ public:
 	void set_canvas_interface(const etl::handle<synfigapp::CanvasInterface> &x);
 	etl::handle<synfigapp::CanvasInterface> get_canvas_interface()const { return canvas_interface_; }
 
+	Glib::RefPtr<Gio::SimpleActionGroup> get_action_group() const;
+
 	void refresh();
 	void clear();
+
+	Glib::RefPtr<Gio::Menu> get_menu_for_selected_keyframe() const;
+
 }; // END of KeyframeActionManager
 
 }; // END of namespace studio

@@ -43,6 +43,7 @@ target_sources(synfigstudio
 	PRIVATE
 		"${CMAKE_CURRENT_LIST_DIR}/duck.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/timemodel.cpp"
+		"${CMAKE_CURRENT_LIST_DIR}/actionwidgethelper.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/app.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/asyncrenderer.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/autorecover.cpp"

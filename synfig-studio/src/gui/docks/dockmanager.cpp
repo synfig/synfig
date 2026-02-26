@@ -234,6 +234,7 @@ DockManager::present(synfig::String x)
 	try
 	{
 		find_dockable(x).present();
+		synfig::warning("presented %s by name", x.c_str());
 	}
 	catch(...)
 	{

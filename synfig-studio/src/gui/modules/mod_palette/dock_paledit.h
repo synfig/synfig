@@ -30,7 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/actiongroup.h>
+#include <giomm/simpleactiongroup.h>
 #include <gtkmm/table.h>
 
 #include <gui/docks/dockable.h>
@@ -56,7 +56,7 @@ class Dock_PalEdit : public Dockable
 {
 	friend class PaletteSettings;
 
-	Glib::RefPtr<Gtk::ActionGroup> action_group;
+	Glib::RefPtr<Gio::SimpleActionGroup> action_group_;
 
 	synfig::Palette palette_;
 

@@ -34,10 +34,13 @@
 
 #include "docks/dock_layergroups.h"
 
-#include <gtkmm/stock.h>
 #include <gtkmm/stylecontext.h>
 
+#include <synfig/general.h>
+
+#include <gui/actionmanagers/actionmanager.h>
 #include <gui/actionmanagers/groupactionmanager.h>
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/localization.h>
@@ -61,38 +64,39 @@ using namespace studio;
 
 Dock_LayerGroups::Dock_LayerGroups():
 	Dock_CanvasSpecific("groups",_("Sets"),"set_icon"),
-	action_group_group_ops(Gtk::ActionGroup::create("action_group_dock_layergroups")),
-	group_action_manager(new GroupActionManager)
+	group_action_manager(new GroupActionManager())
 {
 	set_name("layersets_panel");
 
 	// Make Sets toolbar buttons small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
-	group_action_manager->set_ui_manager(App::ui_manager());
+	group_action_manager->set_action_widget(App::main_window);
 
-	action_group_group_ops->add( Gtk::Action::create("toolbar-groups", _("Set Ops")) );
+	if (App::get_action_database()) {
+		// Register all synfigapp actions of Group category with 'layer-set' prefix: 'layer-set.action-SYNFIGAPP_ACTION_NAME'
+		// for (const auto& item : synfigapp::Action::book()) {
+		// 	const auto& entry = item.second;
+		// 	if (entry.category & synfigapp::Action::CATEGORY_GROUP && !(entry.category & synfigapp::Action::CATEGORY_HIDDEN)) {
+		// 		const std::string full_action_name = synfig::strprintf("%s.action-%s", "layer-set", entry.name.c_str());
+		// 		App::get_action_database()->add({full_action_name, entry.local_name, {}, studio::get_action_icon_name(entry)});
+		// 	}
+		// }
+		const auto synfigapp_groupremove_it = synfigapp::Action::book().find("GroupRemove");
+		if (synfigapp_groupremove_it != synfigapp::Action::book().end()) {
+			const auto entry = synfigapp_groupremove_it->second;
+			App::get_action_database()->add({"layer-set.GroupRemove", entry.local_name, {}, studio::get_action_icon_name(entry)});
+		}
 
-	action_group_add=Gtk::Action::create("action-group_add", Gtk::Stock::ADD,_("Add a New Set"),_("Add a New Set"));
-	action_group_group_ops->add(action_group_add);
-	action_group_add->set_sensitive(false);
-
-	App::ui_manager()->insert_action_group(action_group_group_ops);
-
-    Glib::ustring ui_info =
-	"<ui>"
-	"	<toolbar action='toolbar-groups'>"
-	"	<toolitem action='action-GroupRemove' />"
-	"	<toolitem action='action-group_add' />"
-	"	</toolbar>"
-	"</ui>"
-	;
-
-	App::ui_manager()->add_ui_from_string(ui_info);
-
-	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-groups"))) {
-		set_toolbar(*toolbar);
+		// Register custom actions of this dock with 'layer-set' prefix: 'layer-set.CUSTOM_ACTION_NAME'
+		App::get_action_database()->add({"layer-set.group-add", _("Add a New Set"), {}, "list-add", _("Add a New Layer Set")});
 	}
+
+	auto toolbar = Gtk::manage(new Gtk::Toolbar());
+	toolbar->append(*ActionWidgetHelper::create_synfigapp_action_toolbutton("layer-set", "GroupRemove"));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("layer-set.group-add", "list-add", "", _("Add a New Set")));
+	toolbar->show_all();
+	set_toolbar(*toolbar);
 }
 
 Dock_LayerGroups::~Dock_LayerGroups()
@@ -131,7 +135,7 @@ Dock_LayerGroups::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 	else
 	{
 		group_action_manager->clear();
-		group_action_manager->set_canvas_interface(0);
-		group_action_manager->set_group_tree(0);
+		group_action_manager->set_canvas_interface(nullptr);
+		group_action_manager->set_group_tree(nullptr);
 	}
 }

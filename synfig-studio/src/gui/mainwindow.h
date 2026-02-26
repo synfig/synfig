@@ -30,7 +30,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/actiongroup.h>
 #include <gtkmm/applicationwindow.h>
 
 #include <synfig/filesystem_path.h>
@@ -52,7 +51,6 @@ namespace studio {
 	private:
 		Gtk::Bin *bin_;
 		DockBook *main_dock_book_;
-		Glib::RefPtr<Gtk::ActionGroup> window_action_group;
 
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
@@ -70,17 +68,13 @@ namespace studio {
 
 		static void save_all();
 
-		guint save_workspace_merge_id;
-		guint custom_workspaces_merge_id;
-
-		void add_custom_workspace_menu_item_handlers();
-		void remove_custom_workspace_menu_item_handlers();
-
 		static std::unique_ptr<studio::WorkspaceHandler> workspaces;
 		static const std::vector<std::string> get_workspaces();
 
 		void save_custom_workspace();
 		static void edit_custom_workspace_list();
+
+		void refresh_menu_icon_offset();
 
 	protected:
 		virtual bool on_key_press_event(GdkEventKey *key_event);
