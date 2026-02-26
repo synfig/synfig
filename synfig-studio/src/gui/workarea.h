@@ -196,6 +196,9 @@ private:
 	//! This flag is set if the guides should be drawn
 	bool show_guides;
 
+	//! This flag is set if the guides should be editable
+	bool lock_guides = false;
+
 	//! Checker background size
 	synfig::Vector background_size;
 	//! Checker background first color
@@ -395,6 +398,12 @@ public:
 	void toggle_show_guides() { set_show_guides(!get_show_guides()); }
 	//! Toggles the snap of the guides
 	void toggle_guide_snap();
+	//! Returns the state of the lock_guides_flag
+	bool get_lock_guides()const { return lock_guides; }
+	//! Sets the locking of the grid
+	void set_lock_guides(bool x);
+	//! Toggles the locking of the guides
+	void toggle_lock_guides() { set_lock_guides(!get_lock_guides()); }
 	//! Sets the color of the guides
 	void set_guides_color(const synfig::Color &c);
 	//! Returns the color of the guides

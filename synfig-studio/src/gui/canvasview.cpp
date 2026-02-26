@@ -1284,6 +1284,19 @@ CanvasView::create_right_toolbar()
 		right_toolbar->append(*snap_guides);
 	}
 
+	{ // lock guide toggle button
+		lock_guides = Gtk::manage(new Gtk::ToggleToolButton());
+		lock_guides->set_active(work_area->get_lock_guides());
+		lock_guides->set_icon_name("show_guideline_icon");
+		lock_guides->signal_toggled().connect(
+			sigc::mem_fun(*this, &CanvasView::toggle_lock_guides));
+		lock_guides->set_label(_("Lock Guides"));
+		lock_guides->set_tooltip_text(_("Lock Guides when enabled"));
+		lock_guides->show();
+
+		right_toolbar->append(*lock_guides);
+	}
+
 	// Separator
 	right_toolbar->append(*create_tool_separator());
 
@@ -1473,6 +1486,7 @@ CanvasView::init_menus()
 		{"toggle-grid-snap",            "snap_grid_icon",            N_("Snap to Grid"),            "", &WorkArea::get_grid_snap, &CanvasView::toggle_snap_grid },
 		{"toggle-guide-show",           "show_guideline_icon",       N_("Show Guides"),             "", &WorkArea::get_show_guides, &CanvasView::toggle_show_guides },
 		{"toggle-guide-snap",           "snap_guideline_icon",       N_("Snap to Guides"),          "", &WorkArea::get_guide_snap, &CanvasView::toggle_snap_guides },
+		{"toggle-guide-lock",           "show_guideline_icon",       N_("Lock Guides"),             "", &WorkArea::get_lock_guides, &CanvasView::toggle_lock_guides },
 		{"toggle-low-res",              "",                          N_("Use Low-Res"),             "", &WorkArea::get_low_resolution_flag, &CanvasView::toggle_low_res_pixel_flag },
 		{"toggle-background-rendering", "background_rendering_icon", N_("Enable rendering in background"), "", &WorkArea::get_background_rendering, &CanvasView::toggle_background_rendering },
 		{"toggle-onion-skin",           "onion_skin_icon",           N_("Show Onion Skin"),         "", &WorkArea::get_onion_skin, &CanvasView::toggle_onion_skin },
@@ -1499,6 +1513,7 @@ CanvasView::init_menus()
 	grid_snap_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-grid-snap"));
 	guides_show_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-guide-show"));
 	guides_snap_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-guide-snap"));
+	guides_lock_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-guide-lock"));
 	background_rendering_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-background-rendering"));
 	onion_skin_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-onion-skin"));
 	onion_skin_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-onion-skin-keyframes"));
@@ -2364,6 +2379,18 @@ CanvasView::toggle_show_guides()
 }
 
 void
+CanvasView::toggle_lock_guides()
+{
+	if(toggling_lock_guides)
+		return;
+	toggling_lock_guides=true;
+	work_area->toggle_lock_guides();
+	set_guides_lock_toggle(work_area->get_lock_guides());
+	lock_guides->set_active(work_area->get_lock_guides());
+	toggling_lock_guides=false;
+}
+
+void
 CanvasView::toggle_snap_guides()
 {
 	if(toggling_snap_guides)
@@ -3114,6 +3141,7 @@ CanvasView::on_meta_data_changed()
 	toggling_snap_grid=true;
 	toggling_show_guides=true;
 	toggling_snap_guides=true;
+	toggling_lock_guides=true;
 	toggling_onion_skin=true;
 	toggling_onion_skin_keyframes=true;
 	toggling_background_rendering=true;
@@ -3135,6 +3163,8 @@ CanvasView::on_meta_data_changed()
 		action->set_active((bool)(work_area->get_show_guides()));
 		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-guide-snap"));
 		action->set_active((bool)(work_area->get_guide_snap()));
+		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("toggle-guide-lock"));
+		action->set_active((bool)(work_area->get_lock_guides()));
 		// Update the toggle buttons
 		background_rendering_button->set_active(work_area->get_background_rendering());
 		onion_skin->set_active(work_area->get_onion_skin());
@@ -3143,6 +3173,7 @@ CanvasView::on_meta_data_changed()
 		show_grid->set_active(work_area->grid_status());
 		snap_guides->set_active(work_area->get_guide_snap());
 		show_guides->set_active(work_area->get_show_guides());
+		lock_guides->set_active(work_area->get_lock_guides());
 		// Update the onion skin spins
 		past_onion_spin->set_value(work_area->get_onion_skins()[0]);
 		future_onion_spin->set_value(work_area->get_onion_skins()[1]);
@@ -3153,6 +3184,7 @@ CanvasView::on_meta_data_changed()
 		toggling_snap_grid=false;
 		toggling_show_guides=false;
 		toggling_snap_guides=false;
+		toggling_lock_guides=false;
 		toggling_onion_skin=false;
 		toggling_onion_skin_keyframes=false;
 		toggling_background_rendering=false;
@@ -3161,6 +3193,7 @@ CanvasView::on_meta_data_changed()
 	toggling_snap_grid=false;
 	toggling_show_guides=false;
 	toggling_snap_guides=false;
+	toggling_lock_guides=false;
 	toggling_onion_skin=false;
 	toggling_onion_skin_keyframes=false;
 	toggling_background_rendering=false;
