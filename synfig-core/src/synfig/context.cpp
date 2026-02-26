@@ -241,7 +241,7 @@ Context::hit_check(const Point &pos)const
 	{
 		// If this layer is active, then go
 		// ahead and break out of the loop
-		if(context.active())
+		if(context.active() && !(*context)->is_hit_locked())
 			break;
 
 		// Otherwise, we want to keep searching

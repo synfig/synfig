@@ -88,6 +88,7 @@ private:
 	sigc::signal<void,synfig::Layer::Handle> signal_layer_removed_;
 	sigc::signal<void,synfig::Layer::Handle,bool> signal_layer_status_changed_;
 	sigc::signal<void,synfig::Layer::Handle,bool> signal_layer_exclude_from_rendering_changed_;
+	sigc::signal<void,synfig::Layer::Handle,bool> signal_layer_hit_locked_changed_;
 	sigc::signal<void,synfig::Layer::Handle,bool> signal_layer_z_range_changed_;
 	sigc::signal<void,synfig::Layer::Handle,synfig::String> signal_layer_new_description_;
 	sigc::signal<void,synfig::Canvas::Handle> signal_canvas_added_;
@@ -141,6 +142,9 @@ public:	// Signal Interface
 
 	//! Signal called when the layer's "exclude from rendering" flag has changed.
 	sigc::signal<void,synfig::Layer::Handle,bool>& signal_layer_exclude_from_rendering_changed() { return signal_layer_exclude_from_rendering_changed_; }
+
+	//! Signal called when the layer's "hit locked" flag has changed.
+	sigc::signal<void,synfig::Layer::Handle,bool>& signal_layer_hit_locked_changed() { return signal_layer_hit_locked_changed_; }
 
 	//! Signal called when the layer's zdepth range has changed. This layer has to be Layer_PasteCanvas
 	sigc::signal<void,synfig::Layer::Handle,bool>& signal_layer_z_range_changed() { return signal_layer_z_range_changed_; }
