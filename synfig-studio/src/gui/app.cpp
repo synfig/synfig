@@ -284,7 +284,7 @@ int    studio::App::number_of_threads = std::thread::hardware_concurrency();
 String studio::App::navigator_renderer;
 String studio::App::workarea_renderer;
 
-String        studio::App::default_background_layer_type  = "none";
+String        studio::App::default_background_layer_type  = "solid_color";
 synfig::Color studio::App::default_background_layer_color =
 	synfig::Color(1.000000, 1.000000, 1.000000, 1.000000);  //White
 String        studio::App::default_background_layer_image = "undefined";
