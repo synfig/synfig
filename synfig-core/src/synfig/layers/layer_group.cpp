@@ -94,6 +94,16 @@ Layer_Group::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_PasteCanvas::get_param_vocab());
 
+	// Set row expanded status to true as soon as this layer group is created
+	//
+	// std::find(...) API should be preferrable but it's not working at the moment
+	for (auto& param : ret) {
+		if (param.get_local_name() == "Transformation") {
+			param.set_row_expanded();
+			break;
+		}
+	}
+
 	ret.push_back(ParamDesc("z_range")
 		.set_local_name(_("Z Range"))
 		.set_description(_("When checked, only layers inside range are visible"))
