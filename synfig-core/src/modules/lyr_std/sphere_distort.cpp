@@ -49,6 +49,8 @@
 
 #include <synfig/curve_helper.h>
 
+#include <synfig/rendering/software/task/taskdistortsw.h>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -63,7 +65,7 @@ using namespace lyr_std;
 const double PI = 3.14159265;
 #endif
 
-enum
+enum SphereDistortType
 {
 	TYPE_NORMAL = 0,
 	TYPE_DISTH = 1, //axe the horizontal axis
@@ -77,11 +79,146 @@ SYNFIG_LAYER_INIT(Layer_SphereDistort);
 SYNFIG_LAYER_SET_NAME(Layer_SphereDistort,"spherize");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_SphereDistort,N_("Spherize"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_SphereDistort,N_("Distortions"));
-SYNFIG_LAYER_SET_VERSION(Layer_SphereDistort,"0.2");
+SYNFIG_LAYER_SET_VERSION(Layer_SphereDistort,"0.3");
 
 /* === P R O C E D U R E S ================================================= */
 
+inline static float spherify(float f)
+{
+	if(f > -1 && f < 1 && f!=0)
+		return sinf(f*(PI/2));
+	else return f;
+}
+
+inline static float unspherify(float f)
+{
+	if(f > -1 && f < 1 && f!=0)
+		return asin(f)/(PI/2);
+	else return f;
+}
+
 /* === M E T H O D S ======================================================= */
+
+Point
+Layer_SphereDistort::Internal::transform(const Point& pos) const
+{
+	bool clipped(false);
+	return transform(pos, clipped);
+}
+
+Point
+Layer_SphereDistort::Internal::transform(const Point& p, bool& clipped) const
+{
+	const Vector v = (p - center) / radius;
+	const float t = percent;
+
+	Real relative_dist = type == TYPE_NORMAL ? v.mag() : (type == TYPE_DISTH ? v[0] : v[1]);
+	clipped = relative_dist <= -1 || relative_dist > 1;
+	if (clipped)
+		return p;
+
+	if (relative_dist == 0)
+		return p;
+
+	Real lerp;
+	if (t > 0)
+		lerp = t*unspherify(relative_dist) + (1-t)*relative_dist;
+	else if (t < 0)
+		lerp = (1+t)*relative_dist - t*spherify(relative_dist);
+	else
+		lerp = relative_dist;
+
+	const Real dist = lerp*radius;
+
+	if (type == TYPE_NORMAL) {
+		return center + v*(dist/relative_dist);
+	} else if (type == TYPE_DISTH) {
+		return Point(center[0] + dist, p[1]);
+	} else if (type == TYPE_DISTV) {
+		return Point(p[0], center[1] + dist);
+	}
+	return p;
+}
+
+TaskSphereDistort::Token::Handle
+TaskSphereDistort::get_token() const {
+	return token.handle();
+}
+
+int
+TaskSphereDistort::get_pass_subtask_index() const
+{
+	if (sub_tasks.empty())
+		return PASSTO_NO_TASK;
+
+	{
+		Rect sphr;
+
+		sphr.set_point(internal.center[0]-internal.radius, internal.center[1]-internal.radius);
+		sphr.expand(internal.center[0]+internal.radius, internal.center[1]+internal.radius);
+
+		//get the bounding box of the transform
+		Rect windr;
+
+		//and the bounding box of the rendering
+		windr.set_point(source_rect.get_min());
+		windr.expand(source_rect.get_max());
+
+		//test bounding boxes for collision
+		if( (internal.type == TYPE_NORMAL && !rect_intersect(sphr,windr)) ||
+			(internal.type == TYPE_DISTH && (sphr.minx >= windr.maxx || windr.minx >= sphr.maxx)) ||
+			(internal.type == TYPE_DISTV && (sphr.miny >= windr.maxy || windr.miny >= sphr.maxy)) )
+		{
+			if (internal.clip)
+			{
+				return PASSTO_NO_TASK;
+			}
+			else
+				return 0; // Subtask 0
+		}
+	}
+
+	return PASSTO_THIS_TASK;
+}
+
+Rect
+TaskSphereDistort::compute_required_source_rect(const Rect& source_rect, const Matrix& /*raster_to_world_transformation*/) const
+{
+	Point corner(internal.radius, internal.radius);
+	Rect sphr(internal.center - corner, internal.center + corner);
+	if (internal.clip)
+		return sphr;
+	return source_rect | sphr;
+}
+
+class TaskSphereDistortSW
+	: public TaskSphereDistort, public rendering::TaskDistortOrColorSW
+{
+public:
+	typedef etl::handle<TaskSphereDistortSW> Handle;
+	static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Result
+	point_or_color_vfunc(const Point& point) const override
+	{
+		bool clipped{false};
+		Point q = internal.transform(point, clipped);
+		if (internal.clip && clipped)
+			return {};
+		return q;
+	}
+
+	bool run(Task::RunParams& /*params*/) const override
+	{
+		return run_task(*this);
+	}
+};
+
+rendering::Task::Token TaskSphereDistort::token(
+	DescAbstract<TaskSphereDistort>("SphereDistort") );
+rendering::Task::Token TaskSphereDistortSW::token(
+	DescReal<TaskSphereDistortSW, TaskSphereDistort>("SphereDistortSW") );
 
 /* === E N T R Y P O I N T ================================================= */
 
@@ -90,7 +227,8 @@ param_center(ValueBase(Vector(0,0))),
 param_radius(ValueBase(double(1))),
 param_amount(ValueBase(double(1))),
 param_type(ValueBase(int(TYPE_NORMAL))),
-param_clip(ValueBase(false))
+param_clip(ValueBase(false)),
+param_cobra(ValueBase(true))
 {
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -105,6 +243,7 @@ Layer_SphereDistort::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_type);
 	IMPORT_VALUE(param_amount);
 	IMPORT_VALUE(param_clip);
+	IMPORT_VALUE(param_cobra);
 
 	if(param=="percent" && param_amount.get_type()==value.get_type())
 		return set_param("amount", value);
@@ -120,6 +259,7 @@ Layer_SphereDistort::get_param(const String &param)const
 	EXPORT_VALUE(param_type);
 	EXPORT_VALUE(param_amount);
 	EXPORT_VALUE(param_clip);
+	EXPORT_VALUE(param_cobra);
 	if(param=="percent")
 		return get_param("amount");
 
@@ -174,6 +314,11 @@ Layer_SphereDistort::get_param_vocab()const
 		.add_enum_value(TYPE_DISTV,"vonly",_("Horizontal Bar"))
 	);
 
+	ret.push_back(ParamDesc("cobra")
+		.set_local_name(_("Cobra"))
+		.set_description(_("When checked, uses Cobra renderer"))
+	);
+
 	return ret;
 }
 
@@ -198,20 +343,6 @@ Layer_SphereDistort::get_param_vocab()const
 
 
 */
-
-inline float spherify(float f)
-{
-	if(f > -1 && f < 1 && f!=0)
-		return sinf(f*(PI/2));
-	else return f;
-}
-
-inline float unspherify(float f)
-{
-	if(f > -1 && f < 1 && f!=0)
-		return asin(f)/(PI/2);
-	else return f;
-}
 
 Point sphtrans(const Point &p, const Point &center, const float &radius,
 											const Real &percent, int type, bool& clipped)
@@ -630,4 +761,27 @@ Layer_SphereDistort::get_bounding_rect()const
 	}
 
 	return bounds;
+}
+
+rendering::Task::Handle
+Layer_SphereDistort::build_rendering_task_vfunc(Context context) const
+{
+	if (!param_cobra.get(bool()))
+		return Layer::build_rendering_task_vfunc(context);
+
+	Internal internal;
+	internal.center = param_center.get(Point());
+	internal.radius = param_radius.get(Real());
+	internal.percent = param_amount.get(Real());
+	internal.clip = param_clip.get(bool());
+	internal.type = SphereDistortType(param_type.get(int()));
+
+	rendering::Task::Handle task = context.build_rendering_task();
+
+	TaskSphereDistort::Handle task_spheredistort(new TaskSphereDistort());
+	task_spheredistort->internal = internal;
+
+	task_spheredistort->sub_task() = task;
+	task = task_spheredistort;
+	return task;
 }
