@@ -10,6 +10,7 @@ target_sources(synfigstudio
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_input.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_keyframe.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_pasteoptions.cpp"
+		"${CMAKE_CURRENT_LIST_DIR}/dialog_canvaspasteoptions.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_preview.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_setup.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_soundselect.cpp"
