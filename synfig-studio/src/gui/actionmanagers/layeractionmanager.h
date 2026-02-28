@@ -88,14 +88,6 @@ class LayerActionManager
 	bool query_user_about_foreign_exported_value_nodes(synfig::Canvas::Handle canvas, ValueNodeReplacementMap& answer) const;
 	void export_value_nodes(synfig::Canvas::Handle canvas, const ValueNodeReplacementMap& valuenodes) const;
 
-	
-
-	/// If there are exported canvases being copied, prompts user what to do with them
-	/// \param where clipboard data will be pasted
-	/// \param[out] answer maps what to do with each exported canvas being pasted
-	/// \return false if user cancels the dialog
-
-
 public:
 	void queue_refresh();
 
@@ -104,6 +96,10 @@ public:
 
 	typedef std::map<synfig::Canvas::Handle, synfig::Canvas::Handle> CanvasReplacementMap;
     
+	/// If there are exported canvases being copied, prompts user what to do with them
+	/// \param where clipboard data will be pasted
+	/// \param[out] answer maps what to do with each exported canvas being pasted
+	/// \return false if user cancels the dialog
     bool query_user_about_foreign_exported_canvases(synfig::Canvas::Handle canvas, CanvasReplacementMap& answer) const;
     void import_exported_canvases(synfig::Canvas::Handle canvas, const CanvasReplacementMap& canvases) const;
 

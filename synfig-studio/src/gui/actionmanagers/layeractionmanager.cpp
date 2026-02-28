@@ -38,6 +38,7 @@
 #include <glibmm/main.h>
 
 #include <gui/app.h>
+#include <gui/dialogs/dialog_canvaspasteoptions.h>
 #include <gui/dialogs/dialog_pasteoptions.h>
 #include <gui/instance.h>
 #include <gui/localization.h>
@@ -49,7 +50,7 @@
 #include <synfig/synfig_iterations.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfigapp/selectionmanager.h>
-#include <gui/dialogs/dialog_canvaspasteoptions.h>
+
 
 #endif
 
@@ -482,11 +483,12 @@ static void search_for_foreign_exported_canvases(
     std::vector<Canvas::LooseHandle>& foreign_canvases)
 {
     for (Layer::Handle layer : layer_list) {
-        Layer_PasteCanvas::Handle paste =
-            Layer_PasteCanvas::Handle::cast_dynamic(layer);
-        if (!paste) continue;
+        Layer_PasteCanvas::Handle paste = Layer_PasteCanvas::Handle::cast_dynamic(layer);
+        if (!paste) 
+			continue;
         Canvas::Handle sub = paste->get_sub_canvas();
-        if (!sub) continue;
+        if (!sub) 
+			continue;
         if (!sub->is_inline() && sub->get_root() != canvas->get_root())
             foreign_canvases.push_back(sub);
     }
@@ -530,7 +532,8 @@ void LayerActionManager::import_exported_canvases(
 {
     for (auto item : canvases) {
         Canvas::Handle new_canvas = item.second;
-        if (!new_canvas) continue;
+        if (!new_canvas) 
+			continue;
 
         // find a unique id
         std::string name = item.first->get_id();
@@ -548,12 +551,13 @@ static void replace_exported_canvases(
     Layer::Handle layer,
     const std::map<synfig::Canvas::Handle, synfig::Canvas::Handle>& canvas_replacements)
 {
-    Layer_PasteCanvas::Handle paste =
-        Layer_PasteCanvas::Handle::cast_dynamic(layer);
-    if (!paste) return;
+    Layer_PasteCanvas::Handle paste = Layer_PasteCanvas::Handle::cast_dynamic(layer);
+    if (!paste) 
+		return;
 
     Canvas::Handle sub = paste->get_sub_canvas();
-    if (!sub) return;
+    if (!sub) 
+		return;
 
     auto iter = canvas_replacements.find(sub);
     if (iter != canvas_replacements.end())
@@ -631,15 +635,6 @@ LayerActionManager::paste()
 	{
 		layer=(*iter)->clone(canvas, guid);
 		layer_selection.push_back(layer);
-
-		// Fix: clear dangling parent pointer in pasted exported canvases
-		Layer_PasteCanvas::Handle paste_check = Layer_PasteCanvas::Handle::cast_dynamic(layer);
-		if (paste_check) {
-			Canvas::Handle sub = paste_check->get_sub_canvas();
-			if (sub && !sub->is_inline() && sub->parent() && sub->parent() != canvas)
-				//sub->clear_parent(); Handled in the Paste function
-				{}
-		}
 
 		replace_exported_canvases(layer, canvas_replacements);
 		replace_exported_value_nodes(layer, valuenode_replacements);
