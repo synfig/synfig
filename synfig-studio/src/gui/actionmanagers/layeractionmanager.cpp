@@ -38,6 +38,7 @@
 #include <glibmm/main.h>
 
 #include <gui/app.h>
+#include <gui/dialogs/dialog_canvaspasteoptions.h>
 #include <gui/dialogs/dialog_pasteoptions.h>
 #include <gui/instance.h>
 #include <gui/localization.h>
@@ -49,6 +50,7 @@
 #include <synfig/synfig_iterations.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfigapp/selectionmanager.h>
+
 
 #endif
 
@@ -475,6 +477,93 @@ LayerActionManager::refresh()
 #endif
 }
 
+static void search_for_foreign_exported_canvases(
+    Canvas::LooseHandle canvas,
+    std::list<Layer::Handle> layer_list,
+    std::vector<Canvas::LooseHandle>& foreign_canvases)
+{
+    for (Layer::Handle layer : layer_list) {
+        Layer_PasteCanvas::Handle paste = Layer_PasteCanvas::Handle::cast_dynamic(layer);
+        if (!paste) 
+			continue;
+        Canvas::Handle sub = paste->get_sub_canvas();
+        if (!sub) 
+			continue;
+        if (!sub->is_inline() && sub->get_root() != canvas->get_root())
+            foreign_canvases.push_back(sub);
+    }
+}
+
+bool LayerActionManager::query_user_about_foreign_exported_canvases(
+    Canvas::Handle canvas,
+    CanvasReplacementMap& canvas_replacements) const
+{
+    std::vector<Canvas::LooseHandle> foreign_canvases;
+    search_for_foreign_exported_canvases(canvas, clipboard_, foreign_canvases);
+
+    if (!foreign_canvases.empty()) {
+        auto dlg = Dialog_CanvasPasteOptions::create(*App::main_window);
+        dlg->set_canvases(foreign_canvases);
+        dlg->set_destination_canvas(canvas);
+        int ret = dlg->run();
+        if (ret != Gtk::RESPONSE_OK)
+            return false;
+
+        std::map<Canvas::LooseHandle, bool> user_choices;
+        dlg->get_user_choices(user_choices);
+
+        for (auto item : user_choices) {
+            if (item.second) {
+                // User chose Copy - clone the canvas
+                synfig::GUID guid;
+				Canvas::Handle cloned = item.first->clone(guid);
+                cloned->clear_parent();
+                canvas_replacements[Canvas::Handle(item.first)] = cloned;
+            }
+            // If false, user chose Link - keep as-is (no entry in map)
+        }
+    }
+    return true;
+}
+
+void LayerActionManager::import_exported_canvases(
+    Canvas::Handle canvas,
+    const CanvasReplacementMap& canvases) const
+{
+    for (auto item : canvases) {
+        Canvas::Handle new_canvas = item.second;
+        if (!new_canvas) 
+			continue;
+
+        // find a unique id
+        std::string name = item.first->get_id();
+        std::string warnings;
+        try {
+            canvas->find_canvas(name, warnings);
+            name = name + "_copy";
+        } catch (...) {}
+
+        canvas->add_child_canvas(new_canvas, name);
+    }
+}
+
+static void replace_exported_canvases(
+    Layer::Handle layer,
+    const std::map<synfig::Canvas::Handle, synfig::Canvas::Handle>& canvas_replacements)
+{
+    Layer_PasteCanvas::Handle paste = Layer_PasteCanvas::Handle::cast_dynamic(layer);
+    if (!paste) 
+		return;
+
+    Canvas::Handle sub = paste->get_sub_canvas();
+    if (!sub) 
+		return;
+
+    auto iter = canvas_replacements.find(sub);
+    if (iter != canvas_replacements.end())
+        paste->set_sub_canvas(iter->second);
+}
+
 void
 LayerActionManager::cut()
 {
@@ -524,6 +613,14 @@ LayerActionManager::paste()
 		canvas=layer->get_canvas();
 	}
 
+	// Handle foreign exported canvases
+	CanvasReplacementMap canvas_replacements;
+	bool canvas_accepted = query_user_about_foreign_exported_canvases(canvas, canvas_replacements);
+	if (!canvas_accepted)
+		return;
+	if (!canvas_replacements.empty())
+		import_exported_canvases(canvas, canvas_replacements);
+
 	ValueNodeReplacementMap valuenode_replacements;
 
 	bool user_accepted = query_user_about_foreign_exported_value_nodes(canvas, valuenode_replacements);
@@ -539,6 +636,7 @@ LayerActionManager::paste()
 		layer=(*iter)->clone(canvas, guid);
 		layer_selection.push_back(layer);
 
+		replace_exported_canvases(layer, canvas_replacements);
 		replace_exported_value_nodes(layer, valuenode_replacements);
 
 		synfigapp::Action::Handle action(synfigapp::Action::create("LayerAdd"));
