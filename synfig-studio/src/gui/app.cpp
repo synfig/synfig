@@ -2339,9 +2339,18 @@ App::dialog_open_file_ext(const std::string& title, std::vector<synfig::filesyst
 	filter_supported->add_mime_type("audio/x-vorbis+ogg");
 	filter_supported->add_mime_type("audio/mpeg");
 	filter_supported->add_mime_type("audio/x-wav");
+	filter_supported->add_mime_type("audio/flac");
+	filter_supported->add_mime_type("audio/x-flac");
+	filter_supported->add_mime_type("audio/aac");
+	filter_supported->add_mime_type("audio/x-m4a");
+	filter_supported->add_mime_type("audio/opus");
 	filter_supported->add_pattern("*.ogg");
 	filter_supported->add_pattern("*.mp3");
 	filter_supported->add_pattern("*.wav");
+	filter_supported->add_pattern("*.flac");
+	filter_supported->add_pattern("*.aac");
+	filter_supported->add_pattern("*.m4a");
+	filter_supported->add_pattern("*.opus");
 	// 0.4 Video files
 	filter_supported->add_pattern("*.avi");
 	filter_supported->add_pattern("*.mp4");
@@ -2380,13 +2389,22 @@ App::dialog_open_file_ext(const std::string& title, std::vector<synfig::filesyst
 
 	// 3 Audio files
 	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
-	filter_audio->set_name(_("Audio (*.ogg, *.mp3, *.wav)"));
+	filter_audio->set_name(_("Audio (*.ogg, *.mp3, *.wav, *.flac, *.aac, *.m4a, *.opus)"));
 	filter_audio->add_mime_type("audio/x-vorbis+ogg");
 	filter_audio->add_mime_type("audio/mpeg");
 	filter_audio->add_mime_type("audio/x-wav");
+	filter_audio->add_mime_type("audio/flac");
+	filter_audio->add_mime_type("audio/x-flac");
+	filter_audio->add_mime_type("audio/aac");
+	filter_audio->add_mime_type("audio/x-m4a");
+	filter_audio->add_mime_type("audio/opus");
 	filter_audio->add_pattern("*.ogg");
 	filter_audio->add_pattern("*.mp3");
 	filter_audio->add_pattern("*.wav");
+	filter_audio->add_pattern("*.flac");
+	filter_audio->add_pattern("*.aac");
+	filter_audio->add_pattern("*.m4a");
+	filter_audio->add_pattern("*.opus");
 
 	// 4 Video files
 	Glib::RefPtr<Gtk::FileFilter> filter_video = Gtk::FileFilter::create();
@@ -2543,13 +2561,22 @@ App::dialog_open_file_audio(const std::string& title, synfig::filesystem::Path& 
 
 	// Audio files
 	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
-	filter_audio->set_name(_("Audio (*.ogg, *.mp3, *.wav)"));
+	filter_audio->set_name(_("Audio (*.ogg, *.mp3, *.wav, *.flac, *.aac, *.m4a, *.opus)"));
 	filter_audio->add_mime_type("audio/x-vorbis+ogg");
 	filter_audio->add_mime_type("audio/mpeg");
 	filter_audio->add_mime_type("audio/x-wav");
+	filter_audio->add_mime_type("audio/flac");
+	filter_audio->add_mime_type("audio/x-flac");
+	filter_audio->add_mime_type("audio/aac");
+	filter_audio->add_mime_type("audio/x-m4a");
+	filter_audio->add_mime_type("audio/opus");
 	filter_audio->add_pattern("*.ogg");
 	filter_audio->add_pattern("*.mp3");
 	filter_audio->add_pattern("*.wav");
+	filter_audio->add_pattern("*.flac");
+	filter_audio->add_pattern("*.aac");
+	filter_audio->add_pattern("*.m4a");
+	filter_audio->add_pattern("*.opus");
 
 	// Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
