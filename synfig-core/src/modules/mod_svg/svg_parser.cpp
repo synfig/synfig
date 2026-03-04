@@ -201,7 +201,7 @@ Svg_parser::parser_node(const xmlpp::Node* node)
 			return;
 		}else{
 			if(!set_canvas) parser_canvas(node);
-			parser_graphics(node,nodeRoot,Style(),SVGMatrix::identity);
+			parser_graphics(node,nodeRoot,Style(),SVGMatrix::identity, StringList{});
 			if(nodename.compare("g")==0) return;
 		}
   	}
@@ -280,7 +280,7 @@ Svg_parser::parser_canvas(const xmlpp::Node* node)
 }
 
 void
-Svg_parser::parser_text(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style, const SVGMatrix& mtx)
+Svg_parser::parser_text(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style, const SVGMatrix& mtx, const StringList& applied_clip_paths)
 {
 	const Glib::ustring text_label = fetch_element_label_or_id(nodeElement);
 	// const Glib::ustring text_id = nodeElement->get_attribute_value("id");
@@ -438,12 +438,12 @@ Svg_parser::parser_text(const xmlpp::Element* nodeElement, xmlpp::Element* root,
 	}
 
 	if (has_clip_path) {
-		build_clip_path(root, clip_path_value, mtx);
+		build_clip_path(root, clip_path_value, mtx, applied_clip_paths);
 	}
 }
 
 void
-Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx_parent)
+Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx_parent, const StringList& applied_clip_paths)
 {
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
 		const Glib::ustring nodename = node->get_name();
@@ -474,13 +474,13 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 
 		// Is it a group element?
 		if(nodename.compare("g")==0){
-			parser_layer(node, root->add_child("layer"), style, mtx);
+			parser_layer(node, root->add_child("layer"), style, mtx, applied_clip_paths);
 			return;
 		}
 
 		// Is it a text element?
 		if(nodename.compare("text")==0){
-			parser_text(nodeElement, root->add_child("layer"), style, mtx);
+			parser_text(nodeElement, root->add_child("layer"), style, mtx, applied_clip_paths);
 			return;
 		}
 
@@ -548,7 +548,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 				}
 				parser_effects(nodeElement,child_layer,style,mtx);
 				if (has_clip_path) {
-					build_clip_path(child_layer, clip_path_value, mtx);
+					build_clip_path(child_layer, clip_path_value, mtx, applied_clip_paths);
 				}
 
 				return;
@@ -647,7 +647,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 			parser_effects(nodeElement,child_layer,style,mtx);
 
 		if (has_clip_path) {
-			build_clip_path(child_layer, clip_path_value, mtx);
+			build_clip_path(child_layer, clip_path_value, mtx, applied_clip_paths);
 		}
 	}
 }
@@ -898,7 +898,7 @@ Svg_parser::build_outline(xmlpp::Node* root, Style style, const std::list<BLine>
 /* === LAYER PARSERS ======================================================= */
 
 void
-Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx)
+Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx, const StringList& applied_clip_paths)
 {
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
 		Glib::ustring label = fetch_element_label_or_id(nodeElement);
@@ -927,7 +927,7 @@ Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style st
 		if(!nodeContent){
     		xmlpp::Node::NodeList list = node->get_children();
     		for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter){
-				parser_graphics (*iter,child_canvas,style,mtx);
+				parser_graphics (*iter, child_canvas, style, mtx, applied_clip_paths);
     		}
   		}
 		if (SVG_SEP_TRANSFORMS) parser_effects(nodeElement,child_canvas,style,SVGMatrix::identity);
@@ -937,7 +937,7 @@ Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style st
 		const bool has_clip_path = clip_path_value != "none";
 
 		if (has_clip_path)
-			build_clip_path(child_canvas, clip_path_value, mtx);
+			build_clip_path(child_canvas, clip_path_value, mtx, applied_clip_paths);
 	}
 }
 
@@ -2096,7 +2096,7 @@ Svg_parser::parser_clipPath(const xmlpp::Node* node, Style style)
 }
 
 void
-synfig::Svg_parser::build_clip_path(xmlpp::Element* root, const std::string& clip_path_value, const SVGMatrix& mtx)
+synfig::Svg_parser::build_clip_path(xmlpp::Element* root, const std::string& clip_path_value, const SVGMatrix& mtx, StringList applied_clip_paths)
 {
 	if (isURLValue(clip_path_value)) {
 		const String clip_path_url = getURL(clip_path_value);
@@ -2104,22 +2104,24 @@ synfig::Svg_parser::build_clip_path(xmlpp::Element* root, const std::string& cli
 			// Testing on Firefox and Chromium, empty URL means no clipping
 			// So, nothing to do here.
 		} else {
-
-			// TODO: check if it is a recursive clip_path call! Avoid freeze!!!
-
-			xmlpp::Element* clip_path = initializeClipNode(root->add_child("layer"), "clip-path " + clip_path_url);
 			const String clip_path_id = clip_path_url.substr(1);
-			const auto it = clippath_library.find(clip_path_id);
-			if (it == clippath_library.end()) {
-				synfig::error(_("SVG Parser: Unknown clip-path element: %s ."), clip_path_value.c_str());
+			if (std::find(applied_clip_paths.begin(), applied_clip_paths.end(), clip_path_id) != applied_clip_paths.end()) {
+				synfig::error(_("SVG Parser: Recursive clip-path is not allowed; ignoring it: %s uses itself as clip-path (directly or not)."), clip_path_value.c_str());
 			} else {
-				const xmlpp::Element* cpnode = it->second.first;
-				if (!cpnode) {
-					synfig::error(_("SVG Parser: Internal error: clip-path element %s has no node."), clip_path_value.c_str());
+				xmlpp::Element* clip_path = initializeClipNode(root->add_child("layer"), "clip-path " + clip_path_url);
+				const auto it = clippath_library.find(clip_path_id);
+				if (it == clippath_library.end()) {
+					synfig::error(_("SVG Parser: Unknown clip-path element: %s ."), clip_path_value.c_str());
 				} else {
-					for (const auto& node : cpnode->get_children()) {
-						if (auto elem = dynamic_cast<xmlpp::Element*>(node)) {
-							parser_graphics(elem, clip_path, it->second.second, mtx);
+					const xmlpp::Element* cpnode = it->second.first;
+					if (!cpnode) {
+						synfig::error(_("SVG Parser: Internal error: clip-path element %s has no node."), clip_path_value.c_str());
+					} else {
+						applied_clip_paths.push_back(clip_path_id);
+						for (const auto& node : cpnode->get_children()) {
+							if (auto elem = dynamic_cast<xmlpp::Element*>(node)) {
+								parser_graphics(elem, clip_path, it->second.second, mtx, applied_clip_paths);
+							}
 						}
 					}
 				}
