@@ -75,12 +75,21 @@ static int hextodec(const std::string& hex);
 static int getColor(const String& name, int position);
 static double getDimension(const String& ac, bool use_90_ppi = false);
 static float getRadian(float sexa);
+static bool isURLValue(const String& url);
+static String getURL(const String& url);
 //string functions
 static std::vector<String> tokenize(const String& str,const String& delimiters);
 static String unquote(const String& str);
 
 static float get_inkscape_version(const xmlpp::Element* svgNodeElement);
 static Glib::ustring fetch_element_label_or_id(const xmlpp::Element* svgNodeElement);
+
+
+static String get_clip_path(const Style& style)
+{
+	const std::string clip_path_value = synfig::trim(style.get("clip-path", ""));
+	return clip_path_value.empty() ? "none" : clip_path_value;
+}
 
 /* === M E T H O D S ======================================================= */
 
@@ -189,6 +198,7 @@ Svg_parser::parser_node(const xmlpp::Node* node)
 			parser_canvas(node);
 		}else if(nodename.compare("defs")==0){
 			parser_defs (node);
+			return;
 		}else{
 			if(!set_canvas) parser_canvas(node);
 			parser_graphics(node,nodeRoot,Style(),SVGMatrix::identity);
@@ -391,9 +401,12 @@ Svg_parser::parser_text(const xmlpp::Element* nodeElement, xmlpp::Element* root,
 		}
 	}
 
+	const std::string clip_path_value = get_clip_path(style);
+	const bool has_clip_path = clip_path_value != "none";
+
 	xmlpp::Element* text_node = root;
-	if (is_fill_gradient) {
-		root = initializeGroupLayerNode(root, "fill");
+	if (is_fill_gradient || has_clip_path) {
+		root = initializeGroupLayerNode(root, has_clip_path ? "clipped-text" : "fill-text");
 		text_node = root->add_child("layer");
 	}
 
@@ -423,6 +436,10 @@ Svg_parser::parser_text(const xmlpp::Element* nodeElement, xmlpp::Element* root,
 	if (is_fill_gradient) { //gradient in onto mode (stroke)
 		build_fill(root, fill, SVGMatrix::identity);
 	}
+
+	if (has_clip_path) {
+		build_clip_path(root, clip_path_value, mtx);
+	}
 }
 
 void
@@ -432,9 +449,15 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		const Glib::ustring nodename = node->get_name();
 
 		// Is element known ?
-		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect", "circle", "ellipse", "line", "polyline", "text"};
+		const std::vector<const char*> valid_elements = {"g", "path", "polygon", "rect", "circle", "ellipse", "line", "polyline", "text", "clipPath"};
 		if (valid_elements.end() == std::find(valid_elements.begin(), valid_elements.end(), nodename))
 			return;
+
+		// usually on defs, but it can be inline as in examples of clip-rule in SVG 1.1 specs section 14.3.5
+		if (nodename.compare("clipPath") == 0) {
+			parser_clipPath(node, style);
+			return;
+		}
 
 		// Resolve transformations
 		SVGMatrix mtx;
@@ -451,7 +474,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 
 		// Is it a group element?
 		if(nodename.compare("g")==0){
-			parser_layer(node,root->add_child("layer"),style,mtx);
+			parser_layer(node, root->add_child("layer"), style, mtx);
 			return;
 		}
 
@@ -500,6 +523,9 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		if (typeFill == FILL_TYPE_NONE && typeStroke == FILL_TYPE_NONE)
 			return;
 
+		const std::string clip_path_value = get_clip_path(style);
+		const bool has_clip_path = clip_path_value != "none";
+
 		xmlpp::Element* child_layer = root;
 		xmlpp::Element* child_fill = nullptr;
 		xmlpp::Element* child_stroke = nullptr;
@@ -508,7 +534,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		// If it has stroke, render as a region, instead of standard shape, to be able to link to outline
 		if(typeFill != FILL_TYPE_NONE && typeStroke == FILL_TYPE_NONE) {
 			if (nodename.compare("rect") == 0 || nodename.compare("circle") == 0) {
-				if (!mtx.is_identity() || typeFill == FILL_TYPE_GRADIENT)
+				if (!mtx.is_identity() || typeFill == FILL_TYPE_GRADIENT || has_clip_path)
 					child_layer = initializeGroupLayerNode(root->add_child("layer"), label);
 				child_fill=child_layer;
 
@@ -521,13 +547,17 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 					build_fill (child_fill,fill,SVGMatrix::identity);
 				}
 				parser_effects(nodeElement,child_layer,style,mtx);
+				if (has_clip_path) {
+					build_clip_path(child_layer, clip_path_value, mtx);
+				}
+
 				return;
 			}
 		}
 
 		// We will create a non-primitive shape
 
-		if (!SVG_RESOLVE_BLINE)
+		if (!SVG_RESOLVE_BLINE || has_clip_path)
 			child_layer = initializeGroupLayerNode(root->add_child("layer"), label);
 		child_fill=child_layer;
 		child_stroke=child_layer;
@@ -615,6 +645,10 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 			parser_effects(nodeElement,child_layer,style,SVGMatrix::identity);
 		else
 			parser_effects(nodeElement,child_layer,style,mtx);
+
+		if (has_clip_path) {
+			build_clip_path(child_layer, clip_path_value, mtx);
+		}
 	}
 }
 
@@ -898,6 +932,12 @@ Svg_parser::parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style st
   		}
 		if (SVG_SEP_TRANSFORMS) parser_effects(nodeElement,child_canvas,style,SVGMatrix::identity);
 		else parser_effects(nodeElement,child_canvas,style,mtx);
+
+		const std::string clip_path_value = get_clip_path(style);
+		const bool has_clip_path = clip_path_value != "none";
+
+		if (has_clip_path)
+			build_clip_path(child_canvas, clip_path_value, mtx);
 	}
 }
 
@@ -1663,6 +1703,8 @@ Svg_parser::parser_defs(const xmlpp::Node* node)
 				parser_linearGradient(*iter);
 			}else if(name.compare("radialGradient")==0){
 				parser_radialGradient(*iter);
+			}else if(name.compare("clipPath")==0){
+				parser_clipPath(*iter, Style{});
 			}
  		}
   	}
@@ -2036,6 +2078,58 @@ RadialGradient::RadialGradient(const String& gradient_name, float cx, float cy, 
 	  stops(stops), transform(transform)
 {}
 
+void
+Svg_parser::parser_clipPath(const xmlpp::Node* node, Style style)
+{
+	if (const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)) {
+		Glib::ustring id = nodeElement->get_attribute_value("id");
+		if (id.empty()) {
+			synfig::error(_("SVG Parser: element clipPath without id"));
+		} else {
+			// SVG 1.1 14.3.5
+			// The ‘clipPath’ element itself and its child elements do not inherit clipping paths from the ancestors of the ‘clipPath’ element.
+			style.merge("clip-path", "none");
+			style.merge(nodeElement);
+			clippath_library[id] = {nodeElement, style};
+		}
+	}
+}
+
+void
+synfig::Svg_parser::build_clip_path(xmlpp::Element* root, const std::string& clip_path_value, const SVGMatrix& mtx)
+{
+	if (isURLValue(clip_path_value)) {
+		const String clip_path_url = getURL(clip_path_value);
+		if (clip_path_url.empty() || clip_path_url.front() != '#') {
+			// Testing on Firefox and Chromium, empty URL means no clipping
+			// So, nothing to do here.
+		} else {
+
+			// TODO: check if it is a recursive clip_path call! Avoid freeze!!!
+
+			xmlpp::Element* clip_path = initializeClipNode(root->add_child("layer"), "clip-path " + clip_path_url);
+			const String clip_path_id = clip_path_url.substr(1);
+			const auto it = clippath_library.find(clip_path_id);
+			if (it == clippath_library.end()) {
+				synfig::error(_("SVG Parser: Unknown clip-path element: %s ."), clip_path_value.c_str());
+			} else {
+				const xmlpp::Element* cpnode = it->second.first;
+				if (!cpnode) {
+					synfig::error(_("SVG Parser: Internal error: clip-path element %s has no node."), clip_path_value.c_str());
+				} else {
+					for (const auto& node : cpnode->get_children()) {
+						if (auto elem = dynamic_cast<xmlpp::Element*>(node)) {
+							parser_graphics(elem, clip_path, it->second.second, mtx);
+						}
+					}
+				}
+			}
+		}
+	} else {
+		synfig::error(_("SVG Parser: Unsupported clip-path attribute: %s ."), clip_path_value.c_str());
+	}
+}
+
 BLine::BLine(std::vector<Vertex> points, bool loop)
 	: points(points), loop(loop),
 	  bline_id(GUID().get_string()),
@@ -2258,6 +2352,22 @@ Svg_parser::initializeGroupLayerNode(xmlpp::Element* root, const String& name)
 	build_param (root->add_child("param"),"z_depth","real","0");
 	build_param (root->add_child("param"),"amount","real","1");
 	build_param (root->add_child("param"),"blend_method","integer","0");
+	build_vector (root->add_child("param"),"origin",0,0);
+	xmlpp::Element *child=root->add_child("param");
+	child->set_attribute("name","canvas");
+	return child->add_child("canvas");
+}
+
+xmlpp::Element*
+Svg_parser::initializeClipNode(xmlpp::Element* root, const String& name)
+{
+	root->set_attribute("type","group");
+	root->set_attribute("active","true");
+	root->set_attribute("version","0.1");
+	root->set_attribute("desc",name);
+	build_param (root->add_child("param"),"z_depth","real","0");
+	build_param (root->add_child("param"),"amount","real","1");
+	build_param (root->add_child("param"),"blend_method","integer","23");
 	build_vector (root->add_child("param"),"origin",0,0);
 	xmlpp::Element *child=root->add_child("param");
 	child->set_attribute("name","canvas");
@@ -2743,6 +2853,38 @@ getRadian(float sexa){
 	return (sexa*2*PI)/360;
 }
 
+static bool
+isURLValue(const String& url)
+{
+	const String clean_url = synfig::trim(url);
+	if (clean_url.compare(0, 4, "url(") == 0) {
+		if (clean_url.back() == ')') {
+			return true;
+		}
+	}
+	return false;
+}
+
+static String
+getURL(const String& url)
+{
+	const String clean_url = synfig::trim(url);
+	if (clean_url.compare(0, 4, "url(") == 0) {
+		if (clean_url.back() == ')') {
+			const std::string::size_type quote_init_pos = clean_url.find_first_of("'\"", 4);
+			const std::string::size_type quote_end_pos = clean_url.find_last_of("'\"");
+			// It can be quoted with " or ' characters
+			if (quote_init_pos != std::string::npos && quote_end_pos != std::string::npos && quote_init_pos != quote_end_pos)
+				return clean_url.substr(quote_init_pos + 1, quote_end_pos - quote_init_pos - 1);
+			// or not quoted at all - as in Example lingrad01 in chapter 13 Gradients and Patterns of SVG 1.1 specs
+			// https://www.w3.org/Graphics/SVG/1.1/pservers.html
+			return synfig::trim(clean_url.substr(4, clean_url.length() - 4 - 1));
+		}
+	}
+	synfig::error(_("SVG Parser: unsupported URL: %s"), clean_url.c_str());
+	return {};
+}
+
 static std::vector<String>
 tokenize(const String& str,const String& delimiters){
 	std::vector<String> tokens;
@@ -3100,10 +3242,10 @@ Style::merge(const xmlpp::Element *elem)
 	//   - relative values will have the same units as the value to which it is relative
 	//      and percentage lengths are relative to current viewport or bounding box dimensions
 	//   - if a 'clip-path' property is specified on an ancestor element, and the current element
-	//       has a 'clip-path' of none, the ancestor's clipping path still applies to current element
+	//       has a 'clip-path' of none (default), the ancestor's clipping path still applies to current element
 
 	for (const auto& prop : style.data) {
-		if (prop.first == "clip-path" && prop.second == "none")
+		if (prop.first == "clip-path" && (prop.second == "none" || prop.second.empty()))
 			continue;
 
 		// Font size is special: it has relative values whose reference value is unrelated to viewport size,
@@ -3130,6 +3272,12 @@ Style::merge(const xmlpp::Element *elem)
 
 		data[prop.first] = prop.second;
 	}
+}
+
+void
+synfig::Style::merge(const std::string& property, const std::string& value)
+{
+	push(property, value);
 }
 
 std::string
