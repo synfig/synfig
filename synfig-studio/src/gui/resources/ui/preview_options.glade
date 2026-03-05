@@ -13,7 +13,7 @@
   <object class="GtkAdjustment" id="adj_zoom">
     <property name="lower">0.10000000000000001</property>
     <property name="upper">5</property>
-    <property name="value">0.5</property>
+    <property name="value">1</property>
     <property name="step_increment">0.10000000000000001</property>
     <property name="page_increment">0.20000000000000001</property>
   </object>
@@ -116,11 +116,11 @@
                         <property name="can_focus">True</property>
                         <property name="hexpand">True</property>
                         <property name="vexpand">True</property>
-                        <property name="text" translatable="yes">0,50</property>
+                        <property name="text" translatable="yes">1,00</property>
                         <property name="adjustment">adj_zoom</property>
                         <property name="climb_rate">0.10000000000000001</property>
                         <property name="digits">2</property>
-                        <property name="value">0.5</property>
+                        <property name="value">1</property>
                       </object>
                       <packing>
                         <property name="left_attach">1</property>
