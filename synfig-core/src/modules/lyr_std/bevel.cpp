@@ -460,6 +460,9 @@ Layer_Bevel::get_full_bounding_rect(Context context)const
 rendering::Task::Handle
 Layer_Bevel::build_composite_fork_task_vfunc(ContextParams /*context_params*/, rendering::Task::Handle sub_task) const
 {
+	if (!sub_task)
+		return sub_task;
+
 	TaskBevel::Handle task_bevel(new TaskBevel());
 	task_bevel->softness = param_softness.get(Real());
 	task_bevel->type = param_type.get(int());
