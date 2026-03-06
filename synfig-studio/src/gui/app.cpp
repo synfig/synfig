@@ -3849,6 +3849,10 @@ App::new_instance()
 
 	if (getenv("SYNFIG_ENABLE_NEW_CANVAS_EDIT_PROPERTIES"))
 		instance->find_canvas_view(canvas)->canvas_properties.present();
+
+	// Ensure the selection is recognized globally
+	if (auto canvas_view = instance->find_canvas_view(canvas))
+		App::set_selected_canvas_view(canvas_view);
 }
 
 void
@@ -4053,14 +4057,24 @@ void
 studio::App::undo()
 {
 	if(selected_instance)
+	{
+		auto canvas_view = get_selected_canvas_view();
+		if (canvas_view && canvas_view->get_smach().process_event(EVENT_UNDO) == Smach::RESULT_ACCEPT)
+			return;
 		selected_instance->undo();
+	}
 }
 
 void
 studio::App::redo()
 {
 	if(selected_instance)
+	{
+		auto canvas_view = get_selected_canvas_view();
+		if (canvas_view && canvas_view->get_smach().process_event(EVENT_REDO) == Smach::RESULT_ACCEPT)
+			return;
 		selected_instance->redo();
+	}
 }
 
 Gtk::Box*
