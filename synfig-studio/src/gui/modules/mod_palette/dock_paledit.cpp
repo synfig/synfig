@@ -541,35 +541,38 @@ Dock_PalEdit::apply_color_to_selected_layer(int i){
 	
 	Color color = get_color(i);
 
-    // Get the currently selected canvas view
     CanvasView::Handle canvas_view = App::get_selected_canvas_view();
     if (!canvas_view) 
 		return;
 
-    // Get the currently selected layer
-   synfig::Layer::Handle layer = canvas_view->canvas_interface()->get_selection_manager()->get_selected_layer();
-    if (!layer) 
+    // Get ALL selected layers 
+    synfigapp::SelectionManager::LayerList layers = canvas_view->canvas_interface()->get_selection_manager()->get_selected_layers();
+    if (layers.empty()) 
 		return;
 
-    // Get the canvas and interface
-    synfig::Canvas::Handle canvas = layer->get_canvas();
-    etl::handle<synfigapp::CanvasInterface> canvas_interface = canvas_view->canvas_interface();
+    synfigapp::Action::PassiveGrouper group(canvas_view->canvas_interface()->get_instance().get(), _("Apply palette color"));
 
-    // Create the action to set the color parameter
-    synfigapp::Action::Handle action = synfigapp::Action::create("LayerParamSet");
-    if (!action) 
-		return;
+    for (synfig::Layer::Handle layer : layers)
+    {
+        if (!layer) 
+			continue;
 
-    action->set_param("canvas", canvas);
-    action->set_param("canvas_interface", canvas_interface);
-    action->set_param("layer", layer);
-    action->set_param("param", std::string("color"));
-    action->set_param("new_value", synfig::ValueBase(color));
+        synfig::Canvas::Handle canvas = layer->get_canvas();
+        synfigapp::Action::Handle action = synfigapp::Action::create("LayerParamSet");
+        if (!action) 
+			continue;
 
-    if (!action->is_ready()) 
-		return;
+        action->set_param("canvas", canvas);
+        action->set_param("canvas_interface", canvas_view->canvas_interface());
+        action->set_param("layer", layer);
+        action->set_param("param", std::string("color"));
+        action->set_param("new_value", synfig::ValueBase(color));
 
-    canvas_interface->get_instance()->perform_action(action);
+        if (!action->is_ready()) 
+			continue;
+
+        canvas_view->canvas_interface()->get_instance()->perform_action(action);
+    }
 
 }
 
