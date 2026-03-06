@@ -85,6 +85,7 @@ private:
 	void select_outline_color(int i);
 	synfig::Color get_color(int i)const;
 	void edit_color(int i);
+	void apply_color_to_selected_layer(int i);
 
 public:
 	void set_palette(const synfig::Palette& x);

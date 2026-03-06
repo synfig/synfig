@@ -33,7 +33,7 @@
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
 #endif
-
+#include<canvasview.h>
 #include "dock_paledit.h"
 
 #include <errno.h>
@@ -370,7 +370,14 @@ Dock_PalEdit::show_menu(int i)
 			i ));
 	menu->append(*item);
 
-	menu->popup(3,gtk_get_current_event_time());
+	item = image_menu_item("type_color_icon", _("Apply to selected layer"), true);
+	item->signal_activate().connect(
+		sigc::bind(
+			sigc::mem_fun(*this,&studio::Dock_PalEdit::apply_color_to_selected_layer),
+			i ));
+	menu->append(*item);
+
+	menu->popup(4,gtk_get_current_event_time());
 }
 
 int
@@ -527,6 +534,41 @@ void
 Dock_PalEdit::select_outline_color(int i)
 {
 	synfigapp::Main::set_outline_color(get_color(i));
+}
+
+void
+Dock_PalEdit::apply_color_to_selected_layer(int i){
+	
+	Color color = get_color(i);
+
+    // Get the currently selected canvas view
+    CanvasView::Handle canvas_view = App::get_selected_canvas_view();
+    if (!canvas_view) return;
+
+    // Get the currently selected layer
+   synfig::Layer::Handle layer = canvas_view->canvas_interface()->get_selection_manager()->get_selected_layer();
+    if (!layer) return;
+
+    // Get the canvas and interface
+    synfig::Canvas::Handle canvas = layer->get_canvas();
+    etl::handle<synfigapp::CanvasInterface> canvas_interface = 
+        canvas_view->canvas_interface();
+
+    // Create the action to set the color parameter
+    synfigapp::Action::Handle action = 
+        synfigapp::Action::create("LayerParamSet");
+    if (!action) return;
+
+    action->set_param("canvas", canvas);
+    action->set_param("canvas_interface", canvas_interface);
+    action->set_param("layer", layer);
+    action->set_param("param", std::string("color"));
+    action->set_param("new_value", synfig::ValueBase(color));
+
+    if (!action->is_ready()) return;
+
+    canvas_interface->get_instance()->perform_action(action);
+
 }
 
 void
