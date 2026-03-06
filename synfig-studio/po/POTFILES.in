@@ -416,6 +416,10 @@ src/synfigapp/actions/layerresetpose.cpp
 src/synfigapp/actions/layersetdesc.cpp
 src/synfigapp/actions/layersetdesc.h
 src/synfigapp/actions/layersetexcludefromrendering.cpp
+src/synfigapp/actions/layertobottom.cpp
+src/synfigapp/actions/layertobottom.h
+src/synfigapp/actions/layertotop.cpp
+src/synfigapp/actions/layertotop.h
 src/synfigapp/actions/layerzdepthrangeset.cpp
 src/synfigapp/actions/timepointscopy.cpp
 src/synfigapp/actions/timepointscopy.h
