@@ -36,6 +36,7 @@
 
 #include "resolutiondial.h"
 
+#include <gui/actionwidgethelper.h>
 #include <gui/localization.h>
 
 #endif
@@ -50,34 +51,19 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
-static void
-init_button(Gtk::ToolButton& button, const std::string& icon_name, const std::string& label, const std::string& tooltip)
-{
-	button.set_icon_name(icon_name);
-	button.set_label(label);
-	button.set_tooltip_text(tooltip);
-	button.show();
-}
-
-static void
-init_toggle_button(Gtk::ToggleToolButton& button, const std::string& label, const std::string& tooltip)
-{
-	// For label left/right padding
-	button.set_name("low-resolution");
-
-	button.set_label(label);
-	button.set_tooltip_text(tooltip);
-	button.set_is_important(true);
-	button.show();
-}
 
 /* === M E T H O D S ======================================================= */
 
 ResolutionDial::ResolutionDial()
 {
-	init_button(increase_resolution, "incr_resolution_icon", _("Increase Resolution"), _("Increase Display Resolution"));
-	init_button(decrease_resolution, "decr_resolution_icon", _("Decrease Resolution"), _("Decrease Display Resolution"));
-	init_toggle_button(use_low_resolution, _("Low Res"), _("Use Low Resolution when enabled"));
+	ActionWidgetHelper::init_toolbutton(increase_resolution, "doc.decrease-lowres-pixel-size", "incr_resolution_icon", _("Increase Resolution"), _("Increase Display Resolution"));
+	ActionWidgetHelper::init_toolbutton(decrease_resolution, "doc.increase-lowres-pixel-size", "decr_resolution_icon", _("Decrease Resolution"), _("Decrease Display Resolution"));
+	ActionWidgetHelper::init_toolbutton(use_low_resolution, "doc.toggle-low-resolution", "", _("Low Res"), _("Use Low Resolution when enabled"));
+	// For label left/right padding
+	use_low_resolution.set_name("low-resolution");
+	use_low_resolution.set_is_important(true);
+	// use_low_resolution.hide();
+	// use_low_resolution.show();
 }
 
 void
