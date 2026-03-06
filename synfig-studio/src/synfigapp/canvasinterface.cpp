@@ -806,7 +806,7 @@ CanvasInterface::import(
 		return layer_switch;
 	}
 
-	if (ext=="wav" || ext=="ogg" || ext=="mp3")
+	if (ext=="wav" || ext=="ogg" || ext=="mp3" || ext=="flac" || ext=="aac" || ext=="m4a" || ext=="opus")
 	{
 		Layer::Handle layer = layer_create("sound", get_canvas());
 		if(!layer)
