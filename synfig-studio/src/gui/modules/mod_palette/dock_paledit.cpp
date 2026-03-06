@@ -557,6 +557,10 @@ Dock_PalEdit::apply_color_to_selected_layer(int i){
         if (!layer) 
 			continue;
 
+		synfig::ValueBase color_param = layer->get_param("color");
+		if (color_param.get_type() == synfig::type_nil)
+    		continue;
+
         synfig::Canvas::Handle canvas = layer->get_canvas();
         synfigapp::Action::Handle action = synfigapp::Action::create("LayerParamSet");
         if (!action) 
