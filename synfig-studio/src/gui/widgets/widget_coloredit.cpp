@@ -499,19 +499,22 @@ void Widget_ColorEdit::setHVSColor(const synfig::Color& color)
 }
 void Widget_ColorEdit::on_palette_tab_switched(Gtk::Widget*, guint page)
 {
-    if (page != 3) return;
+    if (page != 3) 
+		return;
     refresh_palette_tab();
 }
 
 void Widget_ColorEdit::refresh_palette_tab()
 {
-    if (!pal_table) return;
+    if (!pal_table) 
+		return;
 
     // clear existing children
     for (auto child : pal_table->get_children())
         pal_table->remove(*child);
 
-    if (!Dock_PalEdit::instance) return;
+    if (!Dock_PalEdit::instance) 
+		return;
 
     const synfig::Palette& palette = Dock_PalEdit::instance->get_palette();
     const int width = 12;
