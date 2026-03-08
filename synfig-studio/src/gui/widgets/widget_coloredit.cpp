@@ -510,8 +510,8 @@ void Widget_ColorEdit::refresh_palette_tab()
 		return;
 
     // clear existing children
-    for (auto child : pal_table->get_children())
-        pal_table->remove(*child);
+	for (auto child : pal_table->get_children())
+    	delete child;
 
     if (!Dock_PalEdit::instance) 
 		return;
@@ -558,7 +558,7 @@ Widget_ColorEdit::on_palette_color_right_clicked(const synfig::Color& color)
     menu->append(*item);
 
 
-    menu->popup(2, gtk_get_current_event_time());
+    menu->popup(3, gtk_get_current_event_time());
 }
 
 void
