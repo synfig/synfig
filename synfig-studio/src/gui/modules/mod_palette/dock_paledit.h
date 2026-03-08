@@ -87,6 +87,7 @@ private:
 	void edit_color(int i);
 
 public:
+	static Dock_PalEdit* instance;
 	void set_palette(const synfig::Palette& x);
 	const synfig::Palette& get_palette()const { return palette_; }
 
