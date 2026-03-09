@@ -3308,9 +3308,11 @@ CanvasView::on_preview_option()
 			if(!po)
 			{
 				po = Dialog_PreviewOptions::create();
-				po->set_fps(r.get_frame_rate()/2);
 				set_ext_widget("prevoptions",po);
 			}
+
+			po->set_zoom(App::preview_quality);
+			po->set_fps(App::preview_fps);
 
 			if (!po->get_begin_override())
 				po->set_begintime(r.get_time_start());

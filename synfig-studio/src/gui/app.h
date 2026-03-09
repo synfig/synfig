@@ -239,6 +239,8 @@ public:
 	static synfig::Color  default_background_layer_color;
 	static synfig::String default_background_layer_image;
 	static synfig::Color  preview_background_color;
+	static float preview_quality;
+	static int preview_fps;
 
 	//The sound effects that will be used
 	static synfig::SoundProcessor* sound_render_done;
