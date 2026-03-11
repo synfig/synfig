@@ -38,6 +38,7 @@
 #include <gui/widgets/widget_color.h>
 #include <synfig/color.h>
 
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
@@ -183,7 +184,10 @@ public:
 	sigc::signal<void>& signal_value_changed() { return signal_value_changed_; }
 	
 	void on_color_changed();
-
+	void on_palette_color_clicked(const synfig::Color& color);
+	void on_palette_color_right_clicked(const synfig::Color& color);
+	void on_palette_tab_switched(Gtk::Widget*, guint page);
+	void refresh_palette_tab();
 	void activated() { signal_activated_(); }
 	void activate() { signal_activated_(); }
 	void set_value(const synfig::Color &data);
@@ -191,6 +195,9 @@ public:
 	synfig::Color get_value_raw();
 	void set_has_frame(bool x);
 	void set_digits(int x);
+
+	Gtk::Grid* pal_table = nullptr;
+	
 	Widget_ColorEdit();
 	~Widget_ColorEdit();
 
