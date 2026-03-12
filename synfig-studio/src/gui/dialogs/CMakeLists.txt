@@ -5,6 +5,7 @@ target_sources(synfigstudio
 		"${CMAKE_CURRENT_LIST_DIR}/canvasproperties.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/canvasresize.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_canvasdependencies.cpp"
+		"${CMAKE_CURRENT_LIST_DIR}/dialog_canvaspasteoptions.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_color.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_gradient.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_input.cpp"

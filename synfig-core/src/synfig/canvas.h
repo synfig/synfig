@@ -574,7 +574,7 @@ public:
 
 	//! Adds the given canvas as a child
 	Handle add_child_canvas(Handle child_canvas, const String &id);
-
+	void clear_parent();
 	//! Remove Child Canvas by its handle. If Current canvas is a child of a parent
 	//! it ask to the parent to remove the Child canvas.
 	void remove_child_canvas(Handle child_canvas);
