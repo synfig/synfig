@@ -421,6 +421,7 @@ software::Mesh::render_polygon(
 	Color::value_type opacity,
 	Color::BlendMethod blend_method )
 {
+	if (mesh.vertices.empty() || mesh.triangles.empty()) return;
 	render_polygon(
 		target_surface,
 		target_rect,
@@ -505,6 +506,7 @@ software::Mesh::render_mesh(
 	Color::value_type opacity,
 	Color::BlendMethod blend_method )
 {
+	if (mesh.vertices.empty() || mesh.triangles.empty()) return;
 	render_mesh(
 		target_surface,
 		target_rect,
