@@ -11,6 +11,7 @@ set(STUDIO_VERSION_MINOR 5)
 set(STUDIO_VERSION_PATCH 4)
 
 option(ENABLE_TCMALLOC "Enable use of tcmalloc library" OFF)
+option(ENABLE_UPDATE_CHECKER "Enable online update checker functionality" OFF)
 
 if(NOT CMAKE_BUILD_TYPE)
 	set(CMAKE_BUILD_TYPE Debug)
