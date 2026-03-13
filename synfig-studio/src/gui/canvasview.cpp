@@ -1010,10 +1010,41 @@ CanvasView::create_work_area()
 Gtk::ToolButton*
 CanvasView::create_action_toolbutton(const Glib::RefPtr<Gtk::Action> &action)
 {
-	Gtk::ToolButton *button = Gtk::manage(new Gtk::ToolButton());
-	button->set_related_action(action);
-	button->show();
-	return button;
+    Gtk::ToolButton *button = Gtk::manage(new Gtk::ToolButton());
+    button->set_related_action(action);
+    button->show();
+    return button;
+}
+Gtk::ToolButton*
+CanvasView::create_action_toolbutton(
+    const Glib::RefPtr<Gio::Action>& action, const Glib::ustring& icon_name)
+{
+    Gtk::ToolButton* button = Gtk::manage(new Gtk::ToolButton());
+    button->signal_clicked().connect([action]() {
+        if (action && action->get_enabled()) {
+            action->activate();
+        }
+    });
+
+    // Set icon
+    if (!icon_name.empty()) {
+        button->set_icon_name(icon_name);  
+        auto image = Gtk::manage(new Gtk::Image(icon_name, Gtk::ICON_SIZE_SMALL_TOOLBAR));
+        image->set_pixel_size(16);
+        button->set_icon_widget(*image); 
+    }
+
+    if (action) {
+        button->set_sensitive(action->get_enabled());
+        action->property_enabled().signal_changed().connect( 
+            [button, action]() {
+                button->set_sensitive(action->get_enabled());
+            }
+        );
+    }
+
+    button->show();
+    return button;
 }
 
 Gtk::SeparatorToolItem*
@@ -1032,31 +1063,36 @@ void CanvasView::toggle_render_combobox()
 	App::setup_changed();
 }
 
-Gtk::Widget*
+Gtk::Widget* 
 CanvasView::create_top_toolbar()
 {
-	top_toolbar = manage(new Gtk::Toolbar());
-	top_toolbar->set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
-	top_toolbar->set_toolbar_style(Gtk::TOOLBAR_BOTH_HORIZ);
-
+	top_toolbar = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL,0));
 	// File buttons
 	if (App::show_file_toolbar) {
-		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/new")));
-		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/open")));
-		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save")));
-		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save-as")));
-		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/save-all")));
+		top_toolbar->pack_start(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/new")), Gtk::PACK_SHRINK);
+		top_toolbar->pack_start(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/open")), Gtk::PACK_SHRINK);
+		top_toolbar->pack_start(*create_action_toolbutton(action_group->get_action("save")), Gtk::PACK_SHRINK);
+		top_toolbar->pack_start(*create_action_toolbutton(action_group->get_action("save-as")), Gtk::PACK_SHRINK);
+		top_toolbar->pack_start(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/save-all")), Gtk::PACK_SHRINK);
 
 		// Separator
-		top_toolbar->append( *create_tool_separator() );
+		top_toolbar->pack_start( *create_tool_separator() , Gtk::PACK_SHRINK);
 	}
 
-	// Undo/Redo buttons
-	top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/undo")));
-	top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/redo")));
+	// Retrieve the action group
+	auto action_group = Glib::RefPtr<Gio::SimpleActionGroup>::cast_dynamic(
+		App::get_history_action_group());
+	top_toolbar->pack_start(*create_action_toolbutton(action_group->lookup_action("undo"), "action_doc_undo_icon"), Gtk::PACK_SHRINK);
+	top_toolbar->pack_start(*create_action_toolbutton(action_group->lookup_action("redo"), "action_doc_redo_icon"), Gtk::PACK_SHRINK);
+		
+
+
+
+
+	
 
 	// Separator
-	top_toolbar->append(*create_tool_separator());
+	top_toolbar->pack_start(*create_tool_separator(), Gtk::PACK_SHRINK);
 
 	{ // Preview Settings dialog button
 		preview_options_button = Gtk::manage(new Gtk::ToolButton());
@@ -1067,7 +1103,7 @@ CanvasView::create_top_toolbar()
 		preview_options_button->set_tooltip_text(_("Shows the Preview Settings Dialog"));
 		preview_options_button->show();
 
-		top_toolbar->append(*preview_options_button);
+		top_toolbar->pack_start(*preview_options_button, Gtk::PACK_SHRINK);
 	}
 
 	{ // Render Settings dialog button
@@ -1079,11 +1115,11 @@ CanvasView::create_top_toolbar()
 		render_options_button->set_tooltip_text(_("Shows the Render Settings Dialog"));
 		render_options_button->show();
 
-		top_toolbar->append(*render_options_button);
+		top_toolbar->pack_start(*render_options_button, Gtk::PACK_SHRINK);
 	}
 
 	// Separator
-	top_toolbar->append(*create_tool_separator());
+	top_toolbar->pack_start(*create_tool_separator(), Gtk::PACK_SHRINK);
 
 	{ // Refresh button
 		refreshbutton = Gtk::manage(new Gtk::ToolButton());
@@ -1093,7 +1129,7 @@ CanvasView::create_top_toolbar()
 		refreshbutton->set_tooltip_text( _("Refresh workarea"));
 		refreshbutton->show();
 
-		top_toolbar->append(*refreshbutton);
+		top_toolbar->pack_start(*refreshbutton, Gtk::PACK_SHRINK);
 	}
 
 	{ // Rendering mode ComboBox
@@ -1111,7 +1147,7 @@ CanvasView::create_top_toolbar()
 		container->add(*render_combobox);
 
 		container->show();
-		top_toolbar->add(*container);
+		top_toolbar->pack_start(*container, Gtk::PACK_SHRINK);
 	}
 
 	{ // Background rendering button
@@ -1124,11 +1160,11 @@ CanvasView::create_top_toolbar()
 		background_rendering_button->set_tooltip_text(_("Render future and past frames in background when enabled"));
 		background_rendering_button->show();
 
-		top_toolbar->append(*background_rendering_button);
+		top_toolbar->pack_start(*background_rendering_button, Gtk::PACK_SHRINK);
 	}
 
 	// Separator
-	top_toolbar->append(*create_tool_separator());
+	top_toolbar->pack_start(*create_tool_separator(), Gtk::PACK_SHRINK);
 
 	// ResolutionDial widget
 	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
@@ -1141,7 +1177,7 @@ CanvasView::create_top_toolbar()
 	resolutiondial_->insert_to_toolbar(*top_toolbar);
 
 	// Separator
-	top_toolbar->append(*create_tool_separator());
+	top_toolbar->pack_start(*create_tool_separator(), Gtk::PACK_SHRINK);
 
 	{ // Onion skin toggle button
 		onion_skin = Gtk::manage(new Gtk::ToggleToolButton());
@@ -1153,7 +1189,7 @@ CanvasView::create_top_toolbar()
 		onion_skin->set_tooltip_text(_("Show Onion Skin when enabled"));
 		onion_skin->show();
 
-		top_toolbar->append(*onion_skin);
+		top_toolbar->pack_start(*onion_skin, Gtk::PACK_SHRINK);
 	}
 
 	{ // Past onion skin spin button
@@ -1169,7 +1205,7 @@ CanvasView::create_top_toolbar()
 		toolitem->set_is_important(true);
 		toolitem->show();
 
-		top_toolbar->append(*toolitem);
+		top_toolbar->pack_start(*toolitem, Gtk::PACK_SHRINK);
 	}
 
 	{ // Future onion skin spin button
@@ -1185,7 +1221,7 @@ CanvasView::create_top_toolbar()
 		toolitem->set_is_important(true);
 		toolitem->show();
 
-		top_toolbar->append(*toolitem);
+		top_toolbar->pack_start(*toolitem, Gtk::PACK_SHRINK);
 	}
 
 	{ // Onion skin on Keyframes/Frames toggle button
@@ -1198,8 +1234,23 @@ CanvasView::create_top_toolbar()
 		onion_skin_keyframes->set_tooltip_text(_("Show Onion Skin on Keyframes when enabled, on Frames when disabled"));
 		onion_skin_keyframes->show();
 
-		top_toolbar->append(*onion_skin_keyframes);
+		top_toolbar->pack_start(*onion_skin_keyframes , Gtk::PACK_SHRINK);
 	}
+
+	for (auto child : top_toolbar->get_children()) {
+		if (auto tool_button = dynamic_cast<Gtk::ToolButton*>(child)) {	
+			if (!tool_button->get_icon_name().empty()) {
+				auto image = Gtk::make_managed<Gtk::Image>(tool_button->get_icon_name(), Gtk::ICON_SIZE_MENU);
+				image->set_pixel_size(16);
+				tool_button->set_icon_widget(*image);
+				tool_button->show_all();
+			}
+		}
+	}
+	
+	//padding can be done by css
+	top_toolbar->set_margin_top(5);
+	top_toolbar->set_margin_bottom(5);
 
 	if(App::enable_mainwin_toolbar)
 		top_toolbar->show();
@@ -1227,10 +1278,7 @@ CanvasView::create_stop_button()
 Gtk::Widget*
 CanvasView::create_right_toolbar()
 {
-	right_toolbar = manage(new Gtk::Toolbar());
-	right_toolbar->set_icon_size(Gtk::IconSize::from_name("synfig-small_icon_16x16"));
-	right_toolbar->set_toolbar_style(Gtk::TOOLBAR_ICONS);
-	right_toolbar->set_property("orientation", Gtk::ORIENTATION_VERTICAL);
+	right_toolbar = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL,0));
 
 	{ // Show grid toggle button
 		show_grid = Gtk::manage(new Gtk::ToggleToolButton());
@@ -1242,7 +1290,7 @@ CanvasView::create_right_toolbar()
 		show_grid->set_tooltip_text(_("Show Grid when enabled"));
 		show_grid->show();
 
-		right_toolbar->append(*show_grid);
+		right_toolbar->pack_start(*show_grid, Gtk::PACK_SHRINK);
 	}
 
 	{ // Snap to grid toggle button
@@ -1255,7 +1303,7 @@ CanvasView::create_right_toolbar()
 		snap_grid->set_tooltip_text(_("Snap to Grid when enabled"));
 		snap_grid->show();
 
-		right_toolbar->append(*snap_grid);
+		right_toolbar->pack_start(*snap_grid, Gtk::PACK_SHRINK);
 	}
 
 	{ // Show guide toggle button
@@ -1268,7 +1316,7 @@ CanvasView::create_right_toolbar()
 		show_guides->set_tooltip_text(_("Show Guides when enabled"));
 		show_guides->show();
 
-		right_toolbar->append(*show_guides);
+		right_toolbar->pack_start(*show_guides, Gtk::PACK_SHRINK);
 	}
 
 	{ // Snap to guides toggle button
@@ -1281,11 +1329,11 @@ CanvasView::create_right_toolbar()
 		snap_guides->set_tooltip_text(_("Snap to Guides when enabled"));
 		snap_guides->show();
 
-		right_toolbar->append(*snap_guides);
+		right_toolbar->pack_start(*snap_guides, Gtk::PACK_SHRINK);
 	}
 
 	// Separator
-	right_toolbar->append(*create_tool_separator());
+	right_toolbar->pack_start(*create_tool_separator(), Gtk::PACK_SHRINK);
 
 	// ToggleDuckDial widget
 	Duck::Type m = work_area->get_type_mask();
@@ -1303,6 +1351,18 @@ CanvasView::create_right_toolbar()
 	toggleducksdial.signal_ducks_angle().connect(
 		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE));
 	toggleducksdial.insert_to_toolbar(*right_toolbar);
+	//setting icon size 16*16
+	for (auto child : right_toolbar->get_children()) {
+		if (auto tool_button = dynamic_cast<Gtk::ToolButton*>(child)) {			
+			auto image = Gtk::make_managed<Gtk::Image>(tool_button->get_icon_name(), Gtk::ICON_SIZE_MENU);
+			image->set_pixel_size(16);
+			tool_button->set_icon_widget(*image);
+			tool_button->show_all(); 
+		}
+	}
+	//padding can be done by css
+	right_toolbar->set_margin_start(5);
+	right_toolbar->set_margin_end(5);
 
 	right_toolbar->show();
 

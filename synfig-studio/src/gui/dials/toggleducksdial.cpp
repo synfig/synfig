@@ -70,21 +70,38 @@ ToggleDucksDial::ToggleDucksDial(const Gtk::IconSize &size)
 }
 
 void
-ToggleDucksDial::insert_to_toolbar(Gtk::Toolbar &toolbar, int index)
+ToggleDucksDial::insert_to_toolbar(Gtk::Box &toolbar, int index)
 {
-	if (index < 0) index = toolbar.get_n_items();
+    auto children = toolbar.get_children();
+    int num_children = children.size();
 
-	// reverse order
-	toolbar.insert(ducks_angle,    index);
-	toolbar.insert(ducks_width,    index);
-	toolbar.insert(ducks_radius,   index);
-	toolbar.insert(ducks_tangent,  index);
-	toolbar.insert(ducks_vertex,   index);
-	toolbar.insert(ducks_position, index);
+    // If index is negative or exceeds the number of children, append at the end
+    if (index < 0 || index > num_children) {
+        index = num_children;
+    }
+
+    // Insert widgets in reverse order after the determined sibling
+    toolbar.pack_start(ducks_position, Gtk::PACK_SHRINK);
+    toolbar.reorder_child(ducks_position, index);
+
+    toolbar.pack_start(ducks_vertex, Gtk::PACK_SHRINK);
+    toolbar.reorder_child(ducks_vertex, index + 1);
+
+    toolbar.pack_start(ducks_tangent, Gtk::PACK_SHRINK);
+    toolbar.reorder_child(ducks_tangent,  index + 2);
+
+    toolbar.pack_start(ducks_radius, Gtk::PACK_SHRINK);
+    toolbar.reorder_child(ducks_radius, index + 3);
+
+    toolbar.pack_start(ducks_width, Gtk::PACK_SHRINK);
+    toolbar.reorder_child(ducks_width, index + 4);
+
+    toolbar.pack_start(ducks_angle, Gtk::PACK_SHRINK);
+    toolbar.reorder_child(ducks_angle, index + 5);
 }
 
 void
-ToggleDucksDial::remove_from_toolbar(Gtk::Toolbar &toolbar)
+ToggleDucksDial::remove_from_toolbar(Gtk::Box &toolbar)
 {
 	toolbar.remove(ducks_position);
 	toolbar.remove(ducks_vertex);
