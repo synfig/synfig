@@ -426,7 +426,10 @@ LayerTree::select_layer(synfig::Layer::Handle layer)
 			iter=sorted_layer_tree_store_->convert_child_iter_to_iter(iter);
 
 		Gtk::TreePath path(iter);
-		layer_tree_view().expand_to_path(path);
+		// do not auto expand when selecting a group layer to avoid "opening" it on selection
+		if(!(layer->get_name() == "group"))
+			layer_tree_view().expand_to_path(path);
+
 		layer_tree_view().scroll_to_row(path);
 		layer_tree_view().get_selection()->select(iter);
 	}
