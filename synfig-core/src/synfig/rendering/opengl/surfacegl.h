@@ -4,6 +4,7 @@
 **
 **	\legal
 **	......... ... 2015-2018 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -31,7 +32,8 @@
 /* === H E A D E R S ======================================================= */
 
 #include "../surface.h"
-#include "internal/predeclarations.h"
+#include "internal/framebuffer.h"
+#include <memory>
 
 /* === M A C R O S ========================================================= */
 
@@ -53,23 +55,21 @@ public:
 		{ return token.handle(); }
 
 private:
-	gl::Identifier id;
+	gl::Framebuffer framebuffer;
 
 protected:
-	gl::Environment& env() const;
-
 	virtual bool create_vfunc(int width, int height);
 	virtual bool assign_vfunc(const Surface &surface);
+	virtual bool clear_vfunc();
 	virtual bool reset_vfunc();
-	virtual bool get_pixels_vfunc(Color *buffer) const;
+	virtual const Color* get_pixels_pointer_vfunc() const;
 
 public:
 	SurfaceGL();
 	explicit SurfaceGL(const Surface &other);
 	~SurfaceGL();
 
-	gl::Identifier get_id() const
-		{ return id; }
+	gl::Framebuffer& get_framebuffer();
 };
 
 } /* end namespace rendering */
