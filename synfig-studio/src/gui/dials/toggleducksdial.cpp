@@ -35,6 +35,8 @@
 #endif
 
 #include "toggleducksdial.h"
+
+#include <gui/actionwidgethelper.h>
 #include <gui/localization.h>
 
 #endif
@@ -50,23 +52,15 @@ using namespace studio;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-static void
-init_label_button(Gtk::ToggleToolButton &button, const std::string& icon_name, const std::string& label, const std::string& tooltip)
-{
-	button.set_label(label);
-	button.set_tooltip_text(tooltip);
-	button.set_icon_name(icon_name);
-	button.show();
-}
 
 ToggleDucksDial::ToggleDucksDial(const Gtk::IconSize &size)
 {
-	init_label_button(ducks_position, "duck_position_icon", _("Position handles"), _("Toggle position handles"));
-	init_label_button(ducks_vertex,   "duck_vertex_icon",   _("Vertex handles"),   _("Toggle vertex handles"));
-	init_label_button(ducks_tangent,  "duck_tangent_icon",  _("Tangent handles"),  _("Toggle tangent handles"));
-	init_label_button(ducks_radius,   "duck_radius_icon",   _("Radius handles"),   _("Toggle radius handles"));
-	init_label_button(ducks_width,    "duck_width_icon",    _("Width handles"),    _("Toggle width handles"));
-	init_label_button(ducks_angle,    "duck_angle_icon",    _("Angle handles"),    _("Toggle angle handles"));
+	ActionWidgetHelper::init_toolbutton(ducks_position, "doc.mask-position-ducks", "duck_position_icon", _("Position handles"), _("Toggle position handles"));
+	ActionWidgetHelper::init_toolbutton(ducks_vertex,   "doc.mask-vertex-ducks",   "duck_vertex_icon",   _("Vertex handles"),   _("Toggle vertex handles"));
+	ActionWidgetHelper::init_toolbutton(ducks_tangent,  "doc.mask-tangent-ducks",  "duck_tangent_icon",  _("Tangent handles"),  _("Toggle tangent handles"));
+	ActionWidgetHelper::init_toolbutton(ducks_radius,   "doc.mask-radius-ducks",   "duck_radius_icon",   _("Radius handles"),   _("Toggle radius handles"));
+	ActionWidgetHelper::init_toolbutton(ducks_width,    "doc.mask-width-ducks",    "duck_width_icon",    _("Width handles"),    _("Toggle width handles"));
+	ActionWidgetHelper::init_toolbutton(ducks_angle,    "doc.mask-angle-ducks",    "duck_angle_icon",    _("Angle handles"),    _("Toggle angle handles"));
 }
 
 void

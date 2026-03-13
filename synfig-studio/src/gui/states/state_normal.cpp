@@ -809,7 +809,8 @@ StateNormal_Context::event_multiple_ducks_clicked_handler(const Smach::event& x)
 		value_desc_list.push_back(value_desc);
 	}
 
-	Gtk::Menu *menu=manage(new Gtk::Menu());
+	Gtk::Menu* menu=manage(new Gtk::Menu());
+	menu->attach_to_widget(*canvas_view_);
 	menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
