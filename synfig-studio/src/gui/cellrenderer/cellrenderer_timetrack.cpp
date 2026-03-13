@@ -43,6 +43,7 @@
 #include <synfig/layers/layer_pastecanvas.h>
 #include <synfig/valuenodes/valuenode_animated.h>
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
+#include <synfig/general.h>
 
 #include <gui/exception_guard.h>
 #include <gui/instance.h>
@@ -74,7 +75,7 @@ static Time
 get_time_offset_from_vdesc(const ValueDesc &v)
 {
 #ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET
-	if (v.get_value_type() != type_canvas || getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
+	if (v.get_value_type() != type_canvas || DEBUG_GETENV("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
 		return Time::zero();
 
 	if (!v.get_value().get(Canvas::Handle()))
@@ -98,7 +99,7 @@ static Time
 get_time_dilation_from_vdesc(const ValueDesc &v)
 {
 #ifdef ADJUST_WAYPOINTS_FOR_TIME_OFFSET
-	if (v.get_value_type() != type_canvas || getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
+	if (v.get_value_type() != type_canvas || DEBUG_GETENV("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
 		return Time(1.0);
 
 	if (!v.get_value().get(Canvas::Handle()))
@@ -122,7 +123,7 @@ get_time_dilation_from_vdesc(const ValueDesc &v)
 static const Node::time_set*
 get_times_from_vdesc(const ValueDesc &v)
 {
-	if (v.get_value_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
+	if (v.get_value_type() == type_canvas && !DEBUG_GETENV("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS"))
 		if(Canvas::Handle canvasparam = v.get_value().get(Canvas::Handle()))
 			return &canvasparam->get_times();
 
@@ -533,7 +534,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 				sel_times.insert(stime);
 				if (sel_times.size() == 1 && event->type == GDK_2BUTTON_PRESS) {
 					ValueBase v = value_desc.get_value(stime);
-					etl::handle<Node> node = v.get_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")
+					etl::handle<Node> node = v.get_type() == type_canvas && !DEBUG_GETENV("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")
 					               ? etl::handle<Node>(v.get(Canvas::Handle()))
 					               : etl::handle<Node>(value_desc.get_value_node());
 					if (node)
@@ -549,7 +550,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 		} else
 		if (event->button.button == 3) {
 			ValueBase v = value_desc.get_value(stime);
-			etl::handle<Node> node = v.get_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")
+			etl::handle<Node> node = v.get_type() == type_canvas && !DEBUG_GETENV("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")
 					               ? etl::handle<Node>(v.get(Canvas::Handle()))
 					               : etl::handle<Node>(value_desc.get_value_node());
 			if (clickfound && node)
@@ -569,7 +570,7 @@ CellRenderer_TimeTrack::activate_vfunc(
 				Action::ParamList param_list;
 				param_list.add("canvas", canvas_interface->get_canvas());
 				param_list.add("canvas_interface", canvas_interface);
-				if (sel_value.get_value_type() == type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
+				if (sel_value.get_value_type() == type_canvas && !DEBUG_GETENV("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
 					param_list.add("addcanvas", sel_value.get_value().get(Canvas::Handle()));
 				} else {
 					param_list.add("addvaluedesc", sel_value);
