@@ -288,6 +288,9 @@ String        studio::App::default_background_layer_type  = "none";
 synfig::Color studio::App::default_background_layer_color =
 	synfig::Color(1.000000, 1.000000, 1.000000, 1.000000);  //White
 String        studio::App::default_background_layer_image = "undefined";
+bool App::default_keyframedial_past = false;  
+bool App::default_keyframedial_future = false; 
+int App::default_interpolation = INTERPOLATION_CLAMPED; 
 synfig::Color studio::App::preview_background_color =
 	synfig::Color(0.742187, 0.742187, 0.742187, 1.000000);  //X11 Gray
 
@@ -583,6 +586,21 @@ public:
 				value = strprintf("%s", App::default_background_layer_image.c_str());
 				return true;
 			}
+			if (key == "default_keyframedial_past")
+			{
+				value = strprintf("%d", App::default_keyframedial_past);
+				return true;
+			}
+			if (key == "default_keyframedial_future")
+			{
+				value = strprintf("%d", App::default_keyframedial_future);
+				return true;
+			}
+			if (key == "default_interpolation")
+			{
+				value = strprintf("%d", App::default_interpolation);
+				return true;
+			}
 			if (key == "preview_background_color")
 			{
 				value = strprintf("%f %f %f %f",
@@ -773,6 +791,21 @@ public:
 				App::default_background_layer_image = value;
 				return true;
 			}
+			if (key == "default_keyframedial_past")
+			{
+				App::default_keyframedial_past = (atoi(value.c_str()) != 0);
+				return true;
+			}
+			if (key == "default_keyframedial_future")
+			{
+				App::default_keyframedial_future = (atoi(value.c_str()) != 0);
+				return true;
+			}
+			if (key == "default_interpolation")
+			{
+				App::default_interpolation = atoi(value.c_str());
+				return true;
+			}
 			if (key == "preview_background_color")
 			{
 				float r,g,b,a;
@@ -846,6 +879,9 @@ public:
 		ret.push_back("default_background_layer_type");
 		ret.push_back("default_background_layer_color");
 		ret.push_back("default_background_layer_image");
+		ret.push_back("default_keyframedial_past");
+		ret.push_back("default_keyframedial_future");
+		ret.push_back("default_interpolation");
 		ret.push_back("preview_background_color");
 		ret.push_back("use_render_done_sound");
 		ret.push_back("enable_mainwin_menubar");
@@ -1570,6 +1606,9 @@ void App::init(const synfig::String& rootpath)
 		load_settings("pref.default_background_layer_type");
 		load_settings("pref.default_background_layer_color");
 		load_settings("pref.default_background_layer_image");
+		load_settings("pref.default_keyframedial_past");
+		load_settings("pref.default_keyframedial_future");
+		load_settings("pref.default_interpolation");
 		load_settings("pref.preview_background_color");
 		load_settings("pref.image_editor_path");
 
@@ -3773,6 +3812,7 @@ App::new_instance()
 	canvas->rend_desc().set_flags(RendDesc::PX_ASPECT|RendDesc::IM_SPAN);
 	canvas->set_file_name(filename);
 	canvas->keyframe_list().add(synfig::Keyframe());
+	canvas->set_interpolation(App::default_interpolation);
 
 	FileSystem::Handle container = new FileSystemEmpty();
 	FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(container);
@@ -3783,6 +3823,25 @@ App::new_instance()
 	canvas->set_identifier(file_system->get_identifier(canvas_filename));
 
 	etl::handle<Instance> instance = Instance::create(canvas, container);
+
+	
+	etl::handle<synfigapp::CanvasInterface> canvas_interface = instance->find_canvas_interface(canvas);
+
+	if (App::default_keyframedial_past) {
+		canvas_interface->set_mode(static_cast<synfigapp::CanvasInterface::Mode>(
+			canvas_interface->get_mode() | synfigapp::MODE_ANIMATE_PAST));
+	} else {
+		canvas_interface->set_mode(static_cast<synfigapp::CanvasInterface::Mode>(
+			canvas_interface->get_mode() & ~synfigapp::MODE_ANIMATE_PAST));
+	}
+
+	if (App::default_keyframedial_future) {
+		canvas_interface->set_mode(static_cast<synfigapp::CanvasInterface::Mode>(
+			canvas_interface->get_mode() | synfigapp::MODE_ANIMATE_FUTURE));
+	} else {
+		canvas_interface->set_mode(static_cast<synfigapp::CanvasInterface::Mode>(
+			canvas_interface->get_mode() & ~synfigapp::MODE_ANIMATE_FUTURE));
+	}
 
 	if (App::default_background_layer_type == "solid_color")
 	{
