@@ -77,6 +77,22 @@ jpeg_trgt::~jpeg_trgt()
 }
 
 bool
+jpeg_trgt::is_multiple_files() const
+{
+	return multi_image;
+}
+
+filesystem::Path
+jpeg_trgt::get_filename() const
+{
+	if (!multi_image)
+		return filename;
+	if (filename.u8string() == "-")
+		return filename;
+	return filesystem::Path(filename).add_suffix(strprintf("%s%04d", sequence_separator.c_str(), desc.get_frame_start()));
+}
+
+bool
 jpeg_trgt::set_rend_desc(RendDesc *given_desc)
 {
 	desc=*given_desc;

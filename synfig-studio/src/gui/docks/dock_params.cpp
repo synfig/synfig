@@ -109,9 +109,25 @@ Dock_Params::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 			sigc::mem_fun(
 				*this,
 				&Dock_Params::refresh_selected_param ));
+
+		// Connect to the canvas's signal_changed() to detect state changes
+		canvas_changed_connection = canvas_view->get_canvas()->signal_changed().connect(
+			sigc::mem_fun(
+				*this, &Dock_Params::refresh_tree_view));
+
 		tree_view->show();
 
 		add(*tree_view);
 		get_container()->set_vadjustment(vadjustment);
+	}
+}
+
+void
+Dock_Params::refresh_tree_view()
+{
+	Gtk::TreeView* tree_view = dynamic_cast<Gtk::TreeView*>(get_canvas_view()->get_ext_widget(get_name()));
+	if (tree_view)
+	{
+		tree_view->queue_draw();
 	}
 }

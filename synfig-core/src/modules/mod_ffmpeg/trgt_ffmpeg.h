@@ -66,6 +66,9 @@ public:
 				const synfig::TargetParam& params);
 	virtual ~ffmpeg_trgt();
 
+	bool is_multiple_files() const override;
+	synfig::filesystem::Path get_filename() const override;
+
 	bool set_rend_desc(synfig::RendDesc* desc) override;
 	//! Initialization tasks of ffmpeg target.
 	//! @returns true if the initialization has no errors

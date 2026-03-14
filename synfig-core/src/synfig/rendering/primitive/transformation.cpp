@@ -86,7 +86,7 @@ Transformation::make_discrete_bounds(const Bounds &bounds)
 		Rect(
 			bounds.rect.get_min() - border,
 			bounds.rect.get_max() + border ),
-		raster_size + VectorInt(border_width, border_width) );
+		raster_size + VectorInt(2*border_width, 2*border_width) );
 }
 
 Matrix2

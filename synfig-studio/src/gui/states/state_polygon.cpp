@@ -86,7 +86,6 @@ class studio::StatePolygon_Context : public sigc::trackable
 	CanvasView::Handle canvas_view_;
 	CanvasView::IsWorking is_working;
 
-	bool prev_table_status;
 	bool prev_workarea_layer_status_;
 
 	Duckmatic::Push duckmatic_push;
@@ -546,10 +545,6 @@ StatePolygon_Context::StatePolygon_Context(CanvasView* canvas_view):
 
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
-	// Hide the tables if they are showing
-	prev_table_status=get_canvas_view()->tables_are_visible();
-	if(prev_table_status)get_canvas_view()->hide_tables();
-
 	// Disable the time bar
 	get_canvas_view()->set_sensitive_timebar(false);
 
@@ -609,9 +604,6 @@ StatePolygon_Context::~StatePolygon_Context()
 
 	// Enable the time bar
 	get_canvas_view()->set_sensitive_timebar(true);
-
-	// Bring back the tables if they were out before
-	if(prev_table_status)get_canvas_view()->show_tables();
 
 	// Refresh the work area
 	get_work_area()->queue_draw();

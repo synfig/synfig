@@ -75,6 +75,9 @@ class Dock_PalEdit : public Dockable
 
 private:
 	int add_color(const synfig::Color& x);
+	bool check_hex_format(const std::string& hexcolor);
+	void add_from_clipboard();
+	void copy_color(int i);
 	void set_color(synfig::Color x, int i);
 	void erase_color(int i);
 

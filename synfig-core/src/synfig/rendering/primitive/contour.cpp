@@ -632,7 +632,7 @@ Contour::to_intersector(Intersector &intersector) const
 }
 
 Intersector::Handle
-Contour::crerate_intersector() const
+Contour::create_intersector() const
 {
 	Intersector::Handle intersector(new Intersector());
 	to_intersector(*intersector);
@@ -645,7 +645,7 @@ Contour::get_intersector() const
 {
 	std::lock_guard<std::mutex> lock(intersector_read_mutex);
 	if (!intersector) {
-		intersector = crerate_intersector();
+		intersector = create_intersector();
 		std::lock_guard<std::mutex> lock(bounds_read_mutex);
 		if (!bounds_calculated) {
 			bounds = intersector->get_bounds();

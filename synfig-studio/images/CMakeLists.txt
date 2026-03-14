@@ -202,9 +202,12 @@ set(ICONS
 	select_all_child_layers_icon
 	set_fill_color_icon
 	set_icon
+	hex_icon
 	set_outline_color_icon
 	show_grid_icon
 	show_guideline_icon
+	lower_bound_handle_icon
+	upper_bound_handle_icon
 	sif_icon
 	snap_grid_icon
 	snap_guideline_icon
@@ -244,7 +247,11 @@ set(ICONS
 	type_splinepoint_icon
 	type_string_icon
 	type_time_icon
+	type_transformation_icon
 	type_vector_icon
+	type_pair_bone_object_bone_object_icon
+	type_bone_object_icon
+	type_bone_valuenode_icon
 	utils_timetrack_align_icon
 	valuenode_icon
 )

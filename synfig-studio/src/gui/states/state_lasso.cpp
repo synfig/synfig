@@ -100,8 +100,6 @@ class studio::StateLasso_Context : public sigc::trackable
 
 	WorkArea::PushState push_state;
 
-	bool prev_table_status;
-
 	int nested;
 	sigc::connection process_queue_connection;
 
@@ -683,10 +681,6 @@ StateLasso_Context::StateLasso_Context(CanvasView* canvas_view):
 	// Turn off duck clicking
 	get_work_area()->set_allow_duck_clicks(false);
 
-	// Hide the tables if they are showing
-	prev_table_status=get_canvas_view()->tables_are_visible();
-	//if(prev_table_status)get_canvas_view()->hide_tables();
-
 	// Disable the time bar
 	get_canvas_view()->set_sensitive_timebar(false);
 
@@ -757,9 +751,6 @@ StateLasso_Context::~StateLasso_Context()
 
 	// Enable the time bar
 	get_canvas_view()->set_sensitive_timebar(true);
-
-	// Bring back the tables if they were out before
-	if(prev_table_status)get_canvas_view()->show_tables();
 
 	// Refresh the work area
 	get_work_area()->queue_draw();
@@ -1086,7 +1077,6 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
 				{
 					shift_origin = true;
 					shift_origin_vector = start_duck->get_origin();
-					get_canvas_interface()->auto_export(start_duck_value_desc);
 					if (extend_finish)
 						if(start_duck_value_node_bline&&start_duck_value_node_bline==finish_duck_value_node_bline)
 							extend_finish_join_same=true;
@@ -1110,7 +1100,6 @@ StateLasso_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synf
 				{
 					shift_origin = true;
 					shift_origin_vector = finish_duck->get_origin();
-					get_canvas_interface()->auto_export(finish_duck_value_desc);
 					if(extend_start)
 						if(finish_duck_value_node_bline&&start_duck_value_node_bline==finish_duck_value_node_bline)
 							extend_start_join_same=true;
@@ -2055,7 +2044,6 @@ StateLasso_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real
 								value_node->set_link("t2",value_node_next->get_link("t2"));
 								value_node->set_link("split",ValueNode_Const::create(true));
 
-								// get_canvas_interface()->auto_export(value_node);
 								printf("exporting\n");
 								get_canvas_interface()->add_value_node(value_node,value_node->get_id() + strprintf("foo %d", rand()));
 
@@ -2135,17 +2123,11 @@ StateLasso_Context::new_region(std::list<synfig::BLinePoint> bline, synfig::Real
 
 		std::list<synfigapp::ValueDesc>::iterator iter;
 		for (iter = vertex_list.begin(); iter != vertex_list.end(); ++iter) {
-			// Ensure that the vertex is exported.
-			get_canvas_interface()->auto_export(*iter);
-
 			value_node_bline->add(iter->get_value_node());
-			//value_node_bline->add(ValueNode_BLine::ListEntry(iter->get_value_node()));
 		}
 
 		value_node_bline->set_loop(true);
 	}
-
-	get_canvas_interface()->auto_export(value_node_bline);
 
 	// Now we create the region layer
 	// Create the layer
@@ -2616,8 +2598,6 @@ StateLasso_Context::fill_last_stroke_and_unselect_other_layers()
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Fill Stroke"));
 
 	Layer::Handle layer;
-
-	get_canvas_interface()->auto_export(last_stroke);
 
 	synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 

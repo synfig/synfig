@@ -59,6 +59,9 @@ public:
 	yuv(const synfig::filesystem::Path& filename, const synfig::TargetParam& /* params */);
 	virtual ~yuv();
 
+	bool is_multiple_files() const override;
+	synfig::filesystem::Path get_filename() const override;
+
 	bool set_rend_desc(synfig::RendDesc* desc) override;
 	bool init(synfig::ProgressCallback* cb) override;
 

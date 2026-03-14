@@ -322,10 +322,14 @@ src/synfig/value.h
 src/synfig/valuenode.cpp
 src/synfig/valuenode.h
 src/synfig/valuenode_registry.cpp
+src/synfig/valuenodes/valuenode_absolute.cpp
+src/synfig/valuenodes/valuenode_absolute.h
 src/synfig/valuenodes/valuenode_add.cpp
 src/synfig/valuenodes/valuenode_add.h
 src/synfig/valuenodes/valuenode_and.cpp
 src/synfig/valuenodes/valuenode_and.h
+src/synfig/valuenodes/valuenode_angle.cpp
+src/synfig/valuenodes/valuenode_angle.h
 src/synfig/valuenodes/valuenode_anglestring.cpp
 src/synfig/valuenodes/valuenode_anglestring.h
 src/synfig/valuenodes/valuenode_animated.cpp
@@ -392,6 +396,8 @@ src/synfig/valuenodes/valuenode_linear.cpp
 src/synfig/valuenodes/valuenode_linear.h
 src/synfig/valuenodes/valuenode_log.cpp
 src/synfig/valuenodes/valuenode_log.h
+src/synfig/valuenodes/valuenode_maprange.cpp
+src/synfig/valuenodes/valuenode_maprange.h
 src/synfig/valuenodes/valuenode_modulo.cpp
 src/synfig/valuenodes/valuenode_modulo.h
 src/synfig/valuenodes/valuenode_not.cpp

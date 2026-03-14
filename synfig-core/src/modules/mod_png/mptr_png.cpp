@@ -77,6 +77,7 @@ png_mptr::png_out_error(png_struct */*png_data*/,const char *msg)
 	//png_mptr *me=(png_mptr*)png_data->error_ptr;
 	synfig::error(strprintf("png_mptr: error: %s",msg));
 	//me->ready=false;
+	throw std::runtime_error(msg);
 }
 
 void
@@ -230,7 +231,13 @@ png_mptr::get_frame(synfig::Surface &surface, const synfig::RendDesc &/*renddesc
 	for (png_uint_32 i = 0; i < height; i++)
 		row_pointers[i] = &(data[rowbytes*i]);
 
-	png_read_image(png_ptr, row_pointers.data());
+	try {
+		png_read_image(png_ptr, row_pointers.data());
+	}
+	catch (...) {
+		png_destroy_read_struct(&png_ptr, &info_ptr, nullptr);
+		return false;
+	}
 
 	surface.set_wh(width, height);
 	switch(color_type)

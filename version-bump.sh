@@ -45,6 +45,11 @@ sed -i "s|date=\".*\">|date=\"${DATE}\">|" synfig-studio/org.synfig.SynfigStudio
 
 sed -i "s|  \"version\": \"${VERSION_CURRENT}\",|  \"version\": \"${VERSION_NEW}\",|" vcpkg.json
 
+sed -i "s|SynfigStudio-${VERSION_CURRENT}-testing|SynfigStudio-${VERSION_NEW}-testing|" appveyor.yml
+
+sed -i "s| - Synfig version: ${VERSION_CURRENT}| - Synfig version: ${VERSION_NEW}|" .github/ISSUE_TEMPLATE/bug-report--version-1-5.md
+
+
 git add \
 	ETL/configure.ac \
 	synfig-core/configure.ac \
@@ -54,6 +59,8 @@ git add \
 	CMakeLists.txt \
 	synfig-studio/src/gui/CMakeLists.txt \
 	vcpkg.json \
+	appveyor.yml \
+	.github/ISSUE_TEMPLATE/bug-report--version-1-5.md \
 	# end
 
 git commit -m "Bump version to ${VERSION_NEW}"

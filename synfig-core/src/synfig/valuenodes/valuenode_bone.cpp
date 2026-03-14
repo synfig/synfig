@@ -838,7 +838,7 @@ ValueNode_Bone::get_bones_affected_by(ValueNode::Handle value_node)
 	BoneSet ret;
 	std::set<const Node*> seen, current_nodes, new_nodes;
 	int generation = 0;
-	bool debug = DEBUG_GETENV("SYNFIG_DEBUG_SUITABLE_PARENTS");
+	const bool debug = DEBUG_GETENV("SYNFIG_DEBUG_SUITABLE_PARENTS");
 
 	if (debug) printf("getting bones affected by %p %s\n", value_node.get(), value_node->get_string().c_str());
 
@@ -885,7 +885,7 @@ ValueNode_Bone::BoneSet
 ValueNode_Bone::get_possible_parent_bones(ValueNode::Handle value_node)
 {
 	BoneSet ret;
-	bool debug = DEBUG_GETENV("SYNFIG_DEBUG_SUITABLE_PARENTS");
+	const bool debug = DEBUG_GETENV("SYNFIG_DEBUG_SUITABLE_PARENTS");
 
 	if (debug) printf("%s:%d which bones can be parents of %p (%s)\n", __FILE__, __LINE__, value_node.get(), value_node->get_string().c_str());
 

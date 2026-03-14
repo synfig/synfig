@@ -1,6 +1,6 @@
 # -- I N I T --------------------------------------------------
 AC_PREREQ(2.60)
-AC_INIT([Extended Template Library],[1.5.3],[https://github.com/synfig/synfig/issues],[ETL])
+AC_INIT([Extended Template Library],[1.5.4],[https://github.com/synfig/synfig/issues],[ETL])
 AC_REVISION
 
 AM_SILENT_RULES([yes])
@@ -41,8 +41,6 @@ AC_ARG_OPTIMIZATION
 AC_ARG_DEBUG
 AC_ARG_PROFILING
 
-AC_WIN32_QUIRKS
-
 # -- L I B R A R I E S ----------------------------------------
 
 # -- H E A D E R S --------------------------------------------
@@ -65,15 +63,7 @@ AH_BOTTOM([
 
 # -- F U N C T I O N S ----------------------------------------
 
-ETL_DEPS
-
 # -- O U T P U T ----------------------------------------------
-
-PKG_CHECK_MODULES(GLIBMM, [glibmm-2.4 >= 2.24.2],[
-	CONFIG_DEPS="$CONFIG_DEPS glibmm-2.4"
-],[
-	AC_MSG_ERROR([ ** You need to install glibmm-2.4 version 2.24.2 or higher.])
-])
 
 etlincludedir=$includedir/ETL
 AC_SUBST(etlincludedir)

@@ -401,6 +401,24 @@ C blendfunc_ALPHA_OVER(C &a,C &b,float amount)
 	return blendfunc_STRAIGHT(rm,b,amount);
 }
 
+/**
+ * Overlapping areas are transparent. Otherwise, act as composite.
+ */
+template <class C>
+C blendfunc_ALPHA_INTERSECTION(C& fg, C& bg, float amount)
+{
+	constexpr auto floor = C::floor;
+	const bool fg_transparent = approximate_equal(fg.get_a(), floor);
+	const bool bg_transparent = approximate_equal(bg.get_a(), floor);
+
+	if (bg_transparent || fg_transparent)
+		return blendfunc_COMPOSITE(fg, bg, amount);
+
+	C rm(bg);
+	rm.set_a((C::ceil - amount) * bg.get_a());
+	return rm;
+}
+
 } // synfig namespace
 
 

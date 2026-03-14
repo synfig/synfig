@@ -41,6 +41,7 @@ autom4te.cache
 boldquot.sed
 config.*
 !config.h.cmake.in
+!config.yaml
 configure
 depcomp
 en@boldquot.header

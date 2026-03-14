@@ -50,6 +50,34 @@ SYNFIG_TARGET_SET_NAME(magickpp_trgt,"magick++");
 SYNFIG_TARGET_SET_EXT(magickpp_trgt,"gif");
 SYNFIG_TARGET_SET_VERSION(magickpp_trgt,"0.1");
 
+/* === P R O C E D U R E S ================================================= */
+
+/**
+ * Check if file format of @a filename supports image merging into a single file
+ */
+static bool
+check_can_adjoin(const Magick::Image& reference_image, const filesystem::Path& filename)
+{
+	MagickCore::ExceptionInfo* exceptionInfo = MagickCore::AcquireExceptionInfo();
+
+	bool can_addjoin = false;
+	// check whether this file format supports multiple-image files
+	Magick::Image image(reference_image);
+	image.fileName(filename.u8string());
+	try
+	{
+		SetImageInfo(image.imageInfo(), Magick::MagickTrue, exceptionInfo);
+		can_addjoin = image.adjoin();
+	}
+	catch (Magick::Warning& warning) {
+		synfig::warning("exception '%s'", warning.what());
+	}
+
+	MagickCore::DestroyExceptionInfo(exceptionInfo);
+
+	return can_addjoin;
+}
+
 /* === M E T H O D S ======================================================= */
 
 template <class Container>
@@ -90,23 +118,9 @@ magickpp_trgt::~magickpp_trgt()
 
 	try
 	{
-		bool multiple_images = images.size() > 1;
-		bool can_adjoin = false;
-
-		if (multiple_images)
-		{
-			// check whether this file format supports multiple-image files
-			Magick::Image image(images.front());
-			image.fileName(filename.u8string());
-			try
-			{
-				SetImageInfo(image.imageInfo(),Magick::MagickTrue,exceptionInfo);
-				can_adjoin = image.adjoin();
-			}
-			catch(Magick::Warning &warning) {
-				synfig::warning("exception '%s'", warning.what());
-			}
-		}
+		const bool multiple_images = images.size() > 1;
+		// check whether this file format supports multiple-image files
+		const bool can_adjoin = multiple_images && check_can_adjoin(images.front(), filename);
 
 		// the file type is now in image.imageInfo()->magick and
 		// image.adjoin() tells us whether we can write to a single file
@@ -199,6 +213,22 @@ magickpp_trgt::~magickpp_trgt()
 
 	//exceptionInfo = MagickCore::DestroyExceptionInfo(exceptionInfo);
 	MagickCore::DestroyExceptionInfo(exceptionInfo);
+}
+
+bool
+magickpp_trgt::is_multiple_files() const
+{
+	return images.size() > 1 && !check_can_adjoin(images.front(), filename);
+}
+
+filesystem::Path
+magickpp_trgt::get_filename() const
+{
+	if (!is_multiple_files())
+		return filename;
+	if (filename.u8string() == "-")
+		return filename;
+	return filesystem::Path(filename).add_suffix(strprintf("%s%04d", sequence_separator.c_str(), desc.get_frame_start()));
 }
 
 bool

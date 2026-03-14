@@ -47,6 +47,10 @@
 #include <synfig/valuenodes/valuenode_const.h>
 #include <synfigapp/action.h>
 
+// Needed for various bone icons
+#include <synfig/pair.h>
+#include <synfig/valuenodes/valuenode_bone.h>
+
 #include <gtkmm/icontheme.h>
 
 #endif
@@ -74,6 +78,7 @@ static const std::map<std::string, std::pair<const char*, const char*>> known_ic
 	{"type_integer", {"type_integer_icon", N_("Integer")}},
 	{"type_angle", {"type_angle_icon", N_("Angle")}},
 	{"type_time", {"type_time_icon", N_("Time")}},
+	{"type_transformation", {"type_transformation_icon", N_("Transformation")}},
 	{"type_real", {"type_real_icon", N_("Real")}},
 	{"type_vector", {"type_vector_icon", N_("Vector")}},
 	{"type_color", {"type_color_icon", N_("Color")}},
@@ -163,6 +168,7 @@ static const std::map<std::string, std::pair<const char*, const char*>> known_ic
 
 	{"set_outline_color", {"set_outline_color_icon", N_("Set as Outline")}},
 	{"set_fill_color", {"set_fill_color_icon", N_("Set as Fill")}},
+	{"hex", {"hex_icon", N_("Copy Hex")}},
 
 	{"animate_seek_begin", {"animate_seek_begin_icon", N_("Seek to Begin")}},
 	{"animate_seek_prev_keyframe", {"animate_seek_prev_keyframe_icon", N_("Seek to Previous Keyframe")}},
@@ -363,6 +369,8 @@ studio::value_icon_name(Type &type)
 		return "type_angle_icon";
 	if (type == type_time)
 		return "type_time_icon";
+	if (type == type_transformation)
+		return "type_transformation_icon";
 	if (type == type_real)
 		return "type_real_icon";
 	if (type == type_vector)
@@ -381,6 +389,12 @@ studio::value_icon_name(Type &type)
 		return "type_string_icon";
 	if (type == type_gradient)
 		return "type_gradient_icon";
+	if (type == types_namespace::TypePair<Bone, Bone>::instance)
+		return "type_pair_bone_object_bone_object_icon";
+	if (type == type_bone_object)
+		return "type_bone_object_icon";
+	if (type == type_bone_valuenode)
+		return "type_bone_valuenode_icon";
 	if (!type.description.name.empty())
 		synfig::warning(_("no icon for value type: \"%s\""), type.description.name.c_str());
 	return "image-missing";

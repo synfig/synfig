@@ -73,10 +73,6 @@ TaskLayer::calc_bounds() const
 	return context.get_full_bounding_rect();
 }
 
-bool
-TaskLayer::renddesc_less(const RendDesc &a, const RendDesc &b)
-	{ return fabs(a.get_pw()*a.get_ph()) > fabs(b.get_pw()*b.get_ph()); }
-
 void
 TaskLayer::set_coords_sub_tasks()
 {
@@ -92,43 +88,38 @@ TaskLayer::set_coords_sub_tasks()
 	desc.set_tl(source_rect.get_min());
 	desc.set_br(source_rect.get_max());
 
-	std::vector<RendDesc> descs;
-	layer->get_sub_renddesc(desc, descs);
-	sort(descs.begin(), descs.end(), renddesc_less);
+	RendDesc sub_desc = layer->get_sub_renddesc(desc);
 
 	Task::Handle task = sub_task();
 	sub_tasks.clear();
 
-	for(std::vector<RendDesc>::const_iterator i = descs.begin(); i != descs.end(); ++i)
-	{
-		if (i->get_w() <= 0 || i->get_h() <= 0)
-			continue;
+	if (sub_desc.get_w() <= 0 || sub_desc.get_h() <= 0)
+		return;
 
-		Point lt = i->get_tl(), rb = i->get_br();
-		Rect rect(lt, rb);
-		if (!rect.is_valid())
-			continue;
+	Point lt = sub_desc.get_tl(), rb = sub_desc.get_br();
+	Rect rect(lt, rb);
+	if (!rect.is_valid())
+		return;
 
-		Matrix matrix;
-		if (approximate_less(rb[0], lt[0]))
-			{ matrix.m00 = -1.0; matrix.m20 = rb[0] - lt[0]; }
-		if (approximate_less(rb[1], lt[1]))
-			{ matrix.m11 = -1.0; matrix.m20 = rb[1] - lt[1]; }
-		matrix = i->get_transformation_matrix() * matrix;
-		if (!matrix.is_invertible())
-			continue;
+	Matrix matrix;
+	if (approximate_less(rb[0], lt[0]))
+		{ matrix.m00 = -1.0; matrix.m20 = rb[0] - lt[0]; }
+	if (approximate_less(rb[1], lt[1]))
+		{ matrix.m11 = -1.0; matrix.m20 = rb[1] - lt[1]; }
+	matrix = sub_desc.get_transformation_matrix() * matrix;
+	if (!matrix.is_invertible())
+		return;
 
-		Task::Handle t = task->clone();
-		if (!matrix.is_identity()) {
-			TaskTransformationAffine::Handle ta = new TaskTransformationAffine();
-			ta->transformation->matrix = matrix;
-			ta->sub_task() = t;
-			t = ta;
-		}
-
-		sub_tasks.push_back(t);
-		t->set_coords(rect, VectorInt(i->get_w(), i->get_h()));
+	Task::Handle t = task->clone();
+	if (!matrix.is_identity()) {
+		TaskTransformationAffine::Handle ta = new TaskTransformationAffine();
+		ta->transformation->matrix = matrix;
+		ta->sub_task() = t;
+		t = ta;
 	}
+
+	sub_tasks.push_back(t);
+	t->set_coords(rect, VectorInt(sub_desc.get_w(), sub_desc.get_h()));
 }
 
 /* === E N T R Y P O I N T ================================================= */

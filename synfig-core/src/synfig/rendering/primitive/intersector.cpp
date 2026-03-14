@@ -37,6 +37,8 @@
 
 #include "intersector.h"
 
+#include <cassert>
+
 #include <synfig/general.h>
 
 #endif

@@ -480,6 +480,8 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	bline_width_label.set_sensitive(false);
 
 	bline_width_dist.set_tooltip_text(_("Brush size"));
+	bline_width_dist.set_digits(2);
+	bline_width_dist.set_range(0,10000000);
 	bline_width_dist.set_sensitive(false);
 
 	invert_label.set_label(_("Invert"));

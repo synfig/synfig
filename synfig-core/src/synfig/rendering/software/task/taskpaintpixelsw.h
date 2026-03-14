@@ -34,6 +34,7 @@
 #include "tasksw.h"
 #include <synfig/rendering/task.h>
 #include <synfig/rendering/common/task/taskblend.h>
+#include <synfig/rendering/common/task/taskpixelprocessor.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -49,7 +50,7 @@ namespace rendering
 /**
  * Paint each pixel depending on its position.
  *
- * The color of each pixel is defined by get_color() or get_color_antialias() calls.
+ * The color of each pixel is defined by get_color() calls.
  *
  * To use this abstract class, call run_task() inside of your implementation of Task::run().
  *
@@ -60,13 +61,12 @@ class TaskPaintPixelSW :
 		public TaskInterfaceSplit
 {
 public:
-
-	//! Called inside run() right before iterating over each pixel.
+	//! Called inside run() right before start iterating over each pixel.
 	//! Useful for computing some parameters that are constant for all iterations.
 	//!
-	//! \param matrix transformation matrix mixing affine and bound transformations
-	//! \param inverse_matrix the inverse of matrix
-	virtual void pre_run(const Matrix3& /*matrix*/, const Matrix3& /*inverse_matrix*/) const {}
+	//! \param world_to_raster full transformation matrix mixing transformation of vector to raster coords and task affine transformation
+	//! \param raster_to_world the inverse of world_to_raster
+	virtual void pre_run(const Matrix3& /*world_to_raster*/, const Matrix3& /*raster_to_world*/) const {}
 
 	//! Fetch color at position p (in synfig units) when antialias is false
 	virtual Color get_color(const Vector& p) const = 0;
@@ -77,6 +77,31 @@ public:
 	void on_target_set_as_source() override;
 
 	Color::BlendMethodFlags get_supported_blend_methods() const override;
+};
+
+/**
+ * Paint each pixel depending on its position and the context color at that point.
+ *
+ * The color of each pixel is defined by get_color() calls.
+ *
+ * To use this abstract class, call run_task() inside of your implementation of Task::run().
+ *
+ */
+class TaskFilterPixelSW :
+		public TaskSW
+{
+public:
+	//! Called inside run() right before iterating over each pixel.
+	//! Useful for computing some parameters that are constant for all iterations.
+	//!
+	//! \param raster_to_world transformation matrix : raster coordinates to world coordinates
+	virtual void pre_run(const Matrix3& /*raster_to_world*/) const {}
+
+	/** Fetch color at position @a p (in synfig units) given a previous Color @a c at same point */
+	virtual Color get_color(const Vector& /*p*/, const Color& c) const = 0;
+
+	//! Call this method from run() method of the real task implementation
+	virtual bool run_task() const;
 };
 
 

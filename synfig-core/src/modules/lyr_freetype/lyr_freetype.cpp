@@ -314,23 +314,45 @@ struct FaceMetaData
 		return *static_cast<FaceMetaData*>(face->generic.data);
 	}
 
-	void
-	add_to_face(FT_Face face)
+	static void
+	add_to_face(FT_Face face, filesystem::Path path)
 	{
 		if (face->generic.data)
 			face->generic.finalizer(face);
-		face->generic.data = this;
+		face->generic.data = new FaceMetaData{path};
 		face->generic.finalizer = FaceMetaData::self_destroy;
 	}
 
+#if HAVE_HARFBUZZ
+	static void
+	add_to_face(FT_Face face, const filesystem::Path& path, hb_font_t* font)
+	{
+		if (face->generic.data)
+			face->generic.finalizer(face);
+		face->generic.data = new FaceMetaData{path, font};
+		face->generic.finalizer = FaceMetaData::self_destroy;
+	}
+#endif
 private:
+	explicit FaceMetaData(filesystem::Path path)
+		: path(path)
+	{ }
+
+#if HAVE_HARFBUZZ
+	FaceMetaData(filesystem::Path path, hb_font_t* font)
+		: path(path), font(font)
+	{ }
+#endif
+
 	static void
 	self_destroy(void* object)
 	{
 		FT_Face face = static_cast<FT_Face>(object);
 		FaceMetaData* meta_data = static_cast<FaceMetaData*>(face->generic.data);
         face->generic.data = nullptr;
+#if HAVE_HARFBUZZ
 		hb_font_destroy(meta_data->font);
+#endif
 		delete meta_data;
 	}
 };
@@ -580,6 +602,7 @@ Layer_Freetype::new_font_(const synfig::String &font_fam_, int style, int weight
 		if (!font_path_from_canvas)
 			meta.canvas_path.clear();
 		face_cache.put(meta, face);
+		need_sync |= SYNC_FONT;
 	};
 
 	if (has_valid_font_extension(font_fam_))
@@ -673,12 +696,11 @@ static std::string fontconfig_get_filename(const std::string& font_fam, int styl
 bool
 Layer_Freetype::new_face(const String &newfont)
 {
-	synfig::String font=param_font.get(synfig::String());
 	int error = 0;
 	FT_Long face_index=0;
 
 	// If we are already loaded, don't bother reloading.
-	if(face && font==newfont)
+	if (face && param_font.get(synfig::String()) == newfont)
 		return true;
 
 	if(face)
@@ -698,18 +720,20 @@ Layer_Freetype::new_face(const String &newfont)
 		auto face_ptr = face_cache.get(absolute_path);
 		if (face_ptr) {
 			face = face_ptr;
+#if HAVE_HARFBUZZ
+			font = FaceMetaData::get_from_face(face).font;
+#endif
 			break;
 		}
 		error = FT_New_Face(ft_library, path.c_str(), face_index, &face);
 		if (!error) {
 			face_cache.put(absolute_path, face);
-			FaceMetaData* data = new FaceMetaData();
-			data->path = path;
 #if HAVE_HARFBUZZ
-			data->font = hb_ft_font_create(face, nullptr);
-			this->font = data->font;
+			font = hb_ft_font_create(face, nullptr);
+			FaceMetaData::add_to_face(face, path, font);
+#else
+			FaceMetaData::add_to_face(face, path);
 #endif
-			data->add_to_face(face);
 			font_path_from_canvas = !canvas_path.empty() && path.compare(0, canvas_path.size(), canvas_path) == 0;
 			break;
 		}
@@ -720,9 +744,6 @@ Layer_Freetype::new_face(const String &newfont)
 		synfig::error(strprintf("Layer_Freetype: %s (err=%d): %s",_("Unable to open font face."),error,newfont.c_str()));
 		return false;
 	}
-
-	// ???
-	font=newfont;
 
 	need_sync |= SYNC_FONT;
 	return true;
@@ -924,6 +945,7 @@ Layer_Freetype::get_param_vocab(void)const
 
 	ret.push_back(ParamDesc("family")
 		.set_local_name(_("Font Family"))
+		.set_description(_("You can select or type a font family name or the font file path"))
 		.set_hint("font_family")
 	);
 

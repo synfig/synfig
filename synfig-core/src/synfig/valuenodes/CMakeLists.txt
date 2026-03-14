@@ -1,7 +1,9 @@
 target_sources(libsynfig
     PRIVATE
+        "${CMAKE_CURRENT_LIST_DIR}/valuenode_absolute.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_add.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_and.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/valuenode_angle.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_anglestring.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_animated.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_animatedfile.cpp"
@@ -29,6 +31,7 @@ target_sources(libsynfig
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_join.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_linear.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_log.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/valuenode_maprange.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_modulo.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_not.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_or.cpp"

@@ -101,9 +101,11 @@ ValueNode_BLineCalcVertex::operator()(Time t)const
 	const ValueBase bline_value_node = (*bline_)(t);
 
 	const bool looped = bline_value_node.get_loop();
-	int size = (int)bline.size();
-	int count = looped ? size : size - 1;
-	if (count < 1) return Vector();
+	const int size = (int)bline.size();
+	if (size == 0)
+		return Vector();
+	const int count = looped ? size : size - 1;
+	if (count < 1) return bline[0].get(BLinePoint()).get_vertex();
 
 	bool loop = (*loop_)(t).get(bool());
 	bool homogeneous = (*homogeneous_)(t).get(bool());

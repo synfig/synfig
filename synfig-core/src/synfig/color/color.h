@@ -111,7 +111,7 @@ public:
 	const value_type& get_alpha()const { return get_a(); }
 
 	//! Converts a 2 character hex string \a s (00-ff) into a ColorReal (0.0-1.0)
-	static ColorReal hex2real(String s);
+	static ColorReal hex2real(const String& s);
 
 	//! Converts a ColorReal \a c (0.0-1.0) into a 2 character hex string (00-ff)
 	static const String real2hex(ColorReal c);
@@ -120,7 +120,7 @@ public:
 	inline const String get_hex()const;
 
 	//! Sets the color's R, G, and B from a 3 or 6 character hex string
-	void set_hex(String& hex);
+	void set_hex(const String& hex);
 
 	//! Sets the RED component to \a x
 	Color& set_r(const value_type& x) { r_ = x; return *this; }
@@ -275,8 +275,9 @@ public:
 		BLEND_ALPHA_DARKEN=15,		//!< \deprecated If A is more opaque than B, use B
 		BLEND_ALPHA_OVER=19,		//!< \deprecated multiply alphas and then straight blends using the amount
 		BLEND_ALPHA=23,				//!< multiply alphas
+		BLEND_ALPHA_INTERSECTION=24,//!< Alpha Over where layers overlaps, Composite otherwise
 
-		BLEND_END=24,				//!< \internal
+		BLEND_END=25,				//!< \internal
 		BLEND_BY_LAYER=999			//! Used to let the layer decides what Blend Method use by
 									//! default when the layer is created
 	};
@@ -316,7 +317,8 @@ public:
 			| (1 << BLEND_ALPHA_DARKEN),
 
 		BLEND_METHODS_COMMUTATIVE = 0
-			| (1 << BLEND_ADD_COMPOSITE),
+			| (1 << BLEND_ADD_COMPOSITE)
+			| (1 << BLEND_ALPHA_INTERSECTION),
 
 		BLEND_METHODS_ALL = (1 << BLEND_END) - 1
 	};

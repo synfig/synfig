@@ -99,8 +99,7 @@ public:
 	 */
 	virtual void unref() const
 	{
-		--refcount;
-		if (refcount == 0)
+		if (--refcount == 0)
 			delete this;
 	}
 
@@ -483,21 +482,26 @@ private:
 public:
 
 	/** Default constructor - empty handle */
-	rhandle() noexcept : handle<T>() {}
+	rhandle() noexcept
+		: handle<T>(), prev_(nullptr), next_(nullptr)
+	{ }
 
 	/** Constructor that constructs from a pointer to new object */
-	rhandle(pointer x):handle<T>(x)
+	rhandle(pointer x)
+		: handle<T>(x), prev_(nullptr), next_(nullptr)
 	{
 		if(obj)add_to_rlist();
 	}
 
-	rhandle(const handle<value_type> &x):handle<T>(x)
+	rhandle(const handle<value_type> &x)
+		: handle<T>(x), prev_(nullptr), next_(nullptr)
 	{
 		if(obj)add_to_rlist();
 	}
 
 	/** Copy constructor */
-	rhandle(const rhandle<value_type> &x):handle<T>(x)
+	rhandle(const rhandle<value_type> &x)
+		: handle<T>(x), prev_(nullptr), next_(nullptr)
 	{
 		if(obj)add_to_rlist();
 	}
@@ -612,6 +616,8 @@ public:
 		if(obj)del_from_rlist();
 		handle<value_type>::reset();
 		obj = nullptr;
+		prev_ = nullptr;
+		next_ = nullptr;
 	}
 
 	/**

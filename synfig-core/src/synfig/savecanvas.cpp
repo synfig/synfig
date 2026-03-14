@@ -541,12 +541,8 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 	std::vector<ValueNode_DynamicList::ListEntry> corrected_valuenode_list = value_node->list;
 
 	if (must_rotate_point_list) {
-		if (must_rotate_point_list) {
-			if (corrected_valuenode_list.size() > 0) {
-				auto node = corrected_valuenode_list.front();
-				corrected_valuenode_list.push_back(node);
-				corrected_valuenode_list.erase(corrected_valuenode_list.begin());
-			}
+		if (corrected_valuenode_list.size() > 0) {
+			std::rotate(corrected_valuenode_list.begin(), corrected_valuenode_list.begin() + 1, corrected_valuenode_list.end());
 		}
 	}
 
@@ -985,16 +981,23 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 		xmlpp::Element *node=root->add_child("defs");
 		const ValueNodeList &value_node_list(canvas->value_node_list());
 
+		// Save all the constant 'value_node' nodes first.
 		for(ValueNodeList::const_iterator iter=value_node_list.begin();iter!=value_node_list.end();++iter)
 		{
 			// If the value_node is a constant, then use the shorthand
 			if (ValueNode_Const::Handle value_node = ValueNode_Const::Handle::cast_dynamic(*iter))
 			{
 				reinterpret_cast<xmlpp::Element*>(encode_value(node->add_child("value"),value_node->get_value(),canvas))->set_attribute("id",value_node->get_id());
-				continue;
 			}
-			encode_value_node(node->add_child("value_node"),*iter,canvas);
-			// writeme
+		}
+
+		// Save the non-constant ones at the last. This would prevent "Unable to resolve" messages when loading the project.
+		for(ValueNodeList::const_iterator iter=value_node_list.begin();iter!=value_node_list.end();++iter)
+		{
+			if (!ValueNode_Const::Handle::cast_dynamic(*iter))
+			{
+				encode_value_node(node->add_child("value_node"),*iter,canvas);
+			}
 		}
 
 		for(Canvas::Children::const_iterator iter=canvas->children().begin();iter!=canvas->children().end();++iter)
