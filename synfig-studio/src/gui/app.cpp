@@ -2384,6 +2384,11 @@ App::dialog_open_file_ext(const std::string& title, std::vector<synfig::filesyst
 	filter_audio->add_mime_type("audio/x-vorbis+ogg");
 	filter_audio->add_mime_type("audio/mpeg");
 	filter_audio->add_mime_type("audio/x-wav");
+	filter_audio->add_mime_type("audio/flac");
+	filter_audio->add_mime_type("audio/aac");
+	filter_audio->add_mime_type("audio/mp4");
+	filter_audio->add_mime_type("audio/opus");
+
 	filter_audio->add_pattern("*.ogg");
 	filter_audio->add_pattern("*.mp3");
 	filter_audio->add_pattern("*.wav");
