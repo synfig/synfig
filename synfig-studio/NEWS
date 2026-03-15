@@ -1,3 +1,11 @@
+## Version 1.5.5
+- [`11765ff`](https://github.com/synfig/synfig/commit/11765ffea272cb64b194e65869ef6e2045e6c5eb) fix: add-skeleton-simple plugin switched naming of "forearm" and "arm" ([#3687](https://github.com/synfig/synfig/issues/3687))
+- [`3647833`](https://github.com/synfig/synfig/commit/36478330193c5eb04f9bbedf20ecbd933b99a1aa) feat(sketch tool): add redo for the sketch tool ([#3661](https://github.com/synfig/synfig/issues/3661))
+- [`202fe41`](https://github.com/synfig/synfig/commit/202fe411f5203b9971d22b277719c953ba334520) refactor: remove unused variable ([#3678](https://github.com/synfig/synfig/issues/3678))
+- [`5eb65a5`](https://github.com/synfig/synfig/commit/5eb65a52098bd066318ada10dfb18a0ba5933a94) refactor: remove CanvasView methods unused since 2005 ([#3679](https://github.com/synfig/synfig/issues/3679))
+- [`9c444e4`](https://github.com/synfig/synfig/commit/9c444e4ac7a936b57c9209cc3d86080fa2b82d26) chore: fix various typos ([#3673](https://github.com/synfig/synfig/issues/3673))
+- [`0d059a1`](https://github.com/synfig/synfig/commit/0d059a1e9accf73bbb65c0c70529555ecba90a09) feat(converter): Absolute Converter for angle/integer/real ([#3618](https://github.com/synfig/synfig/issues/3618))
+- [`d8951f9`](https://github.com/synfig/synfig/commit/d8951f9c2a61308d5a54951d01c63102472d5ef1) chore: Release version 1.5.4 ([#3672](https://github.com/synfig/synfig/issues/3672))
 ## Version 1.5.4
 - [`bdb7819`](https://github.com/synfig/synfig/commit/bdb781940478ed79a70ce63c1c7c6979f31a567c) chore: Bump year to 2026 ([#3669](https://github.com/synfig/synfig/issues/3669))
 - [`8b91d74`](https://github.com/synfig/synfig/commit/8b91d74feb0cced18cf216c8482cf2cbbfc25055) feat: add hotkeys for locking/unlocking past & future keyframes ([#3648](https://github.com/synfig/synfig/issues/3648))
@@ -1089,7 +1097,7 @@
   * Guides are not dragged if not visible. Fix bug
   * Add undo capability for guides.
   * Snap to guides is now relative to zoom.
-  * OptionMenu (deprecated) has been replaced by ComboBox.
+  * OptionMenu (deprecatd) has been replaced by ComboBox.
   * When change the Setup Dialog, spread it immediately to the canvas's rules.
   * Circle, Rectangle, Star and Polygon Tools allows create Advanced Outlines Layers.
   * Linked to BLine has the option of be curve length based. On by default.
@@ -1540,7 +1548,7 @@
 2003-10-21 (darco) : A dialog box will now pop up whenever it is unable to open a composition
 2003-10-21 (darco) : Added placeholders for icons
 2003-10-21 (darco) : Fixed most (all?) of the crazy Gtk/Glib errors.
-2003-10-19 (darco) : Fixed a bug where the "Use Current Frame" option in the Render Dialog was not being checked properly (meaning you couldn't render animations)
+2003-10-19 (darco) : Fixed a bug where the "Use Current Frame" option in the Render Dialog was not being checked properly (meaning you couldn't render animatons)
 2003-10-15 (darco) : Added eyedrop tool icon
 2003-10-15 (darco) : Improved scrolling of work area
 2003-10-15 (darco) : Added Eyedrop tool

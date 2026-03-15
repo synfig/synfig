@@ -1,4 +1,22 @@
 
+## Version 1.5.5 [ETL] [core] [studio]
+
+- [`2c40128`](https://github.com/synfig/synfig/commit/2c401284b22c902a114063fa8ab9e7eed87c237c) chore: Travis build badge removal ([#3710](https://github.com/synfig/synfig/issues/3710))
+- [`be55081`](https://github.com/synfig/synfig/commit/be55081b78a5ac78af854c2e34be12de6cb6e58a) ci: build badge not loading in README ([#3703](https://github.com/synfig/synfig/issues/3703))
+- [`2562e8d`](https://github.com/synfig/synfig/commit/2562e8d1ff34b8870189a1a0a6bc71206b4046ee) ci(Github Actions): reduce verbosity of gemini review output ([#3706](https://github.com/synfig/synfig/issues/3706))
+- [`edc13dc`](https://github.com/synfig/synfig/commit/edc13dc0a1df96f674ed2b1b1e890db6e7b13f4a) fix(bevel layer): add null check for sub_task to prevent assertion failure when there are no layers below ([#3701](https://github.com/synfig/synfig/issues/3701)) [core]
+- [`11765ff`](https://github.com/synfig/synfig/commit/11765ffea272cb64b194e65869ef6e2045e6c5eb) fix: add-skeleton-simple plugin switched naming of "forearm" and "arm" ([#3687](https://github.com/synfig/synfig/issues/3687)) [studio]
+- [`32ad9e0`](https://github.com/synfig/synfig/commit/32ad9e083bbe9428912706c4c7e059ea9da0cf52) fix: gaussian blur vertical pass ([#3682](https://github.com/synfig/synfig/issues/3682)) [core]
+- [`3647833`](https://github.com/synfig/synfig/commit/36478330193c5eb04f9bbedf20ecbd933b99a1aa) feat(sketch tool): add redo for the sketch tool ([#3661](https://github.com/synfig/synfig/issues/3661)) [studio]
+- [`faf4093`](https://github.com/synfig/synfig/commit/faf4093f8a4f022bd1e2d8a1a550aa0367f58cc2) refactor: avoid copying variable on left-rotating vector ([#3585](https://github.com/synfig/synfig/issues/3585)) [core]
+- [`202fe41`](https://github.com/synfig/synfig/commit/202fe411f5203b9971d22b277719c953ba334520) refactor: remove unused variable ([#3678](https://github.com/synfig/synfig/issues/3678)) [studio]
+- [`5eb65a5`](https://github.com/synfig/synfig/commit/5eb65a52098bd066318ada10dfb18a0ba5933a94) refactor: remove CanvasView methods unused since 2005 ([#3679](https://github.com/synfig/synfig/issues/3679)) [studio]
+- [`9c444e4`](https://github.com/synfig/synfig/commit/9c444e4ac7a936b57c9209cc3d86080fa2b82d26) chore: fix various typos ([#3673](https://github.com/synfig/synfig/issues/3673)) [core] [studio]
+- [`0d059a1`](https://github.com/synfig/synfig/commit/0d059a1e9accf73bbb65c0c70529555ecba90a09) feat(converter): Absolute Converter for angle/integer/real ([#3618](https://github.com/synfig/synfig/issues/3618)) [core] [studio]
+- [`7e64a2b`](https://github.com/synfig/synfig/commit/7e64a2b4240076446560b3f50f46346b5a5404c8) test: fix synfig::filesystem::Path test for compare method ([#3671](https://github.com/synfig/synfig/issues/3671)) [core]
+- [`5fde9b1`](https://github.com/synfig/synfig/commit/5fde9b15a6b41503a332f0827371f8e8becc292b) feat: add saturation parameter to Color Correct layer ([#3641](https://github.com/synfig/synfig/issues/3641)) [core]
+- [`d8951f9`](https://github.com/synfig/synfig/commit/d8951f9c2a61308d5a54951d01c63102472d5ef1) chore: Release version 1.5.4 ([#3672](https://github.com/synfig/synfig/issues/3672)) [ETL] [core] [studio]
+
 ## Version 1.5.4 [ETL] [core] [studio]
 
 - [`962cc76`](https://github.com/synfig/synfig/commit/962cc766cf654f8c1f01f150b3a076aa1c55c42a)  chore: Update CLI help (seconds to synfig time) ([#3670](https://github.com/synfig/synfig/issues/3670)) [core]
