@@ -1,3 +1,5 @@
+## Version 1.5.5
+- [`d8951f9`](https://github.com/synfig/synfig/commit/d8951f9c2a61308d5a54951d01c63102472d5ef1) chore: Release version 1.5.4 ([#3672](https://github.com/synfig/synfig/issues/3672))
 ## Version 1.5.4
 - [`3762c11`](https://github.com/synfig/synfig/commit/3762c1108f6a46cd27a59ab376bb594140999028) build(ETL): cleanup dismissed ETL dependencies ([#3523](https://github.com/synfig/synfig/issues/3523))
 - [`ba12519`](https://github.com/synfig/synfig/commit/ba12519bbcc7a9b5c741c7aaa07a45e5b3f6177a) fix: some Coverity Scan reports ([#3507](https://github.com/synfig/synfig/issues/3507))
