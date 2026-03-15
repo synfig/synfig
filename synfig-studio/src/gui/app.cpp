@@ -2380,13 +2380,17 @@ App::dialog_open_file_ext(const std::string& title, std::vector<synfig::filesyst
 
 	// 3 Audio files
 	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
-	filter_audio->set_name(_("Audio (*.ogg, *.mp3, *.wav)"));
+	filter_audio->set_name(_("Audio (*.ogg, *.mp3, *.wav, *.flac, *.aac, *.m4a, *.opus)"));
 	filter_audio->add_mime_type("audio/x-vorbis+ogg");
 	filter_audio->add_mime_type("audio/mpeg");
 	filter_audio->add_mime_type("audio/x-wav");
 	filter_audio->add_pattern("*.ogg");
 	filter_audio->add_pattern("*.mp3");
 	filter_audio->add_pattern("*.wav");
+	filter_audio->add_pattern("*.flac");
+	filter_audio->add_pattern("*.aac");
+	filter_audio->add_pattern("*.m4a");
+	filter_audio->add_pattern("*.opus");
 
 	// 4 Video files
 	Glib::RefPtr<Gtk::FileFilter> filter_video = Gtk::FileFilter::create();
