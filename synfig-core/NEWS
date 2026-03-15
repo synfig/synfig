@@ -1,3 +1,12 @@
+## Version 1.5.5
+- [`edc13dc`](https://github.com/synfig/synfig/commit/edc13dc0a1df96f674ed2b1b1e890db6e7b13f4a) fix(bevel layer): add null check for sub_task to prevent assertion failure when there are no layers below ([#3701](https://github.com/synfig/synfig/issues/3701))
+- [`32ad9e0`](https://github.com/synfig/synfig/commit/32ad9e083bbe9428912706c4c7e059ea9da0cf52) fix: gaussian blur vertical pass ([#3682](https://github.com/synfig/synfig/issues/3682))
+- [`faf4093`](https://github.com/synfig/synfig/commit/faf4093f8a4f022bd1e2d8a1a550aa0367f58cc2) refactor: avoid copying variable on left-rotating vector ([#3585](https://github.com/synfig/synfig/issues/3585))
+- [`9c444e4`](https://github.com/synfig/synfig/commit/9c444e4ac7a936b57c9209cc3d86080fa2b82d26) chore: fix various typos ([#3673](https://github.com/synfig/synfig/issues/3673))
+- [`0d059a1`](https://github.com/synfig/synfig/commit/0d059a1e9accf73bbb65c0c70529555ecba90a09) feat(converter): Absolute Converter for angle/integer/real ([#3618](https://github.com/synfig/synfig/issues/3618))
+- [`7e64a2b`](https://github.com/synfig/synfig/commit/7e64a2b4240076446560b3f50f46346b5a5404c8) test: fix synfig::filesystem::Path test for compare method ([#3671](https://github.com/synfig/synfig/issues/3671))
+- [`5fde9b1`](https://github.com/synfig/synfig/commit/5fde9b15a6b41503a332f0827371f8e8becc292b) feat: add saturation parameter to Color Correct layer ([#3641](https://github.com/synfig/synfig/issues/3641))
+- [`d8951f9`](https://github.com/synfig/synfig/commit/d8951f9c2a61308d5a54951d01c63102472d5ef1) chore: Release version 1.5.4 ([#3672](https://github.com/synfig/synfig/issues/3672))
 ## Version 1.5.4
 - [`962cc76`](https://github.com/synfig/synfig/commit/962cc766cf654f8c1f01f150b3a076aa1c55c42a)  chore: Update CLI help (seconds to synfig time) ([#3670](https://github.com/synfig/synfig/issues/3670))
 - [`aef9adc`](https://github.com/synfig/synfig/commit/aef9adc1178a7abb37f08d533b0ab71444911a10) fix(rendering): remove artifacts in rendering outlines by increasing sampling resolution ([#3649](https://github.com/synfig/synfig/issues/3649))
