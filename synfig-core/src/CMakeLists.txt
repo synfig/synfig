@@ -38,8 +38,30 @@ pkg_check_modules(FRIBIDI REQUIRED IMPORTED_TARGET fribidi)
 pkg_check_modules(HARFBUZZ REQUIRED IMPORTED_TARGET harfbuzz)
 pkg_check_modules(LIBAVFORMAT IMPORTED_TARGET libavcodec libavformat libavutil libswresample libswscale)
 
-if (NOT MLT_FOUND)
-	add_definitions(-DWITHOUT_MLT) # disable MLT if not found
+set(AUDIO_BACKEND "mlt" CACHE STRING "Audio backend: mlt, sdl2, sdl3, none")
+set_property(CACHE AUDIO_BACKEND PROPERTY STRINGS mlt sdl2 sdl3 none)
+message(STATUS "Audio backend selected: ${AUDIO_BACKEND}")
+
+if(AUDIO_BACKEND STREQUAL "mlt")
+    pkg_search_module(MLT REQUIRED IMPORTED_TARGET mlt++-7 mlt++)
+    add_definitions(-DWITH_MLT)
+
+elseif(AUDIO_BACKEND STREQUAL "sdl2")
+    pkg_check_modules(SDL2 REQUIRED IMPORTED_TARGET sdl2)
+    add_definitions(-DWITH_SDL2)
+    add_definitions(-DWITHOUT_MLT)
+
+elseif(AUDIO_BACKEND STREQUAL "sdl3")
+    pkg_check_modules(SDL3 REQUIRED IMPORTED_TARGET sdl3)
+    add_definitions(-DWITH_SDL3)
+    add_definitions(-DWITHOUT_MLT)
+
+elseif(AUDIO_BACKEND STREQUAL "none")
+    add_definitions(-DWITHOUT_MLT)
+    message(STATUS "Audio playback disabled")
+
+else()
+    message(FATAL_ERROR "Unknown AUDIO_BACKEND '${AUDIO_BACKEND}'. Valid: mlt, sdl2, sdl3, none")
 endif()
 
 ##
