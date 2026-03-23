@@ -170,6 +170,11 @@ class Dialog_Setup : public Dialog_Template
 	//Gtk::FileFilter         filter_images;
 	//Gtk::FileFilter         filter_any;
 
+	Glib::RefPtr<Gtk::Adjustment> adj_preview_quality;
+	Glib::RefPtr<Gtk::Adjustment> adj_preview_fps;
+	Gtk::SpinButton*  preview_quality_spinbutton;
+	Gtk::SpinButton*  preview_fps_spinbutton;
+
 	Gtk::Entry        image_sequence_separator;
 	Gtk::ComboBoxText workarea_renderer_combo;
 	Gtk::Switch       toggle_play_sound_on_render_done;
