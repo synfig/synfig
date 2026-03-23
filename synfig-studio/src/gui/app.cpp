@@ -132,6 +132,8 @@
 #include <gui/states/state_width.h>
 #include <gui/states/state_zoom.h>
 
+#include <gui/actionmanagers/actionmanager.h>
+
 #include <gui/widgets/widget_enum.h>
 
 #include <synfig/canvasfilenaming.h>
@@ -291,6 +293,16 @@ String        studio::App::default_background_layer_image = "undefined";
 synfig::Color studio::App::preview_background_color =
 	synfig::Color(0.742187, 0.742187, 0.742187, 1.000000);  //X11 Gray
 
+Glib::RefPtr<Gio::Menu> studio::App::menu_recent_files;
+Glib::RefPtr<Gio::Menu> studio::App::menu_plugins;
+Glib::RefPtr<Gio::Menu> studio::App::menu_layers;
+Glib::RefPtr<Gio::Menu> studio::App::menu_selected_layers;
+Glib::RefPtr<Gio::Menu> studio::App::menu_special_layers;
+Glib::RefPtr<Gio::Menu> studio::App::menu_tools;
+Glib::RefPtr<Gio::Menu> studio::App::menu_window_custom_workspaces;
+Glib::RefPtr<Gio::Menu> studio::App::menu_window_docks;
+Glib::RefPtr<Gio::Menu> studio::App::menu_window_canvas;
+
 bool   studio::App::enable_mainwin_menubar = true;
 bool   studio::App::enable_mainwin_toolbar = true;
 String studio::App::ui_language ("os_LANG");
@@ -306,6 +318,8 @@ SoundProcessor *App::sound_render_done = nullptr;
 bool App::use_render_done_sound = true;
 
 static StateManager* state_manager;
+
+static ActionManager* action_manager = nullptr;
 
 static bool
 really_delete_widget(Gtk::Widget *widget)
@@ -1297,38 +1311,60 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 	}
 }
 
+static const ActionManager::EntryList app_action_db =
+{
+	{"app.new",            N_("New"),            {"<Primary>n"}, "action_doc_new_icon", N_("Create a new document")},
+	{"app.open",           N_("Open"),           {"<Primary>o"}, "action_doc_open_icon", N_("Open an existing document")},
+	{"app.quit",           N_("Quit"),           {"<Primary>q"}, "application-exit", N_("Quit application")},
+	{"app.preferences",    N_("Preferences..."), {},             "application-preferences"},
+	{"app.help",           N_("Help"),           {"F1"},         "help-contents"},
+#if GTK_CHECK_VERSION(3, 20, 0)
+	{"app.help-shortcuts", N_("Keyboard Shortcuts"),         {}, ""},
+#endif
+	{"app.help-tutorials", N_("Tutorials"),                  {}, ""},
+	{"app.help-reference", N_("Reference"),                  {}, ""},
+	{"app.help-faq",       N_("Frequently Asked Questions"), {}, "help-faq"},
+	{"app.help-support",   N_("Get Support"),                {}, ""},
+	{"app.about",          N_("About Synfig Studio"),        {}, "help-about"},
+};
+
+/* === P R O C E D U R E S ================================================= */
+
+/* === M E T H O D S ======================================================= */
+
+static void
+init_app_actions()
+{
+	Glib::RefPtr<Gio::ActionMap> action_map = App::instance();
+	action_map->add_action("new", sigc::hide_return(sigc::ptr_fun(&App::new_instance)));
+	action_map->add_action("open", sigc::hide_return(sigc::bind(sigc::ptr_fun(&App::dialog_open), synfig::filesystem::Path{})));
+	action_map->add_action("quit", sigc::hide_return(sigc::ptr_fun(&App::quit)));
+	action_map->add_action("preferences", sigc::ptr_fun(&App::show_setup));
+	action_map->add_action("help", sigc::ptr_fun(App::dialog_help));
+#if GTK_CHECK_VERSION(3, 20, 0)
+	action_map->add_action("help-shortcuts", sigc::ptr_fun(App::window_shortcuts));
+#endif
+	action_map->add_action("help-tutorials", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://synfig.readthedocs.io/en/latest/tutorials.html")));
+	action_map->add_action("help-reference", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://wiki.synfig.org/Category:Reference")));
+	action_map->add_action("help-faq", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://wiki.synfig.org/FAQ")));
+	action_map->add_action("help-support", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://forums.synfig.org/")));
+	action_map->add_action("about", sigc::ptr_fun(App::dialog_about));
+
+	auto open_recent_slot = [](const Glib::VariantBase& v) {
+		Glib::Variant<Glib::ustring> filename = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(v);
+		App::open_recent(synfig::filesystem::Path(filename.get()));
+	};
+	action_map->add_action_with_parameter("open-recent-file", Glib::VARIANT_TYPE_STRING, open_recent_slot);
+
+	for (const auto& entry : app_action_db)
+		App::get_action_manager()->add(entry);
+}
+
 const std::map<const char*, const char*>&
 App::get_default_accel_map()
 {
 	// Add default keyboard accelerators
 	static const std::map<const char*, const char*> default_accel_map = {
-		// Toolbox
-		{"s",             "<Actions>/action_group_state_manager/set-state-normal"},
-		{"m",             "<Actions>/action_group_state_manager/set-state-smooth_move"},
-		{"l",             "<Actions>/action_group_state_manager/set-state-scale"},
-		{"a",             "<Actions>/action_group_state_manager/set-state-rotate"},
-		{"i",             "<Actions>/action_group_state_manager/set-state-mirror"},
-		{"e",             "<Actions>/action_group_state_manager/set-state-circle"},
-		{"r",             "<Actions>/action_group_state_manager/set-state-rectangle"},
-		{"asterisk",      "<Actions>/action_group_state_manager/set-state-star"},
-		{"g",             "<Actions>/action_group_state_manager/set-state-gradient"},
-		{"o",             "<Actions>/action_group_state_manager/set-state-polygon"},
-		{"b",             "<Actions>/action_group_state_manager/set-state-bline"},
-		{"n",             "<Actions>/action_group_state_manager/set-state-bone"},
-		{"t",             "<Actions>/action_group_state_manager/set-state-text"},
-		{"u",             "<Actions>/action_group_state_manager/set-state-fill"},
-		{"d",             "<Actions>/action_group_state_manager/set-state-eyedrop"},
-		{"c",             "<Actions>/action_group_state_manager/set-state-lasso"},
-		{"z",             "<Actions>/action_group_state_manager/set-state-zoom"},
-		{"p",             "<Actions>/action_group_state_manager/set-state-draw"},
-		{"k",             "<Actions>/action_group_state_manager/set-state-sketch"},
-		{"w",             "<Actions>/action_group_state_manager/set-state-width"},
-
-		// Classic edit
-		{"<Primary>x",              "<Actions>/action_group_layer_action_manager/cut"},
-		{"<Primary>c",              "<Actions>/action_group_layer_action_manager/copy"},
-		{"<Primary>v",              "<Actions>/action_group_layer_action_manager/paste"},
-
 		// Everything else
 		{"<Primary>q",              "<Actions>/mainwindow/quit"},
 		{"<Control>a",              "<Actions>/canvasview/select-all-ducks"},
@@ -1343,9 +1379,9 @@ App::get_default_accel_map()
 		{"<control>i",              "<Actions>/canvasview/import"},
 		{"numbersign",              "<Actions>/canvasview/toggle-grid-show"},
 		{"<Control>l",              "<Actions>/canvasview/toggle-grid-snap"},
-		{"<Control>n",              "<Actions>/mainwindow/new"},
-		{"<Control>o",              "<Actions>/mainwindow/open"},
-		{"<Control>e",              "<Actions>/mainwindow/save-all"},
+//		{"<Control>n",              "<Actions>/mainwindow/new"},
+//		{"<Control>o",              "<Actions>/mainwindow/open"},
+//		{"<Control>e",              "<Actions>/mainwindow/save-all"},
 		{"<Primary>1",              "<Actions>/mainwindow/switch-to-tab-1"},
 		{"<Primary>2",              "<Actions>/mainwindow/switch-to-tab-2"},
 		{"<Primary>3",              "<Actions>/mainwindow/switch-to-tab-3"},
@@ -1549,6 +1585,33 @@ void App::init(const synfig::String& rootpath)
 	init_icon_themes();
 	init_icons(path_to_icons);
 
+	auto builder = Gtk::Builder::create();
+	try
+	{
+		builder->add_from_file(ResourceHelper::get_ui_path("studio_menubar.xml"));
+	}
+	catch (const Glib::Error& ex)
+	{
+		std::cerr << "Building menus failed: " << ex.what();
+	}
+
+	auto object = builder->get_object("studio_menubar");
+	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
+	if (!gmenu) {
+		g_warning("GMenu not found");
+	} else {
+		set_menubar(gmenu);
+		menu_recent_files = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-recent-files"));
+		menu_plugins = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-plugins"));
+		menu_layers = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-layer-new"));
+		menu_selected_layers = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("selected-layer-actions"));
+		menu_special_layers = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("special-layer-actions"));
+		menu_tools = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-tools"));
+		menu_window_custom_workspaces = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-custom-workspaces"));
+		menu_window_docks = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-docks"));
+		menu_window_canvas = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-canvas"));
+	}
+
 	try
 	{
 		// Try to load settings early to get access to some important
@@ -1578,8 +1641,11 @@ void App::init(const synfig::String& rootpath)
 		plugin_manager.load_dir(path_to_user_plugins.u8string());
 
 		studio_init_cb.task(_("Init UI Manager..."));
+		action_manager = new ActionManager(App::instance());
+
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
+		init_app_actions();
 
 		studio_init_cb.task(_("Init Dock Manager..."));
 		dock_manager=new studio::DockManager();
@@ -1732,6 +1798,13 @@ void App::init(const synfig::String& rootpath)
 		if(!getenv("SYNFIG_DISABLE_BRUSH"  ) && App::enable_experimental_features) state_manager->add_state(&state_brush);
 		state_manager->add_state(&state_zoom);
 
+		// Load the user shortcuts/accel keys
+		{
+			UserShortcutList list;
+			list.restore_to_defaults(*App::get_action_manager());
+			list.load_from_file(get_config_file("shortcuts"), false);
+			list.apply(App::instance(), *App::get_action_manager());
+		}
 
 		device_tracker->load_preferences();
 		// If the default bline width is modified before focus a canvas
@@ -1824,6 +1897,12 @@ void App::init(const synfig::String& rootpath)
 
 StateManager* App::get_state_manager() { return state_manager; }
 
+ActionManager*
+App::get_action_manager()
+{
+	return action_manager;
+}
+
 void
 App::on_shutdown()
 {
@@ -1841,6 +1920,8 @@ App::on_shutdown()
 		module_list_.back()->stop();
 
 	delete state_manager;
+
+	delete action_manager;
 
 	delete auto_recover;
 
@@ -2061,6 +2142,27 @@ App::save_accel_map()
 	{
 		synfig::warning("Caught exception when attempting to save accel map settings.");
 	}
+
+	// only save those shortcuts customized by user, i.e., without default values
+	UserShortcutList list;
+	for (const auto& entry : action_manager->get_entries()) {
+		auto user_accels = App::instance()->get_accels_for_action(entry.name_);
+		if (user_accels.empty() && !entry.accelerators_.empty()) {
+			if (!entry.accelerators_[0].empty())
+				list.shortcuts[entry.name_] = "";
+		} else if (!user_accels.empty() && entry.accelerators_.empty()) {
+			if (!user_accels[0].empty())
+				list.shortcuts[entry.name_] = user_accels[0];
+		} else {
+			std::sort(user_accels.begin(), user_accels.end());
+			auto default_accels = entry.accelerators_;
+			std::sort(default_accels.begin(), default_accels.end());
+			if (user_accels[0] != default_accels[0]) {
+				list.shortcuts[entry.name_] = user_accels[0];
+			}
+		}
+	}
+	list.save_to_file(get_config_file("shortcuts"));
 }
 
 void
