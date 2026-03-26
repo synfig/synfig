@@ -233,65 +233,50 @@ Mandelbrot::get_param_vocab()const
 
 	ret.push_back(ParamDesc("distort_inside")
 		.set_local_name(_("Distort Inside"))
-		.set_group(_("Inside"))
 	);
 	ret.push_back(ParamDesc("shade_inside")
 		.set_local_name(_("Shade Inside"))
-		.set_group(_("Inside"))
 	);
 	ret.push_back(ParamDesc("solid_inside")
 		.set_local_name(_("Solid Inside"))
-		.set_group(_("Inside"))
 	);
 	ret.push_back(ParamDesc("invert_inside")
 		.set_local_name(_("Invert Inside"))
-		.set_group(_("Inside"))
 	);
 	ret.push_back(ParamDesc("gradient_inside")
 		.set_local_name(_("Gradient Inside"))
-		.set_group(_("Inside"))
 	);
 	ret.push_back(ParamDesc("gradient_offset_inside")
 		.set_local_name(_("Offset Inside"))
-		.set_group(_("Inside"))
 	);
 	ret.push_back(ParamDesc("gradient_loop_inside")
 		.set_local_name(_("Loop Inside"))
-		.set_group(_("Inside"))
 	);
 
 	ret.push_back(ParamDesc("distort_outside")
 		.set_local_name(_("Distort Outside"))
-		.set_group(_("Outside"))
 	);
 	ret.push_back(ParamDesc("shade_outside")
 		.set_local_name(_("Shade Outside"))
-		.set_group(_("Outside"))
 	);
 	ret.push_back(ParamDesc("solid_outside")
 		.set_local_name(_("Solid Outside"))
-		.set_group(_("Outside"))
 	);
 	ret.push_back(ParamDesc("invert_outside")
 		.set_local_name(_("Invert Outside"))
-		.set_group(_("Outside"))
 	);
 	ret.push_back(ParamDesc("gradient_outside")
 		.set_local_name(_("Gradient outside"))
-		.set_group(_("Outside"))
 	);
 	ret.push_back(ParamDesc("smooth_outside")
 		.set_local_name(_("Smooth Outside"))
 		.set_description(_("Smooth the coloration outside the set"))
-		.set_group(_("Outside"))
 	);
 	ret.push_back(ParamDesc("gradient_offset_outside")
 		.set_local_name(_("Offset Outside"))
-		.set_group(_("Outside"))
 	);
 	ret.push_back(ParamDesc("gradient_scale_outside")
 		.set_local_name(_("Scale Outside"))
-		.set_group(_("Outside"))
 	);
 
 	return ret;

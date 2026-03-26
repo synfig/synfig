@@ -111,7 +111,7 @@ HistoryTreeStore::rebuild()
 }
 
 void
-HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::Undoable> action, bool is_undo, bool is_redo)
+HistoryTreeStore::insert_action(Gtk::TreeRow row, synfigapp::Action::Undoable::Handle action, bool is_undo, bool is_redo)
 {
 	assert(action);
 
@@ -129,10 +129,7 @@ HistoryTreeStore::insert_action(Gtk::TreeRow row,etl::handle<synfigapp::Action::
 		row[model.canvas_id] = specific_action->get_canvas()->get_id();
 	}
 
-	etl::handle<synfigapp::Action::Group> group;
-	group=etl::handle<synfigapp::Action::Group>::cast_dynamic(action);
-	if(group)
-	{
+	if (auto group = synfigapp::Action::Group::Handle::cast_dynamic(action)) {
 		synfigapp::Action::ActionList::const_iterator iter;
 		for(iter=group->action_list().begin();iter!=group->action_list().end();++iter)
 		{
@@ -207,7 +204,7 @@ HistoryTreeStore::on_redo_stack_cleared()
 }
 
 void
-HistoryTreeStore::on_new_action(etl::handle<synfigapp::Action::Undoable> action)
+HistoryTreeStore::on_new_action(synfigapp::Action::Undoable::Handle action)
 {
 	Gtk::TreeRow row;
 
@@ -222,7 +219,7 @@ HistoryTreeStore::on_new_action(etl::handle<synfigapp::Action::Undoable> action)
 }
 
 void
-HistoryTreeStore::on_action_status_changed(etl::handle<synfigapp::Action::Undoable> action)
+HistoryTreeStore::on_action_status_changed(synfigapp::Action::Undoable::Handle action)
 {
 	Gtk::TreeModel::Children::iterator iter;
 	Gtk::TreeModel::Children children_(children());

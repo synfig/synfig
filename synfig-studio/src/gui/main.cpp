@@ -34,6 +34,7 @@
 #endif
 
 #include <glibmm/convert.h>
+#include <glibmm/miscutils.h>
 
 #include <synfig/os.h>
 
@@ -84,6 +85,8 @@ int main(int argc, char **argv)
 	app->signal_startup().connect([app, rootpath]() {
 		app->init(rootpath.u8string());
 	});
+
+	Glib::set_prgname("org.synfig.SynfigStudio");
 
 	app->register_application();
 	if (app->is_remote()) {

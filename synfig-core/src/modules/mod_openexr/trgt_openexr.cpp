@@ -74,6 +74,22 @@ exr_trgt::~exr_trgt()
 }
 
 bool
+exr_trgt::is_multiple_files() const
+{
+	return multi_image;
+}
+
+filesystem::Path
+exr_trgt::get_filename() const
+{
+	if (!multi_image)
+		return filename;
+	if (filename.u8string() == "-")
+		return filename;
+	return filesystem::Path(filename).add_suffix(strprintf("%s%04d", sequence_separator.c_str(), desc.get_frame_start()));
+}
+
+bool
 exr_trgt::set_rend_desc(RendDesc *given_desc)
 {
 	//given_desc->set_pixel_format(PixelFormat((int)PF_RAW_COLOR));

@@ -540,6 +540,7 @@ public:
 				}
 				// Map err_fd as stderr
 				if (dup2(err_fd, STDERR_FILENO) == -1) {
+					::close(err_fd);
 					auto msg = strprintf(_("Unable to open pipe to %s (dup2( err_fd, STDERR_FILENO ) == -1)"), binary_path.u8_str());
 					print_error_and_exit(error_message_pipe[1], msg, OpenError::ON_DUP2_STDERR_FILENO, true);
 				}

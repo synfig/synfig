@@ -127,6 +127,18 @@ png_trgt_spritesheet::~png_trgt_spritesheet()
 }
 
 bool
+png_trgt_spritesheet::is_multiple_files() const
+{
+	return false;
+}
+
+filesystem::Path
+png_trgt_spritesheet::get_filename() const
+{
+	return filename;
+}
+
+bool
 png_trgt_spritesheet::set_rend_desc(RendDesc *given_desc)
 {
 	std::cout << "set_rend_desc()" << std::endl;

@@ -18,7 +18,7 @@
 _debug/
 _production/
 _packages/
-
+build/
 .cache
 .kdev4/
 
@@ -40,6 +40,7 @@ autom4te.cache
 boldquot.sed
 config.*
 !config.h.cmake.in
+!config.yaml
 configure
 depcomp
 en@boldquot.header
@@ -67,7 +68,8 @@ compile
 # ------------------------------------------------------------------------
 
 cmake-build
-
+CMakeFiles
+output
 ETL/ETL.pc.in
 ETL/ETL/etl_profile.h
 ETL/ETL/etl_profile_.h

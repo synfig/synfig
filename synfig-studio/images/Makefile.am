@@ -55,6 +55,7 @@ EXTRA_DIST = \
 	rename_icon.sif \
 	set_fill_color_icon.sif \
 	set_outline_color_icon.sif \
+	hex_icon.sif \
 	duck_position_icon.sif \
 	duck_vertex_icon.sif \
 	duck_tangent_icon.sif \
@@ -64,6 +65,8 @@ EXTRA_DIST = \
 	show_grid_icon.sif \
 	snap_grid_icon.sif \
 	show_guideline_icon.sif \
+	lower_bound_handle_icon.sif \
+	upper_bound_handle_icon.sif \
 	snap_guideline_icon.sif \
 	onion_skin_icon.sif \
 	incr_resolution_icon.sif \
@@ -191,7 +194,11 @@ EXTRA_DIST = \
 	type_segment_icon.sif \
 	type_string_icon.sif \
 	type_time_icon.sif \
+	type_transformation_icon.sif \
 	type_vector_icon.sif \
+	type_pair_bone_object_bone_object_icon.sif \
+	type_bone_object_icon.sif \
+	type_bone_valuenode_icon.sif \
 	\
 	library_icon.sif \
 	graphs_icon.sif \
@@ -253,6 +260,7 @@ ICONS = \
 	rename_icon.$(EXT) \
 	set_fill_color_icon.$(EXT) \
 	set_outline_color_icon.$(EXT) \
+	hex_icon.$(EXT) \
 	duck_position_icon.$(EXT) \
 	duck_vertex_icon.$(EXT) \
 	duck_tangent_icon.$(EXT) \
@@ -262,6 +270,8 @@ ICONS = \
 	show_grid_icon.$(EXT) \
 	snap_grid_icon.$(EXT) \
 	show_guideline_icon.$(EXT) \
+	lower_bound_handle_icon.$(EXT) \
+	upper_bound_handle_icon.$(EXT) \
 	snap_guideline_icon.$(EXT) \
 	onion_skin_icon.$(EXT) \
 	incr_resolution_icon.$(EXT) \
@@ -402,7 +412,11 @@ ICONS = \
 	type_segment_icon.$(EXT) \
 	type_string_icon.$(EXT) \
 	type_time_icon.$(EXT) \
+	type_transformation_icon.$(EXT) \
 	type_vector_icon.$(EXT) \
+	type_pair_bone_object_bone_object_icon.$(EXT) \
+	type_bone_object_icon.$(EXT) \
+	type_bone_valuenode_icon.$(EXT) \
 	\
 	canvas_icon.$(EXT) \
 	library_icon.$(EXT) \

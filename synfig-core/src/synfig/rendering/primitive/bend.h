@@ -72,9 +72,10 @@ public:
 		Vector tn0, tn1;
 		Mode mode;
 		bool e0, e1;
-		Real l;
+		Real index; /**< The point index in the B-line */
+		Real last_index; /**< It is different (greater) of index only if zero-length segments follow this point */
 		Real length;
-		Point(): mode(NONE), e0(), e1(), l(), length() { }
+		Point(): mode(NONE), e0(), e1(), index(), last_index(), length() { }
 	};
 
 	typedef std::vector<Point> PointList;
@@ -86,18 +87,18 @@ public:
 	void tails();
 	
 	Real l0() const
-		{ return points.empty() ? Real() : points.front().l; }
+		{ return points.empty() ? Real() : points.front().index; }
 	Real l1() const
-		{ return points.empty() ? Real() : points.back().l; }
+		{ return points.empty() ? Real() : points.back().last_index; }
 
 	Real length0() const
 		{ return points.empty() ? Real() : points.front().length; }
 	Real length1() const
 		{ return points.empty() ? Real() : points.back().length; }
 	
-	PointList::const_iterator find_by_l(Real l) const;
+	PointList::const_iterator find_by_index(Real index) const;
 	PointList::const_iterator find(Real length) const;
-	Real length_by_l(Real length) const;
+	Real length_by_index(Real index) const;
 	Point interpolate(Real length) const;
 	
 	void bend(Contour &dst, const Contour &src, const Matrix &matrix, int segments) const;

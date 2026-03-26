@@ -33,9 +33,8 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <memory>
 #include <vector>
-
-#include <ETL/handle>
 
 #include <synfig/vector.h>
 #include <synfig/rect.h>
@@ -62,10 +61,10 @@ namespace rendering
 /// move_to(), line_to(), conic_to(), cubic_to() and close().
 /// Then, call intersect() with, as argument, the point you want
 /// to know if it is inside or not the shape.
-class Intersector: public etl::shared_object
+class Intersector
 {
 public:
-	typedef etl::handle<Intersector> Handle;
+	typedef std::shared_ptr<Intersector> Handle;
 
 private:
 	class MonoSegment;

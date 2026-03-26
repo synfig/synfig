@@ -971,7 +971,7 @@ Svg_parser::parser_path_polygon(const Glib::ustring& polygon_points, const SVGMa
 	std::list<BLine> k0;
 	if(polygon_points.empty())
 		return k0;
-	std::list<Vertex> points;
+	std::vector<Vertex> points;
 	std::vector<String> tokens=get_tokens_path (polygon_points);
 
 	for(unsigned int i=0;i<tokens.size();i++){
@@ -993,7 +993,7 @@ std::list<BLine>
 Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 {
 	std::list<BLine> k;
-	std::list<Vertex> k1;
+	std::vector<Vertex> k1;
 
 	std::vector<String> tokens=get_tokens_path(path_d);
 	String command="M"; //the current command
@@ -1114,6 +1114,8 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			coor2vect(&tgx,&tgy);
 			//save
 			k1.back().setTg2(tgx2,tgy2);
+			if (k1.size() == 1 || k1.back().angle1 != k1.back().angle2 || k1.back().radius1 != k1.back().radius2)
+				k1.back().setSplit(true);
 
 			k1.push_back(Vertex(ax,ay));
 			k1.back().setTg1(tgx,tgy);
@@ -1422,6 +1424,19 @@ Svg_parser::parser_path_d(const String& path_d, const SVGMatrix& mtx)
 			break;
 		}
 		case 'z':{
+			if (k1.size() > 1) {
+				Vertex& first = k1.front();
+				const Vertex& last = k1.back();
+				if (approximate_equal(first.x, last.x) && approximate_equal(first.y, last.y)) {
+					// Merge!
+					first.angle1 = last.angle1;
+					first.radius1 = last.radius1;
+					first.split_angle = approximate_not_equal(first.angle1, first.angle2);
+					first.split_radius = approximate_not_equal(first.radius1, first.radius2);
+
+					k1.pop_back();
+				}
+			}
 			k.push_front(BLine(k1, true));
 			k1.clear();
 			current_x=init_x;
@@ -1981,7 +1996,7 @@ RadialGradient::RadialGradient(const String& gradient_name, float cx, float cy, 
 	  stops(stops), transform(transform)
 {}
 
-BLine::BLine(std::list<Vertex> points, bool loop)
+BLine::BLine(std::vector<Vertex> points, bool loop)
 	: points(points), loop(loop),
 	  bline_id(GUID().get_string()),
 	  offset_id(GUID().get_string())
@@ -2058,7 +2073,7 @@ Svg_parser::build_vertex(xmlpp::Element* root, const Vertex &p)
 }
 
 void
-Svg_parser::build_bline(xmlpp::Element* root, const std::list<Vertex>& p, bool loop, const String& blineguid)
+Svg_parser::build_bline(xmlpp::Element* root, const std::vector<Vertex>& p, bool loop, const String& blineguid)
 {
 	root->set_attribute("name","bline");
 	xmlpp::Element *child=root->add_child("bline");

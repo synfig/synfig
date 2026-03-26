@@ -979,6 +979,8 @@ DEFINE_ACTION("increase-low-res-pixel-size", _("Increase Low-Res Pixel Size"))
 DEFINE_ACTION("toggle-background-rendering", _("Toggle Background Rendering"))
 DEFINE_ACTION("toggle-onion-skin",           _("Toggle Onion Skin"))
 DEFINE_ACTION("toggle-onion-skin-keyframes", _("Toggle Onion Skin on Keyframes"))
+DEFINE_ACTION("toggle-keyframe-lock-past",   _("Toggle Keyframe Lock Past"))
+DEFINE_ACTION("toggle-keyframe-lock-future", _("Toggle Keyframe Lock Future"))
 DEFINE_ACTION("canvas-zoom-in",              Gtk::StockID("gtk-zoom-in"))
 DEFINE_ACTION("canvas-zoom-out",             Gtk::StockID("gtk-zoom-out"))
 DEFINE_ACTION("canvas-zoom-fit",             Gtk::StockID("gtk-zoom-fit"))
@@ -1140,6 +1142,8 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "		<menuitem action='toggle-background-rendering'/>"
 "		<menuitem action='toggle-onion-skin'/>"
 "		<menuitem action='toggle-onion-skin-keyframes'/>"
+"		<menuitem action='toggle-keyframe-lock-past'/>"
+"		<menuitem action='toggle-keyframe-lock-future'/>"
 "		<separator name='sep-view2'/>"
 "		<menuitem action='canvas-zoom-in'/>"
 "		<menuitem action='canvas-zoom-out'/>"
@@ -1394,6 +1398,8 @@ App::get_default_accel_map()
 		{"space",                   "<Actions>/canvasview/play"},
 		{"<Shift>space",            "<Actions>/canvasview/pause"},
 		{"<Control>space",          "<Actions>/canvasview/animate"},
+		{"<Control>Left",           "<Actions>/canvasview/toggle-keyframe-lock-past"},
+		{"<Control>Right",          "<Actions>/canvasview/toggle-keyframe-lock-future"},
 	};
 
 	return default_accel_map;
@@ -2327,9 +2333,18 @@ App::dialog_open_file_ext(const std::string& title, std::vector<synfig::filesyst
 	filter_supported->add_mime_type("audio/x-vorbis+ogg");
 	filter_supported->add_mime_type("audio/mpeg");
 	filter_supported->add_mime_type("audio/x-wav");
+	filter_supported->add_mime_type("audio/flac");
+	filter_supported->add_mime_type("audio/x-flac");
+	filter_supported->add_mime_type("audio/aac");
+	filter_supported->add_mime_type("audio/x-m4a");
+	filter_supported->add_mime_type("audio/opus");
 	filter_supported->add_pattern("*.ogg");
 	filter_supported->add_pattern("*.mp3");
 	filter_supported->add_pattern("*.wav");
+	filter_supported->add_pattern("*.flac");
+	filter_supported->add_pattern("*.aac");
+	filter_supported->add_pattern("*.m4a");
+	filter_supported->add_pattern("*.opus");
 	// 0.4 Video files
 	filter_supported->add_pattern("*.avi");
 	filter_supported->add_pattern("*.mp4");
@@ -2368,13 +2383,22 @@ App::dialog_open_file_ext(const std::string& title, std::vector<synfig::filesyst
 
 	// 3 Audio files
 	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
-	filter_audio->set_name(_("Audio (*.ogg, *.mp3, *.wav)"));
+	filter_audio->set_name(_("Audio (*.ogg, *.mp3, *.wav, *.flac, *.aac, *.m4a, *.opus)"));
 	filter_audio->add_mime_type("audio/x-vorbis+ogg");
 	filter_audio->add_mime_type("audio/mpeg");
 	filter_audio->add_mime_type("audio/x-wav");
+	filter_audio->add_mime_type("audio/flac");
+	filter_audio->add_mime_type("audio/x-flac");
+	filter_audio->add_mime_type("audio/aac");
+	filter_audio->add_mime_type("audio/x-m4a");
+	filter_audio->add_mime_type("audio/opus");
 	filter_audio->add_pattern("*.ogg");
 	filter_audio->add_pattern("*.mp3");
 	filter_audio->add_pattern("*.wav");
+	filter_audio->add_pattern("*.flac");
+	filter_audio->add_pattern("*.aac");
+	filter_audio->add_pattern("*.m4a");
+	filter_audio->add_pattern("*.opus");
 
 	// 4 Video files
 	Glib::RefPtr<Gtk::FileFilter> filter_video = Gtk::FileFilter::create();
@@ -2531,13 +2555,22 @@ App::dialog_open_file_audio(const std::string& title, synfig::filesystem::Path& 
 
 	// Audio files
 	Glib::RefPtr<Gtk::FileFilter> filter_audio = Gtk::FileFilter::create();
-	filter_audio->set_name(_("Audio (*.ogg, *.mp3, *.wav)"));
+	filter_audio->set_name(_("Audio (*.ogg, *.mp3, *.wav, *.flac, *.aac, *.m4a, *.opus)"));
 	filter_audio->add_mime_type("audio/x-vorbis+ogg");
 	filter_audio->add_mime_type("audio/mpeg");
 	filter_audio->add_mime_type("audio/x-wav");
+	filter_audio->add_mime_type("audio/flac");
+	filter_audio->add_mime_type("audio/x-flac");
+	filter_audio->add_mime_type("audio/aac");
+	filter_audio->add_mime_type("audio/x-m4a");
+	filter_audio->add_mime_type("audio/opus");
 	filter_audio->add_pattern("*.ogg");
 	filter_audio->add_pattern("*.mp3");
 	filter_audio->add_pattern("*.wav");
+	filter_audio->add_pattern("*.flac");
+	filter_audio->add_pattern("*.aac");
+	filter_audio->add_pattern("*.m4a");
+	filter_audio->add_pattern("*.opus");
 
 	// Any files
 	Glib::RefPtr<Gtk::FileFilter> filter_any = Gtk::FileFilter::create();
@@ -3447,7 +3480,7 @@ App::dialog_sets_entry(const std::string &action, const std::string &content, st
 	dialog.add_button(button2, Gtk::RESPONSE_OK);
 
 	dialog.set_default_response(Gtk::RESPONSE_OK);
-	//entry->signal_activate().connect(sigc::bind(sigc::mem_fun(dialog,&Gtk::Dialog::response),Gtk::RESPONSE_OK));
+	combo_entry->get_entry()->signal_activate().connect(sigc::bind(sigc::mem_fun(dialog, &Gtk::Dialog::response), Gtk::RESPONSE_OK));
 	dialog.show();
 
 	if(dialog.run()!=Gtk::RESPONSE_OK)

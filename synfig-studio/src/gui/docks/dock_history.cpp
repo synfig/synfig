@@ -422,7 +422,7 @@ Dock_History::on_action_event(GdkEvent *event)
 			//signal_user_click()(event->button.button,row,(ColumnID)column->get_sort_column_id());
 			if((ColumnID)column->get_sort_column_id()==COLUMNID_JUMP)
 			{
-				etl::handle<synfigapp::Action::Undoable> action(row[model.action]);
+				synfigapp::Action::Undoable::Handle action(row[model.action]);
 				try{
 				if((bool)row[model.is_undo])
 				{
@@ -463,7 +463,7 @@ Dock_History::on_action_toggle(const Glib::ustring& path_string)
 
 	const Gtk::TreeRow row = *(selected_instance->history_tree_store()->get_iter(path));
 
-	etl::handle<synfigapp::Action::Undoable> action = row[history_tree_model.action];
+	synfigapp::Action::Undoable::Handle action = row[history_tree_model.action];
 
 	selected_instance->set_action_status(action, !action->is_active());
 }

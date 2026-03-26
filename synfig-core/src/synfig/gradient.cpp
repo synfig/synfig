@@ -273,15 +273,15 @@ CompiledGradient::Entry::Entry(const Accumulator &prev_sum, const GradientCPoint
 
 
 CompiledGradient::CompiledGradient():
-	is_empty(true), repeat()
+	is_empty(true), repeat(false), zigzag(false)
 	{ reset(); };
 
 CompiledGradient::CompiledGradient(const Color &color):
-	is_empty(true), repeat()
+	is_empty(true), repeat(false), zigzag(false)
 	{ set(color); };
 
 CompiledGradient::CompiledGradient(const Gradient &gradient, bool repeat, bool zigzag):
-	is_empty(true), repeat()
+	is_empty(true), repeat(false), zigzag(false)
 	{ set(gradient, repeat, zigzag); };
 
 void
@@ -325,6 +325,7 @@ CompiledGradient::set(const Gradient &gradient, bool repeat, bool zigzag) {
 
 	list.clear();
 	this->repeat = repeat;
+	this->zigzag = zigzag;
 	Accumulator prev_sum = Accumulator(cpoints.front().color)*cpoints.front().pos;
 	for(Gradient::iterator i = cpoints.begin(), j = i + 1; j != cpoints.end();  ++i, ++j) {
 		list.push_back( Entry(prev_sum, *i, *j) );

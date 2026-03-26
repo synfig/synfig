@@ -118,12 +118,12 @@ struct Vertex{
 };
 
 struct BLine {
-	std::list<Vertex> points;
+	std::vector<Vertex> points;
 	bool loop;
 	String bline_id;
 	String offset_id;
 
-	BLine(std::list<Vertex> points, bool loop);
+	BLine(std::vector<Vertex> points, bool loop);
 };
 
 struct Style {
@@ -227,7 +227,7 @@ private:
 		void build_translate(xmlpp::Element* root,float dx,float dy);
 		void build_points(xmlpp::Element* root, const std::list<Vertex>& p);
 		void build_vertex(xmlpp::Element* root, const Vertex& p);
-		void build_bline(xmlpp::Element* root, const std::list<Vertex>& p, bool loop, const String& blineguid);
+		void build_bline(xmlpp::Element* root, const std::vector<Vertex>& p, bool loop, const String& blineguid);
 		void build_param (xmlpp::Element* root, const String& name, const String& type, const String& value);
 		void build_param (xmlpp::Element* root, const String& name, const String& type, float value);
 		void build_param (xmlpp::Element* root, const String& name, const String& type, int value);

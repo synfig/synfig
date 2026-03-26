@@ -1,6 +1,8 @@
 VALUENODES_HH = \
+	valuenodes/valuenode_absolute.h \
 	valuenodes/valuenode_add.h \
 	valuenodes/valuenode_and.h \
+	valuenodes/valuenode_angle.h \
 	valuenodes/valuenode_anglestring.h \
 	valuenodes/valuenode_animated.h \
 	valuenodes/valuenode_animatedfile.h \
@@ -28,6 +30,7 @@ VALUENODES_HH = \
 	valuenodes/valuenode_join.h \
 	valuenodes/valuenode_linear.h \
 	valuenodes/valuenode_log.h \
+	valuenodes/valuenode_maprange.h \
 	valuenodes/valuenode_modulo.h \
 	valuenodes/valuenode_not.h \
 	valuenodes/valuenode_or.h \
@@ -68,8 +71,10 @@ VALUENODES_HH = \
 	valuenodes/valuenode_weightedaverage.h
 
 VALUENODES_CC = \
+	valuenodes/valuenode_absolute.cpp \
 	valuenodes/valuenode_add.cpp \
 	valuenodes/valuenode_and.cpp \
+	valuenodes/valuenode_angle.cpp \
 	valuenodes/valuenode_anglestring.cpp \
 	valuenodes/valuenode_animated.cpp \
 	valuenodes/valuenode_animatedfile.cpp \
@@ -97,6 +102,7 @@ VALUENODES_CC = \
 	valuenodes/valuenode_join.cpp \
 	valuenodes/valuenode_linear.cpp \
 	valuenodes/valuenode_log.cpp \
+	valuenodes/valuenode_maprange.cpp \
 	valuenodes/valuenode_modulo.cpp \
 	valuenodes/valuenode_not.cpp \
 	valuenodes/valuenode_or.cpp \

@@ -57,18 +57,21 @@ class Layer_Bitmap : public Layer_Composite, public Layer_NoDeform
 public:
 	typedef etl::handle<Layer_Bitmap> Handle;
 
+private:
 	ValueBase param_tl;
 	ValueBase param_br;
 	ValueBase param_c;
 	ValueBase param_gamma_adjust;
 
-	mutable std::mutex mutex;
 	mutable rendering::software::PackedSurface::Reader reader;
+public:
+	mutable std::mutex mutex;
 	mutable rendering::SurfaceResource::Handle rendering_surface;
+private:
 	mutable bool trimmed;
 	mutable unsigned int left, top, width, height;
 
-
+public:
 	Layer_Bitmap();
 
 	GUID get_surface_modification_id() const

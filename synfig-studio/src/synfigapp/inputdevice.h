@@ -113,7 +113,7 @@ private:
 	DeviceSettings* device_settings;
 
 public:
-	InputDevice(const synfig::String id_, Type type_=TYPE_MOUSE);
+	InputDevice(synfig::String id, Type type = TYPE_MOUSE);
 	~InputDevice();
 
 	const synfig::String& get_id()const { return id_; }

@@ -64,9 +64,13 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 void
-DeviceTracker::list_devices(DeviceList &out_devices)
+DeviceTracker::list_devices(DeviceList& out_devices)
 {
 	out_devices.clear();
+
+	const auto check_if_device_is_null = [](const Glib::RefPtr<Gdk::Device>& device) -> bool {
+		return bool(device);
+	};
 
 #ifdef OLD_GDKMM_DEVICE_FUNCTIONALITY
 	Gdk::DeviceType types[] = {
@@ -80,7 +84,7 @@ DeviceTracker::list_devices(DeviceList &out_devices)
 				get_default_display()->
 					get_device_manager()->
 						list_devices(types[i]);
-		out_devices.insert(out_devices.end(), list.begin(), list.end());
+		std::copy_if(list.begin(), list.end(), std::back_inserter(out_devices), check_if_device_is_null);
 	}
 #else
 	Glib::RefPtr<Gdk::Seat> seat = Gdk::DisplayManager::get()->get_default_display()->get_default_seat();
@@ -90,7 +94,7 @@ DeviceTracker::list_devices(DeviceList &out_devices)
 		out_devices.push_back(seat->get_pointer());
 	DeviceList slaves = seat->get_slaves(Gdk::SEAT_CAPABILITY_ALL);
 	out_devices.reserve(out_devices.size() + slaves.size());
-	out_devices.insert(out_devices.end(), slaves.begin(), slaves.end());
+	std::copy_if(slaves.begin(), slaves.end(), std::back_inserter(out_devices), check_if_device_is_null);
 #endif
 }
 

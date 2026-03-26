@@ -1,6 +1,6 @@
 {
   "name": "synfig",
-  "version": "1.5.3",
+  "version": "1.5.5",
   "dependencies": [
     "gtkmm3",
     "libxmlpp",

@@ -704,7 +704,7 @@ bool SequenceConverter::calculateCPs(unsigned int i, unsigned int j, Length &len
   KyL         = (ellProd(a, y) / 15.0) + (ellProd(f, y) / 10.0);
   MxO         = ((e * x) / 15.0) + (ellProd(f, x) / 10.0);
 
-  // Infine, ho il termine noto
+  // Finally, we have the known term
   l = synfig::Point(ellProd(IH, x) - HxL + ellProd(IM, x) - MxO,
               ellProd(IK, y) - KyL + ellProd(IN_, y) - NyO);
   M.m20 = -l[0];
@@ -944,8 +944,8 @@ void studio::conversionToStrokes(std::vector<synfig::Layer::Handle>& strokes, Ve
   max_thickness_zero                      = !g.currConfig->m_maxThickness; // if any value then false otherwise 0 then true
   unsigned int i, j, k;
 
-  synfig::Point topleft = image->param_tl.get(synfig::Point());
-  synfig::Point bottomright = image->param_br.get(synfig::Point());
+  synfig::Point topleft = image->get_param("tl").get(synfig::Point());
+  synfig::Point bottomright = image->get_param("br").get(synfig::Point());
   bottomleft[0] = topleft[0];
   bottomleft[1] = bottomright[1];
 

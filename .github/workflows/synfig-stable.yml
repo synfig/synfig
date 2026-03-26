@@ -22,12 +22,12 @@ jobs:
     strategy:
       matrix:
         include:
-        - os: macos-11
-          name: macOS 11 Big Sur (Autotools)
+        - os: macos-14
+          name: macOS 14 Sonoma (Autotools)
           toolchain: autotools-release
           allow_failures: false
-        - os: ubuntu-20.04
-          name: Ubuntu 20.04 Focal (Autotools)
+        - os: ubuntu-latest
+          name: Ubuntu (Autotools)
           allow_failures: false
           toolchain: autotools-release
 

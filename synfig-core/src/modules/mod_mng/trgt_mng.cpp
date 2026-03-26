@@ -131,6 +131,18 @@ mng_trgt::~mng_trgt()
 }
 
 bool
+mng_trgt::is_multiple_files() const
+{
+	return false;
+}
+
+filesystem::Path
+mng_trgt::get_filename() const
+{
+	return filename;
+}
+
+bool
 mng_trgt::set_rend_desc(RendDesc *given_desc)
 {
 	desc=*given_desc;
@@ -141,7 +153,6 @@ mng_trgt::set_rend_desc(RendDesc *given_desc)
 		multi_image=false;
 	return true;
 }
-
 
 bool
 mng_trgt::init(synfig::ProgressCallback * /* cb */)

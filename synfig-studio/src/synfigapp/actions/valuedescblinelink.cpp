@@ -115,8 +115,12 @@ Action::ValueDescBLineLink::is_candidate(const ParamList &x)
 
 	// We need a dynamic list.
 	ValueNode::Handle value_desc_valuenode = value_desc.get_parent_value_node();
-	if (!ValueNode_DynamicList::Handle::cast_dynamic(value_desc_valuenode))
+	if (auto dynamic_list = ValueNode_DynamicList::Handle::cast_dynamic(value_desc_valuenode)) {
+		if (dynamic_list->get_contained_type() != type_bline_point)
+			return false;
+	} else {
 		return false;
+	}
 
 	// if any of the selected valuedesc belongs to the spline, can't link.
 	const auto range = x.equal_range("selected_value_desc");

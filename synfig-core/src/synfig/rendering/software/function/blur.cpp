@@ -288,7 +288,7 @@ software::Blur::blur_pattern(const Params &params)
 
 		for(Array<ColorReal, 3>::Iterator src_channel(arr_src_surface_cols), dst_channel(arr_dst_surface_cols); dst_channel; ++src_channel, ++dst_channel)
 			for(Array<ColorReal, 2>::Iterator sr(*src_channel), dr(*dst_channel); dr; ++sr, ++dr)
-				BlurTemplates::blur_pattern(*dr, *sr, arr_row_pattern);
+				BlurTemplates::blur_pattern(*dr, *sr, arr_col_pattern);
 	}
 
 	// copy result surface and restore alpha

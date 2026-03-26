@@ -212,10 +212,6 @@ public:	// Signal Interface
 
 public:
 
-	void auto_export(const ValueDesc& value_desc);
-
-	void auto_export(synfig::ValueNode::Handle value_node);
-
 	void set_meta_data(const synfig::String& key,const synfig::String& data);
 
 	void erase_meta_data(const synfig::String& key);

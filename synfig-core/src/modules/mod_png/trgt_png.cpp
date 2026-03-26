@@ -92,6 +92,22 @@ png_trgt::~png_trgt()
 }
 
 bool
+png_trgt::is_multiple_files() const
+{
+	return multi_image;
+}
+
+filesystem::Path
+png_trgt::get_filename() const
+{
+	if (!multi_image)
+		return filename;
+	if (filename.u8string() == "-")
+		return filename;
+	return filesystem::Path(filename).add_suffix(strprintf("%s%04d", sequence_separator.c_str(), desc.get_frame_start()));
+}
+
+bool
 png_trgt::set_rend_desc(RendDesc *given_desc)
 {
 	//given_desc->set_pixel_format(PixelFormat((int)PF_RGB|(int)PF_A));

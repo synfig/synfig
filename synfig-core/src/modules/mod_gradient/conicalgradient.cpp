@@ -58,7 +58,7 @@ SYNFIG_LAYER_SET_VERSION(ConicalGradient,"0.2");
 
 /* === M E T H O D S ======================================================= */
 
-class TaskConicalGradient: public rendering::Task
+class TaskConicalGradient: public rendering::Task, public rendering::TaskInterfaceTransformation
 {
 public:
 	typedef etl::handle<TaskConicalGradient> Handle;
@@ -70,6 +70,13 @@ public:
 	CompiledGradient compiled_gradient;
 
 	TaskConicalGradient() { }
+
+	rendering::Transformation::Handle get_transformation() const override {
+		return transformation.handle();
+	}
+
+private:
+	rendering::Holder<rendering::TransformationAffine> transformation;
 };
 
 

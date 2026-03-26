@@ -218,11 +218,7 @@ ChildrenTreeStore::on_canvas_removed(synfig::Canvas::Handle /*canvas*/)
 void
 ChildrenTreeStore::on_value_node_added(synfig::ValueNode::Handle value_node)
 {
-//	if(value_node->get_id().find("Unnamed")!=String::npos)
-//		return;
-
 	Gtk::TreeRow row = *prepend(value_node_row.children());
-
 	set_row(row,synfigapp::ValueDesc(canvas_interface()->get_canvas(),value_node->get_id()),false);
 }
 

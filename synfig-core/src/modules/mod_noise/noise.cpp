@@ -42,8 +42,7 @@
 #include <synfig/time.h>
 #include <synfig/context.h>
 #include <synfig/paramdesc.h>
-#include <synfig/renddesc.h>
-#include <synfig/surface.h>
+#include <synfig/rendering/software/task/taskpaintpixelsw.h>
 #include <synfig/value.h>
 #include <ctime>
 
@@ -59,9 +58,148 @@ SYNFIG_LAYER_INIT(Noise);
 SYNFIG_LAYER_SET_NAME(Noise,"noise");
 SYNFIG_LAYER_SET_LOCAL_NAME(Noise,N_("Noise Gradient"));
 SYNFIG_LAYER_SET_CATEGORY(Noise,N_("Gradients"));
-SYNFIG_LAYER_SET_VERSION(Noise,"0.0");
+SYNFIG_LAYER_SET_VERSION(Noise,"0.1");
 
 /* === P R O C E D U R E S ================================================= */
+
+class TaskNoise: public rendering::Task, public rendering::TaskInterfaceTransformation
+{
+public:
+	typedef etl::handle<TaskNoise> Handle;
+	SYNFIG_EXPORT static Token token;
+
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Vector size;
+	RandomNoise random;
+	RandomNoise::SmoothType smooth;
+	int detail;
+	Real speed;
+	bool turbulent;
+	bool do_alpha;
+	bool super_sample;
+	CompiledGradient compiled_gradient;
+	Time time_mark;
+
+	rendering::Transformation::Handle get_transformation() const override {
+		return transformation.handle();
+	}
+
+private:
+	rendering::Holder<rendering::TransformationAffine> transformation;
+};
+
+
+class TaskNoiseSW: public TaskNoise, public rendering::TaskPaintPixelSW
+{
+public:
+	typedef etl::handle<TaskNoise> Handle;
+	SYNFIG_EXPORT static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	void pre_run(const Matrix3& /*matrix*/, const Matrix3& /*inverse_matrix*/) const override
+	{
+		pixel_size = (std::fabs(get_units_per_pixel()[0]) + std::fabs(get_units_per_pixel()[1])) * 0.5f;
+	}
+
+	Color get_color(const Vector& point) const override
+	{
+		float x(point[0] / size[0] * (1 << detail));
+		float y(point[1] / size[1] * (1 << detail));
+		float x2(0), y2(0);
+
+		if (super_sample && pixel_size) {
+			x2 = (point[0] + pixel_size) / size[0] * (1 << detail);
+			y2 = (point[1] + pixel_size) / size[1] * (1 << detail);
+		}
+
+		const RandomNoise::SmoothType smooth_type((!speed && smooth == RandomNoise::SMOOTH_SPLINE)
+													? RandomNoise::SMOOTH_FAST_SPLINE
+													: smooth);
+
+		const float ftime(speed * time_mark);
+
+		float amount = 0.0f;
+		float amount2 = 0.0f;
+		float amount3 = 0.0f;
+		float alpha = 0.0f;
+		for (int i = 0; i < detail; i++) {
+			amount = random(smooth_type, 0 + (detail - i) * 5, x, y, ftime) + amount * 0.5;
+			amount = synfig::clamp(amount, -1.f, 1.f);
+
+			if (super_sample && pixel_size) {
+				amount2 = random(smooth_type, 0 + (detail - i) * 5, x2, y, ftime) + amount2 * 0.5;
+				amount2 = synfig::clamp(amount2, -1.f, 1.f);
+
+				amount3 = random(smooth_type, 0 + (detail - i) * 5, x, y2, ftime) + amount3 * 0.5;
+				amount3 = synfig::clamp(amount3, -1.f, 1.f);
+
+				if (turbulent) {
+					amount2 = std::fabs(amount2);
+					amount3 = std::fabs(amount3);
+				}
+
+				x2 *= 0.5f;
+				y2 *= 0.5f;
+			}
+
+			if (do_alpha) {
+				alpha = random(smooth_type, 3 + (detail - i) * 5, x, y, ftime) + alpha * 0.5;
+				alpha = synfig::clamp(alpha, -1.f, 1.f);
+			}
+
+			if (turbulent) {
+				amount = std::fabs(amount);
+				alpha = std::fabs(alpha);
+			}
+
+			x *= 0.5f;
+			y *= 0.5f;
+		}
+
+		if (!turbulent) {
+			amount = amount / 2.0f + 0.5f;
+			alpha = alpha / 2.0f + 0.5f;
+
+			if (super_sample && pixel_size) {
+				amount2 = amount2 / 2.0f + 0.5f;
+				amount3 = amount3 / 2.0f + 0.5f;
+			}
+		}
+
+		Color color;
+
+		if (super_sample && pixel_size) {
+			Real da = std::max(amount3, std::max(amount, amount2)) - std::min(amount3, std::min(amount, amount2));
+			if (da < 0)
+				da = -da;
+			if (approximate_greater(da, 2.))
+				da = 2.;
+			da *= 0.5;
+			color = compiled_gradient.average(amount - da, amount + da);
+		} else {
+			color = compiled_gradient.color(amount);
+		}
+
+		if (do_alpha)
+			color.set_a(color.get_a() * alpha);
+
+		return color;
+	}
+
+	bool run(RunParams&) const override {
+		return run_task();
+	}
+
+protected:
+	mutable float pixel_size = 0.0f;
+};
+
+SYNFIG_EXPORT rendering::Task::Token TaskNoise::token(
+	DescAbstract<TaskNoise>("Noise") );
+SYNFIG_EXPORT rendering::Task::Token TaskNoiseSW::token(
+	DescReal<TaskNoiseSW, TaskNoise>("NoiseSW") );
+
 
 /* === M E T H O D S ======================================================= */
 
@@ -115,7 +253,6 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 		y2=(point[1]+pixel_size)/size[1]*(1<<detail);
 	}
 
-	int i;
 	Time time;
 	time=speed*get_time_mark();
 	int smooth((!speed && smooth_ == (int)RandomNoise::SMOOTH_SPLINE) ? (int)RandomNoise::SMOOTH_FAST_SPLINE : smooth_);
@@ -127,8 +264,7 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 		float amount2=0.0f;
 		float amount3=0.0f;
 		float alpha=0.0f;
-		for(i=0;i<detail;i++)
-		{
+		for (int i = 0; i < detail; i++) {
 			amount=random(RandomNoise::SmoothType(smooth),0+(detail-i)*5,x,y,ftime)+amount*0.5;
 			if (amount < -1) amount = -1;
 			if (amount >  1) amount =  1;
@@ -196,11 +332,6 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 	return ret;
 }
 
-inline float
-Noise::calc_supersample(const synfig::Point &/*x*/, float /*pw*/,float /*ph*/)const
-{
-	return 0.0f;
-}
 
 synfig::Layer::Handle
 Noise::hit_check(synfig::Context context, const synfig::Point &point)const
@@ -323,55 +454,21 @@ Noise::get_color(Context context, const Point &point)const
 		return Color::blend(color,context.get_color(point),get_amount(),get_blend_method());
 }
 
-
-bool
-Noise::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+rendering::Task::Handle
+Noise::build_composite_task_vfunc(ContextParams /*context_params*/) const
 {
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
+	TaskNoise::Handle task(new TaskNoise());
+	task->size = param_size.get(Vector());
+	task->random.set_seed(param_random.get(int()));
+	task->smooth = RandomNoise::SmoothType(param_smooth.get(int()));
+	task->detail = param_detail.get(int());
+	task->speed = param_speed.get(Real());
+	task->turbulent = param_turbulent.get(bool());
+	task->do_alpha = param_do_alpha.get(bool());
+	task->super_sample = param_super_sample.get(bool());
+	task->compiled_gradient = compiled_gradient;
+	task->time_mark = get_time_mark();
 
-	SuperCallback supercb(cb,0,9500,10000);
-
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		surface->set_wh(renddesc.get_w(),renddesc.get_h());
-	}
-	else
-	{
-		if(!context.accelerated_render(surface,quality,renddesc,&supercb))
-			return false;
-		if(get_amount()==0)
-			return true;
-	}
-
-
-	int x,y;
-
-	Surface::pen pen(surface->begin());
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-	Point pos;
-	Point tl(renddesc.get_tl());
-	const int w(surface->get_w());
-	const int h(surface->get_h());
-	float supersampleradius((std::fabs(pw)+std::fabs(ph))*0.5f);
-	if(quality>=8)
-		supersampleradius=0;
-
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(color_func(pos,supersampleradius,context));
-	}
-	else
-	{
-		for(y=0,pos[1]=tl[1];y<h;y++,pen.inc_y(),pen.dec_x(x),pos[1]+=ph)
-			for(x=0,pos[0]=tl[0];x<w;x++,pen.inc_x(),pos[0]+=pw)
-				pen.put_value(Color::blend(color_func(pos,supersampleradius,context),pen.get_value(),get_amount(),get_blend_method()));
-	}
-
-	// Mark our progress as finished
-	if(cb && !cb->amount_complete(10000,10000))
-		return false;
-
-	return true;
+	return task;
 }
+

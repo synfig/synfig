@@ -346,6 +346,8 @@ private:
 	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> onion_skin_keyframes_toggle;
 	Glib::RefPtr<Gtk::ToggleAction> background_rendering_toggle;
+	Glib::RefPtr<Gtk::ToggleAction> past_keyframes_toggle;
+	Glib::RefPtr<Gtk::ToggleAction> future_keyframes_toggle;
 
 	Gtk::RadioButtonGroup low_res_pixel_size_group;
 
@@ -596,25 +598,11 @@ public:
 
 	void new_child_canvas();
 
-	//! Rebuilds layer_tree_store_ from the Canvas. Maintains selected items.
-	void rebuild_tables();
-
-	//! Builds layer_tree_store_ from the Canvas. Does not maintain selected items.
-	void build_tables();
-
-	//! Refreshes the data for the tables
-	void refresh_tables();
-
 	//! \writeme
 	void rebuild_ducks();
 
 	void play_async();
 	void stop_async();
-
-	//! Show/hide the tables (Layer/Children). TODO: seems deprecated
-	void show_tables() { }
-	void hide_tables() { }
-	bool tables_are_visible() { return false; }
 
 	//! Shows the time bar
 	void show_timebar();

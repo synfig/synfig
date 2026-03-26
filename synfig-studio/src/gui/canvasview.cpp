@@ -640,7 +640,6 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 	drag_dest_set(listTargets);
 	signal_drag_data_received().connect(sigc::mem_fun(*this, &CanvasView::on_drop_drag_data_received));
 
-	hide_tables();
 	show();
 
 	instance->canvas_view_list().push_front(this);
@@ -1469,6 +1468,8 @@ CanvasView::init_menus()
 		{"toggle-background-rendering", "background_rendering_icon", N_("Enable rendering in background"), "", &WorkArea::get_background_rendering, &CanvasView::toggle_background_rendering },
 		{"toggle-onion-skin",           "onion_skin_icon",           N_("Show Onion Skin"),         "", &WorkArea::get_onion_skin, &CanvasView::toggle_onion_skin },
 		{"toggle-onion-skin-keyframes", "keyframe_icon",             N_("Onion Skin on Keyframes"), "", &WorkArea::get_onion_skin_keyframes, &CanvasView::toggle_onion_skin_keyframes },
+		{"toggle-keyframe-lock-past",   "keyframe_lock_past_on_icon",   N_("Lock Past Keyframes"),    "", &WorkArea::get_keyframe_lock_past, &CanvasView::toggle_past_keyframe_button },
+		{"toggle-keyframe-lock-future", "keyframe_lock_future_on_icon", N_("Lock Future Keyframes"),  "", &WorkArea::get_keyframe_lock_future, &CanvasView::toggle_future_keyframe_button },
 	};
 
 	for (const auto& item : bool_action_list) {
@@ -1492,6 +1493,8 @@ CanvasView::init_menus()
 	background_rendering_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-background-rendering"));
 	onion_skin_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-onion-skin"));
 	onion_skin_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-onion-skin-keyframes"));
+	past_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-keyframe-lock-past"));
+	future_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-keyframe-lock-future"));
 
 	{
 		Glib::RefPtr<Gtk::ToggleAction> action;
@@ -1707,7 +1710,6 @@ CanvasView::popup_main_menu()
 void
 CanvasView::on_refresh_pressed()
 {
-	rebuild_tables();
 	rebuild_ducks();
 	work_area->queue_render();
 }
@@ -1903,27 +1905,6 @@ CanvasView::focused_widget_has_priority(Gtk::Widget * focused)
 	if(dynamic_cast<Gtk::Entry*>(focused))
 		return true;
 	return false;
-}
-
-void
-CanvasView::refresh_tables()
-{
-//	if(layer_tree_store_)layer_tree_store_->refresh();
-//	if(children_tree_store_)children_tree_store_->refresh();
-}
-
-void
-CanvasView::rebuild_tables()
-{
-//	layer_tree_store_->rebuild();
-//	children_tree_store_->rebuild();
-}
-
-void
-CanvasView::build_tables()
-{
-//	layer_tree_store_->rebuild();
-//	children_tree_store_->rebuild();
 }
 
 void
@@ -2173,10 +2154,8 @@ CanvasView::toggle_past_keyframe_button()
 	if(toggling_animate_mode_)
 		return;
 	CanvasInterface::Mode mode(get_mode());
-	if((mode&MODE_ANIMATE_PAST) )
-		set_mode(get_mode()-MODE_ANIMATE_PAST);
-	else
-		set_mode((get_mode()|MODE_ANIMATE_PAST));
+	bool enable = !synfigapp::has_flag(mode, MODE_ANIMATE_PAST);
+	work_area->set_keyframe_lock_past(enable);
 }
 
 
@@ -2185,11 +2164,9 @@ CanvasView::toggle_future_keyframe_button()
 {
 	if(toggling_animate_mode_)
 		return;
- 	CanvasInterface::Mode mode(get_mode());
-	if((mode&MODE_ANIMATE_FUTURE) )
-		set_mode(get_mode()-MODE_ANIMATE_FUTURE);
-	else
-		set_mode(get_mode()|MODE_ANIMATE_FUTURE);
+	CanvasInterface::Mode mode(get_mode());
+	bool enable = !synfigapp::has_flag(mode, MODE_ANIMATE_FUTURE);
+	work_area->set_keyframe_lock_future(enable);
 }
 
 bool
@@ -3665,4 +3642,5 @@ CanvasView::set_show_toolbars(bool show)
 {
 	top_toolbar->set_visible(show);
 	right_toolbar->set_visible(show);
+	stopbutton->set_visible(show);
 };

@@ -80,7 +80,6 @@ class studio::StateBone_Context : public sigc::trackable
 	CanvasView::Handle canvas_view_;
 	CanvasView::IsWorking is_working;
 
-	bool prev_table_status;
 	bool prev_workarea_layer_status_;
 	Duck::Type prev_type_mask;
 
@@ -328,7 +327,6 @@ StateBone_Context::increment_id()
 StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	canvas_view_(canvas_view),
 	is_working(*canvas_view),
-	prev_table_status(false),
 	prev_workarea_layer_status_(get_work_area()->get_allow_layer_clicks()),
 	//depth(-1),
 	active_bone(get_work_area()->get_active_bone_value_node()),
@@ -445,10 +443,6 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
-	// Hide the tables if they are showing
-	prev_table_status=get_canvas_view()->tables_are_visible();
-	if(prev_table_status)get_canvas_view()->hide_tables();
-
 	// Disable the time bar
 	get_canvas_view()->set_sensitive_timebar(false);
 
@@ -528,9 +522,6 @@ StateBone_Context::~StateBone_Context()
 
 	// Enable the time bar
 	get_canvas_view()->set_sensitive_timebar(true);
-
-	// Bring back the tables if they were out before
-	if(prev_table_status)get_canvas_view()->show_tables();
 
 	// Refresh the work area
 	get_work_area()->queue_draw();

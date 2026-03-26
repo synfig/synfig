@@ -53,7 +53,7 @@ public:
 	virtual Token::Handle get_token() const { return token.handle(); }
 
 public:
-	Contour::Handle contour;
+	std::shared_ptr<Contour> contour;
 	Real detail;
 	bool allow_antialias;
 	Holder<TransformationAffine> transformation;

@@ -59,7 +59,7 @@ SYNFIG_LAYER_SET_VERSION(RadialGradient,"0.2");
 
 /* === M E T H O D S ======================================================= */
 
-class TaskRadialGradient: public rendering::Task
+class TaskRadialGradient: public rendering::Task, public rendering::TaskInterfaceTransformation
 {
 public:
 	typedef etl::handle<TaskRadialGradient> Handle;
@@ -71,6 +71,13 @@ public:
 	CompiledGradient compiled_gradient;
 
 	TaskRadialGradient() { }
+
+	rendering::Transformation::Handle get_transformation() const override {
+		return transformation.handle();
+	}
+
+private:
+	rendering::Holder<rendering::TransformationAffine> transformation;
 };
 
 
@@ -83,7 +90,7 @@ public:
 
 	mutable Real supersample = 0.;
 
-	void pre_run(const Matrix3& /*matrix*/, const Matrix3& /*inverse_matrix*/) const override
+	void pre_run(const Matrix3& /*world_to_raster*/, const Matrix3& /*raster_to_world*/) const override
 	{
 		supersample = 1.2*get_units_per_pixel()[0]/radius;
 		supersample *= 0.5;

@@ -106,13 +106,21 @@ namespace synfig
 			virtual size_t internal_write(const void *buffer, size_t size) = 0;
 
 		public:
-			bool write_block(const void *buffer, size_t size)
+			/**
+			 * Write @a size bytes of @a buffer to file.
+			 * @return how many bytes were really written
+			 */
+			size_t write_block(const void *buffer, size_t size)
 			{
 				for(size_t i = 0; i < size; i++)
 					if (!put(((const char*)buffer)[i]).good())
 						return i;
 				return size;
 			}
+			/**
+			 * Write @a size bytes of @a buffer to file.
+			 * @return true if everything was really written
+			 */
 			bool write_whole_block(const void *buffer, size_t size)
 				{ return size == write_block(buffer, size); }
 			bool write_whole_stream(std::streambuf &streambuf)

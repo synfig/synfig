@@ -71,6 +71,18 @@ dv_trgt::~dv_trgt()
 }
 
 bool
+dv_trgt::is_multiple_files() const
+{
+	return false;
+}
+
+filesystem::Path
+dv_trgt::get_filename() const
+{
+	return filename;
+}
+
+bool
 dv_trgt::set_rend_desc(RendDesc *given_desc)
 {
 	// Set the aspect ratio

@@ -454,10 +454,6 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	// Refresh the work area
 	get_work_area()->queue_draw();
 
-	// Hide the tables if they are showing
-	//prev_table_status=get_canvas_view()->tables_are_visible();
-	//if(prev_table_status)get_canvas_view()->hide_tables();
-
 	// Disable the time bar
 	//get_canvas_view()->set_sensitive_timebar(false);
 
