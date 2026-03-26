@@ -344,6 +344,7 @@ Widget_Preview::Widget_Preview():
 	scr_time_scrub(adj_time_scrub),
 	b_loop(/*_("Loop")*/),
 	currentindex(-100000),//TODO get the value from canvas setting or preview option
+	playback_speed(1.00),
 	timedisp(-1),
 	//audiotime(0),
 	adj_sound(Gtk::Adjustment::create(0, 0, 4)),
@@ -398,6 +399,17 @@ Widget_Preview::Widget_Preview():
 
 	//2nd row: prevframe play/pause nextframe loop | halt-render re-preview erase-all
 	toolbar = Gtk::manage(new class Gtk::Box());
+
+	// playback rate input (float with 2 decimal places)
+	playback_input = Gtk::manage(new Gtk::Entry());
+	playback_input->set_text("1.00");
+	playback_input->set_width_chars(5);
+	playback_input->set_max_length(6);
+	playback_input->set_alignment(1.0); // right align
+	toolbar->pack_start(*playback_input, Gtk::PACK_SHRINK, 0);
+	playback_input->signal_activate().connect(sigc::mem_fun(*this, &Widget_Preview::update_playback));
+	playback_input->signal_focus_out_event().connect(sigc::mem_fun(*this, &Widget_Preview::on_playback_input_focus_out), false);
+	playback_input->show();
 
 	//prev rendered frame
 	Gtk::Button* prev_framebutton = create_tool_button("animate_seek_prev_frame_icon", _("Seek to previous frame"));
@@ -506,6 +518,8 @@ Widget_Preview::Widget_Preview():
 
 	//3rd row: previewing frame numbering and rendered frame numbering
 	Gtk::Box *status = manage(new Gtk::Box());
+	playback_label = manage(new Gtk::Label("1.00x"));
+	status->pack_start(*playback_label, Gtk::PACK_SHRINK, 5);
 	status->pack_start(l_currenttime, Gtk::PACK_SHRINK, 5);
 	Gtk::Label *separator = manage(new Gtk::Label(" / "));
 	status->pack_start(*separator, Gtk::PACK_SHRINK, 0);
@@ -631,6 +645,34 @@ void studio::Widget_Preview::update()
 	l_currenttime.set_text(timecode);
 
 }
+
+bool Widget_Preview::on_playback_input_focus_out(GdkEventFocus* event)
+{
+    update_playback();
+    return false;
+}
+
+void studio::Widget_Preview::update_playback() {
+	Glib::ustring text = playback_input->get_text();
+	try {
+		double value;
+		value = std::stod(text);
+		if(value <= 0) {
+			playback_speed = 1;
+		} else {
+			playback_speed = value;
+		}
+	} catch(const std::exception& e) {
+		// when input can't be converted to double, revert to previous value.
+	}
+	char buf[16];
+	snprintf(buf, sizeof(buf), "%.2fx", playback_speed);
+	playback_label->set_text(buf);
+	playback_input->set_text(Glib::ustring(buf));
+	play_button->grab_focus();
+	update();
+}
+
 void studio::Widget_Preview::preview_draw()
 {
 	draw_area.queue_draw();
@@ -744,6 +786,7 @@ bool studio::Widget_Preview::redraw(const Cairo::RefPtr<Cairo::Context> &cr)
 bool studio::Widget_Preview::play_update()
 {
 	float diff = timer.pop_time();
+	diff *= playback_speed;
 	//synfig::info("Play update: diff = %.2f",diff);
 
 	if(playing)
