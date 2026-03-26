@@ -655,7 +655,7 @@ bool Widget_Preview::on_playback_input_focus_out(GdkEventFocus* event)
 void studio::Widget_Preview::update_playback() {
 	Glib::ustring text = playback_input->get_text();
 	try {
-		float value;
+		double value;
 		value = std::stod(text);
 		if(value <= 0) {
 			playback_speed = 1;
@@ -663,6 +663,7 @@ void studio::Widget_Preview::update_playback() {
 			playback_speed = value;
 		}
 	} catch(const std::exception& e) {
+		// when input can't be converted to double, revert to previous value.
 	}
 	char buf[16];
 	snprintf(buf, sizeof(buf), "%.2fx", playback_speed);
