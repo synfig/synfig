@@ -113,6 +113,9 @@ Layer_Skeleton::set_param(const String &param, const ValueBase &value)
 	// Skip shape, polygon and composite parameters
 	if (param == "amount")
 		return Layer_Composite::set_param(param,value);
+
+	if (param == "color")
+		return Layer_Shape::set_param(param,value);
 	return Layer::set_param(param,value);
 }
 
@@ -120,12 +123,16 @@ ValueBase
 Layer_Skeleton::get_param(const String &param)const
 {
 	EXPORT_VALUE(param_name);
+	EXPORT_VALUE(color_bones);
 	EXPORT_VALUE(param_bones);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
 
 	// Skip shape, polygon and composite parameters
+	if (param == "color")
+		return Layer_Shape::get_param(param);
+	
 	if (param == "amount")
 		return Layer_Composite::get_param(param);
 	return Layer::get_param(param);
@@ -146,6 +153,11 @@ Layer_Skeleton::get_param_vocab()const
 	ret.push_back(ParamDesc("name")
 		.set_local_name(_("Name"))
 	);
+
+	ret.push_back(ParamDesc("color") 
+		.set_local_name(_("Color bones"))
+	);
+	
 	ret.push_back(ParamDesc("bones")
 		.set_local_name(_("Bones"))
 	);
