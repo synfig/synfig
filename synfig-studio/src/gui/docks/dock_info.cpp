@@ -37,6 +37,8 @@
 
 #include <glibmm/fileutils.h>
 
+#include <gui/actionmanagers/actionmanager.h>
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/localization.h>
@@ -184,18 +186,39 @@ studio::Dock_Info::Dock_Info()
 	overlay->add(render_progress);
 	overlay->add_overlay(render_percentage);
 
+	struct ActionMetadata {
+		std::string name;
+		std::string icon;
+		std::string shortcut;
+		std::string label;
+		std::string tooltip;
+	};
+
+	const std::vector<ActionMetadata> action_list = {
+		{"stop-rendering",     "process-stop", {}, _("Stop rendering"),          _("Stop current rendering process")},
+		{"open-rendered-file", "",             {}, _("Open Rendered File"),      _("Launch the last rendered file in its default application")},
+		{"open-render-folder", "folder-open",  {}, _("Open Destination Folder"), _("Open the folder of the last rendered file(s)")},
+	};
+	for (const auto& entry : action_list)
+		App::get_action_database()->add({"app." + entry.name, entry.label, entry.shortcut, entry.icon, entry.tooltip});
+
+	const std::vector<std::pair<std::string, std::function<void()>>> action_methods = {
+		{"stop-rendering",     sigc::mem_fun(*this, &studio::Dock_Info::on_stop_button_clicked)},
+		{"open-rendered-file", sigc::mem_fun(*this, &studio::Dock_Info::on_open_file_button_clicked)},
+		{"open-render-folder", sigc::mem_fun(*this, &studio::Dock_Info::on_open_folder_button_clicked)},
+	};
+	for (const auto& entry : action_methods)
+		App::instance()->add_action(entry.first, entry.second);
+
+	ActionWidgetHelper::init_icon_only_button(stop_button, "app.stop-rendering");
 	stop_button.set_image_from_icon_name("process-stop", Gtk::IconSize::from_name("synfig-small_icon"));
 	stop_button.set_valign(Gtk::ALIGN_CENTER);
-	stop_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_stop_button_clicked));
 
-	open_file_button.set_label(_("Open Rendered File"));
+	ActionWidgetHelper::init_button(open_file_button, "app.open-rendered-file");
 	open_file_button.set_halign(Gtk::ALIGN_START);
-	open_file_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_open_file_button_clicked));
 
-	open_folder_button.set_image_from_icon_name("folder-open");
-	open_folder_button.set_tooltip_text(_("Open Destination Folder"));
+	ActionWidgetHelper::init_icon_only_button(open_folder_button, "app.open-render-folder");
 	open_folder_button.set_halign(Gtk::ALIGN_START);
-	open_folder_button.signal_clicked().connect(sigc::mem_fun(*this, &studio::Dock_Info::on_open_folder_button_clicked));
 
 	Gtk::Box* open_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL));
 	open_box->set_spacing(6);

@@ -62,7 +62,10 @@ class Dock_Toolbox : public Dockable
 	Gtk::ToolItemGroup *tool_item_group;
 	Gtk::Paned *tool_box_paned;
 
-	std::map<synfig::String, Gtk::RadioToolButton*> state_button_map;
+	// Tool/state name => {Tool button, Smach::state}
+	std::map<synfig::String, std::pair<Gtk::RadioToolButton *, const void*>> state_button_map;
+
+	bool changing_state_;
 
 	Gtk::RadioToolButton::Group radio_tool_button_group;
 
@@ -80,7 +83,7 @@ public:
 
 	void refresh();
 
-	void add_state(const Smach::state_base *state);
+	void add_state(const Smach::state_base* state);
 
 	Dock_Toolbox();
 	virtual ~Dock_Toolbox();

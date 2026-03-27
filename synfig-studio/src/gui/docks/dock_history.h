@@ -30,7 +30,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/actiongroup.h>
 #include <gtkmm/treeview.h>
 #include <gui/instance.h>
 #include <gui/docks/dock_canvasspecific.h>
@@ -45,7 +44,6 @@ namespace studio {
 
 class Dock_History : public Dock_CanvasSpecific
 {
-	Glib::RefPtr<Gtk::ActionGroup> action_group;
 	Gtk::TreeView *action_tree;
 
 	etl::loose_handle<studio::Instance>	selected_instance;
@@ -78,7 +76,8 @@ public:
 	Dock_History();
 	~Dock_History();
 protected:
-	virtual void init_instance_vfunc(etl::loose_handle<Instance> instance);
+	void init_instance_vfunc(etl::loose_handle<Instance> instance) override;
+	void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view) override;
 
 	bool on_action_event(GdkEvent *event);
 	void on_action_toggle(const Glib::ustring& path);
