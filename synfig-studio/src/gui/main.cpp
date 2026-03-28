@@ -63,7 +63,7 @@ using namespace studio;
 
 int main(int argc, char **argv)
 {
-	synfig::OS::fallback_binary_path = filesystem::Path(Glib::filename_to_utf8(argv[0]));
+	synfig::OS::get_fallback_binary_path() = filesystem::Path(Glib::filename_to_utf8(argv[0]));
 	const filesystem::Path rootpath = synfig::OS::get_binary_path().parent_path().parent_path();
 	
 #ifdef ENABLE_NLS
