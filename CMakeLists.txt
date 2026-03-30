@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.14)
 if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.14")
 	cmake_policy(SET CMP0087 NEW)
 endif()
@@ -73,6 +73,7 @@ endif(MSVC)
 message("-- CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 
 if (${ENABLE_TESTS})
+	include(AddGoogleTest)
 	enable_testing()
 endif()
 
