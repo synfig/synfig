@@ -68,3 +68,18 @@ set_target_properties(
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test
 )
 endif()
+
+# Google Test based tests
+if (TARGET gtest_main)
+    add_executable(gtest_synfig_angle gtest_angle.cpp)
+    target_link_libraries(gtest_synfig_angle PRIVATE libsynfig GTest::gtest_main)
+    target_include_directories(gtest_synfig_angle PRIVATE ${PROJECT_SOURCE_DIR}/src)
+    add_test(NAME gtest_synfig_angle COMMAND gtest_synfig_angle)
+
+    if (NOT WIN32)
+        set_target_properties(gtest_synfig_angle
+            PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test
+        )
+    endif()
+endif()
