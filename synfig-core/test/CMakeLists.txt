@@ -19,6 +19,7 @@ if (TARGET gtest_main)
         gtest_string
         gtest_surface_etl
         gtest_valuenode_maprange
+        gtest_golden_image
     )
 
     foreach(TEST_NAME ${GTEST_SOURCES})
