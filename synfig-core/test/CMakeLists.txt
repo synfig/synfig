@@ -71,13 +71,33 @@ endif()
 
 # Google Test based tests
 if (TARGET gtest_main)
-    add_executable(gtest_synfig_angle gtest_angle.cpp)
-    target_link_libraries(gtest_synfig_angle PRIVATE libsynfig GTest::gtest_main)
-    target_include_directories(gtest_synfig_angle PRIVATE ${PROJECT_SOURCE_DIR}/src)
-    add_test(NAME gtest_synfig_angle COMMAND gtest_synfig_angle)
+    set(GTEST_SOURCES
+        gtest_angle
+        gtest_benchmark
+        gtest_bezier
+        gtest_bline
+        gtest_bone
+        gtest_clock
+        gtest_filesystem_path
+        gtest_handle
+        gtest_keyframe
+        gtest_node
+        gtest_pen
+        gtest_reference_counter
+        gtest_string
+        gtest_surface_etl
+        gtest_valuenode_maprange
+    )
+
+    foreach(TEST_NAME ${GTEST_SOURCES})
+        add_executable(${TEST_NAME} ${TEST_NAME}.cpp)
+        target_link_libraries(${TEST_NAME} PRIVATE libsynfig GTest::gtest_main)
+        target_include_directories(${TEST_NAME} PRIVATE ${PROJECT_SOURCE_DIR}/src)
+        add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
+    endforeach()
 
     if (NOT WIN32)
-        set_target_properties(gtest_synfig_angle
+        set_target_properties(${GTEST_SOURCES}
             PROPERTIES
             RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test
         )
