@@ -112,6 +112,13 @@ jobs:
         if: runner.os == 'Linux' && failure()
         run: sudo coredumpctl debug --debugger-arguments="-batch -ex 'thread apply all bt full'"
 
+      - name: Run Python exporter tests
+        run: |
+          pip3 install --break-system-packages pytest
+          cd synfig-studio/plugins/lottie-exporter
+          pytest tests/ -v --tb=short
+        continue-on-error: true
+
       - name: ccache statistics
         run: ccache --show-stats
 
