@@ -75,5 +75,5 @@ done
 
 # Do not install lxml for GitHub Actions
 if [[ -z "${CI}" ]]; then
-    STATIC_DEPS=true pip3 install lxml
+    STATIC_DEPS=true pip3 install lxml --break-system-packages
 fi
