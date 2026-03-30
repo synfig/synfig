@@ -34,4 +34,8 @@ if (TARGET gtest_main)
             RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/test
         )
     endif()
+
+    # Copy test fixtures to build directory
+    file(GLOB TEST_FIXTURES "${CMAKE_CURRENT_SOURCE_DIR}/fixtures/*")
+    file(COPY ${TEST_FIXTURES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/fixtures/)
 endif()
