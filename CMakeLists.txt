@@ -74,6 +74,7 @@ message("-- CMAKE_BUILD_TYPE: ${CMAKE_BUILD_TYPE}")
 
 if (${ENABLE_TESTS})
 	include(AddGoogleTest)
+	include(CodeCoverage)
 	enable_testing()
 endif()
 

@@ -69,7 +69,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           ./1-setup-linux-native.sh
-          sudo apt-get install ccache ninja-build gdb systemd-coredump
+          sudo apt-get install ccache ninja-build gdb systemd-coredump lcov
 
       - name: Setup ccache parameters and show statistics
         run: |
@@ -99,6 +99,39 @@ jobs:
         with:
           name: test-results-${{ matrix.os }}
           path: test-results/
+
+      - name: Build with coverage
+        if: matrix.toolchain == 'cmake-ninja' && runner.os == 'Linux'
+        run: |
+          mkdir -p build-coverage && cd build-coverage
+          cmake -GNinja -DENABLE_TESTS=ON -DENABLE_COVERAGE=ON -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_BUILD_TYPE=Debug ..
+          ninja
+
+      - name: Run tests and generate coverage
+        if: matrix.toolchain == 'cmake-ninja' && runner.os == 'Linux'
+        run: |
+          cd build-coverage
+          ctest --output-on-failure || true
+          lcov --directory . --capture --output-file coverage.info
+          lcov --remove coverage.info '*/test/*' '*/tests/*' '*/googletest/*' '*/usr/*' '*/opt/*' --output-file coverage.info.cleaned
+          genhtml coverage.info.cleaned --output-directory coverage-report --title "Synfig Coverage"
+
+      - name: Upload coverage report
+        if: always() && matrix.toolchain == 'cmake-ninja' && runner.os == 'Linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ matrix.os }}
+          path: build-coverage/coverage-report/
+
+      - name: Check coverage threshold
+        if: matrix.toolchain == 'cmake-ninja' && runner.os == 'Linux'
+        run: |
+          COVERAGE=$(lcov --summary build-coverage/coverage.info.cleaned 2>&1 | grep -oP 'lines\.\.\.\.\.\.: \K[0-9.]+')
+          echo "Line coverage: ${COVERAGE}%"
+          # Initial threshold: 50% (target: 80%)
+          if (( $(echo "$COVERAGE < 50.0" | bc -l) )); then
+            echo "::warning::Coverage ${COVERAGE}% is below 50% threshold"
+          fi
 
       - name: Build (Autotools+Make)
         if: matrix.toolchain == 'autotools'
