@@ -20,6 +20,10 @@ if (TARGET gtest_main)
         gtest_surface_etl
         gtest_valuenode_maprange
         gtest_golden_image
+        gtest_file_io_sif
+        gtest_file_io_sifz
+        gtest_file_io_errors
+        gtest_file_io_recovery
     )
 
     foreach(TEST_NAME ${GTEST_SOURCES})
