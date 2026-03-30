@@ -24,6 +24,10 @@ if (TARGET gtest_main)
         gtest_file_io_sifz
         gtest_file_io_errors
         gtest_file_io_recovery
+        gtest_render_basic
+        gtest_render_blend
+        gtest_export_format
+        gtest_export_video
     )
 
     foreach(TEST_NAME ${GTEST_SOURCES})
