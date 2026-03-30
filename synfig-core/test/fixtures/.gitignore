@@ -1,0 +1,2 @@
+# Override root .gitignore to track test fixture .sif files
+!*.sif
