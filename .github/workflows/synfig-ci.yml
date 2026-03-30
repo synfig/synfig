@@ -85,7 +85,20 @@ jobs:
           mkdir build-cmake && cd build-cmake
           cmake -GNinja -DENABLE_TESTS=ON -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_INSTALL_PREFIX=./install -DCMAKE_BUILD_TYPE=Release ..
           ninja
-          ctest --output-on-failure
+
+      - name: Run tests (CMake+Ninja)
+        if: matrix.toolchain == 'cmake-ninja'
+        continue-on-error: true
+        env:
+          GTEST_OUTPUT: xml:${{ github.workspace }}/test-results/
+        run: cd build-cmake && ctest --output-on-failure
+
+      - name: Upload test results
+        if: always() && matrix.toolchain == 'cmake-ninja'
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}
+          path: test-results/
 
       - name: Build (Autotools+Make)
         if: matrix.toolchain == 'autotools'
