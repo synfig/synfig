@@ -25,8 +25,18 @@ def parse_canvas(root):
     return {"width": width, "height": height, "fps": fps, "view_box": view_box}
 
 
-def gen_html(canvas_meta, pixi_js_code):
+def gen_html(canvas_meta, pixi_js_code, has_animations=False):
     """Generate self-contained HTML with PixiJS."""
+    tween_script = ""
+    if has_animations:
+        tween_path = os.path.join(os.path.dirname(__file__), "runtime", "tween.js")
+        try:
+            with open(tween_path, 'r') as f:
+                tween_runtime = f.read()
+            tween_script = f"\n<script>\n{tween_runtime}\n</script>"
+        except FileNotFoundError:
+            tween_script = ""
+
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,7 +48,7 @@ def gen_html(canvas_meta, pixi_js_code):
   canvas {{ display: block; }}
 </style>
 </head>
-<body>
+<body>{tween_script}
 <script type="module">
 import {{ Application, Graphics, Container, FillGradient }} from '{pixi_settings.PIXI_CDN}';
 
@@ -74,8 +84,11 @@ def main():
 
     canvas_meta = parse_canvas(root)
     ppu = calc_pixels_per_unit(canvas_meta['width'], canvas_meta['height'], canvas_meta['view_box'])
-    pixi_js_code = gen_pixi_layers(root, canvas_meta['width'], canvas_meta['height'], ppu)
-    html = gen_html(canvas_meta, pixi_js_code)
+    pixi_js_code, has_animations = gen_pixi_layers(
+        root, canvas_meta['width'], canvas_meta['height'], ppu,
+        fps=canvas_meta['fps']
+    )
+    html = gen_html(canvas_meta, pixi_js_code, has_animations=has_animations)
 
     with open(ns.outfile, 'w', encoding='utf-8') as f:
         f.write(html)

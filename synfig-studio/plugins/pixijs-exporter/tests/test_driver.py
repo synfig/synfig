@@ -13,9 +13,10 @@ def test_circle_layer():
       </layer>
     </canvas>"""
     root = etree.fromstring(xml)
-    code = gen_pixi_layers(root, 480, 270, 60.0)
+    code, has_anim = gen_pixi_layers(root, 480, 270, 60.0)
     assert "Graphics" in code
     assert "circle" in code
+    assert has_anim is False
 
 def test_solid_color_layer():
     xml = """<canvas version="1.4" width="480" height="270" view-box="-4 2.25 4 -2.25" fps="24" begin-time="0s" end-time="3s">
@@ -25,14 +26,16 @@ def test_solid_color_layer():
       </layer>
     </canvas>"""
     root = etree.fromstring(xml)
-    code = gen_pixi_layers(root, 480, 270, 60.0)
+    code, has_anim = gen_pixi_layers(root, 480, 270, 60.0)
     assert "rect(0, 0, 480, 270)" in code
+    assert has_anim is False
 
 def test_empty_canvas():
     xml = '<canvas version="1.4" width="480" height="270" view-box="-4 2.25 4 -2.25" fps="24" begin-time="0s" end-time="3s"></canvas>'
     root = etree.fromstring(xml)
-    code = gen_pixi_layers(root, 480, 270, 60.0)
+    code, has_anim = gen_pixi_layers(root, 480, 270, 60.0)
     assert "no supported layers" in code.lower() or code.strip() == ""
+    assert has_anim is False
 
 def test_inactive_layer_skipped():
     xml = """<canvas version="1.4" width="480" height="270" view-box="-4 2.25 4 -2.25" fps="24" begin-time="0s" end-time="3s">
@@ -44,5 +47,6 @@ def test_inactive_layer_skipped():
       </layer>
     </canvas>"""
     root = etree.fromstring(xml)
-    code = gen_pixi_layers(root, 480, 270, 60.0)
+    code, has_anim = gen_pixi_layers(root, 480, 270, 60.0)
     assert "circle" not in code.lower() or "no supported" in code.lower()
+    assert has_anim is False
