@@ -1,8 +1,8 @@
 """
 driver.py — Main layer dispatch: reads Synfig XML layers and generates PixiJS JS code.
 """
-import sys
 import os
+import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from converters.color import parse_synfig_color
@@ -15,12 +15,16 @@ SHAPE_SOLID = {"region", "polygon", "advanced_outline", "outline", "circle",
 SOLID = {"solid_color", "SolidColor"}
 GROUP = {"group", "switch"}
 
-_counter = 0
 
-def _next_name(prefix):
-    global _counter
-    _counter += 1
-    return f"{prefix}_{_counter}"
+class _NameGenerator:
+    """Thread-safe, non-global name counter for generated JS variables."""
+
+    def __init__(self):
+        self._counter = 0
+
+    def next(self, prefix):
+        self._counter += 1
+        return f"{prefix}_{self._counter}"
 
 def _get_param(layer_el, name):
     for p in layer_el:
@@ -126,9 +130,8 @@ def _build_origin_tweens(name, layer_el, fps, canvas_w, canvas_h, ppu):
     parts.append(gen_tween_play_js(name, loop=True))
     return parts
 
-def gen_pixi_layers(root, canvas_w, canvas_h, ppu, fps=24):
-    global _counter
-    _counter = 0
+def gen_pixi_layers(root, canvas_w, canvas_h, ppu, fps=24, _namer=None):
+    namer = _namer if _namer is not None else _NameGenerator()
     fps = max(fps, 1)
     js_parts = []
     tween_parts = []
@@ -145,7 +148,7 @@ def gen_pixi_layers(root, canvas_w, canvas_h, ppu, fps=24):
             continue
 
         if layer_type in ("circle", "simple_circle"):
-            name = _next_name("circle")
+            name = namer.next("circle")
             cx, cy = _parse_origin(layer_el, canvas_w, canvas_h, ppu)
             radius = _parse_real(layer_el, "radius", 1.0) * ppu
             fill_hex, alpha = _parse_color(layer_el)
@@ -157,7 +160,7 @@ def gen_pixi_layers(root, canvas_w, canvas_h, ppu, fps=24):
                 has_animations = True
 
         elif layer_type in ("rectangle", "filled_rectangle"):
-            name = _next_name("rect")
+            name = namer.next("rect")
             cx, cy = _parse_origin(layer_el, canvas_w, canvas_h, ppu)
             fill_hex, alpha = _parse_color(layer_el)
             expand = _parse_real(layer_el, "expand", 1.0) * ppu * 2
@@ -169,7 +172,7 @@ def gen_pixi_layers(root, canvas_w, canvas_h, ppu, fps=24):
                 has_animations = True
 
         elif layer_type == "star":
-            name = _next_name("star")
+            name = namer.next("star")
             cx, cy = _parse_origin(layer_el, canvas_w, canvas_h, ppu)
             fill_hex, alpha = _parse_color(layer_el)
             r1 = _parse_real(layer_el, "radius1", 1.0) * ppu
@@ -184,15 +187,17 @@ def gen_pixi_layers(root, canvas_w, canvas_h, ppu, fps=24):
 
         elif layer_type in SOLID:
             fill_hex, alpha = _parse_color(layer_el)
-            js_parts.append(gen_solid_rect_js(_next_name("solid"), canvas_w, canvas_h, fill_hex, alpha * amount))
+            js_parts.append(gen_solid_rect_js(namer.next("solid"), canvas_w, canvas_h, fill_hex, alpha * amount))
 
         elif layer_type in GROUP:
-            name = _next_name("group")
+            name = namer.next("group")
             js_parts.append(f"  const {name} = new Container();\n")
             js_parts.append(f"  app.stage.addChild({name});\n")
             for child in layer_el:
                 if child.tag == "canvas":
-                    child_code, child_has_anim = gen_pixi_layers(child, canvas_w, canvas_h, ppu, fps)
+                    child_code, child_has_anim = gen_pixi_layers(
+                        child, canvas_w, canvas_h, ppu, fps, _namer=namer
+                    )
                     child_code = child_code.replace("app.stage.addChild", f"{name}.addChild")
                     js_parts.append(child_code)
                     if child_has_anim:

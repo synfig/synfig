@@ -79,7 +79,8 @@ def main():
     ns = parser.parse_args()
 
     pixi_settings.init()
-    tree = etree.parse(ns.infile)
+    xml_parser = etree.XMLParser(resolve_entities=False, no_network=True)
+    tree = etree.parse(ns.infile, xml_parser)
     root = tree.getroot()
 
     from layers.driver import gen_pixi_layers

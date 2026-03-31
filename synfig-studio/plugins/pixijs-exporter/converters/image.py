@@ -2,6 +2,7 @@
 image.py — Generate PixiJS Sprite JS code with base64-embedded image data.
 """
 import base64
+import os
 
 
 MIME_MAP = {
@@ -19,7 +20,7 @@ def _get_mime_type(image_path):
     return MIME_MAP.get(ext, 'image/png')
 
 
-def gen_image_js(name, image_path, x, y, w, h):
+def gen_image_js(name, image_path, x, y, w, h, project_dir=None):
     """Generate JS code to create a PixiJS Sprite from a base64-encoded image.
 
     Args:
@@ -29,14 +30,23 @@ def gen_image_js(name, image_path, x, y, w, h):
         y: Y position in pixels
         w: Display width in pixels
         h: Display height in pixels
+        project_dir: If provided, validate image_path is within this directory
 
     Returns:
         JS code string creating a PixiJS Sprite with inline base64 data URI
 
     Raises:
         FileNotFoundError: If image_path doesn't exist
+        ValueError: If image_path resolves outside project_dir
     """
-    with open(image_path, 'rb') as f:
+    real_path = os.path.realpath(image_path)
+    if project_dir:
+        real_project = os.path.realpath(project_dir)
+        if not real_path.startswith(real_project + os.sep):
+            raise ValueError(
+                f"Image path '{image_path}' resolves outside project directory"
+            )
+    with open(real_path, 'rb') as f:
         data = base64.b64encode(f.read()).decode()
     mime = _get_mime_type(image_path)
     return (

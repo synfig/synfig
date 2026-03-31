@@ -21,16 +21,36 @@ TEXT_LAYER = {"text"}
 SKELETON_LAYER = {"skeleton"}
 
 FLOAT_PRECISION = 3
-GAMMA = [2.2, 2.2, 2.2]
+GAMMA = (2.2, 2.2, 2.2)
 PIX_PER_UNIT = 0
 LEVEL = 0
 
+
+class ExportContext:
+    """Encapsulates mutable export session state instead of module-level globals."""
+
+    def __init__(self):
+        self.pixi_format = {}
+        self.view_box_canvas = {}
+        self.num_images = Count()
+        self.file_name = {}
+        self.layer_count = Count()
+        self.canvas_count = Count()
+
+
 def init():
-    global pixi_format, view_box_canvas, num_images, file_name
-    global layer_count, canvas_count
-    pixi_format = {}
-    view_box_canvas = {}
-    num_images = Count()
-    file_name = {}
-    layer_count = Count()
-    canvas_count = Count()
+    """Create and return a fresh ExportContext. Legacy callers can ignore the return value."""
+    global _ctx
+    _ctx = ExportContext()
+    return _ctx
+
+
+def get_context():
+    """Return the current ExportContext, creating one if needed."""
+    global _ctx
+    if "_ctx" not in globals() or _ctx is None:
+        _ctx = ExportContext()
+    return _ctx
+
+
+_ctx = None

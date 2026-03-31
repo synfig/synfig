@@ -1,11 +1,18 @@
 """
 text.py — Generate PixiJS Text JS code from Synfig text layer parameters.
 """
+import json
+import re
 
 
 def _hex_to_css(hex_str):
     """Convert '0xRRGGBB' to '#RRGGBB' for CSS usage."""
     return "#" + hex_str[2:] if hex_str.startswith("0x") else hex_str
+
+
+def _sanitize_font_family(family):
+    """Allow only safe characters for CSS font-family values."""
+    return re.sub(r"[^a-zA-Z0-9\s,\-]", "", family)
 
 
 def gen_text_js(name, text, x, y, font_family, font_size, fill_hex, alpha):
@@ -25,10 +32,12 @@ def gen_text_js(name, text, x, y, font_family, font_size, fill_hex, alpha):
         JS code string creating a PixiJS Text object
     """
     css_color = _hex_to_css(fill_hex)
+    safe_text = json.dumps(text).replace("</", "<\\/")
+    safe_font = _sanitize_font_family(font_family)
     return (
         f"  const {name} = new Text({{\n"
-        f"    text: {repr(text)},\n"
-        f"    style: {{ fontFamily: '{font_family}', fontSize: {font_size}, fill: '{css_color}' }},\n"
+        f"    text: {safe_text},\n"
+        f"    style: {{ fontFamily: '{safe_font}', fontSize: {font_size}, fill: '{css_color}' }},\n"
         f"  }});\n"
         f"  {name}.position.set({x}, {y});\n"
         f"  {name}.alpha = {alpha};\n"
