@@ -69,8 +69,12 @@ def test_animated_origin_values_correct():
     code, has_anim = gen_pixi_layers(root, 480, 270, 60.0, fps=24)
     # At time 0: origin (0,0) -> pixi (240, 135)
     assert "addKeyframe(0.0" in code
+    assert "240.0" in code  # x at time 0 (origin 0,0)
+    assert "135.0" in code  # y at time 0
     # At time 1: origin (2,-1) -> pixi (240+120, 135+60) = (360, 195)
     assert "addKeyframe(1.0" in code
+    assert "360.0" in code  # x at time 1 (origin 2,-1)
+    assert "195.0" in code  # y at time 1
     assert has_anim is True
 
 def test_gen_pixi_layers_backward_compat():

@@ -54,6 +54,24 @@ def _parse_real(layer_el, name, default=0.0):
             return float(real_el.attrib.get("value", str(default)))
     return default
 
+def _parse_time(time_str, fps):
+    """Parse a Synfig time string (e.g. '0s', '1.5s', or frame number '12')."""
+    if time_str.endswith("s"):
+        return float(time_str[:-1])
+    return float(time_str) / fps
+
+def _parse_waypoint_base(wp, fps):
+    """Extract common waypoint attributes (time, interpolation, TCB)."""
+    return {
+        "time": _parse_time(wp.attrib.get("time", "0s"), fps),
+        "before": wp.attrib.get("before", "linear"),
+        "after": wp.attrib.get("after", "linear"),
+        "tension": float(wp.attrib.get("tension", "0")),
+        "continuity": float(wp.attrib.get("continuity", "0")),
+        "bias": float(wp.attrib.get("bias", "0")),
+    }
+
+# Used by future tasks for animating scalar params (radius, amount, etc.)
 def _parse_animated_real(param_el, fps):
     """Extract waypoints from an <animated> element inside a param."""
     if param_el is None:
@@ -63,27 +81,11 @@ def _parse_animated_real(param_el, fps):
         return None
     waypoints = []
     for wp in animated.findall("waypoint"):
-        time_str = wp.attrib.get("time", "0s")
-        # Parse time string like "0s", "1s", "0.5s", or frame-based "12"
-        if time_str.endswith("s"):
-            time_sec = float(time_str[:-1])
-        else:
-            time_sec = float(time_str) / fps
-
         real_el = wp.find("real")
         if real_el is None:
             continue
         value = float(real_el.attrib.get("value", "0"))
-
-        waypoints.append({
-            "time": time_sec,
-            "value": value,
-            "before": wp.attrib.get("before", "linear"),
-            "after": wp.attrib.get("after", "linear"),
-            "tension": float(wp.attrib.get("tension", "0")),
-            "continuity": float(wp.attrib.get("continuity", "0")),
-            "bias": float(wp.attrib.get("bias", "0")),
-        })
+        waypoints.append({**_parse_waypoint_base(wp, fps), "value": value})
     return waypoints if waypoints else None
 
 def _parse_animated_origin(param_el, fps, canvas_w, canvas_h, ppu):
@@ -96,12 +98,6 @@ def _parse_animated_origin(param_el, fps, canvas_w, canvas_h, ppu):
     x_waypoints = []
     y_waypoints = []
     for wp in animated.findall("waypoint"):
-        time_str = wp.attrib.get("time", "0s")
-        if time_str.endswith("s"):
-            time_sec = float(time_str[:-1])
-        else:
-            time_sec = float(time_str) / fps
-
         vec = wp.find("vector")
         if vec is None:
             continue
@@ -109,37 +105,31 @@ def _parse_animated_origin(param_el, fps, canvas_w, canvas_h, ppu):
         sy = float(vec.findtext("y", "0"))
         px, py = synfig_to_pixi_coords(sx, sy, canvas_w, canvas_h, ppu)
 
-        base = {
-            "time": time_sec,
-            "before": wp.attrib.get("before", "linear"),
-            "after": wp.attrib.get("after", "linear"),
-            "tension": float(wp.attrib.get("tension", "0")),
-            "continuity": float(wp.attrib.get("continuity", "0")),
-            "bias": float(wp.attrib.get("bias", "0")),
-        }
+        base = _parse_waypoint_base(wp, fps)
         x_waypoints.append({**base, "value": px})
         y_waypoints.append({**base, "value": py})
 
     return (x_waypoints if x_waypoints else None,
             y_waypoints if y_waypoints else None)
 
-def _append_origin_tweens(tween_parts, name, layer_el, fps, canvas_w, canvas_h, ppu):
-    """Check for animated origin and append tween code. Returns True if tweens added."""
+def _build_origin_tweens(name, layer_el, fps, canvas_w, canvas_h, ppu):
+    """Build tween JS strings for animated origin. Returns a list (empty if no animation)."""
     origin_param = _get_param(layer_el, "origin")
     x_wps, y_wps = _parse_animated_origin(origin_param, fps, canvas_w, canvas_h, ppu)
-    if x_wps or y_wps:
-        tween_parts.append(gen_tween_setup_js(name))
-        if x_wps:
-            tween_parts.append(waypoints_to_tween_js(name, "x", x_wps))
-        if y_wps:
-            tween_parts.append(waypoints_to_tween_js(name, "y", y_wps))
-        tween_parts.append(gen_tween_play_js(name, loop=True))
-        return True
-    return False
+    if not x_wps and not y_wps:
+        return []
+    parts = [gen_tween_setup_js(name)]
+    if x_wps:
+        parts.append(waypoints_to_tween_js(name, "x", x_wps))
+    if y_wps:
+        parts.append(waypoints_to_tween_js(name, "y", y_wps))
+    parts.append(gen_tween_play_js(name, loop=True))
+    return parts
 
 def gen_pixi_layers(root, canvas_w, canvas_h, ppu, fps=24):
     global _counter
     _counter = 0
+    fps = max(fps, 1)
     js_parts = []
     tween_parts = []
     has_animations = False
@@ -161,7 +151,9 @@ def gen_pixi_layers(root, canvas_w, canvas_h, ppu, fps=24):
             fill_hex, alpha = _parse_color(layer_el)
             js_parts.append(gen_circle_js(name, cx, cy, radius, fill_hex, alpha * amount))
 
-            if _append_origin_tweens(tween_parts, name, layer_el, fps, canvas_w, canvas_h, ppu):
+            origin_tweens = _build_origin_tweens(name, layer_el, fps, canvas_w, canvas_h, ppu)
+            if origin_tweens:
+                tween_parts.extend(origin_tweens)
                 has_animations = True
 
         elif layer_type in ("rectangle", "filled_rectangle"):
@@ -171,7 +163,9 @@ def gen_pixi_layers(root, canvas_w, canvas_h, ppu, fps=24):
             expand = _parse_real(layer_el, "expand", 1.0) * ppu * 2
             js_parts.append(gen_rectangle_js(name, cx - expand/2, cy - expand/2, expand, expand, fill_hex, alpha * amount))
 
-            if _append_origin_tweens(tween_parts, name, layer_el, fps, canvas_w, canvas_h, ppu):
+            origin_tweens = _build_origin_tweens(name, layer_el, fps, canvas_w, canvas_h, ppu)
+            if origin_tweens:
+                tween_parts.extend(origin_tweens)
                 has_animations = True
 
         elif layer_type == "star":
@@ -183,7 +177,9 @@ def gen_pixi_layers(root, canvas_w, canvas_h, ppu, fps=24):
             points = int(_parse_real(layer_el, "points", 5))
             js_parts.append(gen_star_js(name, cx, cy, points, r1, r2, fill_hex, alpha * amount))
 
-            if _append_origin_tweens(tween_parts, name, layer_el, fps, canvas_w, canvas_h, ppu):
+            origin_tweens = _build_origin_tweens(name, layer_el, fps, canvas_w, canvas_h, ppu)
+            if origin_tweens:
+                tween_parts.extend(origin_tweens)
                 has_animations = True
 
         elif layer_type in SOLID:

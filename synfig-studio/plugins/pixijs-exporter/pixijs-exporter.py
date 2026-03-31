@@ -35,7 +35,10 @@ def gen_html(canvas_meta, pixi_js_code, has_animations=False):
                 tween_runtime = f.read()
             tween_script = f"\n<script>\n{tween_runtime}\n</script>"
         except FileNotFoundError:
-            tween_script = ""
+            raise FileNotFoundError(
+                f"Animation tween runtime not found at {tween_path}. "
+                "Cannot generate HTML with animations without runtime/tween.js."
+            )
 
     return f"""<!DOCTYPE html>
 <html lang="en">
