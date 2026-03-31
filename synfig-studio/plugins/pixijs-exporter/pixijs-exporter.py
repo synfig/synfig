@@ -6,8 +6,9 @@ output  : FILE_NAME.html
 
 import os
 import sys
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'lottie-exporter'))
+_THIS_DIR = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, os.path.join(_THIS_DIR, '..', 'lottie-exporter'))
+sys.path.insert(0, _THIS_DIR)
 
 import argparse
 from lxml import etree
@@ -19,7 +20,9 @@ def parse_canvas(root):
     width = int(root.attrib.get("width", pixi_settings.DEFAULT_WIDTH))
     height = int(root.attrib.get("height", pixi_settings.DEFAULT_HEIGHT))
     fps = float(root.attrib.get("fps", "24"))
-    return {"width": width, "height": height, "fps": fps}
+    view_box_str = root.attrib.get("view-box", "-4 2.25 4 -2.25")
+    view_box = [float(x) for x in view_box_str.split()]
+    return {"width": width, "height": height, "fps": fps, "view_box": view_box}
 
 
 def gen_html(canvas_meta, pixi_js_code):
@@ -37,7 +40,7 @@ def gen_html(canvas_meta, pixi_js_code):
 </head>
 <body>
 <script type="module">
-import {{ Application, Graphics, Container }} from '{pixi_settings.PIXI_CDN}';
+import {{ Application, Graphics, Container, FillGradient }} from '{pixi_settings.PIXI_CDN}';
 
 (async () => {{
   const app = new Application();
@@ -66,8 +69,12 @@ def main():
     tree = etree.parse(ns.infile)
     root = tree.getroot()
 
+    from layers.driver import gen_pixi_layers
+    from converters.transform import calc_pixels_per_unit
+
     canvas_meta = parse_canvas(root)
-    pixi_js_code = "  // TODO: generate layers"
+    ppu = calc_pixels_per_unit(canvas_meta['width'], canvas_meta['height'], canvas_meta['view_box'])
+    pixi_js_code = gen_pixi_layers(root, canvas_meta['width'], canvas_meta['height'], ppu)
     html = gen_html(canvas_meta, pixi_js_code)
 
     with open(ns.outfile, 'w', encoding='utf-8') as f:
