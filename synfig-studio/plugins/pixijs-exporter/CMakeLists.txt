@@ -1,9 +1,22 @@
-configure_file(plugin.xml.in plugin.xml @ONLY)
+set(INSTALL_DESTINATION "share/synfig/plugins/pixijs-exporter")
+set(PLUGIN_PIXIJS_EXPORTER_FILES
+    pixijs-exporter.py
+    settings.py
+)
 
-install(
-    FILES
-        pixijs-exporter.py
-        settings.py
-        ${CMAKE_CURRENT_BINARY_DIR}/plugin.xml
-    DESTINATION share/synfig/plugins/pixijs-exporter
+foreach(CURRENT_FILE ${PLUGIN_PIXIJS_EXPORTER_FILES})
+    get_filename_component(CURRENT_DIRECTORY ${CURRENT_FILE} DIRECTORY)
+    file(COPY ${CURRENT_FILE}
+        DESTINATION ${SYNFIG_BUILD_ROOT}/${INSTALL_DESTINATION}/${CURRENT_DIRECTORY}
+    )
+
+    install(FILES ${CURRENT_FILE}
+        DESTINATION ${INSTALL_DESTINATION}/${CURRENT_DIRECTORY}
+    )
+endforeach()
+
+STUDIO_INTLTOOL_MERGE(
+    TARGET_NAME plugin_pixijs_exporter_xml
+    INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/plugin.xml.in
+    INSTALL_DESTINATION ${INSTALL_DESTINATION}
 )

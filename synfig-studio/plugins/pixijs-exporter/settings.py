@@ -26,9 +26,9 @@ PIX_PER_UNIT = 0
 LEVEL = 0
 
 def init():
-    global lottie_format, view_box_canvas, num_images, file_name
+    global pixi_format, view_box_canvas, num_images, file_name
     global layer_count, canvas_count
-    lottie_format = {}
+    pixi_format = {}
     view_box_canvas = {}
     num_images = Count()
     file_name = {}

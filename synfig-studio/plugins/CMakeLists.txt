@@ -13,6 +13,10 @@ if(TARGET plugin_lottie_exporter_xml)
     add_dependencies(plugins_xml plugin_lottie_exporter_xml)
 endif()
 
+if(TARGET plugin_pixijs_exporter_xml)
+    add_dependencies(plugins_xml plugin_pixijs_exporter_xml)
+endif()
+
 if(TARGET plugin_view_unhide_all_layers_xml)
     add_dependencies(plugins_xml plugin_view_unhide_all_layers_xml)
 endif()
