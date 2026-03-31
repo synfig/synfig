@@ -1,7 +1,6 @@
 """
 animation.py — Convert Synfig Waypoints to SynfigTween keyframe calls
 """
-import math
 
 def interpolation_to_easing(interp_type, tension=0, continuity=0, bias=0):
     """Convert Synfig interpolation type to SynfigTween easing parameter."""
@@ -16,6 +15,8 @@ def interpolation_to_easing(interp_type, tension=0, continuity=0, bias=0):
         # Based on Kochanek-Bartels tangent formula
         c1 = (1.0 - tension) * (1.0 + continuity) * (1.0 + bias) / 2.0
         c2 = (1.0 - tension) * (1.0 - continuity) * (1.0 - bias) / 2.0
+        if abs(c1 + c2) < 1e-9:
+            return "'linear'"
         # Map to cubic-bezier approximation
         x1 = round(max(0, min(1, c2 / (c1 + c2 + 0.001))), 4)
         y1 = round(max(0, min(1, c1)), 4)
@@ -25,7 +26,7 @@ def interpolation_to_easing(interp_type, tension=0, continuity=0, bias=0):
     else:
         return "'linear'"
 
-def waypoints_to_tween_js(target_name, prop_name, waypoints, fps=24):
+def waypoints_to_tween_js(target_name, prop_name, waypoints):
     """
     Generate SynfigTween.addKeyframe() calls from Synfig waypoints.
 
@@ -52,7 +53,7 @@ def waypoints_to_tween_js(target_name, prop_name, waypoints, fps=24):
         )
     return "\n".join(lines) + "\n"
 
-def gen_tween_setup_js(target_name, loop=True):
+def gen_tween_setup_js(target_name):
     """Generate the SynfigTween instantiation."""
     return (
         f"  const {target_name}_tween = new SynfigTween({target_name});\n"
