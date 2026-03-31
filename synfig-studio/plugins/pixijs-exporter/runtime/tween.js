@@ -13,7 +13,7 @@ class SynfigTween {
   }
 
   addKeyframe(time, props, easing = 'linear') {
-    this.keyframes.push({ time, props, easing });
+    this.keyframes.push({ time, props: { ...props }, easing });
     this.keyframes.sort((a, b) => a.time - b.time);
     this.duration = Math.max(this.duration, time);
     return this;
@@ -22,8 +22,17 @@ class SynfigTween {
   play(ticker) {
     this.playing = true;
     this._startTime = performance.now();
-    ticker.add(() => this._update());
+    this._tickerRef = () => this._update();
+    this._ticker = ticker;
+    ticker.add(this._tickerRef);
     return this;
+  }
+
+  stop() {
+    this.playing = false;
+    if (this._ticker && this._tickerRef) {
+      this._ticker.remove(this._tickerRef);
+    }
   }
 
   _update() {
@@ -33,13 +42,20 @@ class SynfigTween {
       elapsed = elapsed % this.duration;
     } else if (elapsed > this.duration) {
       elapsed = this.duration;
-      this.playing = false;
+      this.stop();
     }
     this._applyAt(elapsed);
   }
 
   _applyAt(t) {
     if (this.keyframes.length === 0) return;
+    if (t <= this.keyframes[0].time) {
+      for (const key of Object.keys(this.keyframes[0].props)) {
+        const val = this.keyframes[0].props[key];
+        if (typeof val === 'number') this.target[key] = val;
+      }
+      return;
+    }
     let prev = this.keyframes[0];
     let next = this.keyframes[this.keyframes.length - 1];
     for (let i = 0; i < this.keyframes.length - 1; i++) {
@@ -78,14 +94,15 @@ class SynfigTween {
   }
 
   static cubicBezier(x1, y1, x2, y2, t) {
+    const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx;
     let x = t;
     for (let i = 0; i < 8; i++) {
-      const cx = 3 * x1, bx = 3 * (x2 - x1) - cx, ax = 1 - cx - bx;
       const curveX = ((ax * x + bx) * x + cx) * x;
       const curveXDeriv = (3 * ax * x + 2 * bx) * x + cx;
       if (Math.abs(curveX - t) < 1e-6) break;
       if (Math.abs(curveXDeriv) < 1e-6) break;
       x -= (curveX - t) / curveXDeriv;
+      x = Math.max(0, Math.min(1, x));
     }
     const cy = 3 * y1, by = 3 * (y2 - y1) - cy, ay = 1 - cy - by;
     return ((ay * x + by) * x + cy) * x;
