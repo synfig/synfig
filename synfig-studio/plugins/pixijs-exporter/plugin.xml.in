@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+   <_name>Export to PixiJS format</_name>
+   <exporter>
+       <extension>html</extension>
+       <_description>PixiJS WebGL Animation (*.html)</_description>
+       <exec stdout="log">pixijs-exporter.py</exec>
+   </exporter>
+</plugin>

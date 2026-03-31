@@ -1,0 +1,78 @@
+"""
+Python plugin to convert .sif format into PixiJS HTML format
+input   : FILE_NAME.sif
+output  : FILE_NAME.html
+"""
+
+import os
+import sys
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'lottie-exporter'))
+
+import argparse
+from lxml import etree
+import settings as pixi_settings
+
+
+def parse_canvas(root):
+    """Parse .sif root element and extract canvas metadata."""
+    width = int(root.attrib.get("width", pixi_settings.DEFAULT_WIDTH))
+    height = int(root.attrib.get("height", pixi_settings.DEFAULT_HEIGHT))
+    fps = float(root.attrib.get("fps", "24"))
+    return {"width": width, "height": height, "fps": fps}
+
+
+def gen_html(canvas_meta, pixi_js_code):
+    """Generate self-contained HTML with PixiJS."""
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{pixi_settings.DEFAULT_NAME}</title>
+<style>
+  body {{ margin: 0; overflow: hidden; background: #000; }}
+  canvas {{ display: block; }}
+</style>
+</head>
+<body>
+<script type="module">
+import {{ Application, Graphics, Container }} from '{pixi_settings.PIXI_CDN}';
+
+(async () => {{
+  const app = new Application();
+  await app.init({{
+    width: {canvas_meta['width']},
+    height: {canvas_meta['height']},
+    backgroundColor: {pixi_settings.DEFAULT_BG_COLOR},
+    antialias: true,
+  }});
+  document.body.appendChild(app.canvas);
+
+{pixi_js_code}
+}})();
+</script>
+</body>
+</html>"""
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("infile")
+    parser.add_argument("outfile")
+    ns = parser.parse_args()
+
+    pixi_settings.init()
+    tree = etree.parse(ns.infile)
+    root = tree.getroot()
+
+    canvas_meta = parse_canvas(root)
+    pixi_js_code = "  // TODO: generate layers"
+    html = gen_html(canvas_meta, pixi_js_code)
+
+    with open(ns.outfile, 'w', encoding='utf-8') as f:
+        f.write(html)
+
+
+if __name__ == "__main__":
+    main()

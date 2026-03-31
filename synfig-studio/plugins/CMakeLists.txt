@@ -1,5 +1,6 @@
 add_subdirectory(add-skeleton-simple)
 add_subdirectory(lottie-exporter)
+add_subdirectory(pixijs-exporter)
 add_subdirectory(view-unhide-all-layers)
 
 add_custom_target(plugins_xml)
