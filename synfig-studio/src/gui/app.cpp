@@ -290,8 +290,10 @@ synfig::Color studio::App::default_background_layer_color =
 String        studio::App::default_background_layer_image = "undefined";
 synfig::Color studio::App::preview_background_color =
 	synfig::Color(0.742187, 0.742187, 0.742187, 1.000000);  //X11 Gray
+bool studio::App::enable_preview_defaults = false;
 float studio::App::preview_quality = 0.5f;
 int studio::App::preview_fps = 12;
+String studio::App::preview_zoom_level = "fit";
 
 bool   studio::App::enable_mainwin_menubar = true;
 bool   studio::App::enable_mainwin_toolbar = true;
@@ -595,6 +597,11 @@ public:
 					);
 				return true;
 			}
+			if (key == "enable_preview_defaults")
+			{
+				value = strprintf("%i", (int)App::enable_preview_defaults);
+				return true;
+			}
 			if (key == "preview_quality")
 			{
 				value = strprintf("%f", App::preview_quality);
@@ -603,6 +610,11 @@ public:
 			if (key == "preview_fps")
 			{
 				value = strprintf("%i", App::preview_fps);
+				return true;
+			}
+			if (key == "preview_zoom_level")
+			{
+				value = App::preview_zoom_level;
 				return true;
 			}
 			if(key=="use_render_done_sound")
@@ -792,6 +804,11 @@ public:
 				App::preview_background_color = synfig::Color(r,g,b,a);
 				return true;
 			}
+			if (key == "enable_preview_defaults")
+			{
+				App::enable_preview_defaults = value != "0";
+				return true;
+			}
 			if (key == "preview_quality")
 			{
 				App::preview_quality = atof(value.c_str());
@@ -800,6 +817,11 @@ public:
 			if (key == "preview_fps")
 			{
 				App::preview_fps = atoi(value.c_str());
+				return true;
+			}
+			if (key == "preview_zoom_level")
+			{
+				App::preview_zoom_level = value;
 				return true;
 			}
 			if(key=="use_render_done_sound")
@@ -869,8 +891,10 @@ public:
 		ret.push_back("default_background_layer_color");
 		ret.push_back("default_background_layer_image");
 		ret.push_back("preview_background_color");
+		ret.push_back("enable_preview_defaults");
 		ret.push_back("preview_quality");
 		ret.push_back("preview_fps");
+		ret.push_back("preview_zoom_level");
 		ret.push_back("use_render_done_sound");
 		ret.push_back("enable_mainwin_menubar");
 		ret.push_back("ui_handle_tooltip_flag");
@@ -1595,8 +1619,10 @@ void App::init(const synfig::String& rootpath)
 		load_settings("pref.default_background_layer_color");
 		load_settings("pref.default_background_layer_image");
 		load_settings("pref.preview_background_color");
+		load_settings("pref.enable_preview_defaults");
 		load_settings("pref.preview_quality");
 		load_settings("pref.preview_fps");
+		load_settings("pref.preview_zoom_level");
 		load_settings("pref.image_editor_path");
 
 		studio_init_cb.task(_("Loading Plugins..."));

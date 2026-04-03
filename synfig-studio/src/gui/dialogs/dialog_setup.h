@@ -104,6 +104,7 @@ class Dialog_Setup : public Dialog_Template
 	void on_def_background_image_set();
 	void on_number_of_thread_changed();
 	void on_preview_background_color_changed();
+	void on_enable_preview_defaults_changed();
 	void on_brush_path_add_clicked();
 	void on_brush_path_remove_clicked();
 	void on_plugin_path_change_clicked();
@@ -174,6 +175,8 @@ class Dialog_Setup : public Dialog_Template
 	Glib::RefPtr<Gtk::Adjustment> adj_preview_fps;
 	Gtk::SpinButton*  preview_quality_spinbutton;
 	Gtk::SpinButton*  preview_fps_spinbutton;
+	Gtk::Switch       toggle_enable_preview_defaults;
+	Gtk::ComboBoxText preview_zoom_level_combo;
 
 	Gtk::Entry        image_sequence_separator;
 	Gtk::ComboBoxText workarea_renderer_combo;
