@@ -3310,8 +3310,18 @@ CanvasView::on_preview_option()
 			if(!po)
 			{
 				po = Dialog_PreviewOptions::create();
-				po->set_fps(r.get_frame_rate()/2);
 				set_ext_widget("prevoptions",po);
+			}
+
+			if (App::enable_preview_defaults)
+			{
+				po->set_zoom(App::preview_quality);
+				po->set_fps(App::preview_fps);
+			}
+			else
+			{
+				po->set_zoom(0.5f);
+				po->set_fps(r.get_frame_rate()/2);
 			}
 
 			if (!po->get_begin_override())
@@ -3348,6 +3358,10 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 
 	preview_dialog.set_default_size(700,510);
 	preview_dialog.set_preview(prev.get());
+	if (App::enable_preview_defaults)
+		preview_dialog.get_widget().set_zoom_level(App::preview_zoom_level);
+	else
+		preview_dialog.get_widget().set_zoom_level("fit");
 	preview_dialog.present();
 
 	// Preview Window created, the action can be enabled

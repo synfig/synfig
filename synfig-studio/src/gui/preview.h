@@ -274,6 +274,7 @@ public:
 
 	bool get_loop_flag() const {return b_loop->get_active();}
 	void set_loop_flag(bool b) {return b_loop->set_active(b);}
+	void set_zoom_level(const std::string &zoom_level);
 
 	void on_dialog_show();
 	void on_dialog_hide();

@@ -94,6 +94,8 @@ Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
 	adj_pref_y_size(Gtk::Adjustment::create(270,1,10000,1,10,0)),
 	adj_pref_fps(Gtk::Adjustment::create(24.0,1.0,100,0.1,1,0)),
 	adj_number_of_threads(Gtk::Adjustment::create(App::number_of_threads,2,std::thread::hardware_concurrency(),1,10,0)),
+	adj_preview_quality(Gtk::Adjustment::create(0.5,0.1,5.0,0.1,0.2,0)),
+	adj_preview_fps(Gtk::Adjustment::create(12,1,120,1,5,0)),
 	pref_modification_flag(false),
 	refreshing(false)
 {
@@ -747,6 +749,38 @@ Dialog_Setup::create_render_page(PageInfo pi)
 	preview_background_color_button.signal_color_set().connect(
 		sigc::mem_fun(*this, &studio::Dialog_Setup::on_preview_background_color_changed) );
 
+	// Render - Edit preview defaults section
+	attach_label_section(pi.grid, _("Edit preview defaults"), ++row);
+	attach_label(pi.grid, _("Enable Preview Defaults"), ++row);
+	pi.grid->attach(toggle_enable_preview_defaults, 1, row, 1, 1);
+	toggle_enable_preview_defaults.set_halign(Gtk::ALIGN_START);
+	toggle_enable_preview_defaults.set_hexpand(false);
+	toggle_enable_preview_defaults.property_active().signal_changed().connect(
+		sigc::mem_fun(*this, &Dialog_Setup::on_enable_preview_defaults_changed));
+
+	// Render - Preview Quality
+	attach_label(pi.grid, _("Quality"), ++row);
+	preview_quality_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_preview_quality, 0.1, 2));
+	pi.grid->attach(*preview_quality_spinbutton, 1, row, 1, 1);
+	preview_quality_spinbutton->set_hexpand(true);
+
+	// Render - Preview FPS
+	attach_label(pi.grid, _("FPS"), ++row);
+	preview_fps_spinbutton = Gtk::manage(new Gtk::SpinButton(adj_preview_fps, 1.0, 0));
+	pi.grid->attach(*preview_fps_spinbutton, 1, row, 1, 1);
+	preview_fps_spinbutton->set_hexpand(true);
+
+	// Render - Preview Zoom level
+	attach_label(pi.grid, _("Zoom level"), ++row);
+	preview_zoom_level_combo.append("25", "25%");
+	preview_zoom_level_combo.append("50", "50%");
+	preview_zoom_level_combo.append("100", "100%");
+	preview_zoom_level_combo.append("200", "200%");
+	preview_zoom_level_combo.append("fit", _("Fit"));
+	preview_zoom_level_combo.set_active_id("fit");
+	pi.grid->attach(preview_zoom_level_combo, 1, row, 1, 1);
+	preview_zoom_level_combo.set_hexpand(true);
+
 }
 
 void
@@ -938,6 +972,10 @@ Dialog_Setup::on_restore_pressed()
 		def_background_color_button.set_rgba(m_color);
 		m_color.set_rgba(0.742187, 0.742187, 0.742187, 1.000000);
 		preview_background_color_button.set_rgba(m_color);
+		toggle_enable_preview_defaults.set_active(false);
+		adj_preview_quality->set_value(0.5);
+		adj_preview_fps->set_value(12);
+		preview_zoom_level_combo.set_active_id("fit");
 		fcbutton_image.unselect_all();
 		
 		toggle_play_sound_on_render_done.set_active(true);
@@ -1097,6 +1135,14 @@ Dialog_Setup::on_apply_pressed()
 												  m_color.get_blue(),
 												  m_color.get_alpha());
 
+	// Set the preview quality and fps
+	App::enable_preview_defaults = toggle_enable_preview_defaults.get_active();
+	App::preview_quality = float(adj_preview_quality->get_value());
+	App::preview_fps = int(adj_preview_fps->get_value());
+	App::preview_zoom_level = preview_zoom_level_combo.get_active_id();
+	if (App::preview_zoom_level.empty())
+		App::preview_zoom_level = "fit";
+
 	// Set ui language
 	if (pref_modification_flag & CHANGE_UI_LANGUAGE)
 		App::ui_language = ui_language_combo.get_active_id().c_str();
@@ -1247,6 +1293,15 @@ Dialog_Setup::on_preview_background_color_changed()
 }
 
 void
+Dialog_Setup::on_enable_preview_defaults_changed()
+{
+	const bool enabled = toggle_enable_preview_defaults.get_active();
+	preview_quality_spinbutton->set_sensitive(enabled);
+	preview_fps_spinbutton->set_sensitive(enabled);
+	preview_zoom_level_combo.set_sensitive(enabled);
+}
+
+void
 Dialog_Setup::on_resize_imported_changed()
 {
 	App::resize_imported_images = !(App::resize_imported_images);
@@ -1326,6 +1381,14 @@ Dialog_Setup::refresh()
 					  App::preview_background_color.get_b(),
 					  App::preview_background_color.get_a());
 	preview_background_color_button.set_rgba(m_color);
+
+	// Refresh the preview quality and fps
+	toggle_enable_preview_defaults.set_active(App::enable_preview_defaults);
+	adj_preview_quality->set_value(App::preview_quality);
+	adj_preview_fps->set_value(App::preview_fps);
+	if (!preview_zoom_level_combo.set_active_id(App::preview_zoom_level))
+		preview_zoom_level_combo.set_active_id("fit");
+	on_enable_preview_defaults_changed();
 
 	// Refresh the status of file toolbar flag
 	toggle_show_file_toolbar.set_active(App::show_file_toolbar);
