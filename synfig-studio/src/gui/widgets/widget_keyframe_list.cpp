@@ -102,6 +102,7 @@ Widget_Keyframe_List::Widget_Keyframe_List():
 	//moving_tooltip_y()
 {
 	set_size_request(-1, 10);
+	get_style_context()->add_class("keyframe-list");
 	add_events( Gdk::BUTTON_PRESS_MASK
 			  | Gdk::BUTTON_RELEASE_MASK
 			  | Gdk::BUTTON1_MOTION_MASK
@@ -154,13 +155,19 @@ Widget_Keyframe_List::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 	if (!time_plot_data.time_model)
 		return false;
 
-	// TODO: hardcoded colors
-	// Colors
-	Color background(0.46, 0.55, 0.70, 1.0);
-	Color normal(0.0, 0.0, 0.0, 1.0);
-	Color selected(1.0, 1.0, 1.0, 1.0);
-	Color drag_old_position(1.0, 1.0, 1.0, 0.6);
-	Color drag_new_position(1.0, 1.0, 1.0, 1.0);
+	// Get colors natively from the standard GTK theme
+	auto style_context = get_style_context();
+	Gdk::RGBA bg_rgba, fg_rgba, sel_rgba;
+	
+	style_context->lookup_color("theme_bg_color", bg_rgba);
+	style_context->lookup_color("theme_fg_color", fg_rgba);
+	style_context->lookup_color("theme_selected_bg_color", sel_rgba);
+
+	Color background(bg_rgba.get_red(), bg_rgba.get_green(), bg_rgba.get_blue(), bg_rgba.get_alpha());
+	Color normal(fg_rgba.get_red(), fg_rgba.get_green(), fg_rgba.get_blue(), fg_rgba.get_alpha());
+	Color selected(sel_rgba.get_red(), sel_rgba.get_green(), sel_rgba.get_blue(), sel_rgba.get_alpha());
+	Color drag_old_position(selected); drag_old_position.set_a(0.6);
+	Color drag_new_position(selected);
 
 	if (!editable) {
 		normal.set_a(0.5);
