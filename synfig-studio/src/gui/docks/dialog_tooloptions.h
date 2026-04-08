@@ -46,14 +46,16 @@ class Dialog_ToolOptions : public Dockable
 {
 	Gtk::Label empty_label;
 	Gtk::VBox sub_vbox_;
+	 Gtk::Widget* primary_focus_widget_;
 
 public:
 
 	void clear();
 	void set_widget(Gtk::Widget&);
-
 	Dialog_ToolOptions();
 	~Dialog_ToolOptions();
+	void set_primary_focus_widget(Gtk::Widget* widget);
+	void focus_primary_widget();
 }; // END of Dialog_ToolOptions
 
 }; // END of namespace studio
