@@ -584,8 +584,9 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 							pointer_state = POINTER_DRAGGING;
 						}
 					}
-				} else if (!using_key_modifiers) {
-					// Normal click without modifiers: clear selection and select only this item
+				} else {
+					// Normal click without modifiers or fallback when multi-select is disabled
+					// clear selection and select only this item
 					T* pointed_item_ptr = nullptr;
 					if (is_already_selected) {
 						pointed_item_ptr = &*already_selection_it;
