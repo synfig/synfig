@@ -346,6 +346,12 @@ AC_CHECK_HEADER([zlib.h],[
 	AC_MSG_ERROR([ ** You need to install zlib])
 ])
 
+PKG_CHECK_MODULES(GMODULE, [gmodule-2.0],[
+	CONFIG_DEPS="$CONFIG_DEPS gmodule-2.0"
+],[
+	AC_MSG_ERROR([ ** You need to install gmodule-2.0])
+])
+
 
 PKG_CHECK_MODULES(GLIBMM, [glibmm-2.4 >= 2.24.2],[
 	CONFIG_DEPS="$CONFIG_DEPS glibmm-2.4"
