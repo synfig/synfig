@@ -75,6 +75,7 @@ class Dock_PalEdit : public Dockable
 
 private:
 	int add_color(const synfig::Color& x);
+	static Dock_PalEdit* instance;
 	bool check_hex_format(const std::string& hexcolor);
 	void add_from_clipboard();
 	void copy_color(int i);
@@ -87,7 +88,7 @@ private:
 	void edit_color(int i);
 
 public:
-	static Dock_PalEdit* instance;
+	static Dock_PalEdit* get_instance() { return instance; }
 	void set_palette(const synfig::Palette& x);
 	const synfig::Palette& get_palette()const { return palette_; }
 

@@ -513,10 +513,10 @@ void Widget_ColorEdit::refresh_palette_tab()
 	for (auto child : pal_table->get_children())
     	delete child;
 
-    if (!Dock_PalEdit::instance) 
+    if (!Dock_PalEdit::get_instance()) 
 		return;
 
-    const synfig::Palette& palette = Dock_PalEdit::instance->get_palette();
+    const synfig::Palette& palette = Dock_PalEdit::get_instance()->get_palette();
     const int width = 12;
     int i = 0;
 
