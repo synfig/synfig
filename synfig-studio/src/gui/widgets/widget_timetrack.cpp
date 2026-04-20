@@ -150,7 +150,7 @@ void Widget_Timetrack::delete_selected()
 		param_list.add("canvas_interface", canvas_interface);
 
 		const synfigapp::ValueDesc &value_desc = param_info_map[wi->path.to_string()].get_value_desc();
-		if (value_desc.get_value_type() == synfig::type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
+		if (value_desc.get_value_type() == synfig::type_canvas && !DEBUG_GETENV("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
 			param_list.add("addcanvas", value_desc.get_value().get(synfig::Canvas::Handle()));
 		} else {
 			param_list.add("addvaluedesc", value_desc);
@@ -181,7 +181,7 @@ bool Widget_Timetrack::move_selected(synfig::Time delta_time)
 		param_list.add("canvas_interface", canvas_interface);
 
 		const synfigapp::ValueDesc &value_desc = param_info_map[wi->path.to_string()].get_value_desc();
-		if (value_desc.get_value_type() == synfig::type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
+		if (value_desc.get_value_type() == synfig::type_canvas && !DEBUG_GETENV("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
 			param_list.add("addcanvas", value_desc.get_value().get(synfig::Canvas::Handle()));
 		} else {
 			param_list.add("addvaluedesc", value_desc);
@@ -252,7 +252,7 @@ bool Widget_Timetrack::copy_selected(synfig::Time delta_time)
 		param_list.add("canvas_interface", canvas_interface);
 
 		const synfigapp::ValueDesc &value_desc = param_info_map[wi->path.to_string()].get_value_desc();
-		if (value_desc.get_value_type() == synfig::type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
+		if (value_desc.get_value_type() == synfig::type_canvas && !DEBUG_GETENV("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
 			param_list.add("addcanvas", value_desc.get_value().get(synfig::Canvas::Handle()));
 		} else {
 			param_list.add("addvaluedesc", value_desc);
@@ -284,7 +284,7 @@ void Widget_Timetrack::scale_selected()
 		param_list.add("canvas_interface", canvas_interface);
 
 		const synfigapp::ValueDesc &value_desc = param_info_map[wi->path.to_string()].get_value_desc();
-		if (value_desc.get_value_type() == synfig::type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
+		if (value_desc.get_value_type() == synfig::type_canvas && !DEBUG_GETENV("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
 			param_list.add("addcanvas", value_desc.get_value().get(synfig::Canvas::Handle()));
 		} else {
 			param_list.add("addvaluedesc", value_desc);
