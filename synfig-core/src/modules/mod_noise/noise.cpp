@@ -176,9 +176,9 @@ public:
 			if (approximate_greater(da, 2.))
 				da = 2.;
 			da *= 0.5;
-			color = compiled_gradient.average(amount - da, amount + da);
+            color = compiled_gradient.average(amount - da, amount + da, point);
 		} else {
-			color = compiled_gradient.color(amount);
+            color = compiled_gradient.color(amount, point);
 		}
 
 		if (do_alpha)
@@ -321,9 +321,9 @@ Noise::color_func(const Point &point, float pixel_size,Context /*context*/)const
 
 		if(super_sample && pixel_size) {
 			Real da = std::max(amount3, std::max(amount,amount2)) - std::min(amount3, std::min(amount,amount2));
-			ret = compiled_gradient.average(amount - da, amount + da);
+            ret = compiled_gradient.average(amount - da, amount + da, point);
 		} else {
-			ret = compiled_gradient.color(amount);
+            ret = compiled_gradient.color(amount, point);
 		}
 
 		if(do_alpha)

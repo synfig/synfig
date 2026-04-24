@@ -56,9 +56,11 @@ private:
 	//! Parameter: (Real)
 	ValueBase param_radius;
 	//! Parameter: (bool)
-	ValueBase param_loop;
-	//! Parameter: (bool)
-	ValueBase param_zigzag;
+    ValueBase param_loop;
+    //! Parameter: (bool)
+    ValueBase param_zigzag;
+    //! Parameter: (bool)
+    ValueBase param_dithering;
 
 	CompiledGradient compiled_gradient;
 

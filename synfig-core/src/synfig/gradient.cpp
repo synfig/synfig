@@ -37,6 +37,7 @@
 #include "gradient.h"
 
 #include <algorithm>
+#include <random>
 #include <stdexcept>
 
 #include "general.h"
@@ -273,16 +274,16 @@ CompiledGradient::Entry::Entry(const Accumulator &prev_sum, const GradientCPoint
 
 
 CompiledGradient::CompiledGradient():
-	is_empty(true), repeat(false), zigzag(false)
+    is_empty(true), repeat(false), zigzag(false), dithering(false)
 	{ reset(); };
 
 CompiledGradient::CompiledGradient(const Color &color):
-	is_empty(true), repeat(false), zigzag(false)
+    is_empty(true), repeat(false), zigzag(false), dithering(false)
 	{ set(color); };
 
-CompiledGradient::CompiledGradient(const Gradient &gradient, bool repeat, bool zigzag):
-	is_empty(true), repeat(false), zigzag(false)
-	{ set(gradient, repeat, zigzag); };
+CompiledGradient::CompiledGradient(const Gradient &gradient, bool repeat, bool zigzag, bool dithering):
+    is_empty(true), repeat(false), zigzag(false), dithering(false)
+    { set(gradient, repeat, zigzag, dithering); };
 
 void
 CompiledGradient::set(const Color &color)
@@ -296,7 +297,7 @@ CompiledGradient::set(const Color &color)
 }
 
 void
-CompiledGradient::set(const Gradient &gradient, bool repeat, bool zigzag) {
+CompiledGradient::set(const Gradient &gradient, bool repeat, bool zigzag, bool dithering) {
 	if (gradient.empty())
 		{ reset(); return; }
 	if (gradient.size() == 1)
@@ -326,6 +327,7 @@ CompiledGradient::set(const Gradient &gradient, bool repeat, bool zigzag) {
 	list.clear();
 	this->repeat = repeat;
 	this->zigzag = zigzag;
+    this->dithering = dithering;
 	Accumulator prev_sum = Accumulator(cpoints.front().color)*cpoints.front().pos;
 	for(Gradient::iterator i = cpoints.begin(), j = i + 1; j != cpoints.end();  ++i, ++j) {
 		list.push_back( Entry(prev_sum, *i, *j) );
@@ -349,3 +351,70 @@ CompiledGradient::set(const Gradient &gradient, bool repeat, bool zigzag) {
 	
 	summary_color = find(1.0)->summary(1.0);
 }
+
+// generate a PRNG table
+static std::vector<float>
+make_prng_table()
+{
+    size_t N = 1000;
+    std::vector<float> r(N);
+
+    // for cross-platform consistency, don't use random_device and avoid the use of std::uniform_real_distribution (ie most of <random>).
+    // mersenne twister with default constructor is cross-platform so that's still okay.
+    std::mt19937 gen;
+    for (size_t i=0; i<N; i++)
+    {
+        r[i] = (double)gen() / gen.max();
+    }
+
+    return r;
+};
+
+// pre-generated PRNG table
+// https://xkcd.com/221/
+static const std::vector<float> prng_table = make_prng_table();
+
+Color
+CompiledGradient::apply_dithering(const Color &c, const Vector &seed) const
+{
+    // the PRNG we choose doesn't really need to be random, we just need a good source
+    // of entropy for the dithering. We want it to be deterministic, fast, and random enough to
+    // get a good-looking dither.
+    //
+    // the "PRNG" algorithm here is:
+    // 1. Hash the input by mashing the bits together (not a quality hash, but extremely fast)
+    // 2. Use the hash as a lookup into a pre-generated random table.
+
+    uint64_t rBits = *(const uint32_t*)&c.get_r();
+    uint64_t gBits = *(const uint32_t*)&c.get_g();
+    uint64_t bBits = *(const uint32_t*)&c.get_b();
+    uint64_t s0Bits = *(const uint64_t*)&seed[0];
+    uint64_t s1Bits = *(const uint64_t*)&seed[1];
+
+    size_t hash = (rBits << 0) ^
+                  (gBits << 1) ^
+                  (bBits << 2) ^
+                  (s0Bits << 3) ^
+                  (s1Bits << 4);
+    hash >>= 5;
+    hash = hash % (prng_table.size() - 3);
+
+    // these numbers represent the probability that the corresponding number gets rounded up
+    float pr = prng_table[hash+0];
+    float pg = prng_table[hash+1];
+    float pb = prng_table[hash+2];
+
+    // convert from floating point (0-1) to RGB (0-255), then round either up or down probabilistically based on the decimal point.
+    // ex. if c.get_r() is 62.853 in RGB, that will have a 85.3% chance of rounding up to 63 and an 14.7% chance of rounding down to 62.
+    int r = c.get_r() * 255.0f + pr;
+    int g = c.get_g() * 255.0f + pg; // this branchless implementation actually saves like 15% on the render times compared to an if statement
+    int b = c.get_b() * 255.0f + pb;
+
+    // uncomment these lines to see what the PRNG noise pattern looks like.
+    // r = pr * 255;
+    // g = pg * 255;
+    // b = pb * 255;
+
+    return Color(r / 255.0f, g / 255.0f, b / 255.0f, c.get_a());
+}
+

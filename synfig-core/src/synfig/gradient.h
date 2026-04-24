@@ -38,6 +38,7 @@
 #include "real.h"
 #include "color.h"
 #include "uniqueid.h"
+#include "vector.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -81,7 +82,7 @@ public:
 	typedef CPointList::reverse_iterator		reverse_iterator;
 
 private:
-	CPointList cpoints;
+    CPointList cpoints;
 
 public:
 	Gradient() { }
@@ -122,7 +123,7 @@ public:
 	Gradient operator*(const ColorReal &rhs) const { return Gradient(*this)*=rhs; }
 	Gradient operator/(const ColorReal &rhs) const { return Gradient(*this)/=rhs; }
 
-	Color operator() (const Real &x) const;
+    Color operator() (const Real &x) const;
 
 	//! Returns average luminance of gradient
 	Real mag() const;
@@ -242,31 +243,34 @@ private:
 	bool is_empty;
 	bool repeat;
 	bool zigzag;
+    bool dithering;
 	List list;
 
 	Accumulator summary_color;
 
 public:
 	CompiledGradient();
-	explicit CompiledGradient(const Color &color);
-	explicit CompiledGradient(const Gradient &gradient, bool repeat = false, bool zigzag = false);
+    explicit CompiledGradient(const Color &color);
+    explicit CompiledGradient(const Gradient &gradient, bool repeat = false, bool zigzag = false, bool dithering = false);
 
-	void set(const Color &color);
-	void set(const Gradient &gradient, bool repeat = false, bool zigzag = false);
+    void set(const Color &color);
+    void set(const Gradient &gradient, bool repeat = false, bool zigzag = false, bool dithering = false);
 	void reset() { set(Color()); }
 
 	bool empty() const { return is_empty; }
 	bool get_repeat() const { return repeat; }
 	/** Tells if the compiled gradient was generated from a zigzag (not if it is zigzag) */
 	bool get_from_zigzag() const { return zigzag; }
+    bool get_dithering() const { return dithering; }
 	const List& get_list() const { return list; }
 
 	inline List::const_iterator find(Real x) const
 		{ return std::lower_bound(list.begin(), list.end()-1, x); }
 
-	inline Color color(Real x) const {
+    inline Color color(Real x, const Vector& dithering_seed) const {
+
 		if (repeat) x -= floor(x);
-		return find(x)->color(x);
+        return dithering ? apply_dithering(find(x)->color(x), dithering_seed) : find(x)->color(x);
 	}
 
 	inline Accumulator summary() const
@@ -284,13 +288,18 @@ public:
 	inline Color average() const
 		{ return summary_color.color(); }
 
-	inline Color average(Real x0, Real x1) const
-	{
+    inline Color average(Real x0, Real x1, const Vector& dithering_seed) const
+    {
 		Real w = x1 - x0;
 		if (std::isnan(w) || std::isinf(w)) return average();
-		if (fabs(w) < real_precision<Real>()) return color(x0);
-		return ((summary(x1) - summary(x0))/w).color();
+        if (fabs(w) < real_precision<Real>()) return color(x0, dithering_seed);
+        Color ret = ((summary(x1) - summary(x0))/w).color();
+
+        return dithering ? apply_dithering(ret, dithering_seed) : ret;
 	}
+
+private:
+    Color apply_dithering(const Color &c, const Vector &seed) const;
 };
 
 }; // END of namespace synfig

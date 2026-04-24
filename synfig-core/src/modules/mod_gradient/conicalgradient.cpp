@@ -115,7 +115,7 @@ public:
 		Real dist(a.mod().get());
 
 		supersample *= 0.5;
-		return compiled_gradient.average(dist - supersample, dist + supersample);
+        return compiled_gradient.average(dist - supersample, dist + supersample, p);
 		//return compiled_gradient.color(dist);
 	}
 };
@@ -132,7 +132,8 @@ ConicalGradient::ConicalGradient():
 	param_gradient(ValueBase(Gradient(Color::black(),Color::white()))),
 	param_center(ValueBase(Point(0,0))),
 	param_angle(ValueBase(Angle::zero())),
-	param_symmetric(ValueBase(false))
+    param_symmetric(ValueBase(false)),
+    param_dithering(ValueBase(true))
 {
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -143,8 +144,9 @@ ConicalGradient::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT_VALUE_PLUS(param_gradient, compile());
 	IMPORT_VALUE(param_center);
-	IMPORT_VALUE(param_angle);
-	IMPORT_VALUE_PLUS(param_symmetric, compile());
+    IMPORT_VALUE(param_angle);
+    IMPORT_VALUE_PLUS(param_symmetric, compile());
+    IMPORT_VALUE_PLUS(param_dithering, compile());
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -153,8 +155,9 @@ ConicalGradient::get_param(const String &param)const
 {
 	EXPORT_VALUE(param_gradient);
 	EXPORT_VALUE(param_center);
-	EXPORT_VALUE(param_angle);
-	EXPORT_VALUE(param_symmetric);
+    EXPORT_VALUE(param_angle);
+    EXPORT_VALUE(param_symmetric);
+    EXPORT_VALUE(param_dithering);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -189,6 +192,11 @@ ConicalGradient::get_param_vocab()const
 		.set_description(_("When checked, the gradient is looped"))
 	);
 
+    ret.push_back(ParamDesc("dithering")
+        .set_local_name(_("Dithering"))
+        .set_description(_("When checked, smooths banding artifacts by applying a dithering filter"))
+    );
+
 	return ret;
 }
 
@@ -198,7 +206,8 @@ ConicalGradient::compile()
 	compiled_gradient.set(
 		param_gradient.get(Gradient()),
 		true,
-		param_symmetric.get(bool()) );
+        param_symmetric.get(bool()),
+        param_dithering.get(bool()) );
 }
 
 inline Color
@@ -213,7 +222,7 @@ ConicalGradient::color_func(const Point &pos, Real supersample)const
 	Real dist(a.mod().get());
 
 	supersample *= 0.5;
-	return compiled_gradient.average(dist - supersample, dist + supersample);
+    return compiled_gradient.average(dist - supersample, dist + supersample, pos);
 }
 
 synfig::Layer::Handle

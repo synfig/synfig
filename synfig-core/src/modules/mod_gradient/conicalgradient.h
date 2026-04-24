@@ -52,9 +52,11 @@ private:
 	//! Parameter: (Point)
 	ValueBase param_center;
 	//! Parameter: (Angle)
-	ValueBase param_angle;
-	//! Parameter: (bool)
-	ValueBase param_symmetric;
+    ValueBase param_angle;
+    //! Parameter: (bool)
+    ValueBase param_symmetric;
+    //! Parameter: (bool)
+    ValueBase param_dithering;
 
 	CompiledGradient compiled_gradient;
 

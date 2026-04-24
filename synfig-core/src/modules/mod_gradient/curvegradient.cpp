@@ -228,7 +228,7 @@ public:
 	Token::Handle get_token() const override { return token.handle(); }
 
 	Color get_color(const Vector& p) const override
-	{
+    {
 		Vector tangent;
 		Point p1;
 		Real thickness;
@@ -382,7 +382,7 @@ public:
 		}
 
 		if (approximate_zero(diff[0]) && approximate_zero(diff[1])) {
-			return compiled_gradient.color(compiled_gradient.get_from_zigzag()? 0.5 : 1.0);
+            return compiled_gradient.color(compiled_gradient.get_from_zigzag()? 0.5 : 1.0, p);
 		}
 
 		const Real mag(diff.inv_mag());
@@ -391,10 +391,10 @@ public:
 		Real supersample = get_units_per_pixel()[0];
 		supersample = synfig::clamp(supersample*mag, 0., 2.);
 		supersample *= 0.5;
-		return compiled_gradient.average(dist - supersample, dist + supersample);
+        return compiled_gradient.average(dist - supersample, dist + supersample, p);
 	}
 
-	bool run(RunParams&) const override {
+    bool run(RunParams&) const override {
 		return run_task();
 	}
 };
@@ -420,7 +420,8 @@ CurveGradient::compile()
 	compiled_gradient.set(
 		param_gradient.get(Gradient()),
 		param_loop.get(bool()),
-		param_zigzag.get(bool()) );
+        param_zigzag.get(bool()),
+        param_dithering.get(bool()) );
 }
 
 
@@ -432,8 +433,9 @@ CurveGradient::CurveGradient():
 	param_gradient(Gradient(Color::black(), Color::white())),
 	param_loop(ValueBase(false)),
 	param_zigzag(ValueBase(false)),
-	param_perpendicular(ValueBase(false)),
-	param_fast(ValueBase(true))
+    param_perpendicular(ValueBase(false)),
+    param_fast(ValueBase(true)),
+    param_dithering(ValueBase(true))
 {
 	std::vector<synfig::BLinePoint> bline;
 	bline.push_back(BLinePoint());
@@ -619,7 +621,7 @@ CurveGradient::color_func(const Point& point_, Real supersample) const
 	}
 
 	if (approximate_zero(diff[0]) && approximate_zero(diff[1])) {
-		return compiled_gradient.color(compiled_gradient.get_from_zigzag()? 0.5 : 1.0);
+        return compiled_gradient.color(compiled_gradient.get_from_zigzag()? 0.5 : 1.0, point_);
 	}
 
 	const Real mag(diff.inv_mag());
@@ -628,7 +630,7 @@ CurveGradient::color_func(const Point& point_, Real supersample) const
 
 	supersample = supersample * mag;
 	supersample *= 0.5;
-	return compiled_gradient.average(dist - supersample, dist + supersample);
+    return compiled_gradient.average(dist - supersample, dist + supersample, point_);
 }
 
 synfig::Layer::Handle
@@ -662,10 +664,11 @@ CurveGradient::set_param(const String & param, const ValueBase &value)
 		return true;
 	}
 	IMPORT_VALUE_PLUS(param_gradient, compile());
-	IMPORT_VALUE_PLUS(param_loop, compile());
-	IMPORT_VALUE_PLUS(param_zigzag, compile());
+    IMPORT_VALUE_PLUS(param_loop, compile());
+    IMPORT_VALUE_PLUS(param_zigzag, compile());
 	IMPORT_VALUE(param_perpendicular);
 	IMPORT_VALUE(param_fast);
+    IMPORT_VALUE_PLUS(param_dithering, compile());
 
 	if(param=="offset")
 		return set_param("origin", value);
@@ -682,8 +685,9 @@ CurveGradient::get_param(const String & param)const
 	EXPORT_VALUE(param_gradient);
 	EXPORT_VALUE(param_loop);
 	EXPORT_VALUE(param_zigzag);
-	EXPORT_VALUE(param_perpendicular);
-	EXPORT_VALUE(param_fast);
+    EXPORT_VALUE(param_perpendicular);
+    EXPORT_VALUE(param_fast);
+    EXPORT_VALUE(param_dithering);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -731,6 +735,10 @@ CurveGradient::get_param_vocab()const
 				  .set_local_name(_("Fast"))
 				  .set_description(_("When checked, renders quickly but with artifacts"))
 	);
+    ret.push_back(ParamDesc("dithering")
+                  .set_local_name(_("Dithering"))
+                  .set_description(_("When checked, smooths banding artifacts by applying a dithering filter (you may also need to uncheck Fast)"))
+    );
 
 	return ret;
 }
