@@ -385,11 +385,11 @@ CompiledGradient::apply_dithering(const Color &c, const Vector &seed) const
     // 1. Hash the input by mashing the bits together (not a quality hash, but extremely fast)
     // 2. Use the hash as a lookup into a pre-generated random table.
 
-    uint64_t rBits = *(const uint32_t*)&c.get_r();
-    uint64_t gBits = *(const uint32_t*)&c.get_g();
-    uint64_t bBits = *(const uint32_t*)&c.get_b();
-    uint64_t s0Bits = *(const uint64_t*)&seed[0];
-    uint64_t s1Bits = *(const uint64_t*)&seed[1];
+    uint64_t rBits = *reinterpret_cast<const uint32_t*>(&c.get_r());
+    uint64_t gBits = *reinterpret_cast<const uint32_t*>(&c.get_g());
+    uint64_t bBits = *reinterpret_cast<const uint32_t*>(&c.get_b());
+    uint64_t s0Bits = *reinterpret_cast<const uint64_t*>(&seed[0]);
+    uint64_t s1Bits = *reinterpret_cast<const uint64_t*>(&seed[1]);
 
     size_t hash = (rBits << 0) ^
                   (gBits << 1) ^
