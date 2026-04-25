@@ -55,6 +55,8 @@
 
 #endif
 
+studio::Dock_PalEdit* studio::Dock_PalEdit::instance = nullptr;
+
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
@@ -125,6 +127,12 @@ Dock_PalEdit::Dock_PalEdit():
 	//palette_settings(new PaletteSettings(this,"colors")),
 	table(2,2,false)
 {
+	if (instance) {
+		synfig::warning("Dock_PalEdit: only one instance should exist.");
+		return;
+	}
+	instance = this;
+	
 	// Make Palette Editor toolbar buttons small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
@@ -228,7 +236,9 @@ Dock_PalEdit::Dock_PalEdit():
 
 Dock_PalEdit::~Dock_PalEdit()
 {
+	instance = nullptr;
 	//delete palette_settings;
+
 }
 
 void
