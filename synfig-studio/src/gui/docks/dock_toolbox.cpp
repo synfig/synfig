@@ -39,10 +39,9 @@
 
 #include <gtkmm/accelmap.h>
 #include <gtkmm/paned.h>
-#include <gtkmm/stock.h>
 #include <gtkmm/toolpalette.h>
 
-#include <gui/statemanager.h>
+#include <gui/actionmanagers/actionmanager.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/docks/dialog_tooloptions.h>
@@ -145,7 +144,26 @@ void Dock_Toolbox::read_layout_string(const std::string& params) const
 void
 Dock_Toolbox::set_active_state(const synfig::String& statename)
 {
+	if (changing_state_) {
+		return;
+	}
+
 	synfigapp::Main::set_state(statename);
+
+	try {
+		changing_state_ = true;
+		for (const auto& item : state_button_map) {
+			if (item.first == statename && !item.second.first->get_active()) {
+				item.second.first->set_active(true);
+				break;
+			}
+		}
+	} catch (...) {
+		changing_state_ = false;
+		throw;
+	}
+
+	changing_state_ = false;
 }
 
 void
@@ -155,13 +173,12 @@ Dock_Toolbox::change_state(const synfig::String& statename, bool force)
 	if(canvas_view)
 	{
 		if(!force && statename==canvas_view->get_smach().get_state_name())
-		{
 			return;
-		}
 
-		if(state_button_map.count(statename))
+		auto iter = state_button_map.find(statename);
+		if(iter != state_button_map.end())
 		{
-			state_button_map[statename]->activate();
+			change_state_(static_cast<const Smach::state_base*>(iter->second.second));
 		}
 		else
 		{
@@ -173,17 +190,24 @@ Dock_Toolbox::change_state(const synfig::String& statename, bool force)
 void
 Dock_Toolbox::change_state_(const Smach::state_base *state)
 {
+	if (changing_state_) {
+		return;
+	}
 
 	try
 	{
 		studio::CanvasView::Handle canvas_view(studio::App::get_selected_canvas_view());
-		if(canvas_view)
-				canvas_view->get_smach().enter(state);
-		else
+		if(canvas_view) {
+			changing_state_ = true;
+			canvas_view->get_smach().enter(state);
+			changing_state_ = false;
+		} else {
 			refresh();
+		}
 	}
 	catch(...)
 	{
+		changing_state_ = false;
 		throw;
 	}
 }
@@ -194,30 +218,26 @@ Dock_Toolbox::change_state_(const Smach::state_base *state)
  *  \param state a const pointer to Smach::state_base
 */
 void
-Dock_Toolbox::add_state(const Smach::state_base *state)
+Dock_Toolbox::add_state(const Smach::state_base* state)
 {
 	assert(state);
 
 	String name=state->get_name();
 
+	const ActionManager::Entry& entry = App::get_action_manager()->get("win.set-tool-" + name);
+
 	Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton());
+	tool_button->set_label(entry.label_);
+	// Sadly not all tool icons (or tool names) follow a convention
+	const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
+	tool_button->set_icon_name(entry.icon_ + symbolic_suffix);
 	tool_button->set_group(radio_tool_button_group);
-	Glib::RefPtr<Gtk::Action> related_action = App::get_state_manager()->get_action_group()->get_action("state-"+name);
-	tool_button->set_related_action(related_action);
-	related_action->property_tooltip() = "";
 
 	// Keeps updating the tooltip if user changes the shortcut at runtime
 	tool_button->property_has_tooltip() = true;
-	tool_button->signal_query_tooltip().connect([state](int,int,bool,const Glib::RefPtr<Gtk::Tooltip>& tooltip) -> bool
+	tool_button->signal_query_tooltip().connect([entry](int,int,bool,const Glib::RefPtr<Gtk::Tooltip>& tooltip) -> bool
 	{
-		std::string tooltip_string = state->get_local_name();
-
-		Gtk::AccelKey key;
-		if (Gtk::AccelMap::lookup_entry(std::string("<Actions>/action_group_state_manager/state-") + state->get_name(), key)) {
-			tooltip_string += "  ";
-			tooltip_string += gtk_accelerator_get_label(key.get_key(), GdkModifierType(key.get_mod()));
-		}
-		tooltip->set_text(tooltip_string);
+		tooltip->set_text(entry.get_tooltip(App::instance()));
 		return true;
 	});
 //	tool_button->set_tooltip_text(get_tooltip(name));
@@ -226,8 +246,14 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 	tool_item_group->insert(*tool_button);
 	tool_item_group->show_all();
 
-	state_button_map[name] = tool_button;
+	state_button_map[name] = std::make_pair(tool_button, state);
 
+	tool_button->signal_clicked().connect([this, name]() {
+		if (changing_state_) {
+			return;
+		}
+		App::instance()->main_window->activate_action("set-tool-" + name);
+	});
 
 	refresh();
 }
@@ -236,28 +262,25 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 void
 Dock_Toolbox::update_tools()
 {
+	if (changing_state_) {
+		return;
+	}
+	
 	etl::handle<Instance> instance = App::get_selected_instance();
 	CanvasView::Handle canvas_view = App::get_selected_canvas_view();
 
-	Glib::RefPtr<Gtk::ActionGroup> state_action_group = App::get_state_manager()->get_action_group();
-	// avoid unnecessary events for radio_button->set_active(true);
-	// this method is called on switching doc tabs, it is not actually activating an action
-	state_action_group->set_sensitive(false);
-
-	const char* canvasview_state_name = canvas_view ? canvas_view->get_smach().get_state_name() : nullptr;
-	if (canvasview_state_name) {
-		set_active_state(canvasview_state_name);
-		auto radio_button = state_button_map[canvasview_state_name];
-		if (radio_button) {
-			if (!radio_button->get_active())
-				radio_button->set_active(true);
-		}
-	} else
-		set_active_state("none");
-
+	// These next several lines just adjust the tool buttons
+	// so that they are only clickable when they should be.
 	// Disable buttons if there isn't any open document instance
 	bool sensitive = instance && canvas_view;
-	state_action_group->set_sensitive(sensitive);
+	for (const auto& item : state_button_map)
+		item.second.first->set_sensitive(sensitive);
+
+	if (canvas_view && canvas_view->get_smach().get_state_name()) {
+		set_active_state(canvas_view->get_smach().get_state_name());
+	} else {
+		set_active_state("none");
+	}
 }
 
 
