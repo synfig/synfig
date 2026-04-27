@@ -54,9 +54,11 @@ private:
 	//! Parameter: (Gradient)
 	ValueBase param_gradient;
 	//! Parameter: (bool)
-	ValueBase param_loop;
-	//! Parameter: (bool)
-	ValueBase param_zigzag;
+    ValueBase param_loop;
+    //! Parameter: (bool)
+    ValueBase param_zigzag;
+    //! Parameter: (bool)
+    ValueBase param_dithering;
 
 	struct Params {
 		Point p1;
@@ -65,6 +67,7 @@ private:
 		CompiledGradient gradient;
 		bool loop;
 		bool zigzag;
+        bool dithering;
 		inline Params(): loop(false), zigzag(false) { }
 		void calc_diff();
 	};

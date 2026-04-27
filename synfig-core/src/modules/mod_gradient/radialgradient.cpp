@@ -105,7 +105,7 @@ public:
 	{
 		Real dist((p-center).mag()/radius);
 
-		return compiled_gradient.average(dist - supersample, dist + supersample);
+        return compiled_gradient.average(dist - supersample, dist + supersample, p);
 		//return params.gradient.color(dist);
 	}
 };
@@ -122,7 +122,8 @@ RadialGradient::RadialGradient():
 	param_center(ValueBase(Point(0,0))),
 	param_radius(ValueBase(Real(0.5))),
 	param_loop(ValueBase(false)),
-	param_zigzag(ValueBase(false))
+    param_zigzag(ValueBase(false)),
+    param_dithering(ValueBase(true))
 {
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -134,8 +135,9 @@ RadialGradient::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE_PLUS(param_gradient, compile());
 	IMPORT_VALUE(param_center);
 	IMPORT_VALUE(param_radius);
-	IMPORT_VALUE_PLUS(param_loop, compile());
-	IMPORT_VALUE_PLUS(param_zigzag, compile());
+    IMPORT_VALUE_PLUS(param_loop, compile());
+    IMPORT_VALUE_PLUS(param_zigzag, compile());
+    IMPORT_VALUE_PLUS(param_dithering, compile());
 
 	return Layer_Composite::set_param(param,value);
 }
@@ -146,8 +148,9 @@ RadialGradient::get_param(const String &param)const
 	EXPORT_VALUE(param_gradient);
 	EXPORT_VALUE(param_center);
 	EXPORT_VALUE(param_radius);
-	EXPORT_VALUE(param_loop);
-	EXPORT_VALUE(param_zigzag);
+    EXPORT_VALUE(param_loop);
+    EXPORT_VALUE(param_zigzag);
+    EXPORT_VALUE(param_dithering);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -188,6 +191,12 @@ RadialGradient::get_param_vocab()const
 		.set_description(_("When checked, the gradient is symmetrical at the center"))
 	);
 
+    ret.push_back(ParamDesc("dithering")
+        .set_local_name(_("Dithering"))
+        .set_description(_("When checked, smooths banding artifacts by applying a dithering filter"))
+    );
+
+
 	return ret;
 }
 
@@ -197,7 +206,8 @@ RadialGradient::compile()
 	compiled_gradient.set(
 		param_gradient.get(Gradient()),
 		param_loop.get(bool()),
-		param_zigzag.get(bool()) );
+        param_zigzag.get(bool()),
+        param_dithering.get(bool()) );
 }
 
 inline Color
@@ -209,7 +219,7 @@ RadialGradient::color_func(const Point &point, Real supersample)const
 	Real dist((point-center).mag()/radius);
 
 	supersample *= 0.5;
-	return compiled_gradient.average(dist - supersample, dist + supersample);
+    return compiled_gradient.average(dist - supersample, dist + supersample, point);
 }
 
 synfig::Layer::Handle

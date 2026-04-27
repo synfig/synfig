@@ -53,9 +53,11 @@ private:
 	//! Parameter: (Real)
 	ValueBase param_radius;
 	//! Parameter: (Angle)
-	ValueBase param_angle;
-	//! Parameter: (bool)
-	ValueBase param_clockwise;
+    ValueBase param_angle;
+    //! Parameter: (bool)
+    ValueBase param_clockwise;
+    //! Parameter: (bool)
+    ValueBase param_dithering;
 
 	CompiledGradient compiled_gradient;
 

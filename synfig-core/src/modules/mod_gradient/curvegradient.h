@@ -62,9 +62,11 @@ private:
 	//! Parameter: (bool)
 	ValueBase param_zigzag;
 	//! Parameter: (bool)
-	ValueBase param_perpendicular;
-	//! Parameter: (bool)
-	ValueBase param_fast;
+    ValueBase param_perpendicular;
+    //! Parameter: (bool)
+    ValueBase param_fast;
+    //! Parameter: (bool)
+    ValueBase param_dithering;
 
 	Real curve_length_;
 	bool bline_loop;

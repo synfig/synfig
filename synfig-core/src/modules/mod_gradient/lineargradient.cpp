@@ -98,7 +98,7 @@ public:
 	Color get_color(const Vector& p) const override
 	{
 		Real dist((p - params.p1)*params.diff);
-		return params.gradient.average(dist - supersample, dist + supersample);
+        return params.gradient.average(dist - supersample, dist + supersample, p);
 		//return params.gradient.color(dist);
 	}
 };
@@ -122,8 +122,9 @@ LinearGradient::LinearGradient():
 	param_p1(ValueBase(Point(1,1))),
 	param_p2(ValueBase(Point(-1,-1))),
 	param_gradient(ValueBase(Gradient(Color::black(), Color::white()))),
-	param_loop(ValueBase(false)),
-	param_zigzag(ValueBase(false))
+    param_loop(ValueBase(false)),
+    param_zigzag(ValueBase(false)),
+    param_dithering(ValueBase(true))
 {
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -136,7 +137,8 @@ LinearGradient::fill_params(Params &params)const
 	params.p2=param_p2.get(Point());
 	params.loop=param_loop.get(bool());
 	params.zigzag=param_zigzag.get(bool());
-	params.gradient.set(param_gradient.get(Gradient()), params.loop, params.zigzag);
+    params.dithering=param_dithering.get(bool());
+    params.gradient.set(param_gradient.get(Gradient()), params.loop, params.zigzag, params.dithering);
 	params.calc_diff();
 }
 
@@ -145,7 +147,7 @@ LinearGradient::color_func(const Params &params, const Point &point, synfig::Rea
 {
 	Real dist(point*params.diff - params.p1*params.diff);
 	supersample *= 0.5;
-	return params.gradient.average(dist - supersample, dist + supersample);
+    return params.gradient.average(dist - supersample, dist + supersample, point);
 }
 
 synfig::Layer::Handle
@@ -174,8 +176,10 @@ LinearGradient::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE(param_p1);
 	IMPORT_VALUE(param_p2);
 	IMPORT_VALUE(param_gradient);
-	IMPORT_VALUE(param_loop);
-	IMPORT_VALUE(param_zigzag);
+    IMPORT_VALUE(param_loop);
+    IMPORT_VALUE(param_zigzag);
+    IMPORT_VALUE(param_dithering);
+
 	return Layer_Composite::set_param(param,value);
 }
 
@@ -185,8 +189,9 @@ LinearGradient::get_param(const String & param)const
 	EXPORT_VALUE(param_p1);
 	EXPORT_VALUE(param_p2);
 	EXPORT_VALUE(param_gradient);
-	EXPORT_VALUE(param_loop);
-	EXPORT_VALUE(param_zigzag);
+    EXPORT_VALUE(param_loop);
+    EXPORT_VALUE(param_zigzag);
+    EXPORT_VALUE(param_dithering);
 
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -222,6 +227,10 @@ LinearGradient::get_param_vocab()const
 		.set_local_name(_("ZigZag"))
 		.set_description(_("When checked, the gradient is symmetrical at the center"))
 	);
+    ret.push_back(ParamDesc("dithering")
+        .set_local_name(_("Dithering"))
+        .set_description(_("When checked, smooths banding artifacts by applying a dithering filter"))
+    );
 
 	return ret;
 }
