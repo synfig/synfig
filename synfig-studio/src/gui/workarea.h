@@ -196,6 +196,9 @@ private:
 	//! This flag is set if the guides should be drawn
 	bool show_guides;
 
+	//! This flag is set if the guides should be locked
+	bool lock_guides;
+
 	//! Checker background size
 	synfig::Vector background_size;
 	//! Checker background first color
@@ -393,6 +396,13 @@ public:
 	void set_show_guides(bool x);
 	//! Toggles the showing of the guides
 	void toggle_show_guides() { set_show_guides(!get_show_guides()); }
+	//! Returns the state of the lock_guides flag
+	bool get_lock_guides() const { return lock_guides; }
+	//! Sets the showing of the guides
+	void set_lock_guides(bool locked);
+	//! Toggles the showing of the guides
+	void toggle_lock_guides() { set_lock_guides(!get_lock_guides()); }
+
 	//! Toggles the snap of the guides
 	void toggle_guide_snap();
 	//! Sets the color of the guides
@@ -483,6 +493,8 @@ public:
 	void grab_focus();
 
 	Gtk::DrawingArea* get_drawing_area() { return drawing_area; }
+	
+	bool get_bool_from_meta_data(const std::string& metaname, bool& value);
 
 private:
 	/*
