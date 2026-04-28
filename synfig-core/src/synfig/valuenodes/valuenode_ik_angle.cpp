@@ -4,7 +4,7 @@
 **
 **	\legal
 **	
-**  Copyright (c) 2025 ZAINAL AB.
+**  Copyright (c) 2025/2026 ZAINAL AB.
 **  Copyright (c) Synfig Contributors
 **
 **	This file is part of Synfig.
@@ -62,20 +62,30 @@ ValueNode_IK::ValueNode_IK(const ValueBase &value):
 	LinkableValueNode(value.get_type())
 {
 	init_children_vocab();
-	if (value.get_type() == type_angle)
+
+	set_link("link_target",ValueNode_Const::create(Vector(9.0,9.0)));
+	set_link("length_bone1",ValueNode_Const::create(Real(2.0)));
+	set_link("length_bone2",ValueNode_Const::create(Real(2.0)));
+	set_link("length_bone3",ValueNode_Const::create(Real(2.0)));
+	set_link("flip",ValueNode_Const::create(bool(true))); 
+	set_link("joint_bone",ValueNode_Const::create(int(Joint::TWOBONE))); 
+	set_link("t_bone",ValueNode_Const::create(int(RigType::ANIMAL))); 
+	set_link("f_bone",ValueNode_Const::create(int(TargetBone::BONE1)));
+	set_link("weight",ValueNode_Const::create(Real(25.0)));
+
+	if (value.get_type() == type_vector) // for position of elbow
+	{
+		set_link("link_pole",ValueNode_Const::create(value.get(Vector())));
+	} 
+
+	if (value.get_type() == type_angle)  // for angle bone
 	{
 		set_link("link_pole",ValueNode_Const::create(Vector(Angle::cos(value.get(Angle())).get(),
 														 Angle::sin(value.get(Angle())).get())));
-
-		set_link("link_target",ValueNode_Const::create(Vector(100, 0)));
-		set_link("length_bone1",ValueNode_Const::create(Real(2.0)));
-		set_link("length_bone2",ValueNode_Const::create(Real(2.0)));
-		set_link("length_bone3",ValueNode_Const::create(Real(2.0)));
-		set_link("flip",ValueNode_Const::create(bool(true))); 
-		set_link("joint_bone",ValueNode_Const::create(int(Joint::TWOBONE))); 
-		set_link("t_bone",ValueNode_Const::create(int(RigType::ANIMAL))); 
-		set_link("f_bone",ValueNode_Const::create(int(TargetBone::BONE1)));
-		set_link("weight",ValueNode_Const::create(Real(25.0)));
+	}
+	else if(value.get_type() == type_real) // for lenght bone , effect streth bone
+	{
+		set_link("link_pole",ValueNode_Const::create(Vector(0.0,0.0)));
 	}
 	
 }
@@ -102,6 +112,8 @@ ValueNode_IK::operator()(Time t)const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
 		"%s:%d operator()\n", __FILE__, __LINE__);
+
+	Type &type(get_type());
 	
     static const Real precision = 0.000000001;
 	Vector origin = (*link_pole_)(t).get(Vector());
@@ -118,26 +130,69 @@ ValueNode_IK::operator()(Time t)const
 	Real dist = delta.mag();
 	L1 = (L1 > precision) ? L1 : precision;
 	L2 = (L2 > precision) ? L2 : precision;
-	// ----- 2-BONE MODE -----
-	if (joint_mode==Joint::TWOBONE) {
-		dist = std::min(dist, L1 + L2);
-		Real cos_theta2 = synfig::clamp((dist*dist - L1*L1 - L2*L2) / (2 * L1 * L2), -1.0, 1.0);
-	    Real theta2 = std::acos(cos_theta2);
-		Real cos_alpha = synfig::clamp((dist*dist + L1*L1 - L2*L2) / (2 * dist * L1), -1.0, 1.0);
-		Real alpha = std::acos(cos_alpha);
-		Real angle_to_target = std::atan2(delta[1], delta[0]);
-		Real theta1 = angle_to_target - alpha;
-		if (flip) {
-			theta2 = -theta2;
-			theta1 = angle_to_target + alpha;
-		}
-		if (output_bone_index == TargetBone::BONE1) return Angle::rad(theta1);
-		if (output_bone_index == TargetBone::BONE2) return Angle::rad(theta2);
-	}
-	// ----- 3-BONE MODE -----
 	Real x0 = origin[0], y0 = origin[1];
 	Real l1l2 = L1 + L2;
+
+    // ----- 2-BONE JOINT -----
+	if (joint_mode==Joint::TWOBONE) {
+		if (output_bone_index == TargetBone::BONE1){
+			if (type == type_real){	
+				if (dist > l1l2){
+					Real scale = dist / l1l2;
+				    return L1 *= scale;
+				}
+				else return L1;
+			}
+			//dist = std::min(dist, L1 + L2);
+			Real cos_alpha = synfig::clamp((dist*dist + L1*L1 - L2*L2) / (2 * dist * L1), -1.0, 1.0);
+			Real alpha = std::acos(cos_alpha);
+			Real angle_to_target = std::atan2(delta[1], delta[0]);
+			Real theta1 = angle_to_target - alpha;
+			if (flip) {
+				theta1 = angle_to_target + alpha;
+			}
+			if (type == type_angle)return Angle::rad(theta1);
+			if (type == type_vector){
+				if (dist > l1l2) {
+				    Real scale = dist / l1l2;
+				    L1 *= scale;
+				}
+				Real elx = x0 + L1 * std::cos(theta1); // elbow1.x
+				Real ely = y0 + L1 * std::sin(theta1); // elbow1.y
+				return Vector(elx,ely);		
+			}
+		}
+
+		if (output_bone_index == TargetBone::BONE2){
+			if (type == type_angle){
+				Real cos_theta2 = synfig::clamp((dist*dist - L1*L1 - L2*L2) / (2 * L1 * L2), -1.0, 1.0);
+	    		Real theta2 = std::acos(cos_theta2);
+	    		return Angle::rad(flip ? -theta2 : theta2);
+			}
+			if (type == type_real){	
+				if (dist > l1l2) {
+					Real scale = dist / l1l2;
+					return L2 *= scale;
+				}
+				else return L2;
+			}
+			if (type == type_vector)return Vector(0.0,0.0);		// to evoid error user
+		}
+	}
+	// ----- 3-BONE JOINT -----
 	Real fmax = l1l2 + L3;
+
+	if (type == type_real){	
+		Real L(0.0);
+		switch (output_bone_index) {
+		    case TargetBone::BONE1: L = L1; break;
+		    case TargetBone::BONE2: L = L2; break;
+		    case TargetBone::BONE3: L = L3; break;
+		}
+		if (dist <= fmax) return L;
+		Real scale = dist / fmax;
+		return L *= scale;
+	}
 	Real tomin = l1l2 - (L3 * weight / 100);
 	Real L4 = 0.0;
 	if (L3 >= l1l2) {
@@ -153,6 +208,7 @@ ValueNode_IK::operator()(Time t)const
 		}
 		else L4 = tomin;
 	}
+
 	Real angle_to_target = std::atan2(delta[1], delta[0]);
 	L4 = (L4 > precision) ? L4 : precision;
 	L3 = (L3 > precision) ? L3 : precision;
@@ -165,6 +221,7 @@ ValueNode_IK::operator()(Time t)const
 		theta2 = -theta2;
 		theta1 = angle_to_target + alpha;
 	}
+
 	Real tx = x0 + L4 * std::cos(theta1);
 	Real ty = y0 + L4 * std::sin(theta1);
 	Vector vt(tx, ty);
@@ -180,22 +237,55 @@ ValueNode_IK::operator()(Time t)const
 		theta2b = -theta2b;
 		theta1b = angleb + alphab;
 	}
-	if (output_bone_index == TargetBone::BONE1) return Angle::rad(theta1b);
-	if (output_bone_index == TargetBone::BONE2) return Angle::rad(theta2b);
-	Real sx = x0 + L1 * std::cos(theta1b);
-	Real sy = y0 + L1 * std::sin(theta1b);
-	Real x2 = tx + L3 * std::cos(theta1 + theta2);
-	Real y2 = ty + L3 * std::sin(theta1 + theta2);
-	Real dx3 = (sx - x0) - (x2 - x0);
-	Real dy3 = (sy - y0) - (y2 - y0);
-	Real dist3 = std::sqrt(dx3 * dx3 + dy3 * dy3);
-	Real cos_theta3 = synfig::clamp((dist3*dist3 - L2*L2 - L3*L3) / (2 * L2 * L3), -1.0, 1.0);
-	Real theta3 = std::acos(cos_theta3);
-	if (flip != (rig_type == RigType::ANIMAL)){
-		theta3 = -theta3;
+
+	if (output_bone_index == TargetBone::BONE1){
+		if(type == type_angle)return Angle::rad(theta1b);
+		if(type == type_vector){
+			if (dist > fmax) {
+			    Real scale = dist / fmax;
+			    L1 *= scale;
+			}
+		return Vector(x0 + L1 * std::cos(theta1b), y0 + L1 * std::sin(theta1b));// elbow_1
+		}
 	}
-	if (output_bone_index == TargetBone::BONE3) return Angle::rad(theta3);
-	return Angle::rad(0); // fallback default
+
+	if (output_bone_index == TargetBone::BONE2){
+		if (type == type_angle)return Angle::rad(theta2b);
+		if (type == type_vector){
+			if (dist > fmax) {
+			    Real scale = dist / fmax;
+			    L1 *= scale;
+			    L2 *= scale;
+			}
+			Real elbow2x = L2 * std::cos(theta1b+theta2b)+ (x0 + L1 * std::cos(theta1b)); // elbow_2.x
+			Real elbow2y = L2 * std::sin(theta1b+theta2b)+ (y0 + L1 * std::sin(theta1b)); // elbow_2.y
+			return Vector(elbow2x,elbow2y);
+		}
+	}
+
+	if (output_bone_index == TargetBone::BONE3){
+		if (type == type_angle){ 
+			Real sx = x0 + L1 * std::cos(theta1b);
+			Real sy = y0 + L1 * std::sin(theta1b);
+			Real x2 = tx + L3 * std::cos(theta1 + theta2);
+			Real y2 = ty + L3 * std::sin(theta1 + theta2);
+			Real dx3 = (sx - x0) - (x2 - x0);
+			Real dy3 = (sy - y0) - (y2 - y0);
+			Real dist3 = std::sqrt(dx3 * dx3 + dy3 * dy3);
+			Real cos_theta3 = synfig::clamp((dist3*dist3 - L2*L2 - L3*L3) / (2 * L2 * L3), -1.0, 1.0);
+			Real theta3 = std::acos(cos_theta3);
+			if (flip != (rig_type == RigType::ANIMAL)){
+				theta3 = -theta3;
+				}
+			return Angle::rad(theta3);
+		}
+		
+		if (type == type_vector) return Vector(0.0,0.0);// fallback default
+	}
+
+	if (type == type_angle) return Angle::rad(0); // fallback default
+	if (type == type_real) return Real(2.0); // fallback default
+	if (type == type_vector) return Vector(0.0,0.0); // fallback default
 }
 
 bool
@@ -241,7 +331,9 @@ ValueNode_IK::get_link_vfunc(int i)const
 bool
 ValueNode_IK::check_type(Type &type)
 {
-	return type==type_angle;
+	return type==type_vector
+		|| type==type_real
+		|| type==type_angle;
 }
 
 LinkableValueNode::Vocab
@@ -251,6 +343,9 @@ ValueNode_IK::get_children_vocab_vfunc()const
 		return children_vocab;
 
 	LinkableValueNode::Vocab ret;
+
+	Type &type(get_type());
+
 	ret.push_back(ParamDesc("link_pole")
 		.set_local_name(_("Link pole"))
 		.set_description(_("Pole position for the IK shoulder"))
@@ -294,15 +389,33 @@ ValueNode_IK::get_children_vocab_vfunc()const
 		.add_enum_value(RigType::HUMAN, "hand", _("Hand"))
 		.add_enum_value(RigType::ANIMAL, "foot", _("Foot"))
 	);
-	ret.push_back(ParamDesc("f_bone")
-		.set_local_name(_("F bone"))
-		.set_description(_("Select for bone 1 = up,2 = mid or 3 = down, down only for 3 joint bone"))
-		.set_hint("enum")
-		.set_static(true)
-		.add_enum_value(TargetBone::BONE1, "for bone1", _("For bone1"))
-		.add_enum_value(TargetBone::BONE2, "for bone2", _("For bone2"))
-		.add_enum_value(TargetBone::BONE3, "for bone3", _("For bone3"))
-	);
+
+	if (type == type_angle || type == type_real)
+	{
+		ret.push_back(ParamDesc("f_bone")
+			.set_local_name(_("F bone"))
+			.set_description(_("Select for bone 1 = up,2 = mid or 3 = down, down only for 3 joint bone"))
+			.set_hint("enum")
+			.set_static(true)
+			.add_enum_value(TargetBone::BONE1, "for bone1", _("For bone 1"))
+			.add_enum_value(TargetBone::BONE2, "for bone2", _("For bone 2"))
+			.add_enum_value(TargetBone::BONE3, "for bone3", _("For bone 3"))
+		);
+	}
+
+	if (type == type_vector)
+	{
+		ret.push_back(ParamDesc("f_bone")
+			.set_local_name(_("F elbow"))
+			.set_description(_("Select for elbow 1 or elbow 2"))
+			.set_hint("enum")
+			.set_static(true)
+			.add_enum_value(TargetBone::BONE1, "for bone1", _("For elbow 1"))
+			.add_enum_value(TargetBone::BONE2, "for bone2", _("For elbow 2"))
+		);
+
+	}
+
 	ret.push_back(ParamDesc("weight")
 		.set_local_name(_("Weight"))
 		.set_description(_("Weight percent IK for 3 bone only. Range value 0 to 100"))
