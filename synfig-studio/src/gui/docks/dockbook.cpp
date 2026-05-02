@@ -289,7 +289,11 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 		return false;
 
 	Gtk::Menu *tabmenu=manage(new class Gtk::Menu());
-	tabmenu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), tabmenu));
+	tabmenu->attach_to_widget(*this);
+	if (get_n_pages() > 1) {
+		// otherwise it will crash due to segmentation-fault (trying to re-delete)
+		tabmenu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), tabmenu));
+	}
 
 	if (get_n_pages() > 1 || (get_parent() && get_parent()->get_children().size() > 1)) {
 		Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("Undock panel")));
