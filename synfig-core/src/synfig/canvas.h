@@ -33,7 +33,6 @@
 
 #include <map>
 #include <list>
-#include <ETL/handle>
 #include <sigc++/signal.h>
 #include <sigc++/connection.h>
 
