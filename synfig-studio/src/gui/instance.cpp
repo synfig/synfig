@@ -931,39 +931,31 @@ void
 Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category)const
 {
 	synfigapp::Action::CandidateList candidate_list;
-	synfigapp::Action::CandidateList::iterator iter;
 
-	candidate_list=compile_candidate_list(param_list,category);
+	candidate_list = synfigapp::Action::compile_visible_candidate_list(param_list, category);
 
 	candidate_list.sort();
 
-	// if(candidate_list.empty())
-	// 	synfig::warning("%s:%d Action CandidateList is empty!", __FILE__, __LINE__);
-
-	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
-	{
-		std::string icon_name(get_action_icon_name(*iter));
-
-		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
-		{
-			action_group->add(Gtk::Action::create_with_icon_name(
-				"action-"+iter->name,
-				icon_name,
-				iter->local_name,iter->local_name
-			),
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(
-							*const_cast<studio::Instance*>(this),
-							&studio::Instance::process_action
-						),
-						param_list
-					),
-					iter->name
-				)
-			);
-			ui_info+=strprintf("<menuitem action='action-%s' />",iter->name.c_str());
-		}
+	for (const auto& action : candidate_list) {
+		const std::string icon_name(get_action_icon_name(action));
+		action_group->add(Gtk::Action::create_with_icon_name(
+							  "action-" + action.name,
+							  icon_name,
+							  action.local_name,
+							  action.local_name
+							  ),
+						  sigc::bind(
+							  sigc::bind(
+								  sigc::mem_fun(
+									  *const_cast<studio::Instance*>(this),
+									  &studio::Instance::process_action
+									  ),
+								  param_list
+								  ),
+							  action.name
+							  )
+						  );
+		ui_info+=strprintf("<menuitem action='action-%s' />", action.name.c_str());
 	}
 }
 
@@ -971,48 +963,43 @@ void
 Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list,synfigapp::Action::Category category)const
 {
 	synfigapp::Action::CandidateList candidate_list;
-	synfigapp::Action::CandidateList::iterator iter;
 
-	candidate_list=compile_candidate_list(param_list,category);
+	candidate_list = synfigapp::Action::compile_visible_candidate_list(param_list, category);
 
 	candidate_list.sort();
 
 	if(candidate_list.empty())
 		synfig::warning("%s:%d Action CandidateList is empty!", __FILE__, __LINE__);
 
-	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
-	{
-		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
-		{
-			bool is_item_already_in_menu = false;
-			std::vector<Gtk::Widget*> children = menu->get_children();
-			for (const Gtk::Widget* child : children) {
-				if (const Gtk::MenuItem* menu_item = dynamic_cast<const Gtk::MenuItem*>(child)) {
-					if (menu_item->get_label() == iter->local_name) {
-						is_item_already_in_menu = true;
-						break;
-					}
+	for (const auto& action : candidate_list) {
+		bool is_item_already_in_menu = false;
+		std::vector<Gtk::Widget*> children = menu->get_children();
+		for (const Gtk::Widget* child : children) {
+			if (const Gtk::MenuItem* menu_item = dynamic_cast<const Gtk::MenuItem*>(child)) {
+				if (menu_item->get_label() == action.local_name) {
+					is_item_already_in_menu = true;
+					break;
 				}
 			}
-			// Maybe the action supports multiple ducks or layers and is already listed in menu
-			if (is_item_already_in_menu)
-				continue;
-
-			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
-				*Gtk::manage(create_image_from_icon(get_action_icon_name(*iter), Gtk::ICON_SIZE_MENU)),
-				iter->local_name ));
-
-			item->signal_activate().connect(
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(
-							*const_cast<studio::Instance*>(this),
-							&studio::Instance::process_action ),
-						param_list ),
-					iter->name ));
-			item->show_all();
-			menu->append(*item);
 		}
+		// Maybe the action supports multiple ducks or layers and is already listed in menu
+		if (is_item_already_in_menu)
+			continue;
+
+		Gtk::MenuItem* item = Gtk::manage(new Gtk::ImageMenuItem(
+			*Gtk::manage(create_image_from_icon(get_action_icon_name(action), Gtk::ICON_SIZE_MENU)),
+			action.local_name ));
+
+		item->signal_activate().connect(
+			sigc::bind(
+				sigc::bind(
+					sigc::mem_fun(
+						*const_cast<studio::Instance*>(this),
+						&studio::Instance::process_action ),
+					param_list ),
+				action.name ));
+		item->show_all();
+		menu->append(*item);
 	}
 }
 
@@ -1022,10 +1009,8 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 	synfigapp::Action::CandidateList candidate_list;
 	synfigapp::Action::CandidateList candidate_list2;
 
-	synfigapp::Action::CandidateList::iterator iter;
-
-	candidate_list=compile_candidate_list(param_list,category);
-	candidate_list2=compile_candidate_list(param_list2,category);
+	candidate_list = synfigapp::Action::compile_visible_candidate_list(param_list, category);
+	candidate_list2 = synfigapp::Action::compile_visible_candidate_list(param_list, category);
 
 	candidate_list.sort();
 
@@ -1035,51 +1020,42 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 		synfig::warning("%s:%d Action CandidateList2 is empty!", __FILE__, __LINE__);
 
 	// Separate out the candidate lists so that there are no conflicts
-	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
-	{
+	for (auto iter = candidate_list.begin(); iter != candidate_list.end(); ++iter) {
 		synfigapp::Action::CandidateList::iterator iter2(candidate_list2.find(iter->name));
-		if(iter2!=candidate_list2.end())
+		if (iter2 != candidate_list2.end())
 			candidate_list2.erase(iter2);
 	}
 
-	for(iter=candidate_list2.begin();iter!=candidate_list2.end();++iter)
-	{
-		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
-		{
-			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
-				*Gtk::manage(create_image_from_icon(get_action_icon_name(*iter), Gtk::ICON_SIZE_MENU)),
-				iter->local_name ));
-			item->signal_activate().connect(
+	for (const auto& action : candidate_list2) {
+		Gtk::MenuItem* item = Gtk::manage(new Gtk::ImageMenuItem(
+			*Gtk::manage(create_image_from_icon(get_action_icon_name(action), Gtk::ICON_SIZE_MENU)),
+			action.local_name ));
+		item->signal_activate().connect(
+			sigc::bind(
 				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(
-							*const_cast<studio::Instance*>(this),
-							&studio::Instance::process_action ),
-						param_list2 ),
-					iter->name ));
-			item->show_all();
-			menu->append(*item);
-		}
+					sigc::mem_fun(
+						*const_cast<studio::Instance*>(this),
+						&studio::Instance::process_action ),
+					param_list2 ),
+				action.name ));
+		item->show_all();
+		menu->append(*item);
 	}
 
-	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
-	{
-		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
-		{
-			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
-				*Gtk::manage(create_image_from_icon(get_action_icon_name(*iter), Gtk::ICON_SIZE_MENU)),
-				iter->local_name ));
-			item->signal_activate().connect(
+	for (const auto& action : candidate_list) {
+		Gtk::MenuItem* item = Gtk::manage(new Gtk::ImageMenuItem(
+			*Gtk::manage(create_image_from_icon(get_action_icon_name(action), Gtk::ICON_SIZE_MENU)),
+			action.local_name ));
+		item->signal_activate().connect(
+			sigc::bind(
 				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(
-							*const_cast<studio::Instance*>(this),
-							&studio::Instance::process_action ),
-						param_list ),
-					iter->name ));
-			item->show_all();
-			menu->append(*item);
-		}
+					sigc::mem_fun(
+						*const_cast<studio::Instance*>(this),
+						&studio::Instance::process_action ),
+					param_list ),
+				action.name ));
+		item->show_all();
+		menu->append(*item);
 	}
 }
 
