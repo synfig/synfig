@@ -787,13 +787,12 @@ void CanvasView::set_jack_enabled(bool value)
 }
 #endif
 
-std::list<int>&
+const std::vector<int>&
 CanvasView::get_pixel_sizes()
 {
 	// prime factors of 64 is 2, 2, 2, 2, 2, 2 - see TILE_SIZE in synfig-core/trunk/src/synfig/target_tile.h
 	// also see available low-res renderer engines in rendering::Renderer::initialize_renderers()
-	static int pixel_size_array[] = {2, 4, 8, 16};
-	static std::list<int> pixel_sizes(pixel_size_array, pixel_size_array + sizeof(pixel_size_array)/sizeof(int));
+	static const std::vector<int> pixel_sizes {2, 4, 8, 16};
 	return pixel_sizes;
 }
 
@@ -2233,10 +2232,11 @@ CanvasView::decrease_low_res_pixel_size()
 	if(changing_resolution_)
 		return;
 	changing_resolution_=true;
-	std::list<int> sizes = CanvasView::get_pixel_sizes();
-	int pixel_size = work_area->get_low_res_pixel_size();
-	for (std::list<int>::iterator iter = sizes.begin(); iter != sizes.end(); ++iter)
-		if (*iter == pixel_size) {
+
+	const std::vector<int> sizes = CanvasView::get_pixel_sizes();
+	const int current_pixel_size = work_area->get_low_res_pixel_size();
+	for (auto iter = sizes.begin(); iter != sizes.end(); ++iter)
+		if (*iter == current_pixel_size) {
 			if (iter == sizes.begin()) {
 				// we already have the smallest low-res pixels possible - turn off low-res instead
 				work_area->set_low_resolution_flag(false);
@@ -2263,8 +2263,7 @@ CanvasView::increase_low_res_pixel_size()
 	if(changing_resolution_)
 		return;
 	changing_resolution_=true;
-	std::list<int> sizes = CanvasView::get_pixel_sizes();
-	int pixel_size = work_area->get_low_res_pixel_size();
+
 	if (!work_area->get_low_resolution_flag())
 	{
 		// We were using "hi res" so change it to low res.
@@ -2278,8 +2277,10 @@ CanvasView::increase_low_res_pixel_size()
 		return;
 	}
 
-	for (std::list<int>::iterator iter = sizes.begin(); iter != sizes.end(); ++iter)
-		if (*iter == pixel_size) {
+	const std::vector<int> sizes = CanvasView::get_pixel_sizes();
+	const int current_pixel_size = work_area->get_low_res_pixel_size();
+	for (auto iter = sizes.begin(); iter != sizes.end(); ++iter)
+		if (*iter == current_pixel_size) {
 			if (++iter != sizes.end()) {
 				Glib::RefPtr<Gtk::Action> action = action_group->get_action(synfig::strprintf("lowres-pixel-%d", *iter));
 				assert(action);
