@@ -375,6 +375,23 @@ Action::compile_candidate_list(const ParamList& param_list, Category category)
 	return ret;
 }
 
+Action::CandidateList
+Action::compile_visible_candidate_list(const ParamList& param_list, Category category)
+{
+	Action::CandidateList ret;
+
+	for (const auto& item : book()) {
+		const auto& entry = item.second;
+		if (entry.category & category && !(entry.category & Action::CATEGORY_HIDDEN)) {
+			if (entry.is_candidate(param_list)) {
+				ret.push_back(entry);
+			}
+		}
+	}
+
+	return ret;
+}
+
 Action::CandidateList::iterator
 Action::CandidateList::find(const synfig::String& x)
 {
