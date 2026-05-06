@@ -132,6 +132,8 @@
 #include <gui/states/state_width.h>
 #include <gui/states/state_zoom.h>
 
+#include <gui/actiondatabase.h>
+
 #include <gui/widgets/widget_enum.h>
 
 #include <synfig/canvasfilenaming.h>
@@ -310,6 +312,8 @@ SoundProcessor *App::sound_render_done = nullptr;
 bool App::use_render_done_sound = true;
 
 static StateManager* state_manager;
+
+static ActionDatabase* action_database = nullptr;
 
 static bool
 really_delete_widget(Gtk::Widget *widget)
@@ -1632,6 +1636,7 @@ void App::init(const synfig::String& rootpath)
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
+		action_database = new ActionDatabase();
 
 		studio_init_cb.task(_("Init Dock Manager..."));
 		dock_manager=new studio::DockManager();
@@ -1876,6 +1881,12 @@ void App::init(const synfig::String& rootpath)
 
 StateManager* App::get_state_manager() { return state_manager; }
 
+ActionDatabase*
+App::get_action_database()
+{
+	return action_database;
+}
+
 void
 App::on_shutdown()
 {
@@ -1891,6 +1902,8 @@ App::on_shutdown()
 	// Unload all of the modules
 	for(;!module_list_.empty();module_list_.pop_back())
 		module_list_.back()->stop();
+
+	delete action_database;
 
 	delete state_manager;
 

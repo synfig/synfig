@@ -117,6 +117,7 @@ class Dock_SoundWave;
 class Module;
 
 class StateManager;
+class ActionDatabase;
 
 class App : public Gtk::Application, private IconController
 {
@@ -335,6 +336,7 @@ public:
 	static StateManager* get_state_manager();
 
 	static Glib::RefPtr<UIManager>& ui_manager() { return ui_manager_; }
+	static ActionDatabase* get_action_database();
 
 	static void add_recent_file(const etl::handle<Instance> instance);
 
