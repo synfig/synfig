@@ -32,10 +32,9 @@
 
 #include <vector>
 
-#include <ETL/handle>
-
-#include <synfig/vector.h>
+#include <synfig/handle.h>
 #include <synfig/matrix.h>
+#include <synfig/vector.h>
 
 #include "contour.h"
 

@@ -28,7 +28,9 @@
 #define __SYNFIG_GTKMM_DIALOG_VECTORIZERSETTINGS_H
 
 /* === H E A D E R S ======================================================= */
-#include <ETL/handle>
+
+#include <unordered_map>
+
 #include <gtkmm/adjustment.h>
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/dialog.h>
@@ -37,9 +39,11 @@
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/switch.h>
 #include <gtkmm/builder.h>
-#include <gui/instance.h>
+
+#include <synfig/handle.h>
 #include <synfig/layers/layer_bitmap.h>
-#include <unordered_map>
+
+#include <gui/instance.h>
 
 /* === M A C R O S ========================================================= */
 

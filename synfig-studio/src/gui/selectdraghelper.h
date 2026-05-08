@@ -27,18 +27,18 @@
 #ifndef SYNFIG_STUDIO_SELECTDRAGHELPER_H
 #define SYNFIG_STUDIO_SELECTDRAGHELPER_H
 
-#include <ETL/handle>
+#include <vector>
 
 #include <gdkmm/event.h>
 #include <gdkmm/rectangle.h>
 
-#include <gui/exception_guard.h>
+#include <synfig/handle.h>
 
 #include <synfigapp/action_system.h>
 #include <synfigapp/canvasinterface.h>
 #include <synfigapp/instance.h>
 
-#include <vector>
+#include <gui/exception_guard.h>
 
 namespace synfigapp {
 namespace Action {

@@ -27,7 +27,7 @@
 # * If no repository found - then  sources fetched into ~/src/synfig and the latest master branch is built
 # * Executing script without arguments makes a full clean build and produces dmg package
 # * You can pass arguments to the script to invoke particular stage.
-#	Available stages: mkmacports, mkdeps, mketl, mksynfig, mksynfigstudio, mkapp, mkdmg
+#	Available stages: mkmacports, mkdeps, mksynfig, mksynfigstudio, mkapp, mkdmg
 #	Example:
 #		synfigstudio-osx-build.sh mkdeps
 # * You can pass a custom command to be invoked in the build environment.
@@ -282,18 +282,6 @@ mkdeps()
 
 	cp ${SCRIPTPATH}/gtk-3.0/settings.ini ${MACPORTS}/etc/gtk-3.0/
 
-}
-
-mketl()
-{
-	# building ETL
-	pushd ${SYNFIG_REPO_DIR}/ETL
-	rm -f aclocal.m4
-	autoreconf --install --force
-	make clean || true
-	./configure --prefix=${SYNFIG_PREFIX}  --includedir=${SYNFIG_PREFIX}/include
-	make -j$JOBS install
-	popd
 }
 
 mksynfig()
@@ -565,7 +553,6 @@ mkall()
 	# cleanup previous synfig installation if any
 	[ ! -d "$SYNFIG_PREFIX" ] || rm -rf "$SYNFIG_PREFIX"
 
-	mketl
 	mksynfig
 	mksynfigstudio
 

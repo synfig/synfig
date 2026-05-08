@@ -29,7 +29,6 @@
 #define __SYNFIG_PREVIEW_H
 
 /* === H E A D E R S ======================================================= */
-#include <ETL/handle>
 
 #include <gdkmm/pixbuf.h>
 
@@ -52,6 +51,7 @@
 
 #include <synfig/canvas.h>
 #include <synfig/clock.h>
+#include <synfig/handle.h>
 #include <synfig/soundprocessor.h>
 #include <synfig/time.h>
 

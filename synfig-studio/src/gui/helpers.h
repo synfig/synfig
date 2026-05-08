@@ -31,8 +31,9 @@
 /* === H E A D E R S ======================================================= */
 
 #include <cassert>
-#include <ETL/handle>
 #include <gtkmm/adjustment.h>
+
+#include <synfig/handle.h>
 #include <synfig/real.h>
 
 /* === M A C R O S ========================================================= */

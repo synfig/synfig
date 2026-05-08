@@ -22,7 +22,7 @@
 #    ./build.sh [package] [mode]
 #
 # where:
-#   - [package] is all|etl|core|studio
+#   - [package] is all|core|studio
 #   - [mode] is full|clean|configure|make
 #   
 #
@@ -69,7 +69,6 @@ else
 	DEBUG=''
 fi
 
-mkdir -p ETL
 mkdir -p synfig-core
 mkdir -p synfig-studio
 mkdir -p "${PREFIX}/bin"
@@ -151,51 +150,6 @@ ccache_show_stats()
 	if ( which ccache > /dev/null ); then
 	ccache -s
 	fi
-}
-
-#============================== ETL ====================================
-
-etl_clean() {
-cd ETL
-echo "Cleaning source tree..."
-make clean || true
-cd ..
-}
-
-etl_configure()
-{
-cd ETL
-echo "Going to configure..."
-pushd "${REPO_DIR}/ETL/" >/dev/null
-/bin/bash "${REPO_DIR}/ETL/bootstrap.sh"
-popd
-/bin/bash "${REPO_DIR}/ETL/configure" --prefix="${PREFIX}" --includedir="${PREFIX}/include" $DEBUG
-cd ..
-}
-
-etl_make()
-{
-cd ETL
-make -j$MAKE_THREADS
-sed -i.bak "s|^Cflags: -I\\\${includedir}|Cflags: -I$REPO_DIR\/ETL -I\\\${includedir}|" ETL.pc
-make install
-cd ..
-
-ccache_show_stats
-
-}
-
-etl_build()
-{
-etl_configure
-etl_make
-}
-
-etl_full()
-{
-etl_clean
-etl_configure
-etl_make
 }
 
 #======================== Synfig-Core ==================================
@@ -357,31 +311,24 @@ studio_make
 
 all_clean()
 {
-etl_clean
 core_clean
 studio_clean
 }
 
 all_configure()
 {
-etl_configure
 core_configure
 studio_configure
 }
 
 all_make()
 {
-etl_make
 core_make
 studio_make
 }
 
 all_build()
 {
-travis_fold_start ETL "Building ETL"
-etl_build
-travis_fold_end ETL
-
 travis_fold_start synfig-core "Building Synfig Core"
 core_build
 travis_fold_end synfig-core
@@ -393,7 +340,6 @@ travis_fold_end synfig-studio
 
 all_full()
 {
-etl_full
 core_full
 studio_full
 }

@@ -22,7 +22,6 @@ add_definitions(-DDEVEL_VERSION="Revision date: ${GIT_DATE}\\nBranch: ${GIT_BRAN
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
 	add_definitions("-DSHOW_EXTRA_INFO")
-	add_definitions(-DETL_VERSION="${ETL_VERSION}")
 endif()
 
 ##

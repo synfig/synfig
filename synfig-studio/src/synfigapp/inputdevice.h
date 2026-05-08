@@ -31,11 +31,12 @@
 /* === H E A D E R S ======================================================= */
 
 #include <vector>
+
 #include <synfig/color.h>
-#include <synfig/vector.h>
 #include <synfig/distance.h>
+#include <synfig/handle.h>
 #include <synfig/string.h>
-#include <ETL/handle>
+#include <synfig/vector.h>
 
 /* === M A C R O S ========================================================= */
 

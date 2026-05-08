@@ -91,15 +91,8 @@ parts:
       - freeglut3
       - python3-lxml # lottie exporter
 
-  etl:
-    after: [synfig-deps]
-    plugin: autotools
-    source: ETL
-    configflags: &cfgflags
-      - --prefix=/usr
-
   synfig-core:
-    after: [etl]
+    after: [synfig-deps]
     plugin: autotools
     source: synfig-core
     configflags: *cfgflags

@@ -30,7 +30,7 @@
 
 #include <array>
 
-#include <ETL/handle>
+#include <synfig/handle.h>
 #include <synfig/renddesc.h>
 #include <synfigapp/canvasinterface.h>
 

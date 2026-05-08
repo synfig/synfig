@@ -36,7 +36,6 @@
 #include <memory>
 #include <vector>
 
-#include <synfig/vector.h>
 #include <synfig/rect.h>
 
 /* === M A C R O S ========================================================= */

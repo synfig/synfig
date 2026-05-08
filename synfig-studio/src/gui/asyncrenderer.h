@@ -33,12 +33,12 @@
 
 #include <ctime>
 
-#include <ETL/handle>
-
 #include <glibmm/dispatcher.h>
 #include <glibmm/thread.h>
 
+#include <synfig/handle.h>
 #include <synfig/target.h>
+
 /* === M A C R O S ========================================================= */
 
 /* === T Y P E D E F S ===================================================== */
