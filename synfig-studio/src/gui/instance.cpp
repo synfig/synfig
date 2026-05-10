@@ -960,6 +960,32 @@ Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_grou
 }
 
 void
+Instance::add_actions_to_group(const Glib::RefPtr<Gio::SimpleActionGroup>& action_group, const synfigapp::Action::ParamList& param_list, synfigapp::Action::Category category) const
+{
+	synfigapp::Action::CandidateList candidate_list;
+
+	candidate_list = synfigapp::Action::compile_visible_candidate_list(param_list, category);
+
+	candidate_list.sort();
+
+	for (const auto& action : candidate_list) {
+		const std::string icon_name(get_action_icon_name(action));
+		action_group->add_action("action-" + action.name,
+			sigc::bind(
+				sigc::bind(
+					sigc::mem_fun(
+						*const_cast<studio::Instance*>(this),
+						&studio::Instance::process_action
+					),
+					param_list
+				),
+				action.name
+			)
+		);
+	}
+}
+
+void
 Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list,synfigapp::Action::Category category)const
 {
 	synfigapp::Action::CandidateList candidate_list;
