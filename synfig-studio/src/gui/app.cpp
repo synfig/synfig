@@ -315,6 +315,8 @@ static StateManager* state_manager;
 
 static ActionDatabase* action_database = nullptr;
 
+static const std::string accelerators_filename{"accelerators"};
+
 static bool
 really_delete_widget(Gtk::Widget *widget)
 {
@@ -2112,6 +2114,11 @@ App::load_accel_map()
 	{
 		synfig::warning("Caught exception when attempting to load accel map settings.");
 	}
+
+	UserAcceleratorList list;
+	list.restore_to_defaults(*App::get_action_database());
+	list.load_from_file(get_config_file(accelerators_filename), false);
+	list.apply(App::instance(), *App::get_action_database());
 }
 
 void
@@ -2126,6 +2133,11 @@ App::save_accel_map()
 	{
 		synfig::warning("Caught exception when attempting to save accel map settings.");
 	}
+
+	// only save those accelerators customized by user, i.e., without default values
+	UserAcceleratorList list;
+	list.accels = UserAcceleratorList::get_custom_accels_only(App::instance(), *App::get_action_database());
+	list.save_to_file(get_config_file(accelerators_filename));
 }
 
 void
