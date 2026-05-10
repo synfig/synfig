@@ -58,6 +58,8 @@
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toolitem.h>
 
+#include <gui/actiondatabase.h>
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/dialogs/dialog_canvasdependencies.h>
 #include <gui/dials/keyframedial.h>
@@ -707,6 +709,7 @@ void CanvasView::activate()
 	activation_index_.activate();
 	get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
 	App::ui_manager()->insert_action_group(action_group);
+	App::main_window->insert_action_group("doc", action_group_);
 	this->_action_group_removed = false;
 	update_title();
 	present();
@@ -717,6 +720,7 @@ void CanvasView::deactivate()
 {
 	get_smach().process_event(EVENT_YIELD_TOOL_OPTIONS);
 	App::ui_manager()->remove_action_group(action_group);
+	App::main_window->remove_action_group("doc");
 	this->_action_group_removed = true;
 	update_title();
 }
@@ -1418,6 +1422,7 @@ CanvasView::init_menus()
 	};
 
 	action_group = Gtk::ActionGroup::create("canvasview");
+	action_group_ = Gio::SimpleActionGroup::create();
 
 	for (const auto& item : action_list) {
 		if (!item.icon.empty()) {
@@ -1543,6 +1548,7 @@ CanvasView::init_menus()
 						  sigc::mem_fun(*this,&CanvasView::mask_bone_ducks));
 	}
 
+	insert_action_group("doc", action_group_);
 }
 
 void

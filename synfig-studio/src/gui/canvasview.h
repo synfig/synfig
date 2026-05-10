@@ -44,6 +44,8 @@
 
 #include <glibmm/dispatcher.h>
 
+#include <giomm/simpleactiongroup.h>
+
 #include <gtkmm/button.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/menu.h>
@@ -350,6 +352,7 @@ private:
 
 	Glib::RefPtr<Gtk::ActionGroup> action_group;
 	bool _action_group_removed;
+	Glib::RefPtr<Gio::SimpleActionGroup> action_group_;
 
 	etl::handle<synfigapp::UIInterface> ui_interface_;
 	etl::handle<synfigapp::SelectionManager> selection_manager_;
