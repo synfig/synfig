@@ -5,6 +5,7 @@ DIALOGS_HH = \
 	dialogs/canvasresize.h \
 	dialogs/dialog_canvasdependencies.h \
 	dialogs/dialog_color.h \
+	dialogs/dialog_fixmissingfiles.h \
 	dialogs/dialog_gradient.h \
 	dialogs/dialog_input.h \
 	dialogs/dialog_keyframe.h \
@@ -28,6 +29,7 @@ DIALOGS_CC = \
 	dialogs/canvasresize.cpp \
 	dialogs/dialog_canvasdependencies.cpp \
 	dialogs/dialog_color.cpp \
+	dialogs/dialog_fixmissingfiles.cpp \
 	dialogs/dialog_gradient.cpp \
 	dialogs/dialog_input.cpp \
 	dialogs/dialog_keyframe.cpp \
