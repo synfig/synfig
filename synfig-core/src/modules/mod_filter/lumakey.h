@@ -35,6 +35,7 @@
 #include <synfig/layer.h>
 #include <synfig/rendering/common/task/taskpixelprocessor.h>
 #include <synfig/rendering/software/task/tasksw.h>
+#include <synfig/rendering/opengl/task/taskgl.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -67,6 +68,16 @@ class TaskLumaKeySW: public TaskLumaKey, public rendering::TaskSW
 {
 public:
 	typedef etl::handle<TaskLumaKeySW> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token.handle(); }
+
+	virtual bool run(RunParams &params) const;
+};
+
+class TaskLumaKeyGL: public TaskLumaKey, public rendering::TaskGL
+{
+public:
+	typedef etl::handle<TaskLumaKeyGL> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
