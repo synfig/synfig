@@ -226,6 +226,7 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
+	App::dialog_tool_options->set_primary_focus_widget(&spin_radius);
 
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
