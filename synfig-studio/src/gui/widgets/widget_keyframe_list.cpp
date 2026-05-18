@@ -417,11 +417,12 @@ Widget_Keyframe_List::on_event(GdkEvent *event)
 			break;
 		case 3:
 			if (kf) set_selected_keyframe(*kf);
-			if (Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-keyframe"))) {
-				if (menu->get_attach_widget())
-					menu->detach();
-				menu->attach_to_widget(*this);
-				menu->popup_at_pointer(event);
+			if (App::menu_keyframe) {
+				if (Gtk::Menu* menu = Gtk::manage(new Gtk::Menu(App::menu_keyframe))) {
+					menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
+					menu->attach_to_widget(*this);
+					menu->popup_at_pointer(event);
+				}
 			}
 			break;
 		default:

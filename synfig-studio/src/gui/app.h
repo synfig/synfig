@@ -232,6 +232,7 @@ public:
 	static synfig::String navigator_renderer;
 	static synfig::String workarea_renderer;
 	static int number_of_threads;
+	static Glib::RefPtr<Gio::Menu> menu_keyframe;
 	static bool enable_mainwin_menubar;
 	static bool enable_mainwin_toolbar;
 	static synfig::String ui_language;

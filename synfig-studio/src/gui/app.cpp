@@ -292,10 +292,13 @@ synfig::Color studio::App::default_background_layer_color =
 String        studio::App::default_background_layer_image = "undefined";
 synfig::Color studio::App::preview_background_color =
 	synfig::Color(0.742187, 0.742187, 0.742187, 1.000000);  //X11 Gray
+
 bool studio::App::enable_preview_defaults = false;
 float studio::App::preview_quality = 0.5f;
 int studio::App::preview_fps = 12;
 String studio::App::preview_zoom_level = "fit";
+
+Glib::RefPtr<Gio::Menu> studio::App::menu_keyframe;
 
 bool   studio::App::enable_mainwin_menubar = true;
 bool   studio::App::enable_mainwin_toolbar = true;
