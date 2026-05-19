@@ -40,6 +40,7 @@
 #include <gtkmm/stylecontext.h>
 
 #include <gui/app.h>
+#include <gui/canvasview.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
 #include <gui/trees/historytreestore.h>
@@ -69,9 +70,6 @@ Dock_History::Dock_History():
 {
 	// Make History toolbar small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
-
-	App::signal_instance_deleted().connect(sigc::mem_fun(*this,&studio::Dock_History::delete_instance));
-	App::signal_instance_selected().connect(sigc::mem_fun(*this,&studio::Dock_History::set_selected_instance_signal));
 
 	action_group->add(Gtk::Action::create_with_icon_name(
 		"clear-undo",
@@ -153,11 +151,30 @@ Dock_History::~Dock_History()
 }
 
 void
-Dock_History::init_instance_vfunc(etl::loose_handle<Instance> instance)
+Dock_History::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
-	instance->signal_undo_redo_status_changed().connect(
+	canvas_view->get_instance()->signal_undo_redo_status_changed().connect(
 		sigc::mem_fun(*this,&Dock_History::update_undo_redo)
 	);
+}
+
+void
+Dock_History::changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view)
+{
+	if (on_undo_tree_changed_connection)
+		on_undo_tree_changed_connection.disconnect();
+
+	if (canvas_view) {
+		etl::loose_handle<Instance> instance = canvas_view->get_instance();
+		on_undo_tree_changed_connection = instance->history_tree_store()->signal_undo_tree_changed().connect(
+			sigc::mem_fun(*this, &Dock_History::on_undo_tree_changed));
+		action_tree->set_model(instance->history_tree_store());
+		action_tree->show();
+		update_undo_redo();
+	} else {
+		action_tree->set_model(Glib::RefPtr< Gtk::TreeModel >());
+		action_tree->hide();
+	}
 }
 
 Gtk::Widget*
@@ -254,6 +271,7 @@ Dock_History::create_action_tree()
 void
 Dock_History::clear_undo()
 {
+	auto selected_instance = get_canvas_view() ? get_canvas_view()->get_instance() : nullptr;
 	if (selected_instance && App::dialog_message_2b(
 		_("Clear History"),
 		_("You will not be able to undo any changes that you have made! "
@@ -268,6 +286,7 @@ Dock_History::clear_undo()
 void
 Dock_History::clear_redo()
 {
+	auto selected_instance = get_canvas_view() ? get_canvas_view()->get_instance() : nullptr;
 	if(selected_instance && App::dialog_message_2b(
 		_("Clear History"),
 		_("You will not be able to redo any changes that you have made! "
@@ -282,6 +301,7 @@ Dock_History::clear_redo()
 void
 Dock_History::clear_undo_and_redo()
 {
+	auto selected_instance = get_canvas_view() ? get_canvas_view()->get_instance() : nullptr;
 	if(selected_instance && App::dialog_message_2b(
 		_("Clear History"),
 		_("You will not be able to undo or redo any changes that you have made! "
@@ -313,6 +333,7 @@ Dock_History::update_undo_redo()
 void
 Dock_History::on_undo_tree_changed()
 {
+	auto selected_instance = get_canvas_view() ? get_canvas_view()->get_instance() : nullptr;
 	Gtk::TreeModel::Children children(selected_instance->history_tree_store()->children());
 
 	if (!children.size())
@@ -338,69 +359,15 @@ Dock_History::on_undo_tree_changed()
 	action_tree->get_selection()->select(prev);
 }
 
-void
-Dock_History::set_selected_instance_(etl::handle<studio::Instance> instance)
-{
-	if(studio::App::shutdown_in_progress)
-		return;
-
-	if (on_undo_tree_changed_connection)
-		on_undo_tree_changed_connection.disconnect();
-
-	selected_instance=instance;
-	if(instance)
-	{
-		on_undo_tree_changed_connection = selected_instance->history_tree_store()->signal_undo_tree_changed().connect(
-			sigc::mem_fun(*this,&Dock_History::on_undo_tree_changed));
-
-		action_tree->set_model(instance->history_tree_store());
-		action_tree->show();
-		update_undo_redo();
-		action_group->set_sensitive(true);
-	}
-	else
-	{
-		action_tree->set_model(Glib::RefPtr< Gtk::TreeModel >());
-		action_tree->hide();
-		action_group->set_sensitive(false);
-	}
-}
-
-void
-Dock_History::set_selected_instance_signal(etl::handle<studio::Instance> x)
-{
-	set_selected_instance(x);
-}
-
-void
-Dock_History::set_selected_instance(etl::loose_handle<studio::Instance> x)
-{
-	if(studio::App::shutdown_in_progress)
-		return;
-
-	// if it's already selected, don't select it again
-	if (x==selected_instance)
-		return;
-
-	set_selected_instance_(x);
-}
-
-void
-Dock_History::delete_instance(etl::handle<studio::Instance> instance)
-{
-	if(studio::App::shutdown_in_progress)
-		return;
-
-	if(selected_instance==instance)
-	{
-		set_selected_instance(0);
-	}
-}
-
 bool
 Dock_History::on_action_event(GdkEvent *event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
+	auto selected_instance = get_canvas_view() ? get_canvas_view()->get_instance() : nullptr;
+	if (!selected_instance) {
+		synfig::error(_("Dock History: Internal error: no selected instance."));
+		return true;
+	}
 	studio::HistoryTreeStore::Model model;
     switch(event->type)
     {
@@ -423,23 +390,17 @@ Dock_History::on_action_event(GdkEvent *event)
 			if((ColumnID)column->get_sort_column_id()==COLUMNID_JUMP)
 			{
 				synfigapp::Action::Undoable::Handle action(row[model.action]);
-				try{
 				if((bool)row[model.is_undo])
 				{
-					while(get_selected_instance()->undo_action_stack().size() && get_selected_instance()->undo_action_stack().front()!=action)
-						if(get_selected_instance()->undo()==false)
-							throw int();
+					while(selected_instance->undo_action_stack().size() && selected_instance->undo_action_stack().front()!=action)
+						if(selected_instance->undo()==false)
+							return true;
 				}
 				else if((bool)row[model.is_redo])
 				{
-					while(get_selected_instance()->redo_action_stack().size() && get_selected_instance()->undo_action_stack().front()!=action)
-						if(get_selected_instance()->redo()==false)
-							throw int();
-				}
-				}
-				catch(int)
-				{
-					return true;
+					while(selected_instance->redo_action_stack().size() && selected_instance->undo_action_stack().front()!=action)
+						if(selected_instance->redo()==false)
+							return true;
 				}
 			}
 			break;
@@ -461,9 +422,19 @@ Dock_History::on_action_toggle(const Glib::ustring& path_string)
 
 	Gtk::TreePath path(path_string);
 
+	auto selected_instance = get_canvas_view() ? get_canvas_view()->get_instance() : nullptr;
+	if (!selected_instance) {
+		synfig::error(_("Dock History: Internal error: no selected instance."));
+		return;
+	}
+
 	const Gtk::TreeRow row = *(selected_instance->history_tree_store()->get_iter(path));
 
 	synfigapp::Action::Undoable::Handle action = row[history_tree_model.action];
+	if (!action) {
+		synfig::error(_("Dock History: Internal error: undo history item doesn't map to an action."));
+		return;
+	}
 
 	selected_instance->set_action_status(action, !action->is_active());
 }

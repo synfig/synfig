@@ -54,15 +54,6 @@ class Dock_History : public Dock_CanvasSpecific
 
 	void on_undo_tree_changed();
 
-	void set_selected_instance_(etl::handle<studio::Instance> x);
-
-
-	void set_selected_instance(etl::loose_handle<studio::Instance> x);
-
-	void set_selected_instance_signal(etl::handle<studio::Instance> x);
-
-	void delete_instance(etl::handle<studio::Instance> x);
-
 	Gtk::Widget* create_action_tree();
 
 public:
@@ -77,8 +68,10 @@ public:
 
 	Dock_History();
 	~Dock_History();
+
 protected:
-	virtual void init_instance_vfunc(etl::loose_handle<Instance> instance);
+	void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view) override;
+	void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view) override;
 
 	bool on_action_event(GdkEvent *event);
 	void on_action_toggle(const Glib::ustring& path);
