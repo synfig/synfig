@@ -1055,8 +1055,8 @@ CanvasView::create_top_toolbar()
 	}
 
 	// Undo/Redo buttons
-	top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/undo")));
-	top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/redo")));
+	top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.undo"));
+	top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.redo"));
 
 	// Separator
 	top_toolbar->append(*create_tool_separator());

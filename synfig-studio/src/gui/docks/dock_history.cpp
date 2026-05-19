@@ -39,6 +39,8 @@
 #include <gtkmm/stock.h>
 #include <gtkmm/stylecontext.h>
 
+#include <gui/actiondatabase.h>
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/exception_guard.h>
@@ -64,85 +66,45 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Dock_History::Dock_History():
-	Dock_CanvasSpecific("history",_("History"),"history_icon"),
-	action_group(Gtk::ActionGroup::create("action_group_dock_history"))
+Dock_History::Dock_History()
+	: Dock_CanvasSpecific("history", _("History"), "history_icon")
 {
 	// Make History toolbar small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"clear-undo",
-		"clear_undo_icon",
-		_("Clear Undo Stack"),
-		_("Clear the undo stack")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_History::clear_undo
-		)
-	);
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"clear-redo",
-		"clear_redo_icon",
-		_("Clear Redo Stack"),
-		_("Clear the redo stack")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_History::clear_redo
-		)
-	);
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"clear-undo-and-redo",
-		"edit-clear",
-		_("Clear Undo and Redo Stacks"),
-		_("Clear the undo and redo stacks")
-	),
-		sigc::mem_fun(
-			*this,
-			&Dock_History::clear_undo_and_redo
-		)
-	);
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"undo",
-		"action_doc_undo_icon",
-		_("Undo"),
-		_("Undo the previous action")
-	),
-		sigc::ptr_fun(studio::App::undo)
-	);
-	action_group->add(Gtk::Action::create_with_icon_name(
-		"redo",
-		"action_doc_redo_icon",
-		_("Redo"),
-		_("Redo the previously undone action")
-	),
-		sigc::ptr_fun(studio::App::redo)
-	);
+	struct ActionMetadata {
+		std::string name;
+		std::string icon;
+		std::string accel;
+		std::string label;
+		std::string tooltip;
+		std::function<void()> slot;
+	};
 
-	action_group->add( Gtk::Action::create("toolbar-history", _("History")) );
-	App::ui_manager()->insert_action_group(action_group);
+	const std::vector<ActionMetadata> action_list = {
+		{"doc.clear-undo", "clear_undo_icon", {}, _("Clear Undo Stack"), _("Clear the undo stack"), sigc::mem_fun(*this, &Dock_History::clear_undo)},
+		{"doc.clear-redo", "clear_redo_icon", {}, _("Clear Redo Stack"), _("Clear the redo stack"), sigc::mem_fun(*this, &Dock_History::clear_redo)},
+		{"doc.clear-undo-and-redo", "edit-clear", {}, _("Clear Undo and Redo Stacks"), _("Clear the undo and redo stacks"), sigc::mem_fun(*this, &Dock_History::clear_undo_and_redo)},
+		{"doc.undo", "action_doc_undo_icon", "<Primary>z", _("Undo"), _("Undo the previous action"), sigc::ptr_fun(studio::App::undo)},
+#ifdef _WIN32
+		{"doc.redo", "action_doc_redo_icon", "<Primary>y", _("Redo"), _("Redo the previously undone action"), sigc::ptr_fun(studio::App::redo)},
+#else
+		{"doc.redo", "action_doc_redo_icon", "<Primary><Shift>z", _("Redo"), _("Redo the previously undone action"), sigc::ptr_fun(studio::App::redo)},
+#endif
+	};
+	for (const auto& entry : action_list)
+		App::get_action_database()->add({entry.name, entry.label, entry.accel, entry.icon, entry.tooltip});
 
-	Glib::ustring ui_info =
-	"<ui>"
-	"	<toolbar action='toolbar-history'>"
-	"	<toolitem action='undo' />"
-	"	<toolitem action='redo' />"
-	"	<toolitem action='clear-undo' />"
-	"	<toolitem action='clear-redo' />"
-	"	<toolitem action='clear-undo-and-redo' />"
-	"	</toolbar>"
-	"</ui>"
-	;
+	auto toolbar = Gtk::manage(new Gtk::Toolbar());
+	toolbar->show_all();
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.undo"));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.redo"));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.clear-undo"));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.clear-redo"));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.clear-undo-and-redo"));
 
-	App::ui_manager()->add_ui_from_string(ui_info);
+	set_toolbar(*toolbar);
 
-	action_group->set_sensitive(false);
-
-	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-history"))) {
-		set_toolbar(*toolbar);
-	}
 	add(*create_action_tree());
 }
 
@@ -154,8 +116,32 @@ void
 Dock_History::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 {
 	canvas_view->get_instance()->signal_undo_redo_status_changed().connect(
-		sigc::mem_fun(*this,&Dock_History::update_undo_redo)
+		sigc::mem_fun(*this, &Dock_History::update_undo_redo)
 	);
+
+	struct ActionMetadata {
+		std::string name;
+		std::function<void()> slot;
+	};
+
+	const std::vector<ActionMetadata> action_list = {
+		{"clear-undo", sigc::mem_fun(*this, &Dock_History::clear_undo)},
+		{"clear-redo", sigc::mem_fun(*this, &Dock_History::clear_redo)},
+		{"clear-undo-and-redo",  sigc::mem_fun(*this, &Dock_History::clear_undo_and_redo)},
+		{"undo", sigc::ptr_fun(studio::App::undo)},
+		{"redo", sigc::ptr_fun(studio::App::redo)},
+	};
+
+	auto action_group = Glib::RefPtr<Gio::SimpleActionGroup>::cast_dynamic(canvas_view->get_action_group("doc"));
+	if (action_group) {
+		for (const auto& entry : action_list) {
+			if (!action_group->lookup_action(entry.name)) {
+				// actions "undo" and "redo" are expected to be already in "doc" action group
+				auto action = action_group->add_action(entry.name, entry.slot);
+				action->set_enabled(false);
+			}
+		}
+	}
 }
 
 void
@@ -319,14 +305,16 @@ Dock_History::clear_undo_and_redo()
 void
 Dock_History::update_undo_redo()
 {
-	etl::handle<Instance> instance=App::get_selected_instance();
-	if(instance)
-	{
-		action_group->get_action("undo")->set_sensitive(instance->get_undo_status());
-		action_group->get_action("clear-undo")->set_sensitive(instance->get_undo_status());
-		action_group->get_action("redo")->set_sensitive(instance->get_redo_status());
-		action_group->get_action("clear-redo")->set_sensitive(instance->get_redo_status());
-		action_group->get_action("clear-undo-and-redo")->set_sensitive(instance->get_undo_status() || instance->get_redo_status());
+	etl::handle<Instance> instance = get_canvas_view() ? get_canvas_view()->get_instance() : nullptr;
+	if (instance) {
+		auto action_group = Glib::RefPtr<Gio::SimpleActionGroup>::cast_dynamic(App::main_window->get_action_group("doc"));
+		if (action_group) {
+			action_group->lookup_action("undo")->set_property("enabled", instance->get_undo_status());
+			action_group->lookup_action("clear-undo")->set_property("enabled", instance->get_undo_status());
+			action_group->lookup_action("redo")->set_property("enabled", instance->get_redo_status());
+			action_group->lookup_action("clear-redo")->set_property("enabled", instance->get_redo_status());
+			action_group->lookup_action("clear-undo-and-redo")->set_property("enabled", instance->get_undo_status() || instance->get_redo_status());
+		}
 	}
 }
 
@@ -336,7 +324,7 @@ Dock_History::on_undo_tree_changed()
 	auto selected_instance = get_canvas_view() ? get_canvas_view()->get_instance() : nullptr;
 	Gtk::TreeModel::Children children(selected_instance->history_tree_store()->children());
 
-	if (!children.size())
+	if (children.empty())
 		return;
 
 	studio::HistoryTreeStore::Model model;
@@ -364,10 +352,9 @@ Dock_History::on_action_event(GdkEvent *event)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	auto selected_instance = get_canvas_view() ? get_canvas_view()->get_instance() : nullptr;
-	if (!selected_instance) {
-		synfig::error(_("Dock History: Internal error: no selected instance."));
+	if (!selected_instance)
 		return true;
-	}
+
 	studio::HistoryTreeStore::Model model;
     switch(event->type)
     {

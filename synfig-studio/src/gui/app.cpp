@@ -992,8 +992,6 @@ DEFINE_ACTION("show-dependencies", _("View Document Dependencies..."))
 DEFINE_ACTION("quit",           Gtk::Stock::QUIT)
 
 // actions in Edit menu
-DEFINE_ACTION("undo",                     Gtk::StockID("synfig-undo"))
-DEFINE_ACTION("redo",                     Gtk::StockID("synfig-redo"))
 DEFINE_ACTION("copy",                     Gtk::Stock::COPY)
 DEFINE_ACTION("cut",                      Gtk::Stock::CUT)
 DEFINE_ACTION("paste",                    Gtk::Stock::PASTE)
@@ -1142,9 +1140,6 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "		<menuitem action='quit' />"
 "	</menu>"
 "	<menu action='menu-edit'>"
-"		<menuitem action='undo'/>"
-"		<menuitem action='redo'/>"
-"		<separator name='sep-edit1'/>"
 "		<menuitem action='cut'/>"
 "		<menuitem action='copy'/>"
 "		<menuitem action='paste'/>"
@@ -1282,9 +1277,6 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "		<toolitem action='save'/>"
 "		<toolitem action='save-as'/>"
 "		<toolitem action='save-all'/>"
-"		<separator />"
-"		<toolitem action='undo'/>"
-"		<toolitem action='redo'/>"
 "		<separator />"
 "		<toolitem action='render'/>"
 "		<toolitem action='preview'/>";
@@ -1428,12 +1420,6 @@ App::get_default_accel_map()
 		{"<Mod1>5",                 "<Actions>/canvasview/mask-widthpoint-position-ducks"},
 		{"<Shift>Page_Up",          "<Actions>/action_group_layer_action_manager/action-LayerRaise"},
 		{"<Shift>Page_Down",        "<Actions>/action_group_layer_action_manager/action-LayerLower"},
-		{"<Primary>z",              "<Actions>/action_group_dock_history/undo"},
-#ifdef _WIN32
-		{"<Control>y",              "<Actions>/action_group_dock_history/redo"},
-#else
-		{"<Primary><Shift>z",       "<Actions>/action_group_dock_history/redo"},
-#endif
 		{"Delete",                  "<Actions>/action_group_layer_action_manager/action-LayerRemove"},
 		{"<Control>parenleft" ,     "<Actions>/canvasview/decrease-low-res-pixel-size"},
 		{"<Control>parenright" ,    "<Actions>/canvasview/increase-low-res-pixel-size"},

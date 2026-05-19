@@ -25,12 +25,11 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DIALOG_HISTORY_H
-#define __SYNFIG_STUDIO_DIALOG_HISTORY_H
+#ifndef SYNFIG_STUDIO_DIALOG_HISTORY_H
+#define SYNFIG_STUDIO_DIALOG_HISTORY_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/actiongroup.h>
 #include <gtkmm/treeview.h>
 #include <gui/instance.h>
 #include <gui/docks/dock_canvasspecific.h>
@@ -45,7 +44,6 @@ namespace studio {
 
 class Dock_History : public Dock_CanvasSpecific
 {
-	Glib::RefPtr<Gtk::ActionGroup> action_group;
 	Gtk::TreeView *action_tree;
 
 	etl::loose_handle<studio::Instance>	selected_instance;
