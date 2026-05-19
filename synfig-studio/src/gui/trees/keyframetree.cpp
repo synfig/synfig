@@ -302,7 +302,11 @@ KeyframeTree::on_event(GdkEvent *event)
 					if (menu->get_attach_widget())
 						menu->detach();
 					menu->attach_to_widget(*this);
+#if GTK_CHECK_VERSION(3,22,0)
 					menu->popup_at_pointer(event);
+#else
+					menu->popup(event->button.button, gtk_get_current_event_time());
+#endif
 				}
 			}
 

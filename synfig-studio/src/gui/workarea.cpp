@@ -1370,7 +1370,11 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					get_guide_list().erase(this->curr_guide);
 				}, *this));
 				guide_menu->append(*item);
+#if GTK_CHECK_VERSION(3,22,0)
+				guide_menu->popup_at_pointer(event);
+#else
 				guide_menu->popup(3, gtk_get_current_event_time());
+#endif
 				guide_dialog.set_current_guide(curr_guide);
 				return true;
 			}
