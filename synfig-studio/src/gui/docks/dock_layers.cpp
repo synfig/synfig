@@ -61,10 +61,11 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Dock_Layers::Dock_Layers():
-	Dock_CanvasSpecific("layers",_("Layers"),"layer_icon"),
-	layer_action_manager(new LayerActionManager)
+Dock_Layers::Dock_Layers()
+	: Dock_CanvasSpecific("layers", _("Layers"), "layer_icon"),
+	  layer_action_manager(new LayerActionManager())
 {
+	// Set widget name for style purposes
 	set_name("layers_panel");
 
 	// Make Layers button small for space efficiency
@@ -221,9 +222,6 @@ Dock_Layers::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 	layer_tree->set_model(layer_tree_store); // (b)
 	canvas_view->set_tree_model("params", layer_tree->param_tree_view().get_model()); // (c)
 
-	// Hide the time bar
-	//if(canvas_view->get_canvas()->rend_desc().get_time_start()==canvas_view->get_canvas()->rend_desc().get_time_end())
-	//	canvas_view->hide_timebar();
 	layer_tree_store->rebuild();
 	present();
 }

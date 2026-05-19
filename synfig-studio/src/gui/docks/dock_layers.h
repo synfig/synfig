@@ -25,8 +25,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCK_LAYERS_H
-#define __SYNFIG_STUDIO_DOCK_LAYERS_H
+#ifndef SYNFIG_STUDIO_DOCK_LAYERS_H
+#define SYNFIG_STUDIO_DOCK_LAYERS_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -50,8 +50,6 @@ class Dock_Layers : public Dock_CanvasSpecific
 
 	Glib::RefPtr<Gtk::Action> action_new_layer;
 
-	//Gtk::Scale *layer_amount_hscale;
-
 	LayerActionManager* layer_action_manager;
 
 protected:
@@ -59,14 +57,11 @@ protected:
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 
 private:
-
 	void add_layer(synfig::String id);
 	void popup_add_layer_menu();
 	bool on_layertree_no_layer_clicked(GdkEventButton* ev);
 
 public:
-
-
 	Dock_Layers();
 	~Dock_Layers();
 }; // END of Dock_Layers
