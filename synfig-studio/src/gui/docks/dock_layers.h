@@ -62,6 +62,7 @@ private:
 
 	void add_layer(synfig::String id);
 	void popup_add_layer_menu();
+	bool on_layertree_no_layer_clicked(GdkEventButton* ev);
 
 public:
 

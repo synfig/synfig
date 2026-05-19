@@ -209,15 +209,7 @@ Dock_Layers::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 	LayerTree* layer_tree(new LayerTree());
 	layer_tree->set_time_model(canvas_view->time_model());
 
-	layer_tree->signal_no_layer_user_click().connect([=](GdkEventButton *ev){
-		SYNFIG_EXCEPTION_GUARD_BEGIN()
-		if (ev->button == 3 && action_new_layer->is_sensitive()) {
-			popup_add_layer_menu();
-			return true;
-		}
-		return false;
-		SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
-	});
+	layer_tree->signal_no_layer_user_click().connect(sigc::mem_fun(*this, &Dock_Layers::on_layertree_no_layer_clicked));
 
 	// (a) should be before (b), (b) should be before (c)
 	canvas_view->set_ext_widget(get_name()+"_cmp", layer_tree); // (a)
@@ -288,4 +280,17 @@ void Dock_Layers::popup_add_layer_menu()
 		menu->attach_to_widget(*this);
 		menu->popup(0, gtk_get_current_event_time());
 	}
+}
+
+bool
+studio::Dock_Layers::on_layertree_no_layer_clicked(GdkEventButton* ev)
+{
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
+	if (ev->button == 3) {
+		// No need to check if there is an open document, because LayerTree only exists for a document/CanvasView
+		popup_add_layer_menu();
+		return true;
+	}
+	return false;
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
