@@ -104,8 +104,6 @@ private:
 
 	sigc::signal<void,synfig::Layer::Handle> signal_layer_toggle_;
 
-	sigc::signal<void,synfigapp::ValueDesc,synfig::ValueBase> signal_edited_value_;
-
 	sigc::signal<bool, int, Gtk::TreeRow, ColumnID> signal_layer_user_click_;
 	sigc::signal<bool, GdkEventButton*> signal_no_layer_user_click_;
 
@@ -191,9 +189,6 @@ public:
 
 	//! Signal called when layer is toggled.
 	sigc::signal<void,synfig::Layer::Handle>& signal_layer_toggle() { return signal_layer_toggle_; }
-
-	//! Signal called with a value has been edited.
-	sigc::signal<void,synfigapp::ValueDesc,synfig::ValueBase>& signal_edited_value() { return signal_edited_value_; }
 
 	sigc::signal<bool,int, Gtk::TreeRow, ColumnID>& signal_layer_user_click() { return signal_layer_user_click_; }
 

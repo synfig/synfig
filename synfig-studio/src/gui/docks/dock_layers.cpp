@@ -209,11 +209,6 @@ Dock_Layers::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 	LayerTree* layer_tree(new LayerTree());
 	layer_tree->set_time_model(canvas_view->time_model());
 
-	layer_tree->signal_edited_value().connect(
-		sigc::hide_return(
-			sigc::bind(sigc::mem_fun(*canvas_view->canvas_interface(), &synfigapp::CanvasInterface::change_value), false)
-		)
-	);
 	layer_tree->signal_no_layer_user_click().connect([=](GdkEventButton *ev){
 		SYNFIG_EXCEPTION_GUARD_BEGIN()
 		if (ev->button == 3 && action_new_layer->is_sensitive()) {

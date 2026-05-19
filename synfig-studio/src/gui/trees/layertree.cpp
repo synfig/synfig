@@ -684,7 +684,6 @@ LayerTree::on_edited_value(const Glib::ustring&path_string,synfig::ValueBase val
 	if(!row)
 		return;
 	row[param_model.value]=value;
-	//signal_edited_value()(row[param_model.value_desc],value);
 }
 
 void
