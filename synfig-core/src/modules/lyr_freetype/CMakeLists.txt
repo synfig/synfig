@@ -1,6 +1,7 @@
 add_library(lyr_freetype MODULE
         "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/lyr_freetype.cpp"
+		"${CMAKE_CURRENT_LIST_DIR}/lyr_textgroup.cpp"
 )
 
 if(FONTCONFIG_FOUND)
