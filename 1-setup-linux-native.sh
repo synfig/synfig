@@ -82,6 +82,7 @@ if ([ "$ID_LIKE" == "fedora" ] && [ "$VERSION_ID" > 22 ]); then
             libxml2-devel \
             libxml++-devel \
             gcc-c++ \
+            gdb \
             autoconf \
             automake \
             libtool \
@@ -129,6 +130,7 @@ elif ( [ "$ID_LIKE" == "fedora" ] && [ "$VERSION_ID" <= 22 ] ) || ( [ "$ID_LIKE"
             libxml2-devel \
             libxml++-devel \
             gcc-c++ \
+            gdb \
             autoconf \
             automake \
             libtool \
@@ -177,6 +179,7 @@ elif [ "$ID_LIKE" == "arch" ]; then
             gtkmm3 \
             glibmm \
             gcc \
+            gdb \
             imagemagick \
             pkg-config \
             intltool \
@@ -201,6 +204,7 @@ elif [ -f /etc/altlinux-release ]; then
             #  ALT Linux case
             PKG_LIST=" \
                 gcc-c++ \
+                gdb \
                 git-core \
                 shared-mime-info \
                 cmake \
@@ -261,6 +265,7 @@ elif [ "$ID_LIKE" == "debian" ] || [ "$ID_LIKE" == "ubuntu" ] || [ "$ID_LIKE" ==
                 libpng-dev \
                 libfftw3-dev \
                 fontconfig \
+                gdb \
                 libfreetype6-dev \
                 libfribidi-dev \
                 libfontconfig1-dev \
