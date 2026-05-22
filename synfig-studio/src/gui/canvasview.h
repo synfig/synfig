@@ -573,8 +573,6 @@ public:
 	const etl::handle<synfigapp::CanvasInterface>& canvas_interface() { return canvas_interface_; }
 	etl::handle<const synfigapp::CanvasInterface> canvas_interface()const { return canvas_interface_; }
 
-	void add_actions_to_menu(Gtk::Menu *menu,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
-
 	//! Updates the title of the window
 	void update_title();
 
@@ -655,7 +653,6 @@ protected:
 	bool on_keyframe_tree_event(GdkEvent *event);
 	void on_dirty_preview();
 	bool on_children_user_click(int, Gtk::TreeRow, ChildrenTree::ColumnID);
-	bool on_layer_user_click(int, Gtk::TreeRow, LayerTree::ColumnID);
 	void on_mode_changed(synfigapp::CanvasInterface::Mode mode);
 	void on_waypoint_changed();
 	void on_waypoint_delete();

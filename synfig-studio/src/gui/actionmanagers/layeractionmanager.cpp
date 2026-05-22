@@ -35,8 +35,11 @@
 
 #include "layeractionmanager.h"
 
+#include <giomm/themedicon.h>
 #include <glibmm/main.h>
 
+#include <gui/actiondatabase.h>
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/dialogs/dialog_pasteoptions.h>
 #include <gui/instance.h>
@@ -57,13 +60,11 @@
 using namespace synfig;
 using namespace studio;
 
-static const guint no_prev_popup((guint)-1);
-
 /* === M A C R O S ========================================================= */
 
-//#define ONE_ACTION_GROUP 1
-
 /* === G L O B A L S ======================================================= */
+
+static const std::string group_name {"layer"};
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -182,74 +183,41 @@ remove_layers_inside_included_pastelayers(const std::list<Layer::Handle>& layer_
 
 /* === M E T H O D S ======================================================= */
 
-LayerActionManager::LayerActionManager():
-	action_group_(Gtk::ActionGroup::create("action_group_layer_action_manager")),
-	menu_popup_id_(no_prev_popup),
-	menu_main_id_(no_prev_popup),
-	queued(false)
+LayerActionManager::LayerActionManager()
+	: action_widget_(nullptr),
+	  layer_tree_(nullptr),
+	  action_group_(Gio::SimpleActionGroup::create()),
+	  queued(false)
 {
-	action_cut_=Gtk::Action::create_with_icon_name(
-		"cut",
-		"edit-cut", _("Cu_t"), _("Cut")
-	);
-	action_cut_->signal_activate().connect(
-		sigc::mem_fun(
-			*this,
-			&LayerActionManager::cut
-		)
-	);
-	action_copy_=Gtk::Action::create_with_icon_name(
-		"copy",
-		"edit-copy", _("_Copy"), _("Copy")
-	);
-	action_copy_->signal_activate().connect(
-		sigc::mem_fun(
-			*this,
-			&LayerActionManager::copy
-		)
-	);
-	action_paste_=Gtk::Action::create_with_icon_name(
-		"paste",
-		"edit-paste", _("_Paste"), _("Paste")
-	);
-	action_paste_->signal_activate().connect(
-		sigc::mem_fun(
-			*this,
-			&LayerActionManager::paste
-		)
-	);
+	action_cut_ = Gio::SimpleAction::create("cut");
+	action_cut_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::cut)));
+	action_copy_ = Gio::SimpleAction::create("copy");
+	action_copy_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::copy)));
+	action_paste_ = Gio::SimpleAction::create("paste");
+	action_paste_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::paste)));
 
+	action_amount_inc_ = Gio::SimpleAction::create("amount-inc");
+	action_amount_inc_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::amount_inc)));
 
-	action_amount_inc_=Gtk::Action::create_with_icon_name(
-		"amount-inc",
-		"list-add",
-		_("Increase Amount"),_("Increase Amount")
-	);
-	action_amount_inc_->signal_activate().connect(
-		sigc::mem_fun(
-			*this,
-			&LayerActionManager::amount_inc
-		)
-	);
+	action_amount_dec_ = Gio::SimpleAction::create("amount-dec");
+	action_amount_dec_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::amount_dec)));
 
-	action_amount_dec_=Gtk::Action::create_with_icon_name(
-		"amount-dec",
-		"list-remove",
-		_("Decrease Amount"),_("Decrease Amount")
-	);
-	action_amount_dec_->signal_activate().connect(
-		sigc::mem_fun(
-			*this,
-			&LayerActionManager::amount_dec
-		)
-	);
+	action_select_all_child_layers_ = Gio::SimpleAction::create("select-all-child-layers");
+	action_select_all_child_layers_->set_enabled(false);
 
-	action_select_all_child_layers_=Gtk::Action::create_with_icon_name(
-		"select-all-child-layers",
-		"select_all_child_layers_icon",
-		_("Select All Child Layers"),_("Select All Child Layers")
-	);
-	action_select_all_child_layers_->set_sensitive(false);
+	action_new_ = Gio::SimpleAction::create("new", Glib::VARIANT_TYPE_STRING);
+	action_new_->signal_activate().connect(sigc::mem_fun(*this, &LayerActionManager::on_add_layer_selected));
+
+	action_group_->add_action(action_cut_);
+	action_group_->add_action(action_copy_);
+	action_group_->add_action(action_paste_);
+
+	action_group_->add_action(action_amount_inc_);
+	action_group_->add_action(action_amount_dec_);
+
+	action_group_->add_action(action_select_all_child_layers_);
+
+	action_group_->add_action(action_new_);
 }
 
 LayerActionManager::~LayerActionManager()
@@ -257,17 +225,11 @@ LayerActionManager::~LayerActionManager()
 }
 
 void
-LayerActionManager::set_ui_manager(const Glib::RefPtr<Gtk::UIManager> &x)
+LayerActionManager::set_action_widget(Gtk::Widget* x)
 {
 	clear();
 
-#ifdef ONE_ACTION_GROUP
-	if(ui_manager_)	get_ui_manager()->remove_action_group(action_group_);
-	ui_manager_=x;
-	if(ui_manager_)	get_ui_manager()->insert_action_group(action_group_);
-#else
-	ui_manager_=x;
-#endif
+	action_widget_ = x;
 }
 
 void
@@ -292,23 +254,20 @@ LayerActionManager::set_canvas_interface(const etl::handle<synfigapp::CanvasInte
 void
 LayerActionManager::clear()
 {
-	if(ui_manager_)
-	{
-		// Clear out old stuff
-		if(menu_popup_id_!=no_prev_popup || menu_main_id_!=no_prev_popup)
-		{
-			get_ui_manager()->remove_ui(menu_popup_id_);
-			get_ui_manager()->remove_ui(menu_main_id_);
-			if(action_group_)get_ui_manager()->ensure_update();
-			menu_popup_id_=no_prev_popup;
-			menu_main_id_=no_prev_popup;
-			if(action_group_)while(!action_group_->get_actions().empty())action_group_->remove(*action_group_->get_actions().begin());
-#ifdef ONE_ACTION_GROUP
-#else
-			if(action_group_)get_ui_manager()->remove_action_group(action_group_);
-			action_group_=Gtk::ActionGroup::create("action_group_layer_action_manager");
-#endif
+	// Remove all synfigapp actions and special actions for specific layer types
+	if (action_widget_) {
+		const auto preservable_actions = {"cut", "copy", "paste", "amount-inc", "amount-dec", "select-all-child-layers", "new"};
+
+		if (action_group_) {
+			auto actions = action_group_->list_actions();
+			for (const auto& action_name : actions) {
+				if (std::find(preservable_actions.begin(), preservable_actions.end(), action_name) != preservable_actions.end())
+					continue;
+				action_group_->remove_action(action_name);
+			}
 		}
+
+		action_widget_->remove_action_group(group_name);
 	}
 
 	while(!update_connection_list.empty())
@@ -344,143 +303,96 @@ LayerActionManager::refresh()
 		//queue_refresh_connection.disconnect();
 	}
 
-
 	clear();
 
 	// Make sure we are ready
-	if(!ui_manager_ || !layer_tree_ || !canvas_interface_)
-	{
+	if (!layer_tree_ || !canvas_interface_ || !action_widget_) {
 		synfig::error("LayerActionManager::refresh(): Not ready!");
 		return;
 	}
 
-	String ui_info;
+	const synfigapp::SelectionManager::LayerList layer_list = layer_tree_->get_selected_layers();
+	const Layer::Handle layer(layer_tree_->get_selected_layer());
+	const int layer_selection_count = layer_list.size();
+	const bool single_selection(layer_selection_count == 1);
+	const bool is_layer_pastecanvas_selected = single_selection && Layer_PasteCanvas::Handle::cast_dynamic(layer);
 
-	action_paste_->set_sensitive(!clipboard_.empty());
-	action_group_->add(action_paste_);
+	action_new_->set_enabled(!get_canvas_interface().empty());
 
-	if(layer_tree_->get_selection()->count_selected_rows()!=0)
-	{
-		bool multiple_selected(layer_tree_->get_selection()->count_selected_rows()>1);
-		Layer::Handle layer(layer_tree_->get_selected_layer());
+	action_amount_inc_->set_enabled(layer_selection_count > 0);
+	action_amount_dec_->set_enabled(layer_selection_count > 0);
 
+	action_select_all_child_layers_->set_enabled(is_layer_pastecanvas_selected);
+
+	action_copy_->set_enabled(layer_selection_count > 0);
+	action_cut_->set_enabled(layer_selection_count > 0);
+	action_paste_->set_enabled(!clipboard_.empty());
+
+	if (layer_selection_count > 0) {
+		// 0: New layer
+
+		// 1st: Increase/Decrease Amount
+
+		// 2nd: Select All Child Layers
+		if (is_layer_pastecanvas_selected) {
+			if (select_all_child_layers_connection)
+				select_all_child_layers_connection.disconnect();
+
+			select_all_child_layers_connection = action_select_all_child_layers_->signal_activate().connect(
+				sigc::hide(sigc::bind(sigc::mem_fun(*layer_tree_,
+											&studio::LayerTree::select_all_children_layers),
+						   Layer::LooseHandle(layer))));
+		}
+
+		// 3rd: synfigapp Actions viable for all selected layers
+		synfigapp::Action::ParamList param_list;
 		{
 			bool canvas_set(false);
-			synfigapp::Action::ParamList param_list;
-			synfigapp::SelectionManager::LayerList layer_list;
 			param_list.add("time",get_canvas_interface()->get_time());
 			param_list.add("canvas_interface",get_canvas_interface());
-			{
-				layer_list = layer_tree_->get_selected_layers();
-				synfigapp::SelectionManager::LayerList::iterator iter;
-				action_copy_->set_sensitive(!layer_list.empty());
-				action_cut_->set_sensitive(!layer_list.empty());
-				action_group_->add(action_copy_);
-				action_group_->add(action_cut_);
-
-				action_amount_inc_->set_sensitive(!layer_list.empty());
-				action_amount_dec_->set_sensitive(!layer_list.empty());
-				if (Layer_Skeleton::Handle::cast_dynamic(layer) || etl::handle<Layer_Composite>::cast_dynamic(layer)) {
-					action_amount_inc_->set_label(_("Increase Opacity"));
-					action_amount_dec_->set_label(_("Decrease Opacity"));
-				} else {
-					action_amount_inc_->set_label(_("Increase Amount"));
-					action_amount_dec_->set_label(_("Decrease Amount"));
-				}
-				action_group_->add(action_amount_inc_);
-				action_group_->add(action_amount_dec_);
-
-				for(iter=layer_list.begin();iter!=layer_list.end();++iter)
-				{
-					update_connection_list.push_back(
-						(*iter)->signal_changed().connect(
-							sigc::mem_fun(*this, &LayerActionManager::queue_refresh)
+			for (const auto& layer : layer_list) {
+				update_connection_list.push_back(
+					layer->signal_changed().connect(
+						sigc::mem_fun(*this, &LayerActionManager::queue_refresh)
 						)
 					);
 
-					if(!canvas_set)
-					{
-						param_list.add("canvas",Canvas::Handle((*iter)->get_canvas()));
-						canvas_set=true;
-						update_connection_list.push_back(
-							(*iter)->get_canvas()->signal_changed().connect(
-								sigc::mem_fun(*this, &LayerActionManager::queue_refresh)
+				if (!canvas_set) {
+					param_list.add("canvas",Canvas::Handle(layer->get_canvas()));
+					canvas_set=true;
+					update_connection_list.push_back(
+						layer->get_canvas()->signal_changed().connect(
+							sigc::mem_fun(*this, &LayerActionManager::queue_refresh)
 							)
 						);
-					}
-					param_list.add("layer",Layer::Handle(*iter));
 				}
+				param_list.add("layer", layer);
 			}
-
-			if(!multiple_selected && Layer_PasteCanvas::Handle::cast_dynamic(layer))
-			{
-				if (select_all_child_layers_connection)
-					select_all_child_layers_connection.disconnect();
-
-				select_all_child_layers_connection = action_select_all_child_layers_->signal_activate().connect(
-					sigc::bind(sigc::mem_fun(*layer_tree_,
-											 &studio::LayerTree::select_all_children_layers),
-							   Layer::LooseHandle(layer)));
-
-				action_select_all_child_layers_->set_sensitive(true);
-
-				ui_info+="<menuitem action='select-all-child-layers'/>";
-			}
-			else
-				action_select_all_child_layers_->set_sensitive(false);
-
-			auto instance = etl::handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance());
-
-			instance->
-				add_actions_to_group(action_group_, ui_info, param_list, synfigapp::Action::CATEGORY_LAYER);
-
-			ui_info+="<separator/>";
-			instance->
-				add_special_layer_actions_to_group(action_group_, ui_info, layer_list);
 		}
+
+		auto instance = etl::handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance());
+
+		instance->add_actions_to_group(action_group_, param_list, synfigapp::Action::CATEGORY_LAYER);
+
+		// 4th: special actions for specific layer types
+		instance->add_special_layer_actions_to_group(action_group_, layer);
+
+		// 5th: common edit operations
+		// Nothing to do: never erased between refreshes/canvas switches
 	}
 
-	String full_ui_info;
-	full_ui_info=
-			 "<ui>"
-			   "<popup action='menu-main'>"
-			     "<menu action='menu-layer'>" +
-			 	   ui_info +
-				   "<separator/>"
-			       "<menuitem action='cut' />"
-			 	   "<menuitem action='copy' />"
-			 	   "<menuitem action='paste' />"
-			 	   "<separator/>"
-			     "</menu>"
-			   "</popup>" +
-			 "</ui>";
-	menu_popup_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
-	full_ui_info=
-			 "<ui>"
-			   "<menubar action='menubar-main'>"
-			     "<menu action='menu-layer'>" +
-			 	   ui_info +
-				   "<separator/>"
-			       "<menuitem action='cut' />"
-			 	   "<menuitem action='copy' />"
-			 	   "<menuitem action='paste' />"
-			 	   "<separator/>"
-			     "</menu>"
-			   "</menubar>" +
-			 "</ui>";
-	menu_main_id_=get_ui_manager()->add_ui_from_string(full_ui_info);
-#ifdef ONE_ACTION_GROUP
-#else
-	get_ui_manager()->insert_action_group(action_group_);
-#endif
+	action_widget_->insert_action_group(group_name, action_group_);
 }
 
 void
 LayerActionManager::cut()
 {
 	copy();
-	if(action_group_->get_action("action-LayerRemove"))
-		action_group_->get_action("action-LayerRemove")->activate();
+
+	auto layer_remove_action = action_group_->lookup_action("action-LayerRemove");
+	if (layer_remove_action) {
+		layer_remove_action->activate();
+	}
 }
 
 void
@@ -500,7 +412,7 @@ LayerActionManager::copy()
 		layer_list.pop_front();
 	}
 
-	action_paste_->set_sensitive(!clipboard_.empty());
+	action_paste_->set_enabled(!clipboard_.empty());
 
 	//queue_refresh();
 }
@@ -790,4 +702,134 @@ LayerActionManager::export_value_nodes(Canvas::Handle canvas, const ValueNodeRep
 			exported_ids.insert(modified_id);
 		}
 	}
+}
+
+void
+LayerActionManager::on_add_layer_selected(const Glib::VariantBase& v)
+{
+	const std::string layer_name = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(v).get();
+	bool should_stop = signal_add_layer_selected_(layer_name);
+	if (should_stop)
+		return;
+	if (!get_canvas_interface()) {
+		synfig::error(_("Internal Error: LayerActionManager without CanvasInterface called to add layer: %s"), layer_name.c_str());
+		return;
+	}
+	get_canvas_interface()->add_layer_to(layer_name, get_canvas_interface()->get_canvas());
+}
+
+Glib::RefPtr<Gio::Menu>
+LayerActionManager::create_add_layer_menu() /*const*/
+{
+	Glib::RefPtr<Gio::Menu> menu_add_layer = Gio::Menu::create();
+
+	// map: category local name -> (layer name, layer local name)
+	std::map<std::string, std::vector<std::pair<std::string, std::string>>> layer_category_map;
+
+	// Build layer creation actions
+	for (const auto& lyr : synfig::Layer::book()) {
+		if(lyr.second.category==CATEGORY_DO_NOT_USE)
+			continue;
+
+		layer_category_map[dgettext("synfig", lyr.second.category.c_str())].push_back({lyr.first, lyr.second.local_name});
+	}
+
+	const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
+
+	for (const auto& item : layer_category_map) {
+		const std::string& category = item.first;
+		auto submenu = Gio::Menu::create();
+		for (const auto& lyr : item.second) {
+			const std::string& layer_name = lyr.first;
+			const std::string& layer_local_name = lyr.second;
+
+			auto item = Gio::MenuItem::create(layer_local_name, strprintf("layer.new(\"%s\")", layer_name.c_str()));
+			item->set_icon(Gio::ThemedIcon::create(layer_icon_name(layer_name) + symbolic_suffix));
+			submenu->append_item(item);
+		}
+		menu_add_layer->append_submenu(category, submenu);
+	}
+
+	return menu_add_layer;
+}
+
+Glib::RefPtr<Gio::Menu>
+LayerActionManager::create_context_menu(const std::list<synfig::Layer::Handle> layers) const
+{
+	if (layers.empty())
+		return Glib::RefPtr<Gio::Menu>();
+
+	Glib::RefPtr<Gio::Menu> context_menu = Gio::Menu::create();
+
+	auto instance = etl::handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance());
+
+	const bool single_selection(layers.size() == 1);
+	// const synfigapp::SelectionManager::LayerList layer_list = layer_tree_->get_selected_layers();
+	const Layer::Handle layer(layers.front()); //  = layer_tree_->get_selected_layer();
+	const bool is_layer_pastecanvas_selected = (single_selection && Layer_PasteCanvas::Handle::cast_dynamic(layer));
+
+	const std::string symbolic_suffix = ""; // "-symbolic"
+
+	// 1st: Increase/Decrease Amount
+	const bool a_layer_has_amount_param = std::find_if(layers.cbegin(), layers.cend(),
+														[] (Layer::ConstHandle layer) {
+															return layer->get_param("amount").is_valid();
+														}) != layers.cend();
+
+	if (a_layer_has_amount_param) {
+		std::string increase_amount_label;
+		std::string decrease_amount_label;
+		if (Layer_Skeleton::Handle::cast_dynamic(layer) || etl::handle<Layer_Composite>::cast_dynamic(layer)) {
+			increase_amount_label = _("Increase Opacity");
+			decrease_amount_label = _("Decrease Opacity");
+		} else {
+			increase_amount_label = _("Increase Amount");
+			decrease_amount_label = _("Decrease Amount");
+		}
+
+		auto menu_item = Gio::MenuItem::create(increase_amount_label, group_name + "." + "amount-inc");
+		menu_item->set_icon(Gio::ThemedIcon::create("list-add" + symbolic_suffix));
+		context_menu->append_item(menu_item);
+
+		menu_item = Gio::MenuItem::create(decrease_amount_label, group_name + "." + "amount-dec");
+		menu_item->set_icon(Gio::ThemedIcon::create("list-remove" + symbolic_suffix));
+		context_menu->append_item(menu_item);
+	}
+
+	// 2nd: Select All Child Layers
+	if (is_layer_pastecanvas_selected) {
+		auto menu_item = ActionWidgetHelper::create_menu_item_for_action(group_name + "." + "select-all-child-layers");
+		menu_item->set_icon(Gio::ThemedIcon::create("select_all_child_layers_icon" + symbolic_suffix));
+
+		context_menu->append_item(menu_item);
+	}
+
+	// 3rd: synfigapp Actions viable for all layers
+	synfigapp::Action::ParamList param_list;
+	{
+		bool canvas_set(false);
+		param_list.add("time", get_canvas_interface()->get_time());
+		param_list.add("canvas_interface", get_canvas_interface());
+		for (const auto& layer : layers) {
+			if (!canvas_set) {
+				param_list.add("canvas", Canvas::Handle(layer->get_canvas()));
+				canvas_set = true;
+			}
+			param_list.add("layer", layer);
+		}
+	}
+	instance->add_actions_to_menu(group_name, context_menu, param_list, synfigapp::Action::CATEGORY_LAYER);
+
+	// 4th: special actions for specific layers
+	instance->add_special_layer_actions_to_menu(context_menu, layer);
+
+	// 5th: common edit operations
+	auto edit_menu_section = Gio::Menu::create();
+	edit_menu_section->append_item(ActionWidgetHelper::create_menu_item_for_action(group_name + ".cut"));
+	edit_menu_section->append_item(ActionWidgetHelper::create_menu_item_for_action(group_name + ".copy"));
+	edit_menu_section->append_item(ActionWidgetHelper::create_menu_item_for_action(group_name + ".paste"));
+
+	context_menu->insert_section(context_menu->get_n_items(), edit_menu_section);
+
+	return context_menu;
 }

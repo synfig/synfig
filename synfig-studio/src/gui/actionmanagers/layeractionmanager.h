@@ -25,12 +25,16 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_LAYER_ACTION_MANAGER_H
-#define __SYNFIG_LAYER_ACTION_MANAGER_H
+#ifndef SYNFIG_LAYER_ACTION_MANAGER_H
+#define SYNFIG_LAYER_ACTION_MANAGER_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/uimanager.h>
+#include <giomm/menu.h>
+#include <giomm/simpleactiongroup.h>
+
+#include <gtkmm/widget.h>
+
 #include <synfigapp/canvasinterface.h>
 
 /* === M A C R O S ========================================================= */
@@ -45,26 +49,28 @@ class LayerTree;
 
 class LayerActionManager
 {
-	Glib::RefPtr<Gtk::UIManager> ui_manager_;
+	Gtk::Widget* action_widget_;
+	Glib::RefPtr<Gio::Menu> menu_selected_layers_;
+	Glib::RefPtr<Gio::Menu> menu_special_layers_;
 	LayerTree* layer_tree_;
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 
-	Glib::RefPtr<Gtk::ActionGroup>	action_group_;
-	Gtk::UIManager::ui_merge_id 	menu_popup_id_;
-	Gtk::UIManager::ui_merge_id 	menu_main_id_;
+	Glib::RefPtr<Gio::SimpleActionGroup> action_group_;
 
-	Glib::RefPtr<Gtk::Action>	action_cut_;
-	Glib::RefPtr<Gtk::Action>	action_copy_;
-	Glib::RefPtr<Gtk::Action>	action_paste_;
+	Glib::RefPtr<Gio::SimpleAction> action_cut_;
+	Glib::RefPtr<Gio::SimpleAction> action_copy_;
+	Glib::RefPtr<Gio::SimpleAction> action_paste_;
 
-	Glib::RefPtr<Gtk::Action>	action_amount_inc_;
-	Glib::RefPtr<Gtk::Action>	action_amount_dec_;
+	Glib::RefPtr<Gio::SimpleAction> action_amount_inc_;
+	Glib::RefPtr<Gio::SimpleAction> action_amount_dec_;
 
-	Glib::RefPtr<Gtk::Action>	action_select_all_child_layers_;
-	sigc::connection			select_all_child_layers_connection;
+	Glib::RefPtr<Gio::SimpleAction> action_select_all_child_layers_;
+
+	Glib::RefPtr<Gio::SimpleAction> action_new_;
 
 	std::list<synfig::Layer::Handle> clipboard_;
 
+	sigc::connection select_all_child_layers_connection;
 	sigc::connection selection_changed_connection;
 
 	bool queued;
@@ -87,14 +93,17 @@ class LayerActionManager
 	/// \return false is user cancels the (possibly shown) dialog
 	bool query_user_about_foreign_exported_value_nodes(synfig::Canvas::Handle canvas, ValueNodeReplacementMap& answer) const;
 	void export_value_nodes(synfig::Canvas::Handle canvas, const ValueNodeReplacementMap& valuenodes) const;
+
+	sigc::signal<bool, const std::string&> signal_add_layer_selected_;
+	void on_add_layer_selected(const Glib::VariantBase& v);
+
 public:
 	void queue_refresh();
 
 	LayerActionManager();
 	~LayerActionManager();
 
-	void set_ui_manager(const Glib::RefPtr<Gtk::UIManager> &x);
-	Glib::RefPtr<Gtk::UIManager> get_ui_manager()const { return ui_manager_; }
+	void set_action_widget(Gtk::Widget* x);
 
 	void set_layer_tree(LayerTree* x);
 	LayerTree* get_layer_tree()const { return layer_tree_; }
@@ -107,7 +116,10 @@ public:
 	void refresh();
 	void clear();
 
-	Glib::RefPtr<Gtk::Action> get_action_select_all_child_layers() { return action_select_all_child_layers_; }
+	static Glib::RefPtr<Gio::Menu> create_add_layer_menu();
+	Glib::RefPtr<Gio::Menu> create_context_menu(const std::list<synfig::Layer::Handle> layers) const;
+
+	sigc::signal<bool, const std::string&> signal_add_layer_selected() { return signal_add_layer_selected_; };
 }; // END of LayerActionManager
 
 }; // END of namespace studio

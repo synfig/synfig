@@ -1634,51 +1634,50 @@ CanvasView::popup_layer_menu(Layer::Handle layer)
 	if (!layer)
 		return;
 
-	Gtk::Menu* menu(&parammenu);
-	if (!menu->get_attach_widget())
-		menu->attach_to_widget(*this);
-	std::vector<Widget*> children = menu->get_children();
-	for(std::vector<Widget*>::iterator i = children.begin(); i != children.end(); ++i)
-		menu->remove(**i);
-
-	Action::ParamList param_list;
-	param_list.add("time",canvas_interface()->get_time());
-	param_list.add("canvas",Canvas::Handle(layer->get_canvas()));
-	param_list.add("canvas_interface",canvas_interface());
-
 	SelectionManager::LayerList layer_list = get_selection_manager()->get_selected_layers();
-
+	{
 	auto found = std::find(layer_list.cbegin(), layer_list.cend(), layer);
 	if (found == layer_list.cend())	{
 		// if the layer is not in the list of already selected layers, then clear selection and select it
 		get_selection_manager()->clear_selected_layers();
 		get_selection_manager()->set_selected_layer(layer);
-		param_list.add("layer", layer);
-	} else {
-		for (auto& layer_handle : layer_list) {
-			param_list.add("layer", layer_handle);
-		}
+		layer_list = get_selection_manager()->get_selected_layers();
+	}
 	}
 
-	if(Layer_PasteCanvas::Handle::cast_dynamic(layer))
-	{
-		Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(
-			*manage(create_image_from_icon("select_all_child_layers_icon", Gtk::ICON_SIZE_MENU)),
-			_("Select All Children") ));
-		item->signal_activate().connect(
-			sigc::bind(
-				sigc::mem_fun(
-					*layer_tree,
-					&LayerTree::select_all_children_layers ),
-				layer ));
-		item->show_all();
-		menu->append(*item);
+	// FIXME: get the layeractionmanager->create_context_menu() instead?
+
+	Glib::RefPtr<Gio::Menu> context_menu = Gio::Menu::create();
+
+	const std::string group_name = "layer";
+	const std::string symbolic_suffix = ""; // "-symbolic"
+
+	const bool is_layer_pastecanvas_selected = !Layer_PasteCanvas::Handle::cast_dynamic(layer).empty();
+
+	if (is_layer_pastecanvas_selected) {
+		auto menu_item = ActionWidgetHelper::create_menu_item_for_action(group_name + "." + "select-all-child-layers");
+		context_menu->append_item(menu_item);
 	}
 
-	add_actions_to_menu(menu, param_list,Action::CATEGORY_LAYER);
-	get_instance()->add_special_layer_actions_to_menu(menu, layer);
+	synfigapp::Action::ParamList param_list;
+	param_list.add("time", canvas_interface()->get_time());
+	param_list.add("canvas_interface", canvas_interface());
+	param_list.add("canvas", Canvas::Handle(layer->get_canvas()));
+	for (auto& layer_handle : layer_list) {
+		param_list.add("layer", layer_handle);
+	}
 
-	menu->popup(3,gtk_get_current_event_time());
+	auto instance = get_instance();
+
+	instance->add_actions_to_menu(group_name, context_menu, param_list, synfigapp::Action::CATEGORY_LAYER);
+
+	instance->add_special_layer_actions_to_menu(context_menu, layer);
+
+	if (Gtk::Menu* menu = Gtk::manage(new Gtk::Menu(context_menu))) {
+		menu->attach_to_widget(*this);
+		menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
+		menu->popup(3, gtk_get_current_event_time());
+	}
 }
 
 void
@@ -1938,40 +1937,6 @@ CanvasView::create_new_vertex_on_bline(float location, synfigapp::ValueDesc valu
 	action->set_param_list(param_list);
 	if (action->is_ready())
 		canvas_interface()->get_instance()->perform_action(action);
-}
-
-void
-CanvasView::add_actions_to_menu(Gtk::Menu *menu, const Action::ParamList &param_list,Action::Category category)const
-{
-	get_instance()->add_actions_to_menu(menu, param_list, category);
-}
-
-
-bool
-CanvasView::on_layer_user_click(int button, Gtk::TreeRow /*row*/, LayerTree::ColumnID /*column_id*/)
-{
-	switch(button)
-	{
-	case 3:
-		{
-			Gtk::MenuItem* menu = dynamic_cast<Gtk::MenuItem*>(App::ui_manager()->get_widget("/menu-main/menu-layer"));
-			if(menu && menu->get_submenu())
-			{
-				//menu->set_accel_group(App::ui_manager()->get_accel_group());
-				//menu->accelerate(*this);
-			#if GTK_CHECK_VERSION(3, 22, 0)
-				menu->get_submenu()->popup_at_pointer(nullptr);
-			#else
-				menu->get_submenu()->popup(button,gtk_get_current_event_time());
-			#endif
-			}
-		}
-		return true;
-
-	default:
-		break;
-	}
-	return false;
 }
 
 bool
@@ -3435,7 +3400,7 @@ CanvasView::set_ext_widget(const String& x, Gtk::Widget* y, bool own)
 		if ((layer_tree=dynamic_cast<LayerTree*>(y))) {
 			layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_LAYER_SELECTION_CHANGED));
 			layer_tree->get_selection()->signal_changed().connect(SLOT_EVENT(EVENT_REFRESH_DUCKS));
-			layer_tree->signal_layer_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_layer_user_click));
+	//		layer_tree->signal_layer_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_layer_user_click));
 	//		layer_tree->signal_param_user_click().connect(sigc::mem_fun(*this, &CanvasView::on_param_user_click));
 			layer_tree->signal_waypoint_clicked_layertree().connect(sigc::mem_fun(*this, &CanvasView::on_waypoint_clicked_canvasview));
 		}

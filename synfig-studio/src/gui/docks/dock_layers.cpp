@@ -35,16 +35,17 @@
 
 #include "docks/dock_layers.h"
 
-#include <glibmm/markup.h>
+#include <giomm/themedicon.h>
 #include <gtkmm/stylecontext.h>
 
+#include <gui/actiondatabase.h>
 #include <gui/actionmanagers/layeractionmanager.h>
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
 #include <gui/trees/layertreestore.h>
-#include <gui/trees/layertree.h>
 
 #endif
 
@@ -59,6 +60,14 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
+static Gtk::SeparatorToolItem*
+create_separator_toolitem()
+{
+	Gtk::SeparatorToolItem* separator = Gtk::manage(new Gtk::SeparatorToolItem());
+	separator->show();
+	return separator;
+}
+
 /* === M E T H O D S ======================================================= */
 
 Dock_Layers::Dock_Layers()
@@ -71,121 +80,87 @@ Dock_Layers::Dock_Layers()
 	// Make Layers button small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
-	if(layer_action_manager)layer_action_manager->set_ui_manager(App::ui_manager());
+	if (layer_action_manager)
+		layer_action_manager->set_action_widget(App::main_window);
 
-	action_group_new_layers=Gtk::ActionGroup::create("action_group_new_layers");
-	action_group_layer_ops=Gtk::ActionGroup::create("action_group_layer_ops");
+	layer_action_manager->signal_add_layer_selected().connect([=](const std::string& layer_id) {add_layer(layer_id); return true;});
 
-	std::map<synfig::String,synfig::String> category_map;
+	action_popup_new_layer = Gio::SimpleAction::create("popup-layer-new");
+	action_popup_new_layer->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &Dock_Layers::popup_add_layer_menu)));
 
-	// Build layer creation actions
-	synfig::Layer::Book::iterator iter;
-	for(iter=synfig::Layer::book().begin();iter!=synfig::Layer::book().end();++iter)
-	{
-		synfig::Layer::Book::value_type lyr(*iter);
-
-		if(lyr.second.category==CATEGORY_DO_NOT_USE)
-			continue;
-		
-		action_group_new_layers->add(Gtk::Action::create_with_icon_name(
-			strprintf("layer-new-%s",lyr.first.c_str()),
-			layer_icon_name(lyr.first),
-			lyr.second.local_name,lyr.second.local_name
-		),
-			sigc::hide_return(
-				sigc::bind(
-					sigc::mem_fun(*this,&studio::Dock_Layers::add_layer),
-					lyr.first
-				)
-			)
-		);
-
-		category_map[lyr.second.category]+=strprintf("<menuitem action='layer-new-%s' />",lyr.first.c_str());
-
-		//(*category_map)[lyr.second.category]->items().push_back(Gtk::Menu_Helpers::MenuElem(lyr.second.local_name,
-		//));
-	}
-
-	{
-		Glib::RefPtr<Gtk::ActionGroup> action_group_categories(Gtk::ActionGroup::create("layer-category"));
-		synfig::String layer_ui_info;
-
-		std::map<synfig::String,synfig::String>::iterator iter;
-		for(iter=category_map.begin();iter!=category_map.end();++iter)
-		{
-			layer_ui_info+=strprintf("<menu action='%s'>%s</menu>",iter->first.c_str(),iter->second.c_str());
-			#ifdef ENABLE_NLS
-				action_group_categories->add(Gtk::Action::create(iter->first.c_str(), dgettext("synfig", iter->first.c_str())));
-			#else
-				action_group_categories->add(Gtk::Action::create(iter->first.c_str(), iter->first.c_str()));
-			#endif
+	if (App::get_action_database()) {
+		// Register all synfigapp actions of Layer category adding 'layer' prefix: 'layer.action-SYNFIGAPP_ACTION_NAME'
+		const std::map<std::string, std::string> synfigapp_layer_default_accels = {
+			{"LayerRaise", "<Shift>Page_Up"},
+			{"LayerLower", "<Shift>Page_Down"},
+			{"LayerDuplicate", "<Primary>u"},
+			{"LayerEncapsulate", "<Primary>g"},
+			{"LayerRemove", "Delete"},
+		};
+		for (const auto& item : synfigapp::Action::book()) {
+			const auto& entry = item.second;
+			if (entry.category & synfigapp::Action::CATEGORY_LAYER && !(entry.category & synfigapp::Action::CATEGORY_HIDDEN)) {
+				const std::string full_action_name = synfig::strprintf("%s.action-%s", "layer", entry.name.c_str());
+				const auto it = synfigapp_layer_default_accels.find(entry.name);
+				std::string default_accel = it != synfigapp_layer_default_accels.cend() ? it->second : "";
+				App::get_action_database()->add({full_action_name, entry.local_name, default_accel, studio::get_action_icon_name(entry)});
+			}
 		}
 
-		App::ui_manager()->insert_action_group(action_group_categories);
-		App::ui_manager()->insert_action_group(action_group_new_layers);
+		// Register custom actions of this dock with 'layer' prefix: 'layer.CUSTOM_ACTION_NAME'
+		struct ActionMetadata {
+			std::string name;
+			std::string icon;
+			std::string accel;
+			std::string label;
+			std::string tooltip;
+			// std::function<void()> slot;
+		};
+		const std::vector<ActionMetadata> action_list = {
+			{"layer.select-all-child-layers", "select_all_child_layers_icon", {}, _("Select All Child Layers"), _("Select all child layers of the selected layer group")},
+			{"layer.cut", "edit-cut", "<Primary>x", _("Cut"), _("Cut layer(s) to clipboard")},
+			{"layer.copy", "edit-copy", "<Primary>c", _("Copy"), _("Copy layer(s) to clipboard")},
+			{"layer.paste", "edit-paste", "<Primary>v", _("Paste"), _("Paste layer(s) from clipboard")},
+			{"doc.popup-layer-new", "list-add", {}, _("New Layer"), _("Pops up a menu to select a new layer")},
+		};
+		for (const auto& entry : action_list)
+			App::get_action_database()->add({entry.name, entry.label, entry.accel, entry.icon, entry.tooltip});
 
-		try
-		{
-			synfig::String ui_info;
-			ui_info = "<ui><popup action='menu-main'><menu action='menu-layer'><menu action='menu-layer-new'>"
-			        + layer_ui_info
-			        + "</menu></menu></popup></ui>";
-			App::ui_manager()->add_ui_from_string(ui_info);
-			ui_info = "<ui><menubar action='menubar-main'><menu action='menu-layer'><menu action='menu-layer-new'>"
-			        + layer_ui_info
-			        + "</menu></menu></menubar></ui>";
-			App::ui_manager()->add_ui_from_string(ui_info);
-			ui_info = "<ui><popup action='popup-layer-new'>"
-					+ layer_ui_info
-			        + "</popup></ui>";
-			App::ui_manager()->add_ui_from_string(ui_info);
-		}
-		catch(Glib::MarkupError& x)
-		{
-			error("%s:%d caught MarkupError code %d: %s", __FILE__, __LINE__, x.code(), x.what().c_str());
-			error("%s:%d with markup: \"%s\"", __FILE__, __LINE__, layer_ui_info.c_str());
-			exit(1);
+		// Register layer creation actions
+		for (const auto& lyr : synfig::Layer::book()) {
+			if(lyr.second.category==CATEGORY_DO_NOT_USE)
+				continue;
+
+			const std::string& layer_name = lyr.first;
+			const std::string label_create_layer = strprintf(_("Create layer \"%s\""), lyr.second.local_name.c_str());
+			const std::string layer_action_name = strprintf("layer.new(\"%s\")", layer_name.c_str());
+			App::get_action_database()->add({layer_action_name, label_create_layer, {}, studio::layer_icon_name(layer_name)});
 		}
 	}
 
-	if(layer_action_manager)
-		action_group_layer_ops->add(layer_action_manager->get_action_select_all_child_layers());
+	auto toolbar = Gtk::manage(new Gtk::Toolbar());
+	toolbar->show_all();
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.popup-layer-new"));
 
-	action_group_layer_ops->add( Gtk::Action::create("toolbar-layer", _("Layer Ops")) );
+	toolbar->append(*create_separator_toolitem());
 
-	action_new_layer = Gtk::Action::create_with_icon_name("popup-layer-new", "list-add", _("New Layer"), _("New Layer"));
-	action_new_layer->signal_activate().connect(sigc::mem_fun(*this, &Dock_Layers::popup_add_layer_menu));
+	toolbar->append(*ActionWidgetHelper::create_synfigapp_action_toolbutton("layer", "LayerRaise"));
+	toolbar->append(*ActionWidgetHelper::create_synfigapp_action_toolbutton("layer", "LayerLower"));
 
-	action_group_layer_ops->add( action_new_layer );
-	App::ui_manager()->insert_action_group(action_group_layer_ops);
+	toolbar->append(*create_separator_toolitem());
 
-    Glib::ustring ui_info =
-	"<ui>"
-	"	<toolbar action='toolbar-layer'>"
-	"	<toolitem action='popup-layer-new' />"
-	"	<separator />"
-	"	<toolitem action='action-LayerRaise' />"
-	"	<toolitem action='action-LayerLower' />"
-	"	<separator />"
-	"	<toolitem action='action-LayerDuplicate' />"
-	"	<toolitem action='action-LayerEncapsulate' />"
-	"	<toolitem action='select-all-child-layers' />"
-	"	<toolitem action='action-LayerRemove' />"
-	"	<separator />"
-	"	<toolitem action='cut' />"
-	"	<toolitem action='copy' />"
-	"	<toolitem action='paste' />"
-	"	</toolbar>"
-	"</ui>"
-	;
+	toolbar->append(*ActionWidgetHelper::create_synfigapp_action_toolbutton("layer", "LayerDuplicate"));
+	toolbar->append(*ActionWidgetHelper::create_synfigapp_action_toolbutton("layer", "LayerEncapsulate"));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("layer.select-all-child-layers"));
+	toolbar->append(*ActionWidgetHelper::create_synfigapp_action_toolbutton("layer", "LayerRemove"));
 
-	App::ui_manager()->add_ui_from_string(ui_info);
+	toolbar->append(*create_separator_toolitem());
 
-	action_group_new_layers->set_sensitive(false);
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("layer.cut"));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("layer.copy"));
+	toolbar->append(*ActionWidgetHelper::create_action_toolbutton("layer.paste"));
 
-	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-layer"))) {
-		set_toolbar(*toolbar);
-	}
+	set_toolbar(*toolbar);
 }
 
 
@@ -203,6 +178,10 @@ Dock_Layers::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 
 	canvas_view->set_tree_model(get_name(),layer_tree_store);
 
+	if (auto doc_action_group = Glib::RefPtr<Gio::SimpleActionGroup>::cast_dynamic(canvas_view->get_action_group("doc"))) {
+		doc_action_group->add_action(action_popup_new_layer);
+	}
+
 	//! layer_tree is registered thru CanvasView::set_ext_widget
 	//! and will be deleted during CanvasView::~CanvasView()
 	//! \see CanvasView::set_ext_widget
@@ -210,6 +189,7 @@ Dock_Layers::init_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 	LayerTree* layer_tree(new LayerTree());
 	layer_tree->set_time_model(canvas_view->time_model());
 
+	layer_tree->signal_layer_user_click().connect(sigc::mem_fun(*this, &Dock_Layers::on_layertree_layer_clicked));
 	layer_tree->signal_no_layer_user_click().connect(sigc::mem_fun(*this, &Dock_Layers::on_layertree_no_layer_clicked));
 
 	// (a) should be before (b), (b) should be before (c)
@@ -235,8 +215,6 @@ Dock_Layers::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 
 		add(*tree_view);
 		tree_view->show();
-		action_group_new_layers->set_sensitive(true);
-		action_new_layer->set_sensitive(true);
 		if(layer_action_manager)
 		{
 			layer_action_manager->set_layer_tree(dynamic_cast<LayerTree*>(canvas_view->get_ext_widget(get_name()+"_cmp")));
@@ -246,8 +224,6 @@ Dock_Layers::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 	}
 	else
 	{
-		action_group_new_layers->set_sensitive(false);
-		action_new_layer->set_sensitive(false);
 		if(layer_action_manager)
 		{
 			layer_action_manager->clear();
@@ -269,19 +245,49 @@ Dock_Layers::add_layer(synfig::String id)
 
 void Dock_Layers::popup_add_layer_menu()
 {
-	if (!action_new_layer->is_sensitive())
+	Gtk::Menu* menu = Gtk::manage(new Gtk::Menu(layer_action_manager->create_add_layer_menu()));
+	if (!menu) {
+		synfig::error(_("Internal error: couldn't instantiate menu Add Layer to pop it up."));
 		return;
-	Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/popup-layer-new"));
-	if (menu) {
-		if (menu->get_attach_widget())
-			menu->detach();
-		menu->attach_to_widget(*this);
-		menu->popup(0, gtk_get_current_event_time());
 	}
+	menu->attach_to_widget(*this);
+	menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
+	menu->popup_at_pointer(nullptr);
 }
 
 bool
-studio::Dock_Layers::on_layertree_no_layer_clicked(GdkEventButton* ev)
+Dock_Layers::on_layertree_layer_clicked(int button, Gtk::TreeRow row, LayerTree::ColumnID /*column_id*/)
+{
+	if (button == 3) {
+		LayerTree* layer_tree = dynamic_cast<LayerTree*>(get_canvas_view()->get_ext_widget(get_name() + "_cmp"));
+		if (layer_tree && layer_action_manager) {
+			auto selected_layers = layer_tree->get_selected_layers();
+			if (selected_layers.empty()) {
+				return true;
+			}
+			auto context_menu_model = layer_action_manager->create_context_menu(selected_layers);
+			auto add_layer_menu_model = layer_action_manager->create_add_layer_menu();
+			if (context_menu_model && add_layer_menu_model) {
+				context_menu_model->prepend_submenu(_("New Layer"), add_layer_menu_model);
+				Gtk::Menu* menu = Gtk::manage(new Gtk::Menu(context_menu_model));
+				if (menu) {
+					menu->attach_to_widget(layer_tree->layer_tree_view());
+					menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
+#if GTK_CHECK_VERSION(3, 22, 0)
+					menu->popup_at_pointer(nullptr);
+#else
+					menu->popup(button, gtk_get_current_event_time());
+#endif
+				}
+			}
+		}
+		return true;
+	}
+	return false;
+}
+
+bool
+Dock_Layers::on_layertree_no_layer_clicked(GdkEventButton* ev)
 {
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	if (ev->button == 3) {
