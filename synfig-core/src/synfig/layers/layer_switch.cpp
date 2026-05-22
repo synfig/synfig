@@ -133,11 +133,11 @@ Layer_Switch::get_current_layer()const
 		String name = param_layer_name.get(String());
 		if (name.empty()) {
 			int depth = param_layer_depth.get(int());
-			for(IndependentContext i = canvas->get_independent_context(); *i; i++)
+			for (IndependentContext i = canvas->get_independent_context(); *i; ++i)
 				if ((*i)->get_depth() == depth)
 					return *i;
 		} else {
-			for(IndependentContext i = canvas->get_independent_context(); *i; i++)
+			for (IndependentContext i = canvas->get_independent_context(); *i; ++i)
 				if ((*i)->get_description() == name)
 					return *i;
 		}

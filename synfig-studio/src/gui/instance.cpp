@@ -39,8 +39,6 @@
 #include <gui/instance.h>
 
 #include <cassert>
-#include <cerrno>
-#include <fstream>
 #include <giomm.h>
 
 #include <gtkmm/actiongroup.h>
@@ -52,7 +50,6 @@
 #include <gtkmm/stock.h>
 
 #include <gui/app.h>
-#include <gui/autorecover.h>
 #include <gui/canvasview.h>
 #include <gui/docks/dock_toolbox.h>
 #include <gui/iconcontroller.h>
@@ -75,8 +72,6 @@
 #include <synfig/zstreambuf.h>
 
 #include <synfigapp/main.h>
-
-#include <sys/stat.h>
 
 #endif
 
@@ -225,31 +220,6 @@ is_img(const synfig::String& filename)
 	static const std::set<String> img_ext{".jpg",".jpeg",".png",".bmp",".gif",".tiff",".tif",".dib",".ppm",".pbm",".pgm",".pnm",".webp"};
 	return img_ext.find(Glib::ustring(filesystem::Path::filename_extension(filename)).lowercase()) != img_ext.end();
 }
-
-synfig::Layer::Handle
-Instance::layer_inside_switch(synfig::Layer_Switch::Handle paste) const
-{
-	synfig::Layer::Handle child_layer;
-	synfig::Canvas::Handle canvas = paste->get_sub_canvas();
-	if(canvas)
-	{
-		synfig::String active_layer = paste->get_param("layer_name").get(synfig::String());
-
-		if (active_layer.empty()) {
-			int active_layer_index = paste->get_param("layer_depth").get(int());
-			auto layer_iter = canvas->byindex(active_layer_index);
-			if (layer_iter != canvas->end())
-				child_layer = *layer_iter;
-		} else {
-			for (IndependentContext i = canvas->get_independent_context(); *i; i++) {
-				if((*i)->get_description()==active_layer)
-					child_layer = (*i);
-			}
-		}
-	}
-	return child_layer;
-}
-
 
 int
 Instance::get_visible_canvases()const
@@ -1712,7 +1682,7 @@ Instance::gather_uri(std::set<synfig::String> &x, const synfig::Layer::Handle &l
 	
 	// This required to allow "Edit Image/Open File" commands to appear when clicked on a switch group
 	if (etl::handle<Layer_Switch> layer_switch = etl::handle<Layer_Switch>::cast_dynamic(layer))
-		gather_uri(x, layer_inside_switch(layer_switch));
+		gather_uri(x, layer_switch->get_current_layer());
 
 	//if (Layer_PasteCanvas::Handle paste = Layer_PasteCanvas::Handle::cast_dynamic(layer))
 	//	gather_uri(x, paste->get_param("canvas").get(Canvas::Handle()));
@@ -1806,7 +1776,7 @@ Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::Se
 
 		if (auto reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layers.front())) {
 			//the layer selected is a switch group
-			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layer_inside_switch(reference_layer));
+			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(reference_layer->get_current_layer());
 		} else {
 			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layers.front());
 		}
@@ -1861,7 +1831,7 @@ Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup
 
 		if (auto reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layers.front())) {
 			//the layer selected is a switch group
-			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layer_inside_switch(reference_layer));
+			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(reference_layer->get_current_layer());
 		} else {
 			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layers.front());
 		}

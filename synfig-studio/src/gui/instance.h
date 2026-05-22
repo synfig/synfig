@@ -37,7 +37,6 @@
 
 #include <synfig/canvas.h>
 #include <synfig/handle.h>
-#include <synfig/layers/layer_switch.h>
 
 #include <synfigapp/instance.h>
 #include <synfigapp/value_desc.h>
@@ -151,8 +150,6 @@ public:
 
 	sigc::signal<void,CanvasView*>& signal_canvas_view_created() { return signal_canvas_view_created_; }
 	sigc::signal<void,CanvasView*>& signal_canvas_view_deleted() { return signal_canvas_view_deleted_; }
-
-	synfig::Layer::Handle layer_inside_switch(synfig::Layer_Switch::Handle paste) const;
 
 	bool get_undo_status()const { return undo_status_; }
 

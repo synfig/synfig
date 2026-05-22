@@ -42,6 +42,7 @@
 #include <gui/workarea.h>
 
 #include <synfig/bone.h>
+#include <synfig/layers/layer_switch.h>
 #include <synfig/pair.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 

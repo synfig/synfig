@@ -75,9 +75,9 @@
 #include <gui/workarea.h>
 
 #include <pangomm.h>
-#include <sstream>
 #include <string>
 
+#include <synfig/layers/layer_switch.h>
 #include <synfig/rendering/renderer.h>
 #include <synfig/valuenodes/valuenode_animated.h>
 
