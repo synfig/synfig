@@ -114,6 +114,49 @@ bool LayerTree::on_key_press_event(GdkEventKey* event)
 			);
 			return true;
 		}
+		case GDK_KEY_Left: {
+			if (event->state & GDK_CONTROL_MASK) {
+				layer_tree_view().collapse_all();
+				return true;
+			} else {
+				auto select_paths = layer_tree_view().get_selection()->get_selected_rows();
+				if (select_paths.empty())
+					return true;
+				auto path = select_paths.front();
+				if (layer_tree_view().row_expanded(path)) {
+					layer_tree_view().collapse_row(path);
+				} else if (!path.empty() && path.back() > 0 && path.prev()) {
+					layer_tree_view().set_cursor(path);
+				} else if (path.size() > 1) {
+					path.up();
+					layer_tree_view().set_cursor(path);
+				}
+
+				return true;
+			}
+		}
+		case GDK_KEY_Right: {
+			auto select_paths = layer_tree_view().get_selection()->get_selected_rows();
+			if (select_paths.empty())
+				return true;
+			auto path = select_paths.front();
+			if (layer_tree_view().row_expanded(path)) {
+				path.next();
+				layer_tree_view().set_cursor(path);
+			} else {
+				auto iter = layer_tree_view().get_model()->get_iter(path);
+				if (!iter->children().empty()) {
+					layer_tree_view().expand_row(path, false);
+				} else {
+					auto parent_iter = iter->parent();
+					if (--Gtk::TreeIter(parent_iter->children().end()) == iter)
+						path.up();
+					path.next();
+					layer_tree_view().set_cursor(path);
+				}
+			}
+			return true;
+		}
 	}
 
     return false;
@@ -123,7 +166,7 @@ bool LayerTree::on_key_press_event(GdkEventKey* event)
 
 LayerTree::LayerTree()
 {
-	layer_tree_view().signal_key_press_event().connect(sigc::mem_fun(*this, &LayerTree::on_key_press_event));
+	layer_tree_view().signal_key_press_event().connect(sigc::mem_fun(*this, &LayerTree::on_key_press_event), false);
 
 	create_layer_tree();
 	create_param_tree();
