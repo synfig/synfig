@@ -25,8 +25,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCK_KEYFRAMES_H
-#define __SYNFIG_STUDIO_DOCK_KEYFRAMES_H
+#ifndef SYNFIG_STUDIO_DOCK_KEYFRAMES_H
+#define SYNFIG_STUDIO_DOCK_KEYFRAMES_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -39,9 +39,6 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace studio {
-
-class KeyframeTreeStore;
-class KeyframeTree;
 
 class KeyframeActionManager;
 
