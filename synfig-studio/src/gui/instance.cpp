@@ -541,9 +541,9 @@ studio::Instance::save()
 	if (!has_real_filename())
 	{
 		if (dialog_save_as())
-			return STATUS_OK;
+			return Status::STATUS_OK;
 		else
-			return STATUS_CANCEL;
+			return Status::STATUS_CANCEL;
 	}
 
 	if (!save_as(get_canvas()->get_file_name()))
@@ -554,10 +554,10 @@ studio::Instance::save()
 				msg.c_str(),
 				"details",
 				_("Close"));
-		return STATUS_ERROR;
+		return Status::STATUS_ERROR;
 	}
 
-	return STATUS_OK;
+	return Status::STATUS_OK;
 }
 
 // the filename will be set to "Synfig Animation 1" or some such when first created
@@ -914,8 +914,10 @@ Instance::safe_close()
 
 			if(answer == synfigapp::UIInterface::RESPONSE_YES){
 				enum Status status = save();
-				if (status == STATUS_OK) break;
-				else if (status == STATUS_CANCEL) return false;
+				if (status == Status::STATUS_OK)
+					break;
+				else if (status == Status::STATUS_CANCEL)
+					return false;
 			}
 			if(answer==synfigapp::UIInterface::RESPONSE_NO)
 				break;
