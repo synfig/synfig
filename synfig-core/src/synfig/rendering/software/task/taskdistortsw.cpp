@@ -87,8 +87,12 @@ bool TaskDistortSW::run_task(const rendering::TaskDistort& task) const
 		for (int ix = task.target_rect.minx; ix < task.target_rect.maxx; ++ix, p += dx, pen.inc_x()) {
 			Point tmp = point_vfunc(p);
 
-			float u = (tmp[0]-task.required_source_rect.minx)*ppub[0];
-			float v = (tmp[1]-task.required_source_rect.miny)*ppub[1];
+			Real u = (tmp[0]-task.required_source_rect.minx)*ppub[0];
+			Real v = (tmp[1]-task.required_source_rect.miny)*ppub[1];
+			if (should_clamp_coordinates) {
+				u = synfig::clamp(u, 0., Real(b.get_w()-1));
+				v = synfig::clamp(v, 0., Real(b.get_h()-1));
+			}
 			if (u<0 || v<0 || u>=b.get_w() || v>=b.get_h() || std::isnan(u) || std::isnan(v)) {
 				// problem! It shouldn't happen!!
 				pen.put_value(Color::magenta());
