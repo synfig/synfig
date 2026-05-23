@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file renderer_bbox.cpp
+/*!	\file renderer_boundingbox.cpp
 **  \brief Renderer_BBox class is used to render in the workarea the bounding box
 ** of the selected layer(s)
 **
@@ -34,7 +34,7 @@
 #	include <config.h>
 #endif
 
-#include "renderer_bbox.h"
+#include "renderer_boundingbox.h"
 #include <gui/canvasview.h>
 #include <gui/workarea.h>
 
