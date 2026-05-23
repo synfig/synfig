@@ -247,6 +247,8 @@ public:
 	Smach::event_result event_mouse_release_handler(const Smach::event& x);
 	Smach::event_result event_mouse_motion_handler(const Smach::event& x);
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
+	Smach::event_result event_undo_handler(const Smach::event& x);
+	Smach::event_result event_redo_handler(const Smach::event& x);
 
 	Smach::event_result event_hijack(const Smach::event& /*x*/) { return Smach::RESULT_ACCEPT; }
 
@@ -313,6 +315,8 @@ StateBLine::StateBLine():
 	insert(event_def(EVENT_WORKAREA_MOUSE_MOTION,		&StateBLine_Context::event_mouse_motion_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DRAG,	&StateBLine_Context::event_mouse_motion_handler));
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,		&StateBLine_Context::event_refresh_tool_options));
+	insert(event_def(EVENT_UNDO,						&StateBLine_Context::event_undo_handler));
+	insert(event_def(EVENT_REDO,						&StateBLine_Context::event_redo_handler));
 }
 
 StateBLine::~StateBLine()
@@ -1202,6 +1206,12 @@ StateBLine_Context::event_key_press_handler(const Smach::event& x)
 		if (bline_point_list.size() > 1)
 			run();
 		return Smach::RESULT_ACCEPT;
+
+	case GDK_KEY_z:
+	case GDK_KEY_Z:
+		if (event.modifier & Gdk::CONTROL_MASK)
+			return event_undo_handler(x);
+		break;
 	}
 	return Smach::RESULT_OK;
 }
@@ -1235,6 +1245,27 @@ StateBLine_Context::event_mouse_motion_handler(const Smach::event& x)
 		return Smach::RESULT_ACCEPT;
 	}
 
+	return Smach::RESULT_OK;
+}
+
+Smach::event_result
+StateBLine_Context::event_undo_handler(const Smach::event& /*x*/)
+{
+	if(!bline_point_list.empty())
+	{
+		bline_point_list.pop_back();
+		refresh_ducks(false);
+		get_work_area()->queue_draw();
+		return Smach::RESULT_ACCEPT;
+	}
+	return Smach::RESULT_OK;
+}
+
+
+
+Smach::event_result
+StateBLine_Context::event_redo_handler(const Smach::event& /*x*/)
+{
 	return Smach::RESULT_OK;
 }
 
