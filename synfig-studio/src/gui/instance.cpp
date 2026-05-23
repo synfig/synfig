@@ -999,62 +999,6 @@ Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamLis
 }
 
 void
-Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list,const synfigapp::Action::ParamList &param_list2,synfigapp::Action::Category category)const
-{
-	synfigapp::Action::CandidateList candidate_list;
-	synfigapp::Action::CandidateList candidate_list2;
-
-	candidate_list = synfigapp::Action::compile_visible_candidate_list(param_list, category);
-	candidate_list2 = synfigapp::Action::compile_visible_candidate_list(param_list, category);
-
-	candidate_list.sort();
-
-	if(candidate_list.empty())
-		synfig::warning("%s:%d Action CandidateList is empty!", __FILE__, __LINE__);
-	if(candidate_list2.empty())
-		synfig::warning("%s:%d Action CandidateList2 is empty!", __FILE__, __LINE__);
-
-	// Separate out the candidate lists so that there are no conflicts
-	for (auto iter = candidate_list.begin(); iter != candidate_list.end(); ++iter) {
-		synfigapp::Action::CandidateList::iterator iter2(candidate_list2.find(iter->name));
-		if (iter2 != candidate_list2.end())
-			candidate_list2.erase(iter2);
-	}
-
-	for (const auto& action : candidate_list2) {
-		Gtk::MenuItem* item = Gtk::manage(new Gtk::ImageMenuItem(
-			*Gtk::manage(create_image_from_icon(get_action_icon_name(action), Gtk::ICON_SIZE_MENU)),
-			action.local_name ));
-		item->signal_activate().connect(
-			sigc::bind(
-				sigc::bind(
-					sigc::mem_fun(
-						*const_cast<studio::Instance*>(this),
-						&studio::Instance::process_action ),
-					param_list2 ),
-				action.name ));
-		item->show_all();
-		menu->append(*item);
-	}
-
-	for (const auto& action : candidate_list) {
-		Gtk::MenuItem* item = Gtk::manage(new Gtk::ImageMenuItem(
-			*Gtk::manage(create_image_from_icon(get_action_icon_name(action), Gtk::ICON_SIZE_MENU)),
-			action.local_name ));
-		item->signal_activate().connect(
-			sigc::bind(
-				sigc::bind(
-					sigc::mem_fun(
-						*const_cast<studio::Instance*>(this),
-						&studio::Instance::process_action ),
-					param_list ),
-				action.name ));
-		item->show_all();
-		menu->append(*item);
-	}
-}
-
-void
 Instance::add_actions_to_menu(const std::string& action_group_name, const Glib::RefPtr<Gio::Menu>& menu, const synfigapp::Action::ParamList& param_list, synfigapp::Action::Category category) const
 {
 	const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
@@ -1202,23 +1146,9 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 
 	Gtk::MenuItem* item = nullptr;
 
-	synfigapp::Action::ParamList param_list,param_list2;
+	synfigapp::Action::ParamList param_list;
 	param_list=canvas_interface->generate_param_list(value_desc);
 	param_list.add("origin",location);
-
-#ifdef BLINEPOINT_MENU_IS_VERTEX_MENU
-	if(value_desc.get_value_type()==type_bline_point && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
-	{
-		param_list2=canvas_interface->generate_param_list(
-			synfigapp::ValueDesc(
-				ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
-				,ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
-                                                           ->get_link_index_from_name("point")
-			)
-		);
-		param_list2.add("origin",location);
-	}
-#endif	// BLINEPOINT_MENU_IS_VERTEX_MENU
 
 	// Populate the convert menu by looping through
 	// the ValueNode book and find the ones that are
@@ -1337,10 +1267,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.add("active_bone", canvas_view->get_work_area()->get_active_bone_value_node());
 	}
 
-	if(param_list2.empty())
-		add_actions_to_menu(&parammenu, param_list,categories);
-	else
-		add_actions_to_menu(&parammenu, param_list2,param_list,categories);
+	add_actions_to_menu(&parammenu, param_list, categories);
 
 	if((value_desc2.get_value_type()==type_bline_point || value_desc2.get_value_type()==type_width_point)
 	 && value_desc2.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc2.get_value_node()))
