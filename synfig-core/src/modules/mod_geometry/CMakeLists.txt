@@ -1,4 +1,5 @@
 add_library(mod_geometry MODULE
+        "${CMAKE_CURRENT_LIST_DIR}/advancedline.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/advanced_outline.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/checkerboard.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/circle.cpp"
@@ -15,3 +16,8 @@ install (
     TARGETS mod_geometry
     DESTINATION lib/synfig/modules
 )
+
+if (${ENABLE_TESTS})
+    add_subdirectory(test)
+endif()
+
