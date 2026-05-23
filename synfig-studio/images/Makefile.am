@@ -147,6 +147,8 @@ EXTRA_DIST = \
 	layer_transform_scale_icon.sif \
 	layer_transform_translate_icon.sif \
 	\
+	layer_lock_icon.sif \
+	\
 	resize_disabled_icon.sif \
 	resize_up_left_icon.sif \
 	resize_up_icon.sif \
@@ -363,6 +365,9 @@ ICONS = \
 	layer_transform_rotate_icon.$(EXT) \
 	layer_transform_scale_icon.$(EXT) \
 	layer_transform_translate_icon.$(EXT) \
+	\
+	layer_lock_on_icon.$(EXT) \
+	layer_lock_off_icon.$(EXT) \
 	\
 	resize_disabled_icon.$(EXT) \
 	resize_up_left_icon.$(EXT) \
@@ -665,6 +670,16 @@ tangent_split_icon.$(EXT): $(srcdir)/tangent_merge_split_icons.sif
 	$(SYNFIG) --quiet $< -o $@ --time 1f
 	echo " File \"images\\$@\"" >>./images.nsh
 	echo " Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+layer_lock_on_icon.$(EXT): $(srcdir)/layer_lock_icons.sif
+	$(SYNFIG) --quiet $< -o $@ --time 0f
+	echo "  File \"images\\$@\"" >>./images.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
+
+layer_lock_off_icon.$(EXT): $(srcdir)/layer_lock_icons.sif
+	$(SYNFIG) --quiet $< -o $@ --time 1f
+	echo "  File \"images\\$@\"" >>./images.nsh
+	echo "  Delete \"\$$INSTDIR\\share\\pixmaps\\$@\"" >>./unimages.nsh
 
 utils_chain_link_on_icon.$(EXT): $(srcdir)/utils_chain_link_icons.sif
 	$(SYNFIG) --quiet $< -o $@ --time 0f
