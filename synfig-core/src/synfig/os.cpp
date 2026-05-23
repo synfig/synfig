@@ -844,7 +844,7 @@ OS::get_current_working_directory()
 #else
 
 	struct stat st;
-	if (char* pwd = getenv("PWD")) {
+	if (char* pwd =  getenv("PWD")) {
 		if (stat(pwd, &st) == 0 && S_ISDIR(st.st_mode)) {
 			return filesystem::Path::from_native(pwd).lexically_normal();
 		}

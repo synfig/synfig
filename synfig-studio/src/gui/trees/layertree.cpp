@@ -375,7 +375,7 @@ LayerTree::create_param_tree()
 		column->set_min_width(100);
 		column->set_resizable();
 
-		if (!getenv("SYNFIG_DISABLE_PARAMS_PANEL_TIMETRACK"))
+		if (!DEBUG_GETENV("SYNFIG_DISABLE_PARAMS_PANEL_TIMETRACK"))
 			param_tree_view().append_column(*column);
 	}
 #endif	// TIMETRACK_IN_PARAMS_PANEL

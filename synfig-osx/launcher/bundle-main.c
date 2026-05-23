@@ -537,7 +537,7 @@ start_client (void)
 #else
 	/* First look for .xinitrc in user's home directory. */
 
-	tem = getenv ("HOME");
+	tem = getenv("HOME");
 	if (tem != NULL)
 	{
 	    snprintf (buf, sizeof (buf), "%s/.xinitrc", tem);

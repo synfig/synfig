@@ -86,7 +86,7 @@ DockDialog::DockDialog():
 	//! \todo can we set dialog windows transient for all normal windows, not just the toolbox?
 	//! paragraph 3 of http://standards.freedesktop.org/wm-spec/1.3/ar01s07.html suggests we can
 	// this seems to have bad effects on KDE, so leave it disabled by default
-	if(getenv("SYNFIG_TRANSIENT_DIALOGS"))
+	if(DEBUG_GETENV("SYNFIG_TRANSIENT_DIALOGS"))
 		set_transient_for(*App::main_window);
 
 	// Set up the window

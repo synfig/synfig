@@ -36,7 +36,6 @@
 #include "action.h"
 
 #include <synfig/general.h>
-
 #include <synfig/color.h>
 #include <synfig/gradient.h>
 #include <glibmm.h>

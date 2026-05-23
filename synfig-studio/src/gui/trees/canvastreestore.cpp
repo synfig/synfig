@@ -83,7 +83,7 @@ CanvasTreeStore::~CanvasTreeStore()
 ValueNode::Handle
 CanvasTreeStore::expandable_bone_parent(ValueNode::Handle node)
 {
-	if ((!getenv("SYNFIG_DISABLE_EXPANDABLE_BONE_PARENTS")) &&
+	if ((!DEBUG_GETENV("SYNFIG_DISABLE_EXPANDABLE_BONE_PARENTS")) &&
 		node->get_type() == type_bone_valuenode &&
 		(node->get_name() == "constant" || node->get_name() == "animated"))
 		if (ValueNode::Handle bone_node = (*node)(canvas_interface()->get_time()).get(ValueNode_Bone::Handle()))

@@ -1043,7 +1043,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 	{
 		// hide the 'stroke' line we were drawing, unless the user
 		// explicitly requests that they are kept
-		if (!getenv("SYNFIG_KEEP_ABORTED_DRAW_LINES"))
+		if (!DEBUG_GETENV("SYNFIG_KEEP_ABORTED_DRAW_LINES"))
 			refresh_ducks();
 
 		return Smach::RESULT_OK;

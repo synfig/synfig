@@ -46,7 +46,6 @@
 #include <gui/resourcehelper.h>
 
 #include <synfig/version.h>
-
 #include <vector>
 
 #endif
