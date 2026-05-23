@@ -166,6 +166,9 @@ private:
 	void on_param_column_label_tree_style_updated();
 	bool on_param_column_label_tree_draw(const ::Cairo::RefPtr< ::Cairo::Context>& cr);
 
+    void on_param_row_expanded(const Gtk::TreeModel::iterator& iter, const Gtk::TreeModel::Path& path);
+    void on_param_row_collapsed(const Gtk::TreeModel::iterator& iter, const Gtk::TreeModel::Path& path);
+
 	/*
  -- ** -- P U B L I C   M E T H O D S -----------------------------------------
 	*/
