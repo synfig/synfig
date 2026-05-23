@@ -283,7 +283,7 @@ CellRenderer_ValueBase::CellRenderer_ValueBase():
 		pango_size.set_end_index(64);
 		attr_list.change(pango_size);
 	}
-	property_attributes()   = attr_list;
+	//property_attributes()   = attr_list;
 
 	property_foreground()   = Glib::ustring("#7f7f7f");
 	property_inconsistent() = false;
