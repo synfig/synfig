@@ -44,6 +44,10 @@
 #include "localization.h"
 #include "zstreambuf.h"
 
+#ifdef _MSC_VER
+#include <io.h>
+#endif
+
 #endif
 
 /* === U S I N G =========================================================== */
