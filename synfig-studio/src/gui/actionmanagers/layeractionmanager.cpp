@@ -537,6 +537,8 @@ LayerActionManager::paste()
 	for(std::list<synfig::Layer::Handle>::iterator iter=clipboard_.begin();iter!=clipboard_.end();++iter)
 	{
 		layer=(*iter)->clone(canvas, guid);
+		String currentDesc = layer->get_description();
+		layer->set_description(currentDesc.substr(0, currentDesc.length() - 1));
 		layer_selection.push_back(layer);
 
 		replace_exported_value_nodes(layer, valuenode_replacements);
