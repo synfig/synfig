@@ -29,10 +29,10 @@
 /* === H E A D E R S ======================================================= */
 
 #ifdef USING_PCH
-#	include "pch.h"
+#include "pch.h"
 #else
 #ifdef HAVE_CONFIG_H
-#	include <config.h>
+#include <config.h>
 #endif
 
 #include <gui/docks/dock_toolbox.h>
@@ -67,12 +67,10 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-
-Dock_Toolbox::Dock_Toolbox():
-	Dockable("toolbox",_("Toolbox"),"about_icon")
+Dock_Toolbox::Dock_Toolbox() : Dockable("toolbox", _("Toolbox"), "about_icon")
 {
 	set_use_scrolled(false);
-	set_size_request(-1,-1);
+	set_size_request(-1, -1);
 
 	tool_item_group = manage(new class Gtk::ToolItemGroup());
 	gtk_tool_item_group_set_label(tool_item_group->gobj(), nullptr);
@@ -91,125 +89,123 @@ Dock_Toolbox::Dock_Toolbox():
 	scrolled_window->set_border_width(2);
 	scrolled_window->show();
 
-	Widget_Defaults* widget_defaults(manage(new Widget_Defaults()));
+	Widget_Defaults *widget_defaults(manage(new Widget_Defaults()));
 
-	tool_box_paned = manage(new Gtk::Paned(Gtk::ORIENTATION_VERTICAL));
-	tool_box_paned->pack1(*scrolled_window, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, false);
-	tool_box_paned->pack2(*widget_defaults, Gtk::PACK_EXPAND_WIDGET|Gtk::PACK_SHRINK, false);
-	tool_box_paned->set_position(200);
+	tool_box_paned = manage(new Gtk::Paned(Gtk::ORIENTATION_HORIZONTAL));
+	tool_box_paned->pack1(*scrolled_window, Gtk::PACK_EXPAND_WIDGET | Gtk::PACK_SHRINK, false);
+	tool_box_paned->pack2(*widget_defaults, Gtk::PACK_EXPAND_WIDGET | Gtk::PACK_SHRINK, false);
+	tool_box_paned->set_position(2);
 	tool_box_paned->show_all();
 	add(*tool_box_paned);
 
 	App::signal_canvas_view_focus().connect(
 		sigc::hide(
-			sigc::mem_fun(*this,&studio::Dock_Toolbox::update_tools) ));
+			sigc::mem_fun(*this, &studio::Dock_Toolbox::update_tools)));
 
 	std::vector<Gtk::TargetEntry> listTargets;
-	listTargets.push_back( Gtk::TargetEntry("text/plain") );
-	listTargets.push_back( Gtk::TargetEntry("image") );
-//	listTargets.push_back( Gtk::TargetEntry("image/x-sif") );
+	listTargets.push_back(Gtk::TargetEntry("text/plain"));
+	listTargets.push_back(Gtk::TargetEntry("image"));
+	//	listTargets.push_back( Gtk::TargetEntry("image/x-sif") );
 
 	drag_dest_set(listTargets);
-	signal_drag_data_received().connect( sigc::mem_fun(*this, &studio::Dock_Toolbox::on_drop_drag_data_received) );
+	signal_drag_data_received().connect(sigc::mem_fun(*this, &studio::Dock_Toolbox::on_drop_drag_data_received));
 
-	App::signal_present_all().connect(sigc::mem_fun0(*this,&Dock_Toolbox::present));
+	App::signal_present_all().connect(sigc::mem_fun0(*this, &Dock_Toolbox::present));
 }
 
 Dock_Toolbox::~Dock_Toolbox()
 {
 	hide();
-	//studio::App::cb.task(_("Toolbox: I was nailed!"));
-	//studio::App::quit();
+	// studio::App::cb.task(_("Toolbox: I was nailed!"));
+	// studio::App::quit();
 
 	if (studio::App::dock_toolbox == this)
 		studio::App::dock_toolbox = nullptr;
 }
 
-void Dock_Toolbox::write_layout_string(std::string& params) const
+void Dock_Toolbox::write_layout_string(std::string &params) const
 {
 	char num_str[6];
 	snprintf(num_str, 5, "%d", tool_box_paned->get_position());
 	params += std::string(num_str);
 }
 
-void Dock_Toolbox::read_layout_string(const std::string& params) const
+void Dock_Toolbox::read_layout_string(const std::string &params) const
 {
-	try {
+	try
+	{
 		int pos = std::stoi(params.c_str());
 		tool_box_paned->set_position(pos);
-	} catch (...) {
+	}
+	catch (...)
+	{
 		// ignores invalid value and let it use the default one
 	}
 }
 
-void
-Dock_Toolbox::set_active_state(const synfig::String& statename)
+void Dock_Toolbox::set_active_state(const synfig::String &statename)
 {
 	synfigapp::Main::set_state(statename);
 }
 
-void
-Dock_Toolbox::change_state(const synfig::String& statename, bool force)
+void Dock_Toolbox::change_state(const synfig::String &statename, bool force)
 {
 	studio::CanvasView::Handle canvas_view(studio::App::get_selected_canvas_view());
-	if(canvas_view)
+	if (canvas_view)
 	{
-		if(!force && statename==canvas_view->get_smach().get_state_name())
+		if (!force && statename == canvas_view->get_smach().get_state_name())
 		{
 			return;
 		}
 
-		if(state_button_map.count(statename))
+		if (state_button_map.count(statename))
 		{
 			state_button_map[statename]->activate();
 		}
 		else
 		{
-			synfig::error("Unknown state \"%s\"",statename.c_str());
+			synfig::error("Unknown state \"%s\"", statename.c_str());
 		}
 	}
 }
 
-void
-Dock_Toolbox::change_state_(const Smach::state_base *state)
+void Dock_Toolbox::change_state_(const Smach::state_base *state)
 {
 
 	try
 	{
 		studio::CanvasView::Handle canvas_view(studio::App::get_selected_canvas_view());
-		if(canvas_view)
-				canvas_view->get_smach().enter(state);
+		if (canvas_view)
+			canvas_view->get_smach().enter(state);
 		else
 			refresh();
 	}
-	catch(...)
+	catch (...)
 	{
 		throw;
 	}
 }
 
-
 /*! \fn Dock_Toolbox::add_state(const Smach::state_base *state)
  *  \brief Add and connect a toggle button to the toolbox defined by a state
  *  \param state a const pointer to Smach::state_base
-*/
-void
-Dock_Toolbox::add_state(const Smach::state_base *state)
+ */
+void Dock_Toolbox::add_state(const Smach::state_base *state)
 {
 	assert(state);
 
-	String name=state->get_name();
+	String name = state->get_name();
 
 	Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton());
 	tool_button->set_group(radio_tool_button_group);
-	Glib::RefPtr<Gtk::Action> related_action = App::get_state_manager()->get_action_group()->get_action("state-"+name);
+	Glib::RefPtr<Gtk::Action> related_action = App::get_state_manager()->get_action_group()->get_action("state-" + name);
 	tool_button->set_related_action(related_action);
 	related_action->property_tooltip() = "";
 
 	// Keeps updating the tooltip if user changes the shortcut at runtime
 	tool_button->property_has_tooltip() = true;
-	tool_button->signal_query_tooltip().connect([state](int,int,bool,const Glib::RefPtr<Gtk::Tooltip>& tooltip) -> bool
-	{
+	tool_button->signal_query_tooltip().connect([state](int, int, bool, const Glib::RefPtr<Gtk::Tooltip> &tooltip) -> bool
+												{
 		std::string tooltip_string = state->get_local_name();
 
 		Gtk::AccelKey key;
@@ -218,23 +214,23 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 			tooltip_string += gtk_accelerator_get_label(key.get_key(), GdkModifierType(key.get_mod()));
 		}
 		tooltip->set_text(tooltip_string);
-		return true;
-	});
-//	tool_button->set_tooltip_text(get_tooltip(name));
+		return true; });
+	//	tool_button->set_tooltip_text(get_tooltip(name));
 	tool_button->show();
 
 	tool_item_group->insert(*tool_button);
+	tool_item_group->set_margin_top(10); // Adds spacing between tool buttons
+
 	tool_item_group->show_all();
+	tool_button->set_margin_start(5);
+	tool_button->set_margin_end(5);
 
 	state_button_map[name] = tool_button;
-
 
 	refresh();
 }
 
-
-void
-Dock_Toolbox::update_tools()
+void Dock_Toolbox::update_tools()
 {
 	etl::handle<Instance> instance = App::get_selected_instance();
 	CanvasView::Handle canvas_view = App::get_selected_canvas_view();
@@ -244,15 +240,18 @@ Dock_Toolbox::update_tools()
 	// this method is called on switching doc tabs, it is not actually activating an action
 	state_action_group->set_sensitive(false);
 
-	const char* canvasview_state_name = canvas_view ? canvas_view->get_smach().get_state_name() : nullptr;
-	if (canvasview_state_name) {
+	const char *canvasview_state_name = canvas_view ? canvas_view->get_smach().get_state_name() : nullptr;
+	if (canvasview_state_name)
+	{
 		set_active_state(canvasview_state_name);
 		auto radio_button = state_button_map[canvasview_state_name];
-		if (radio_button) {
+		if (radio_button)
+		{
 			if (!radio_button->get_active())
 				radio_button->set_active(true);
 		}
-	} else
+	}
+	else
 		set_active_state("none");
 
 	// Disable buttons if there isn't any open document instance
@@ -260,16 +259,12 @@ Dock_Toolbox::update_tools()
 	state_action_group->set_sensitive(sensitive);
 }
 
-
-void
-Dock_Toolbox::refresh()
+void Dock_Toolbox::refresh()
 {
 	update_tools();
 }
 
-
-void
-Dock_Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int /*x*/, int /*y*/, const Gtk::SelectionData& selection_data_, guint /*info*/, guint time)
+void Dock_Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext> &context, int /*x*/, int /*y*/, const Gtk::SelectionData &selection_data_, guint /*info*/, guint time)
 {
 	// We will make this true once we have a solid drop
 	bool success(false);
@@ -280,7 +275,7 @@ Dock_Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& c
 
 		std::stringstream stream(selection_data);
 
-		while(stream)
+		while (stream)
 		{
 			synfig::String line;
 			getline(stream, line);
@@ -294,8 +289,8 @@ Dock_Toolbox::on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& c
 			filesystem::Path filename = filesystem::Path::from_uri(line);
 
 			synfig::info("Attempting to open %s", filename.u8_str());
-			if(App::open(filename))
-				success=true;
+			if (App::open(filename))
+				success = true;
 			else
 				synfig::error("Drop failed: Unable to open %s", filename.u8_str());
 		}
