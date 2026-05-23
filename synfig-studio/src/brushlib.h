@@ -104,19 +104,24 @@ namespace brushlib {
 			float sn = sinf(angle/180.f*(float)PI);
 
 			// calculate bounds
-			if (aspect_ratio < 1.0) aspect_ratio = 1.0;
-			if (hardness > 1.0) hardness = 1.0;
-			if (hardness < 0.0) hardness = 0.0;
+			if (aspect_ratio < 1.0)
+				aspect_ratio = 1.0;
+			if (hardness > 1.0)
+				hardness = 1.0;
+			if (hardness < 0.0)
+				hardness = 0.0;
+
 			float maxr = fabsf(radius);
 			int x0 = (int)(x - maxr - 1.f);
 			int x1 = (int)(x + maxr + 1.f);
 			int y0 = (int)(y - maxr - 1.f);
 			int y1 = (int)(y + maxr + 1.f);
 
-			if (x0 < 0
+			bool erase = alpha_eraser < 1.0;
+			if ( !erase && (x0 < 0
 			 || y0 < 0
 			 || x1+1 > surface->get_w()
-			 || y1+1 > surface->get_h() )
+			 || y1+1 > surface->get_h()) )
 			{
 				int l = x0 < 0 ? x0 : 0;
 				int t = y0 < 0 ? y0 : 0;
@@ -142,7 +147,11 @@ namespace brushlib {
 				x1 -= l; y1 -= t;
 			}
 
-			bool erase = alpha_eraser < 1.0;
+			y0 = std::max(y0, 0);
+			y1 = std::min(y1, surface->get_h() - 1);
+			x0 = std::max(x0, 0);
+			x1 = std::min(x1, surface->get_w() - 1);
+
 			for(int py = y0; py <= y1; py++)
 			{
 				for(int px = x0; px <= x1; px++)
@@ -165,13 +174,25 @@ namespace brushlib {
 						}
 						else
 						{
-							float sum_alpha = opa + c.get_a();
-							if (sum_alpha > 1.0) sum_alpha = 1.0;
-							float inv_opa = sum_alpha - opa;
-							c.set_r(c.get_r()*inv_opa + color_r*opa);
-							c.set_g(c.get_g()*inv_opa + color_g*opa);
-							c.set_b(c.get_b()*inv_opa + color_b*opa);
-							c.set_a(sum_alpha);
+							float bg_alpha = c.get_a();
+							float src_alpha = opa;
+
+							float final_alpha = src_alpha + bg_alpha * (1.0 - src_alpha);
+
+							if (final_alpha > 0.0001) {
+								float src_weight = src_alpha / final_alpha;
+								float bg_weight = (bg_alpha * (1.0 - src_alpha)) / final_alpha;
+
+								c.set_r(color_r * src_weight + c.get_r() * bg_weight);
+								c.set_g(color_g * src_weight + c.get_g() * bg_weight);
+								c.set_b(color_b * src_weight + c.get_b() * bg_weight);
+								c.set_a(std::min(1.0f, final_alpha));
+							} else {
+								c.set_r(color_r);
+								c.set_g(color_g);
+								c.set_b(color_b);
+								c.set_a(src_alpha);
+							}
 						}
 					}
 				}

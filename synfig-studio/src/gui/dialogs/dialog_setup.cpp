@@ -260,6 +260,18 @@ Dialog_Setup::create_system_page(PageInfo pi)
 	toggle_clear_redo_stack_on_new_action.set_halign(Gtk::ALIGN_START);
 	toggle_clear_redo_stack_on_new_action.set_hexpand(false);
 
+	// System - Brush Undo Mode
+	attach_label_section(pi.grid, _("Brush Undo Mode"), ++row);
+	pi.grid->attach(brush_undo_mode_combo, 1, row, 1, 1);
+	brush_undo_mode_combo.set_hexpand(true);
+	brush_undo_mode_combo.append("0", _("Redraw (low memory, slower)"));
+	brush_undo_mode_combo.append("1", _("Checkpointing (balanced)"));
+	brush_undo_mode_combo.append("2", _("Surface Saving (high memory, fast)"));
+	
+	brush_undo_mode_combo.set_active_id(strprintf("%i", App::brush_undo_mode));
+	brush_undo_mode_combo.signal_changed().connect(
+		sigc::mem_fun(*this, &Dialog_Setup::on_brush_undo_mode_changed));
+
 	// signal for change resume
 	auto_backup_interval.signal_changed().connect(
 			sigc::bind<int>(sigc::mem_fun(*this, &Dialog_Setup::on_value_change), CHANGE_AUTOBACKUP));
@@ -665,6 +677,14 @@ Dialog_Setup::on_choose_editor_pressed()
 	}
 }
 
+void
+Dialog_Setup::on_brush_undo_mode_changed()
+{
+	std::string active_id = brush_undo_mode_combo.get_active_id();
+	App::brush_undo_mode = atoi(active_id.c_str());
+	synfigapp::Main::settings().set_value("pref.brush_undo_mode", active_id.c_str());
+}
+
 bool 
 Dialog_Setup::select_path_dialog(const std::string &title, std::string &filepath)
 {
@@ -951,6 +971,8 @@ Dialog_Setup::on_restore_pressed()
 		toggle_animation_thumbnail_preview.set_active(true);
 		toggle_enable_experimental_features.set_active(false);
 		toggle_clear_redo_stack_on_new_action.set_active(true);
+		brush_undo_mode_combo.set_active_id("1");
+		App::brush_undo_mode = 1;
 		toggle_use_dark_theme.set_active(false);
 		toggle_show_file_toolbar.set_active(true);
 		listviewtext_brushes_path->clear_items();
@@ -1074,6 +1096,21 @@ Dialog_Setup::on_apply_pressed()
 			App::brushes_path.insert(path);
 		}
 		input_settings.set_value("brush.path_count", path_count);
+
+		synfigapp::Main::get_selected_input_device()->settings().set_value("brush.path_count", path_count);
+		for(int i = 0; i < path_count; ++i) {
+			std::string path = input_settings.get_value(strprintf("brush.path_%d", i), "");
+			synfigapp::Main::get_selected_input_device()->settings().set_value(strprintf("brush.path_%d", i), path);
+		}
+		App::setup_changed();
+		App::brushes_path.clear();
+
+		for(int i = 0; i < path_count; ++i) {
+			std::string path = input_settings.get_value(strprintf("brush.path_%d", i), "");
+			if(!path.empty()) {
+				App::brushes_path.insert(path);
+			}
+		}
 	}
 
 	// Set the preferred file name prefix
@@ -1188,7 +1225,8 @@ Dialog_Setup::on_apply_pressed()
 	App::setup_changed();
 
 	if ((pref_modification_flag&CHANGE_BRUSH_PATH) &&
-			String(App::get_selected_canvas_view()->get_smach().get_state_name()) == String("brush"))
+			(String(App::get_selected_canvas_view()->get_smach().get_state_name()) == String("brush")
+			|| String(App::get_selected_canvas_view()->get_smach().get_state_name()) == String("brush2")))
 	{
 		App::get_selected_canvas_view()->get_smach().process_event(EVENT_REFRESH_TOOL_OPTIONS);
 	}
@@ -1350,6 +1388,9 @@ Dialog_Setup::refresh()
 		toggle_clear_redo_stack_on_new_action.set_active(active);
 	}
 
+	// Refresh the brush undo mode
+	brush_undo_mode_combo.set_active_id(strprintf("%i", App::brush_undo_mode));
+
 	// Refresh the status of the theme flag
 	toggle_use_dark_theme.set_active(App::use_dark_theme);
 	// Refresh the choice of the icon theme
@@ -1401,7 +1442,6 @@ Dialog_Setup::refresh()
 			listviewtext_brushes_path->get_model());
 	//! Keep "brushes_path" preferences entry for backward compatibility (15/12 - v1.0.3)
 	//! Now brush path(s) are hold by input preferences : brush.path_count & brush.path_%d
-	String value;
 	Gtk::TreeIter ui_iter;
 	int brush_path_count = input_settings.get_value("brush.path_count", 0);
 	App::brushes_path.clear();
@@ -1417,7 +1457,7 @@ Dialog_Setup::refresh()
 			std::string path = input_settings.get_value(strprintf("brush.path_%d", j), "");
 			if(!path.empty())
 			{
-				App::brushes_path.insert(value);
+				App::brushes_path.insert(path);
 			}
 		}
 	}
