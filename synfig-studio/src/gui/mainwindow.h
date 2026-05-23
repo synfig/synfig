@@ -100,6 +100,8 @@ namespace studio {
 		static void set_workspace_animating();
 		static void set_workspace_from_template(const std::string &tpl);
 		static void set_workspace_from_name(const std::string &name);
+		static void set_previous_workspace();
+		static void switch_to_favorite_workspace();
 		static void load_custom_workspaces();
 		static void save_custom_workspaces();
 		static WorkspaceHandler* get_workspace_handler() { return workspaces.get(); }

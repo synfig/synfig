@@ -68,6 +68,7 @@ class DockManager : public sigc::trackable
 
 private:
 	static std::map<Gtk::Container*, bool> containers_to_remove_;
+	std::string previous_layout_;
 
 	void write_separator(std::string &x, bool continue_ = true);
 	void write_string(std::string &x, const std::string &str);
@@ -106,6 +107,7 @@ public:
 
 	std::string save_layout_to_string();
 	void load_layout_from_string(const std::string &x);
+	void toggle_to_previous_layout();
 
 	void update_window_titles();
 
