@@ -98,6 +98,7 @@ public:
 		return tangent2_angle_split_;
 	}
 	void set_tangent(const Vector& x) { tangent_[0]=tangent_[1]=x; update_tangent2(); }
+	void set_tangents(Vector t1, Vector t2) { tangent_[0]=t1; tangent_[1]=t2; update_tangent2(); }
 	void set_tangent1(const Vector& x) { tangent_[0]=x; update_tangent2(); }
 	void set_tangent2(const Vector& x) { tangent_[1]=x; update_tangent2(); }
 
