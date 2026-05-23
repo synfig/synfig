@@ -42,6 +42,7 @@
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_input.h>
+#include <gui/dialogs/dialog_pluginmanager.h>
 #include <gui/dialogs/dialog_workspaces.h>
 #include <gui/docks/dockable.h>
 #include <gui/docks/dockbook.h>
@@ -87,7 +88,9 @@ escape_underline(const std::string& raw)
 
 MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
 	: Gtk::ApplicationWindow(application),
-	  save_workspace_merge_id(0), custom_workspaces_merge_id(0)
+	  plugin_manager_dialog(std::unique_ptr<Dialog_PluginManager>(new Dialog_PluginManager(*this))),
+	  save_workspace_merge_id(0), custom_workspaces_merge_id(0),
+	  save_plugins_merge_id(0)
 {
 	register_custom_widget_types();
 
@@ -150,6 +153,8 @@ MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
 
 	App::dock_manager->signal_dockable_unregistered().connect(
 		sigc::mem_fun(*this,&MainWindow::on_dockable_unregistered) );
+
+	App::plugin_manager.signal_list_changed().connect(sigc::mem_fun(*this, &MainWindow::on_plugins_changed));
 
 	set_type_hint(Gdk::WindowTypeHint(synfigapp::Main::settings().get_value("pref.mainwindow_hints", Gdk::WindowTypeHint())));
 }
@@ -228,6 +233,10 @@ MainWindow::init_menus()
 		sigc::track_obj([this]() { main_dock_book().set_current_page(-1); }, this)
 	);
 
+	action_group->add( Gtk::Action::create("open-plugin-manager", _("Plugin Manager")),
+		sigc::mem_fun0(*plugin_manager_dialog, &Dialog_PluginManager::present)
+	);
+
 	// help
 	#define URL(action_name,title,url) \
 		action_group->add( Gtk::Action::create(action_name, title), \
@@ -263,6 +272,7 @@ MainWindow::init_menus()
 	App::ui_manager()->insert_action_group(action_group);
 
 	add_custom_workspace_menu_item_handlers();
+	on_plugins_changed();
 }
 
 void MainWindow::register_custom_widget_types()
@@ -670,6 +680,45 @@ MainWindow::edit_custom_workspace_list()
 	}
 	dlg->run();
 	delete dlg;
+}
+
+void
+MainWindow::on_plugins_changed()
+{
+	if (save_plugins_merge_id)
+		App::ui_manager()->remove_ui(save_plugins_merge_id);
+
+	Glib::RefPtr<Gtk::ActionGroup> plugins_action_group = Gtk::ActionGroup::create("plugin-actions");
+	std::string ui_info_menu = "	<menu action='menu-plugins'>";
+	for (const auto& plugin : studio::App::plugin_manager.plugins()) {
+		Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(plugin.id, plugin.name.get()) ); 
+		plugins_action_group->add(action);
+		ui_info_menu += "	<menuitem action='" + plugin.id + "'/>";
+	}
+	
+	ui_info_menu +="	</menu>";
+	std::string ui_info =
+			"<ui>"
+			"  <popup name='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
+			"  <menubar name='menubar-main' action='menubar-main'>" + ui_info_menu + "</menubar>"
+			"</ui>";
+	plugins_action_group->set_sensitive(false);
+
+	if (!save_plugins_merge_id) {
+		App::ui_manager()->insert_action_group(plugins_action_group);
+	} else {
+		typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;
+		ActionGroupList groups = App::ui_manager()->get_action_groups();
+		for (const auto& group : groups) {
+			if (group->get_name() == plugins_action_group->get_name()) {
+				App::ui_manager()->remove_action_group(group);
+				App::ui_manager()->insert_action_group(plugins_action_group);	
+				break;
+			}
+		}
+	}
+
+	save_plugins_merge_id = studio::App::ui_manager()->add_ui_from_string(ui_info);
 }
 
 void

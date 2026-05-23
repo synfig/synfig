@@ -39,6 +39,8 @@ src/gui/dialogs/dialog_keyframe.cpp
 src/gui/dialogs/dialog_keyframe.h
 src/gui/dialogs/dialog_pasteoptions.cpp
 src/gui/dialogs/dialog_pasteoptions.h
+src/gui/dialogs/dialog_pluginmanager.cpp
+src/gui/dialogs/dialog_pluginmanager.h
 src/gui/dialogs/dialog_preview.cpp
 src/gui/dialogs/dialog_preview.h
 src/gui/dialogs/dialog_setup.cpp

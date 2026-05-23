@@ -40,22 +40,8 @@
 #include <glibmm/miscutils.h>
 #include <glibmm/spawn.h>
 
-#include <gtkmm/appchooserbutton.h>
 #include <gtkmm/builder.h>
-#include <gtkmm/checkbutton.h>
-#include <gtkmm/colorbutton.h>
-#include <gtkmm/combobox.h>
-#include <gtkmm/comboboxtext.h>
 #include <gtkmm/dialog.h>
-#include <gtkmm/entry.h>
-#include <gtkmm/filechooserbutton.h>
-#include <gtkmm/fontbutton.h>
-#include <gtkmm/radiobutton.h>
-#include <gtkmm/scale.h>
-#include <gtkmm/scalebutton.h>
-#include <gtkmm/spinbutton.h>
-#include <gtkmm/switch.h>
-#include <gtkmm/volumebutton.h>
 
 #include <gui/app.h>
 #include <gui/localization.h>
@@ -64,34 +50,10 @@
 #include <synfig/general.h>
 #include <synfig/os.h>
 
-#endif
+#include <gui/json.h>
+#include <gui/json_to_dialog_converter.h>
 
-std::string
-JSON::escape_string(const std::string& str)
-{
-	std::string value;
-	for (char c : str) {
-		switch (c) {
-		case '"':  value += "\\\""; break;
-		case '\\': value += "\\\\"; break;
-		case '/':  value += "\\/"; break;
-		case '\b': value += "\\b"; break;
-		case '\f': value += "\\f"; break;
-		case '\n': value += "\\n"; break;
-		case '\r': value += "\\r"; break;
-		case '\t': value += "\\t"; break;
-		default:
-			if ((unsigned char)c >= 0x20)
-				value.push_back(c);
-			else {
-				char unicode[8];
-				snprintf(unicode, 8, "\\u00%02x", (unsigned char)c);
-				value += unicode;
-			}
-		}
-	}
-	return value;
-}
+#endif
 
 // Autodelete the file
 struct TmpFile
@@ -122,9 +84,7 @@ parse_boolean_attribute(const xmlpp::Element& element, const std::string& attrib
 {
 	std::string attr = element.get_attribute_value(attribute_name);
 	if ( !attr.empty() )
-	{
 		return parse_boolean_string(attr);
-	}
 	return default_value;
 }
 
@@ -132,8 +92,7 @@ static studio::PluginScript::ArgNecessity
 parse_argument_necessity(const xmlpp::Element& element, const std::string& attribute_name, studio::PluginScript::ArgNecessity default_value)
 {
 	std::string attr = element.get_attribute_value(attribute_name);
-	if ( !attr.empty() )
-	{
+	if ( !attr.empty() ) {
 		auto s = synfig::trim(attr);
 		synfig::strtolower(s);
 		if (s == "optional")
@@ -147,69 +106,8 @@ parse_argument_necessity(const xmlpp::Element& element, const std::string& attri
 	return default_value;
 }
 
-static void
-fetch_data_in_widget(const Gtk::Widget* w, std::map<std::string, std::string>& data)
-{
-	if (!w->get_name().empty()) {
-		if (GTK_IS_COMBO_BOX_TEXT(w->gobj())) {
-			const Gtk::ComboBoxText* combo = static_cast<const Gtk::ComboBoxText*>(w);
-			if (combo->get_has_entry())
-				data[w->get_name()] = combo->get_entry_text();
-			else
-				data[w->get_name()] = combo->get_active_id();
-		} else if (GTK_IS_COMBO_BOX(w->gobj())) {
-			const Gtk::ComboBox* combo = static_cast<const Gtk::ComboBox*>(w);
-			if (combo->get_has_entry())
-				data[w->get_name()] = combo->get_entry_text();
-			else
-				data[w->get_name()] = combo->get_active_id();
-		} else if (GTK_IS_SWITCH(w->gobj())) {
-			data[w->get_name()] = std::to_string(static_cast<const Gtk::Switch*>(w)->get_active());
-//			} else if (GTK_IS_RADIO_BUTTON(w->gobj())) {
-//				data[w->get_name()] = std::to_string(static_cast<const Gtk::RadioButton*>(w)->get_());
-		} else if (GTK_IS_CHECK_BUTTON(w->gobj())) {
-			data[w->get_name()] = std::to_string(static_cast<const Gtk::CheckButton*>(w)->get_active());
-		} else if (GTK_IS_TOGGLE_BUTTON(w->gobj())) {
-			data[w->get_name()] = std::to_string(static_cast<const Gtk::ToggleButton*>(w)->get_active());
-		} else if (GTK_IS_FILE_CHOOSER_BUTTON(w->gobj())) {
-			data[w->get_name()] = static_cast<const Gtk::FileChooserButton*>(w)->get_filename();
-		} else if (GTK_IS_COLOR_BUTTON(w->gobj())) {
-			data[w->get_name()] = static_cast<const Gtk::ColorButton*>(w)->get_rgba().to_string();
-		} else if (GTK_IS_FONT_BUTTON(w->gobj())) {
-			// https://docs.gtk.org/Pango/type_func.FontDescription.from_string.html
-			PangoFontDescription* font_desc = gtk_font_chooser_get_font_desc(GTK_FONT_CHOOSER(w));
-			char* str = pango_font_description_to_string(font_desc);
-			pango_font_description_free(font_desc);
-			data[w->get_name()] = str;
-			g_free(str);
-		} else if (GTK_IS_SCALE_BUTTON(w->gobj())) {
-			data[w->get_name()] = std::to_string(static_cast<const Gtk::ScaleButton*>(w)->get_value());
-		} else if (GTK_IS_VOLUME_BUTTON(w->gobj())) {
-			data[w->get_name()] = std::to_string(static_cast<const Gtk::VolumeButton*>(w)->get_value());
-		} else if (GTK_IS_APP_CHOOSER_BUTTON(w->gobj())) {
-			data[w->get_name()] = static_cast<const Gtk::AppChooserButton*>(w)->get_app_info()->get_commandline();
-		} else if (GTK_IS_SCALE(w->gobj())) {
-			data[w->get_name()] = std::to_string(static_cast<const Gtk::Scale*>(w)->get_value());
-		} else if (GTK_IS_SPIN_BUTTON(w->gobj())) {
-			data[w->get_name()] = std::to_string(static_cast<const Gtk::SpinButton*>(w)->get_value());
-		} else if (GTK_IS_ENTRY(w->gobj())) {
-			data[w->get_name()] = static_cast<const Gtk::Entry*>(w)->get_text();
-		}
-	}
-	if (GTK_IS_CONTAINER(w->gobj())) {
-		for (const Gtk::Widget* c : static_cast<const Gtk::Container*>(w)->get_children())
-			fetch_data_in_widget(c, data);
-	}
-};
-
-static std::map<std::string, std::string>
-parse_dialog(const Gtk::Widget& dialog_contents)
-{
-	std::map<std::string, std::string> data;
-	fetch_data_in_widget(&dialog_contents, data);
-	return data;
-}
-
+const synfig::filesystem::Path studio::Plugin::user_config_filename{"user_config.json"};
+const synfig::filesystem::Path studio::Plugin::config_ui_filename{"configuration.ui"};
 
 studio::PluginString::PluginString(std::string fallback)
 	: fallback_(std::move(fallback))
@@ -266,7 +164,7 @@ studio::PluginStream studio::PluginScript::stream_from_name(const std::string& n
 	return default_value;
 }
 
-studio::PluginScript studio::PluginScript::load(const xmlpp::Node& node, const std::string& working_directory)
+studio::PluginScript studio::PluginScript::load(const xmlpp::Node& node, const synfig::filesystem::Path& working_directory)
 {
 	const xmlpp::Element& element = dynamic_cast<const xmlpp::Element&>(node);
 	PluginScript script;
@@ -301,6 +199,15 @@ bool studio::Plugin::is_valid() const
 	return !name.fallback().empty();
 }
 
+synfig::filesystem::Path studio::Plugin::user_config_filepath() const
+{
+	return dir / user_config_filename;
+}
+
+synfig::filesystem::Path studio::Plugin::config_ui_filepath() const
+{
+	return dir / config_ui_filename;
+}
 
 studio::ImportExport studio::ImportExport::load(const xmlpp::Node& node)
 {
@@ -332,10 +239,9 @@ bool studio::ImportExport::has_extension(const std::string& ext) const
 
 
 void
-studio::PluginManager::load_dir( const std::string &pluginsprefix )
+studio::PluginManager::load_dir( const std::string& pluginsprefix )
 {
-	
-	synfig::info("Loading plugins from %s", pluginsprefix.c_str());
+	synfig::info(_("Loading plugins from %s"), pluginsprefix.c_str());
 
 	try {
 		Glib::Dir dir(pluginsprefix);
@@ -349,12 +255,14 @@ studio::PluginManager::load_dir( const std::string &pluginsprefix )
 	} catch ( const Glib::FileError& e ) {
 		synfig::warning("Can't read plugin directory: %s", e.what().c_str());
 	}
+
+	signal_list_changed_.emit();
 } // END of synfigapp::PluginManager::load_dir()
 
 void
-studio::PluginManager::load_plugin( const std::string &file, const std::string &plugindir )
+studio::PluginManager::load_plugin( const synfig::filesystem::Path& file, const synfig::filesystem::Path& plugindir, bool notify )
 {
-	synfig::info("   Loading plugin: %s", synfig::filesystem::Path::basename(plugindir).c_str());
+	synfig::info(_("   Loading plugin: %s"), plugindir.filename().u8_str());
 
 	static int plugin_count = 0;
 	const std::string id = "plugin" + std::to_string(++plugin_count);
@@ -365,9 +273,8 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 		xmlpp::DomParser parser;
 		//parser.set_validate();
 		parser.set_substitute_entities(); //We just want the text to be resolved/unescaped automatically.
-		parser.parse_file(file);
-		if ( !parser )
-		{
+		parser.parse_file(file.u8string());
+		if ( !parser ) {
 			synfig::warning("Invalid plugin.xml file!");
 			return;
 		}
@@ -380,12 +287,12 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 		}
 
 		auto execlist = pNode->find("./exec");
-		if ( !execlist.empty() )
-		{
+		if ( !execlist.empty() ) {
 			Plugin plugin;
 			plugin.name = PluginString::load(*pNode, "name");
 			PluginScript script = PluginScript::load(*execlist[0], plugindir);
 			plugin.id = id;
+			plugin.dir = plugindir;
 
 			plugin.release = PluginString::load(*pNode, "release");
 			for ( const xmlpp::Node* node : pNode->find("./author") )
@@ -414,12 +321,9 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 			}
 			plugin.description = PluginString::load(*pNode, "description");
 
-			if ( !plugin.is_valid() || !script.is_valid() )
-			{
-				synfig::warning("Invalid plugin metadata description");
-			}
-			else
-			{
+			if ( !plugin.is_valid() || !script.is_valid() ) {
+				synfig::warning(_("Invalid plugin metadata description"));
+			} else {
 				scripts_.emplace(plugin.id, std::move(script));
 				plugins_.emplace_back(std::move(plugin));
 			}
@@ -430,13 +334,16 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 	}
 	catch(const std::exception& ex)
 	{
-		synfig::warning("Error while loading plugin.xml");
+		synfig::warning(_("Error while loading plugin.xml"));
 		std::cout << "Exception caught: " << ex.what() << std::endl;
 	}
+
+	if (notify)
+		signal_list_changed_.emit();
 }
 
 void studio::PluginManager::load_import_export(
-	const std::string& id, const std::string& plugindir, const xmlpp::Node* node,
+	const std::string& id, const synfig::filesystem::Path& plugindir, const xmlpp::Node* node,
 	const std::string& name, std::vector<ImportExport>& output
 )
 {
@@ -451,8 +358,7 @@ void studio::PluginManager::load_import_export(
 
 		ImportExport ie = ImportExport::load(*exporter_node);
 		PluginScript script = PluginScript::load(*execlist[0], plugindir);
-		if ( ie.is_valid() && script.is_valid() )
-		{
+		if ( ie.is_valid() && script.is_valid() ) {
 			ie.id  = id + "/" + name + std::to_string(number++);
 			scripts_.emplace(ie.id, std::move(script));
 			output.emplace_back(std::move(ie));
@@ -468,8 +374,7 @@ std::string studio::PluginManager::interpreter_executable(const std::string& int
 	// with SYNFIG_PYTHON_BINARY env variable:
 	std::string command;
 
-	if ( interpreter == "python" )
-	{
+	if ( interpreter == "python" ) {
 		std::vector<std::string> search_paths;
 		std::string custom_python_binary = Glib::getenv("SYNFIG_PYTHON_BINARY");
 		if (!custom_python_binary.empty()) {
@@ -502,9 +407,7 @@ std::string studio::PluginManager::interpreter_executable(const std::string& int
 		} else {
 			synfig::info("Python 3 binary found: "+command);
 		}
-	}
-	else
-	{
+	} else {
 		studio::App::dialog_message_1b(
 			"Error",
 			_("Error: Unsupported interpreter"),
@@ -519,14 +422,12 @@ std::string studio::PluginManager::interpreter_executable(const std::string& int
 
 bool studio::PluginManager::check_and_run_dialog(const PluginScript& script, std::string& dialog_args)
 {
-	if (!script.script.empty())
-	{
-		auto ui_file = script.working_directory + "/" + synfig::filesystem::Path::filename_sans_extension(script.script) + ".ui";
-		if (Glib::file_test(ui_file, Glib::FILE_TEST_EXISTS | Glib::FILE_TEST_IS_REGULAR))
-		{
+	if (!script.script.empty()) {
+		auto ui_file = (script.working_directory / script.script).replace_extension({".ui"});
+		if (Glib::file_test(ui_file.u8string(), Glib::FILE_TEST_EXISTS | Glib::FILE_TEST_IS_REGULAR)) {
 			std::string error_msg;
 			try {
-				auto builder = Gtk::Builder::create_from_file(ui_file);
+				auto builder = Gtk::Builder::create_from_file(ui_file.u8string());
 				Gtk::Widget* contents;
 				builder->get_widget("dialog_contents", contents);
 				if (!contents) {
@@ -542,14 +443,9 @@ bool studio::PluginManager::check_and_run_dialog(const PluginScript& script, std
 					int result = dialog.run();
 					if (result != Gtk::RESPONSE_ACCEPT)
 						return false;
-					auto dialog_data = parse_dialog(*contents);
+					auto dialog_data = JSON::parse_dialog(*contents);
 //					delete dialog;
-					for (const auto& d : dialog_data) {
-						if (!dialog_args.empty())
-							dialog_args.push_back(',');
-						dialog_args += synfig::strprintf("\"%s\":\"%s\"", JSON::escape_string(d.first).c_str(), JSON::escape_string(d.second).c_str());
-					}
-					dialog_args = "{" + dialog_args + "}";
+					dialog_args = JSON::stringify(dialog_data);
 				}
 			} catch (const Glib::FileError& ex) {
 				error_msg = ex.what();
@@ -561,8 +457,7 @@ bool studio::PluginManager::check_and_run_dialog(const PluginScript& script, std
 				error_msg = _("Unknown exception");
 			}
 
-			if (!error_msg.empty())
-			{
+			if (!error_msg.empty()) {
 				studio::App::dialog_message_1b("Error", synfig::strprintf(_("Plugin execution failed: %s"), error_msg.c_str()), _("User Interface failed to be load"), _("Close"));
 				return false;
 			}
@@ -574,8 +469,7 @@ bool studio::PluginManager::check_and_run_dialog(const PluginScript& script, std
 bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<std::string> args, const std::unordered_map<std::string,std::string>& view_state) const
 {
 	std::string exec = interpreter_executable(script.interpreter);
-	if ( exec.empty() )
-	{
+	if ( exec.empty() ) {
 		return false;
 	}
 
@@ -583,7 +477,7 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 	if (!check_and_run_dialog(script, dialog_data))
 		return false;
 
-	args.insert(args.begin(), script.script);
+	args.insert(args.begin(), script.script.u8string());
 	args.insert(args.begin(), exec);
 
 	std::string canvas_state;
@@ -631,7 +525,7 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 	studio::OneMoment one_moment;
 	try {
 		Glib::spawn_sync(
-			script.working_directory,
+			script.working_directory.u8string(),
 			args,
 			Glib::SPAWN_SEARCH_PATH,
 			Glib::SlotSpawnChildSetup(),
@@ -648,8 +542,7 @@ bool studio::PluginManager::run(const studio::PluginScript& script, std::vector<
 	handle_stream(script.stdout_behaviour, stdout_str);
 	handle_stream(script.stderr_behaviour, stderr_str);
 
-	if ( exit_status && (stderr_str.empty() || script.stderr_behaviour != PluginStream::Message) )
-	{
+	if ( exit_status && (stderr_str.empty() || script.stderr_behaviour != PluginStream::Message) ) {
 		studio::App::dialog_message_1b("Error", _("Plugin execution failed"), "details", _("Close"));
 	}
 
@@ -693,6 +586,27 @@ studio::Plugin studio::PluginManager::get_plugin(const std::string& id) const
 		}
 	}
 	return Plugin();
+}
+
+void studio::PluginManager::remove_plugin(const std::string& id)
+{
+	try {
+		auto plugin_it = std::find_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; });
+		if (plugin_it == plugins_.end())
+			return;
+		auto fileSystem = synfig::FileSystemNative::instance();
+		if (fileSystem->remove_recursive(plugin_it->dir)) {
+			plugins_.erase(plugin_it);
+			signal_list_changed_.emit();
+		}
+	} catch(const std::exception& e) {
+		studio::App::dialog_message_1b("Error", synfig::strprintf(_("Plugin execution failed: %s"), e.what()), _("Plugin Deletion Failed"), _("Close"));
+	}
+}
+
+sigc::signal<void>& studio::PluginManager::signal_list_changed()
+{
+	return signal_list_changed_;
 }
 
 studio::PluginScript::ScriptArgs studio::PluginManager::get_script_args(const std::string& script_id) const
