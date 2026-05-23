@@ -45,6 +45,8 @@
 #include <gui/localization.h>
 #include <gui/states/state_normal.h>
 #include <gui/widgets/widget_distance.h>
+#include <gui/widgets/widget_spin.h>
+#include <gui/widgets/widget_entry.h>
 #include <gui/widgets/widget_enum.h>
 #include <gui/workarea.h>
 
@@ -103,7 +105,7 @@ class studio::StateStar_Context : public sigc::trackable
 	Gtk::Label title_label;
 
 	Gtk::Label id_label;
-	Gtk::Entry id_entry;
+	Widget_Entry id_entry;
 	Gtk::Box id_box;
 
 	Gtk::Label layer_types_label;
@@ -127,15 +129,15 @@ class studio::StateStar_Context : public sigc::trackable
 
 	Gtk::Label number_of_points_label;
 	Glib::RefPtr<Gtk::Adjustment> number_of_points_adj;
-	Gtk::SpinButton	number_of_points_spin;
+	Widget_Spin	number_of_points_spin;
 
 	Gtk::Label radius_ratio_label;
 	Glib::RefPtr<Gtk::Adjustment> radius_ratio_adj;
-	Gtk::SpinButton	radius_ratio_spin;
+	Widget_Spin	radius_ratio_spin;
 
 	Gtk::Label angle_offset_label;
 	Glib::RefPtr<Gtk::Adjustment> angle_offset_adj;
-	Gtk::SpinButton	angle_offset_spin;
+	Widget_Spin	angle_offset_spin;
 
 	Gtk::Label regular_polygon_label;
 	Gtk::CheckButton regular_polygon_checkbutton;
@@ -143,19 +145,19 @@ class studio::StateStar_Context : public sigc::trackable
 
 	Gtk::Label outer_width_label;
 	Glib::RefPtr<Gtk::Adjustment> outer_width_adj;
-	Gtk::SpinButton	outer_width_spin;
+	Widget_Spin	outer_width_spin;
 
 	Gtk::Label inner_tangent_label;
 	Glib::RefPtr<Gtk::Adjustment> inner_tangent_adj;
-	Gtk::SpinButton	inner_tangent_spin;
+	Widget_Spin	inner_tangent_spin;
 
 	Gtk::Label inner_width_label;
 	Glib::RefPtr<Gtk::Adjustment> inner_width_adj;
-	Gtk::SpinButton	inner_width_spin;
+	Widget_Spin	inner_width_spin;
 
 	Gtk::Label outer_tangent_label;
 	Glib::RefPtr<Gtk::Adjustment> outer_tangent_adj;
-	Gtk::SpinButton	outer_tangent_spin;
+	Widget_Spin	outer_tangent_spin;
 
 	Gtk::Label invert_label;
 	Gtk::CheckButton invert_checkbutton;

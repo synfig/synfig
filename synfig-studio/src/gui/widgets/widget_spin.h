@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file widgets/widget_distance.h
+/*!	\file widgets/widget_spin.h
 **	\brief Template Header
 **
 **	\legal
@@ -25,14 +25,13 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_WIDGET_DISTANCE_H
-#define __SYNFIG_STUDIO_WIDGET_DISTANCE_H
+#ifndef __SYNFIG_STUDIO_WIDGET_SPIN_H
+#define __SYNFIG_STUDIO_WIDGET_SPIN_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/adjustment.h>
 #include <gtkmm/spinbutton.h>
-#include <synfig/distance.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -42,30 +41,23 @@
 
 namespace studio {
 
-class Widget_Distance : public Gtk::SpinButton
+class Widget_Spin : public Gtk::SpinButton
 {
-	mutable synfig::Distance distance_;
-
-	Glib::RefPtr<Gtk::Adjustment> adjustment;
-
 	bool first_selection = false;
 
 protected:
 
-	int	on_input(double* new_value);
-	bool on_output();
-
-	bool on_key_press_event(GdkEventKey* event);
-	bool on_key_release_event(GdkEventKey* event);
 	void after_event(GdkEvent *event);
 	bool on_event(GdkEvent* event);
 
 public:
-	void set_value(const synfig::Distance &data);
-	synfig::Distance get_value()const;
-	Widget_Distance();
-	~Widget_Distance();
-}; // END of class Widget_Distance
+	Widget_Spin(Glib::RefPtr<Gtk::Adjustment >& adjustment,
+				double 	climb_rate = 0.0,
+				guint 	digits = 0
+				);
+	Widget_Spin();
+	~Widget_Spin();
+}; // END of class Widget_Spin
 
 }; // END of namespace studio
 

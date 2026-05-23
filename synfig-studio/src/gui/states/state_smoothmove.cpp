@@ -46,6 +46,7 @@
 #include <gui/onemoment.h>
 #include <gui/states/state_normal.h>
 #include <gui/workarea.h>
+#include <gui/widgets/widget_spin.h>
 
 #include <synfig/general.h>
 
@@ -105,7 +106,7 @@ class studio::StateSmoothMove_Context : public sigc::trackable
 	Gtk::Label title_label;
 
 	Glib::RefPtr<Gtk::Adjustment> adj_radius;
-	Gtk::SpinButton  spin_radius;
+	Widget_Spin spin_radius;
 	Gtk::Label spin_label;
 
 	float pressure;
