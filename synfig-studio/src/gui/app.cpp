@@ -1750,35 +1750,35 @@ void App::init(const synfig::String& rootpath)
 		// are displayed in toolbox labels
 		studio_init_cb.task(_("Init Tools..."));
 		/* editing tools */
-		state_manager->add_state(&state_normal);
-		state_manager->add_state(&state_smooth_move);
-		state_manager->add_state(&state_scale);
-		state_manager->add_state(&state_rotate);
-		state_manager->add_state(&state_mirror);
+		state_manager->register_state(&state_normal);
+		state_manager->register_state(&state_smooth_move);
+		state_manager->register_state(&state_scale);
+		state_manager->register_state(&state_rotate);
+		state_manager->register_state(&state_mirror);
 
 		/* geometry */
-		state_manager->add_state(&state_circle);
-		state_manager->add_state(&state_rectangle);
-		state_manager->add_state(&state_star);
-		if(!getenv("SYNFIG_DISABLE_POLYGON")) state_manager->add_state(&state_polygon); // Enabled - for working without ducks
-		state_manager->add_state(&state_gradient);
+		state_manager->register_state(&state_circle);
+		state_manager->register_state(&state_rectangle);
+		state_manager->register_state(&state_star);
+		if(!getenv("SYNFIG_DISABLE_POLYGON")) state_manager->register_state(&state_polygon); // Enabled - for working without ducks
+		state_manager->register_state(&state_gradient);
 
 		/* bline tools */
-		state_manager->add_state(&state_bline);
-		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw ); // Enabled for now.  Let's see whether they're good enough yet.
-		state_manager->add_state(&state_lasso);
-		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
-		state_manager->add_state(&state_fill);
-		state_manager->add_state(&state_eyedrop);
+		state_manager->register_state(&state_bline);
+		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->register_state(&state_draw ); // Enabled for now.  Let's see whether they're good enough yet.
+		state_manager->register_state(&state_lasso);
+		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->register_state(&state_width); // Enabled since 0.61.09
+		state_manager->register_state(&state_fill);
+		state_manager->register_state(&state_eyedrop);
 
 		/* skeleton tool*/
-		state_manager->add_state(&state_bone);
+		state_manager->register_state(&state_bone);
 
 		/* other */
-		state_manager->add_state(&state_text);
-		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
-		if(!getenv("SYNFIG_DISABLE_BRUSH"  ) && App::enable_experimental_features) state_manager->add_state(&state_brush);
-		state_manager->add_state(&state_zoom);
+		state_manager->register_state(&state_text);
+		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->register_state(&state_sketch);
+		if(!getenv("SYNFIG_DISABLE_BRUSH"  ) && App::enable_experimental_features) state_manager->register_state(&state_brush);
+		state_manager->register_state(&state_zoom);
 
 
 		device_tracker->load_preferences();
