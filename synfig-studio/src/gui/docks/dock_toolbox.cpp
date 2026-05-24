@@ -213,7 +213,7 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 		std::string tooltip_string = state->get_local_name();
 
 		Gtk::AccelKey key;
-		if (Gtk::AccelMap::lookup_entry(std::string("<Actions>/action_group_state_manager/state-") + state->get_name(), key)) {
+		if (Gtk::AccelMap::lookup_entry(std::string("<Actions>/action_group_state_manager/set-state-") + state->get_name(), key)) {
 			tooltip_string += "  ";
 			tooltip_string += gtk_accelerator_get_label(key.get_key(), GdkModifierType(key.get_mod()));
 		}
