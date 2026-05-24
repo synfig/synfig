@@ -250,7 +250,7 @@ Action::ValueDescExport::prepare()
 			throw Error(_("Can only export Canvas when used as constant parameter"));
 		Canvas::Handle canvas(value_desc.get_value().get(Canvas::Handle()));
 
-		bool external = !canvas->parent();
+		bool external = !canvas->parent() || canvas->get_root() != get_canvas()->get_root();
 		Canvas::Handle prev_canvas = canvas;
 
 		// clone canvas (all code that clones a canvas has this comment)

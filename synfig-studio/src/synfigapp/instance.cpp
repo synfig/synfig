@@ -88,6 +88,28 @@
 using namespace synfig;
 using namespace synfigapp;
 
+namespace {
+
+bool is_external_canvas(Canvas::LooseHandle owner_canvas, Canvas::Handle sub_canvas)
+{
+	return sub_canvas
+		&& !sub_canvas->is_inline()
+		&& (!owner_canvas || sub_canvas->get_root() != owner_canvas->get_root());
+}
+
+std::string get_canvas_export_name(Canvas::Handle canvas)
+{
+	std::string fname;
+	if (canvas && !canvas->is_root())
+		fname = canvas->get_id();
+	if (fname.empty() && canvas)
+		fname = filesystem::Path::filename_sans_extension(filesystem::Path::basename(canvas->get_file_name()));
+
+	return fname;
+}
+
+}
+
 /* === M A C R O S ========================================================= */
 
 /* === G L O B A L S ======================================================= */
@@ -199,8 +221,7 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 		if (!paste_canvas) continue;
 
 		Canvas::Handle sub_canvas = paste_canvas->get_sub_canvas();
-		if (!sub_canvas) continue;
-		if (!sub_canvas->is_root()) continue;
+		if (!is_external_canvas(canvas, sub_canvas)) continue;
 
 		if (imported.count(sub_canvas.get()) != 0) {
 			// link already exported canvas
@@ -227,7 +248,7 @@ Instance::import_external_canvas(Canvas::Handle canvas, std::map<Canvas*, Canvas
 			imported[sub_canvas.get()] = nullptr;
 
 			// generate name
-			std::string fname = filesystem::Path::filename_sans_extension(filesystem::Path::basename(sub_canvas->get_file_name()));
+			std::string fname = get_canvas_export_name(sub_canvas);
 			static const char bad_chars[]=" :#@$^&()*";
 			for (std::string::iterator j = fname.begin(); j != fname.end(); ++j)
 				for (const char* k = bad_chars; *k != 0; ++k)
