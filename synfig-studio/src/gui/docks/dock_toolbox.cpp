@@ -113,6 +113,9 @@ Dock_Toolbox::Dock_Toolbox():
 	signal_drag_data_received().connect( sigc::mem_fun(*this, &studio::Dock_Toolbox::on_drop_drag_data_received) );
 
 	App::signal_present_all().connect(sigc::mem_fun0(*this,&Dock_Toolbox::present));
+
+	App::get_state_manager()->signal_state_registered().connect(sigc::mem_fun(*this, &Dock_Toolbox::add_state));
+	App::get_state_manager()->signal_state_selected().connect(sigc::mem_fun(*this, &Dock_Toolbox::change_state_));
 }
 
 Dock_Toolbox::~Dock_Toolbox()
@@ -198,7 +201,7 @@ Dock_Toolbox::add_state(const Smach::state_base *state)
 {
 	assert(state);
 
-	String name=state->get_name();
+	const String name = state->get_name();
 
 	Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton());
 	tool_button->set_group(radio_tool_button_group);
