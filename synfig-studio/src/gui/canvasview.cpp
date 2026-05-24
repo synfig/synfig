@@ -626,7 +626,7 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 	canvas_interface()->signal_layer_param_changed().connect(
 		sigc::hide(sigc::hide( SLOT_EVENT(EVENT_REFRESH_DUCKS))));
 	canvas_interface()->signal_keyframe_properties().connect(
-		sigc::mem_fun(*this,&CanvasView::show_keyframe_dialog));
+		sigc::mem_fun(*this, &CanvasView::show_dialog_for_selected_keyframe));
 
 	//MUCH TIME STUFF TAKES PLACE IN HERE
 	refresh_rend_desc();
@@ -2955,7 +2955,7 @@ CanvasView::on_keyframe_remove_pressed()
 }
 
 void
-CanvasView::show_keyframe_dialog()
+CanvasView::show_dialog_for_selected_keyframe()
 {
 	Glib::RefPtr<Gtk::TreeSelection> selection(keyframe_tree->get_selection());
 	if(selection->get_selected())
@@ -2970,7 +2970,7 @@ CanvasView::show_keyframe_dialog()
 }
 
 void
-CanvasView::on_keyframe_toggle()
+CanvasView::toggle_selected_keyframe()
 {
 	Glib::RefPtr<Gtk::TreeSelection> selection(keyframe_tree->get_selection());
 	if(selection->get_selected())
@@ -2994,7 +2994,7 @@ CanvasView::on_keyframe_toggle()
 }
 
 void
-CanvasView::on_keyframe_description_set()
+CanvasView::set_description_for_selected_keyframe()
 {
 	Glib::RefPtr<Gtk::TreeSelection> selection(keyframe_tree->get_selection());
 	if(selection->get_selected())
