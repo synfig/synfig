@@ -69,8 +69,9 @@ public:
 
 	Glib::RefPtr<Gtk::ActionGroup> get_action_group();
 
-	sigc::signal<void, const Smach::state_base*> signal_state_registered() { return signal_state_registered_; };
-	sigc::signal<void, const Smach::state_base*> signal_state_selected() { return signal_state_selected_; };
+	sigc::signal<void, const Smach::state_base*>& signal_state_registered() { return signal_state_registered_; };
+
+	sigc::signal<void, const Smach::state_base*>& signal_state_selected() { return signal_state_selected_; };
 };
 
 }; // END of namespace studio
