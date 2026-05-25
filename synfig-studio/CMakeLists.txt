@@ -7,6 +7,8 @@ project(synfigstudio)
 # the rest is done via target_compile_features instead
 set(CMAKE_CXX_STANDARD 11)
 
+add_compile_definitions(DEVELOPMENT_SNAPSHOT=1)
+
 add_subdirectory(src)
 
 add_subdirectory(brushes)
