@@ -1085,6 +1085,26 @@ void Widget_Preview::on_zoom_entry_activated()
 	preview_window.grab_focus();
 }
 
+void Widget_Preview::set_zoom_level(const std::string &zoom_level)
+{
+	Gtk::Entry* entry = zoom_preview.get_entry();
+	if (!entry)
+		return;
+
+	if (zoom_level == "25")
+		entry->set_text("25%");
+	else if (zoom_level == "50")
+		entry->set_text("50%");
+	else if (zoom_level == "100")
+		entry->set_text("100%");
+	else if (zoom_level == "200")
+		entry->set_text("200%");
+	else
+		entry->set_text(_("Fit"));
+
+	preview_draw();
+}
+
 void Widget_Preview::hide_toolbar()
 {
 	toolbar->hide();

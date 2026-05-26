@@ -335,7 +335,6 @@ About::About()
 	}
 
 	extra_info += synfig::strprintf(_("Built with:\n"));
-	extra_info += synfig::strprintf(_("ETL %s\n"), ETL_VERSION);
 	extra_info += synfig::strprintf(_("Synfig API %s\n"), SYNFIG_VERSION);
 	extra_info += synfig::strprintf(_("Synfig library %d\n"), SYNFIG_LIBRARY_VERSION);
 	extra_info += synfig::strprintf(_("GTK+ %d.%d.%d\n"), GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);

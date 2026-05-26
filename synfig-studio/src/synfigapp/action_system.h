@@ -34,9 +34,8 @@
 
 #include <sigc++/sigc++.h>
 
-#include <ETL/handle>
-
 #include <synfig/canvas.h>
+#include <synfig/handle.h>
 
 #include "action.h"
 #include "uimanager.h"

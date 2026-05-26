@@ -37,10 +37,9 @@
 #include <memory>
 #include <set>
 
-#include <ETL/handle>
-
 #include <sigc++/sigc++.h>
 
+#include <synfig/handle.h>
 #include <synfig/vector.h>
 #include <synfig/string.h>
 #include <synfig/real.h>

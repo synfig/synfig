@@ -46,7 +46,8 @@
 #include <gui/app.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
-
+#include <gui/modules/mod_palette/dock_paledit.h>
+#include <gui/widgets/widget_color.h>
 
 #endif
 
@@ -374,6 +375,16 @@ Widget_ColorEdit::Widget_ColorEdit():
 		notebook->append_page(*yuv_box,_("YUV"));
 		notebook->append_page(*hvs_box,_("HSV"));
 	}
+	{
+        auto pal_box(manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL)));
+		pal_table = manage(new Gtk::Grid());
+		pal_table->set_row_homogeneous(true);
+		pal_table->set_column_homogeneous(true);
+        pal_box->add(*pal_table);
+        notebook->append_page(*pal_box, _("Palette"));
+        notebook->signal_switch_page().connect(
+            sigc::mem_fun(*this, &Widget_ColorEdit::on_palette_tab_switched));
+    }
 
 	color=Color(0,0,0,0);
 
@@ -485,6 +496,76 @@ void Widget_ColorEdit::setHVSColor(const synfig::Color& color)
 	}
 	hvsColorWidget->set_previous_color(hvsColorWidget->get_current_color()); //We can't use it there, cause color changes in realtime.
 	colorHVSChanged = false;
+}
+void Widget_ColorEdit::on_palette_tab_switched(Gtk::Widget*, guint page)
+{
+    if (page != 3) 
+		return;
+    refresh_palette_tab();
+}
+
+void Widget_ColorEdit::refresh_palette_tab()
+{
+    if (!pal_table) 
+		return;
+
+    // clear existing children
+	for (auto child : pal_table->get_children())
+    	delete child;
+
+    if (!Dock_PalEdit::get_instance()) 
+		return;
+
+    const synfig::Palette& palette = Dock_PalEdit::get_instance()->get_palette();
+    const int width = 12;
+    int i = 0;
+
+    for (const auto& item : palette) {
+        Widget_Color* wc = manage(new Widget_Color());
+        wc->set_value(item.color);
+        wc->set_size_request(40, 40);  
+		wc->signal_activate().connect(
+			sigc::bind(
+				sigc::mem_fun(*this, &Widget_ColorEdit::on_palette_color_clicked),
+				item.color));
+		
+		wc->signal_right_click().connect(
+   			sigc::bind(
+        		sigc::mem_fun(*this, &Widget_ColorEdit::on_palette_color_right_clicked),
+        item.color));
+        int col = i % width;
+        int row = i / width;
+        pal_table->attach(*wc, col, row, 1, 1);
+        i++;
+    }
+
+    pal_table->show_all();
+}
+
+void
+Widget_ColorEdit::on_palette_color_right_clicked(const synfig::Color& color)
+{
+    Gtk::Menu* menu(manage(new Gtk::Menu()));
+    menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
+
+    // Set as fill
+    Gtk::MenuItem* item = manage(new Gtk::MenuItem(_("Set as Fill Color")));
+    item->signal_activate().connect(
+        sigc::bind(
+            sigc::mem_fun(*this, &Widget_ColorEdit::on_palette_color_clicked),
+            color));
+    item->show();
+    menu->append(*item);
+
+
+    menu->popup(3, gtk_get_current_event_time());
+}
+
+void
+Widget_ColorEdit::on_palette_color_clicked(const synfig::Color& color)
+{
+    set_value(color);
+    signal_value_changed_();
 }
 
 void

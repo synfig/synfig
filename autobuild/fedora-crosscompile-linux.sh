@@ -1787,20 +1787,6 @@ fi
 PATH="$PATH_BAK"
 }
 
-#ETL
-mketl()
-{
-cd $SCRIPTPATH/../ETL
-make clean || true
-run_native autoreconf --install --force
-./configure --host=${HOST} --prefix=${PREFIX} \
-	--includedir=${PREFIX}/include --libdir=${PREFIX}/lib \
-	--bindir=${PREFIX}/bin \
-	$DEBUG_OPT
-make -j${THREADS}
-make install
-}
-
 #synfig-core
 mksynfig()
 {
@@ -2318,7 +2304,6 @@ mkall()
 	#	mkgtkglextmm
 	#fi
 	
-	mketl
 	mksynfig
 	mksynfigstudio
 	mkconfig

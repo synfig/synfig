@@ -31,6 +31,7 @@
 #include <gui/resourcehelper.h>
 
 #include <synfig/debug/log.h>
+#include <synfig/layers/layer_switch.h>
 
 #include <synfigapp/action.h>
 #include <synfigapp/canvasinterface.h>

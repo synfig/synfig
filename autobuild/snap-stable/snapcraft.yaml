@@ -93,16 +93,8 @@ parts:
       - freeglut3
       - python3-lxml # lottie exporter
 
-  etl:
-    after: [synfig-deps]
-    plugin: autotools
-    source: https://github.com/synfig/synfig/releases/download/v1.4.2/ETL-1.4.2.tar.gz
-    source-checksum: sha256/e54192d284df16305ddfdfcc5bdfe93e139e6db5bc283dd4bab2413ebbead7c7
-    configflags: &cfgflags
-      - --prefix=/usr
-
   synfig-core:
-    after: [etl]
+    after: [synfig-deps]
     plugin: autotools
     source: https://github.com/synfig/synfig/releases/download/v1.4.2/synfig-1.4.2.tar.gz
     source-checksum: sha256/e66688b908ab2f05f87cc5a364f958a1351f101ccab3b3ade33a926453002f4e

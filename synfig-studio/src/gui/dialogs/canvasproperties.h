@@ -30,10 +30,10 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
-
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
+
+#include <synfig/handle.h>
 
 #include <gui/renddesc.h>
 

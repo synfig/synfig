@@ -30,7 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
+#include <synfig/handle.h>
 #include <synfig/filesystem_path.h>
 
 /* === M A C R O S ========================================================= */

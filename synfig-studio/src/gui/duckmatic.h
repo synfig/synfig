@@ -32,8 +32,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <ETL/handle>
-
 #include <gui/duck.h>
 
 #include <list>
@@ -48,6 +46,7 @@
 #include <synfig/time.h>
 #include <synfig/color.h>
 #include <synfig/guidset.h>
+#include <synfig/handle.h>
 
 /* === M A C R O S ========================================================= */
 

@@ -36,7 +36,7 @@
 #include <synfig/surface.h>
 #include <synfig/rendering/software/surfacesw.h>
 #include <math.h>
-#include <ETL/handle>
+#include <synfig/handle.h>
 #include <synfig/layers/layer_bitmap.h>
 #include <synfig/vector.h>
 

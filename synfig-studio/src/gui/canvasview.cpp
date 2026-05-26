@@ -75,9 +75,9 @@
 #include <gui/workarea.h>
 
 #include <pangomm.h>
-#include <sstream>
 #include <string>
 
+#include <synfig/layers/layer_switch.h>
 #include <synfig/rendering/renderer.h>
 #include <synfig/valuenodes/valuenode_animated.h>
 
@@ -626,7 +626,7 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 	canvas_interface()->signal_layer_param_changed().connect(
 		sigc::hide(sigc::hide( SLOT_EVENT(EVENT_REFRESH_DUCKS))));
 	canvas_interface()->signal_keyframe_properties().connect(
-		sigc::mem_fun(*this,&CanvasView::show_keyframe_dialog));
+		sigc::mem_fun(*this, &CanvasView::show_dialog_for_selected_keyframe));
 
 	//MUCH TIME STUFF TAKES PLACE IN HERE
 	refresh_rend_desc();
@@ -2955,7 +2955,7 @@ CanvasView::on_keyframe_remove_pressed()
 }
 
 void
-CanvasView::show_keyframe_dialog()
+CanvasView::show_dialog_for_selected_keyframe()
 {
 	Glib::RefPtr<Gtk::TreeSelection> selection(keyframe_tree->get_selection());
 	if(selection->get_selected())
@@ -2970,7 +2970,7 @@ CanvasView::show_keyframe_dialog()
 }
 
 void
-CanvasView::on_keyframe_toggle()
+CanvasView::toggle_selected_keyframe()
 {
 	Glib::RefPtr<Gtk::TreeSelection> selection(keyframe_tree->get_selection());
 	if(selection->get_selected())
@@ -2994,7 +2994,7 @@ CanvasView::on_keyframe_toggle()
 }
 
 void
-CanvasView::on_keyframe_description_set()
+CanvasView::set_description_for_selected_keyframe()
 {
 	Glib::RefPtr<Gtk::TreeSelection> selection(keyframe_tree->get_selection());
 	if(selection->get_selected())
@@ -3034,9 +3034,11 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 	if(toggling_ducks_)
 		return;
 	toggling_ducks_=true;
+
+	Duckmatic::Type check_type = type;
 	if(type & Duck::TYPE_WIDTH)
 		type=type|Duck::TYPE_WIDTHPOINT_POSITION;
-	bool is_currently_on(work_area->get_type_mask()&type);
+	bool is_currently_on(work_area->get_type_mask()&check_type);
 
 	if(is_currently_on)
 		work_area->set_type_mask(work_area->get_type_mask()-type);
@@ -3308,8 +3310,18 @@ CanvasView::on_preview_option()
 			if(!po)
 			{
 				po = Dialog_PreviewOptions::create();
-				po->set_fps(r.get_frame_rate()/2);
 				set_ext_widget("prevoptions",po);
+			}
+
+			if (App::enable_preview_defaults)
+			{
+				po->set_zoom(App::preview_quality);
+				po->set_fps(App::preview_fps);
+			}
+			else
+			{
+				po->set_zoom(0.5f);
+				po->set_fps(r.get_frame_rate()/2);
 			}
 
 			if (!po->get_begin_override())
@@ -3346,6 +3358,10 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 
 	preview_dialog.set_default_size(700,510);
 	preview_dialog.set_preview(prev.get());
+	if (App::enable_preview_defaults)
+		preview_dialog.get_widget().set_zoom_level(App::preview_zoom_level);
+	else
+		preview_dialog.get_widget().set_zoom_level("fit");
 	preview_dialog.present();
 
 	// Preview Window created, the action can be enabled

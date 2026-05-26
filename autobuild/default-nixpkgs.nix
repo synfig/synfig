@@ -28,14 +28,6 @@ with import <nixpkgs> {};
 let
   version = "git";
 
-  ETL = stdenv.mkDerivation rec {
-    name = "ETL-${version}";
-
-    src = ../ETL;
-
-    nativeBuildInputs = [ autoreconfHook ];
-  };
-
   synfig = stdenv.mkDerivation rec {
     name = "synfig-${version}";
 
@@ -47,7 +39,7 @@ let
     nativeBuildInputs = [ pkgconfig autoreconfHook gettext ];
 
     buildInputs = [
-      ETL cairo fftw glibmm intltool libjpeg libsigcxx libxmlxx
+      cairo fftw glibmm intltool libjpeg libsigcxx libxmlxx
       mlt imagemagick pango which
     ];
 
@@ -64,7 +56,7 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [ pkgconfig autoreconfHook gettext ];
   buildInputs = [
-    ETL cairo fftw glibmm gnome3.defaultIconTheme gtk3 gtkmm3
+    cairo fftw glibmm gnome3.defaultIconTheme gtk3 gtkmm3
     imagemagick intltool libjack2 libsigcxx libxmlxx makeWrapper mlt
     synfig which
   ];

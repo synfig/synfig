@@ -55,6 +55,8 @@
 
 #endif
 
+studio::Dock_PalEdit* studio::Dock_PalEdit::instance = nullptr;
+
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
@@ -125,6 +127,12 @@ Dock_PalEdit::Dock_PalEdit():
 	//palette_settings(new PaletteSettings(this,"colors")),
 	table(2,2,false)
 {
+	if (instance) {
+		synfig::warning("Dock_PalEdit: only one instance should exist.");
+		return;
+	}
+	instance = this;
+	
 	// Make Palette Editor toolbar buttons small for space efficiency
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
@@ -228,7 +236,9 @@ Dock_PalEdit::Dock_PalEdit():
 
 Dock_PalEdit::~Dock_PalEdit()
 {
+	instance = nullptr;
 	//delete palette_settings;
+
 }
 
 void
@@ -355,7 +365,7 @@ Dock_PalEdit::show_menu(int i)
 			i ));
 	menu->append(*item);
 
-	item = image_menu_item("hex_icon", _("Add clipboard color"));
+	item = image_menu_item("hex_icon", _("Copy hex color code"));
 	item->signal_activate().connect(
 		sigc::bind(
 			sigc::mem_fun(*this,&studio::Dock_PalEdit::copy_color),

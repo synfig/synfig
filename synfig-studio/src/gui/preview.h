@@ -29,7 +29,6 @@
 #define __SYNFIG_PREVIEW_H
 
 /* === H E A D E R S ======================================================= */
-#include <ETL/handle>
 
 #include <gdkmm/pixbuf.h>
 
@@ -52,6 +51,7 @@
 
 #include <synfig/canvas.h>
 #include <synfig/clock.h>
+#include <synfig/handle.h>
 #include <synfig/soundprocessor.h>
 #include <synfig/time.h>
 
@@ -274,6 +274,7 @@ public:
 
 	bool get_loop_flag() const {return b_loop->get_active();}
 	void set_loop_flag(bool b) {return b_loop->set_active(b);}
+	void set_zoom_level(const std::string &zoom_level);
 
 	void on_dialog_show();
 	void on_dialog_hide();

@@ -617,9 +617,9 @@ public:
 
 	void add_layer(synfig::String x);
 
-	void show_keyframe_dialog();
-	void on_keyframe_toggle();
-	void on_keyframe_description_set();
+	void show_dialog_for_selected_keyframe();
+	void toggle_selected_keyframe();
+	void set_description_for_selected_keyframe();
 
 	void import_file();
 	void import_sequence();

@@ -42,8 +42,8 @@
 #include <glibmm/threads.h>
 #include <sigc++/signal.h>
 
-#include <ETL/handle>
 #include "guid.h"
+#include "handle.h"
 #include "interpolation.h"
 #include "time.h"
 

@@ -102,22 +102,22 @@ Dock_Keyframes::~Dock_Keyframes()
 void
 Dock_Keyframes::show_keyframe_properties()
 {
-	if(get_canvas_view())
-		get_canvas_view()->show_keyframe_dialog();
+	if (get_canvas_view())
+		get_canvas_view()->show_dialog_for_selected_keyframe();
 }
 
 void
 Dock_Keyframes::keyframe_toggle()
 {
-	if(get_canvas_view())
-		get_canvas_view()->on_keyframe_toggle();
+	if (get_canvas_view())
+		get_canvas_view()->toggle_selected_keyframe();
 }
 
 void
 Dock_Keyframes::keyframe_description_set()
 {
-	if(get_canvas_view())
-		get_canvas_view()->on_keyframe_description_set();
+	if (get_canvas_view())
+		get_canvas_view()->set_description_for_selected_keyframe();
 }
 
 /*! \fn Dock_Keyframes::refresh_rend_desc()

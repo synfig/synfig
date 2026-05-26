@@ -3,7 +3,6 @@ VERSION=0.61.03
 
 COREDIR=synfig-core
 STUDIODIR=synfig-studio
-ETLDIR=etl
 
 OUTPUTDIR=output
 
@@ -70,15 +69,7 @@ studio-src:
 	make -C $(STUDIODIR) dist
 	cp -r $(STUDIODIR)/*.gz $(OUTPUTDIR)
 
-etl-src:
-	[ -d $(OUTPUTDIR) ] || mkdir $(OUTPUTDIR)
-	rm -fr $(ETLDIR)
-	svn export https://svn.voria.com/code/ETL/trunk $(ETLDIR) || exit 2
-	cd $(ETLDIR) && autoreconf --force --install && ./configure
-	make -C $(ETLDIR) dist
-	cp -r $(ETLDIR)/*.gz $(OUTPUTDIR)
-
-src: etl-src core-src studio-src
+src: core-src studio-src
 
 osx: core-osx studio-osx
 
@@ -87,6 +78,5 @@ w32: core-w32 studio-w32
 clean:
 	rm -fr $(COREDIR)
 	rm -fr $(STUDIODIR)
-	rm -fr $(ETLDIR)
 	rm -fr $(OUTPUTDIR)
 

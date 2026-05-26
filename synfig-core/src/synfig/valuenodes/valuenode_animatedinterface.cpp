@@ -41,8 +41,6 @@
 #include <list>
 #include <stdexcept>
 
-#include <ETL/handle>
-
 #include <synfig/bezier.h>
 #include <synfig/canvas.h>
 #include <synfig/general.h>

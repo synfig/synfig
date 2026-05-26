@@ -51,6 +51,7 @@
 #include <gui/workarea.h>
 
 #include <synfig/general.h>
+#include <synfig/layers/layer_switch.h>
 
 #include <synfigapp/main.h>
 #include <synfigapp/actions/layerpaint.h>
