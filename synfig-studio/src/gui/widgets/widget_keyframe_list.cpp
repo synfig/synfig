@@ -65,6 +65,11 @@ Widget_Keyframe_List::get_keyframe_around(Time t, bool ignore_disabled)
 	KeyframeList::iterator ret(kf_list->end());
 	Keyframe* kf = nullptr;
 
+	if (kf_list->find(t, ret)) {
+		if (!ignore_disabled || ret->active())
+			return &*ret;
+	}
+
 	Time p_t, n_t;
 	kf_list->find_prev_next(t, p_t, n_t, ignore_disabled);
 
