@@ -141,6 +141,8 @@ software::Contour::render_polyspan(
 		cover += cur_mark->cover;
 
 		// accumulate for the current pixel
+		// Early exit when we know alpha will be 1 (fully covered) to avoid unnecessary iterations
+		const bool is_non_zero_winding = winding_style == rendering::Contour::WINDING_NON_ZERO;
 		while(++cur_mark != covers.end())
 		{
 			if (y != cur_mark->y || x != cur_mark->x)
@@ -148,6 +150,21 @@ software::Contour::render_polyspan(
 
 			area += cur_mark->area;
 			cover += cur_mark->cover;
+
+			// Early exit optimization: for non-zero winding, if cover > 1, alpha is guaranteed to be 1
+			// This avoids iterating through all marks when the pixel is already fully covered
+			if (is_non_zero_winding && cover > 1 && area >= cover) {
+				alpha = 1.0;
+				if (invert) alpha = 0.0;
+				if (antialias) {
+					if (alpha) p.put_value_alpha(alpha);
+				} else {
+					if (alpha >= .5) p.put_value();
+				}
+				p.inc_x();
+				++x;
+				goto pixel_done;
+			}
 		}
 
 		// draw pixel - based on covered area
@@ -168,6 +185,8 @@ software::Contour::render_polyspan(
 			p.inc_x();
 			++x;
 		}
+
+pixel_done:
 
 		// if we're done, don't use iterator and exit
 		if (cur_mark == end_mark) break;
