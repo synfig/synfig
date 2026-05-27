@@ -63,8 +63,125 @@
 
 #include <synfig/general.h>
 #include <synfig/os.h>
+#include "pluginmanager.h"
 
 #endif
+
+namespace JSON {
+   
+    void Parser::skip_whitespace() {
+        while (input_[pos_] == ' ' || input_[pos_] == '\n' || 
+               input_[pos_] == '\r' || input_[pos_] == '\t')
+            pos_++;
+    }
+    
+    std::string Parser::parse_string() {
+        pos_++;
+        std::string value;
+        while (input_[pos_] != '"' || (pos_ > 0 && input_[pos_-1] == '\\')) {
+            if (input_[pos_] == '\\') {
+                pos_++;
+                switch (input_[pos_]) {
+                    case '"': value += '"'; break;
+                    case '\\': value += '\\'; break;
+                    case '/': value += '/'; break;
+                    case 'b': value += '\b'; break;
+                    case 'f': value += '\f'; break;
+                    case 'n': value += '\n'; break;
+                    case 'r': value += '\r'; break;
+                    case 't': value += '\t'; break;
+                    case 'u': {
+                        // Skip unicode handling for now
+                        pos_ += 4;
+                        value += '?';
+                        break;
+                    }
+                    default: value += input_[pos_];
+                }
+            } else {
+                value += input_[pos_];
+            }
+            pos_++;
+        }
+        pos_++; // Skip closing quote
+        return value;
+    }
+    
+    std::map<std::string, std::string> Parser::parse_object() {
+        pos_++; // Skip opening brace
+        std::map<std::string, std::string> object;
+        
+        while (true) {
+            skip_whitespace();
+            if (input_[pos_] == '}') {
+                pos_++;
+                break;
+            }
+            
+            if (!object.empty()) {
+                if (input_[pos_] != ',')
+                    throw std::runtime_error("Expected comma in object");
+                pos_++;
+                skip_whitespace();
+            }
+            
+            if (input_[pos_] != '"')
+                throw std::runtime_error("Expected string key in object");
+            
+            std::string key = parse_string();
+            
+            skip_whitespace();
+            if (input_[pos_] != ':')
+                throw std::runtime_error("Expected colon after key in object");
+            pos_++;
+            
+            skip_whitespace();
+            if (input_[pos_] == '"')
+                object[key] = parse_string();
+            else if (input_[pos_] == '{') {
+                // Skip nested objects for now, treat as empty string
+                int depth = 1;
+                while (depth > 0) {
+                    pos_++;
+                    if (input_[pos_] == '{') depth++;
+                    if (input_[pos_] == '}') depth--;
+                }
+                pos_++;
+                object[key] = "";
+            }
+            else if (input_[pos_] == '[') {
+                // Skip arrays for now, treat as empty string
+                int depth = 1;
+                while (depth > 0) {
+                    pos_++;
+                    if (input_[pos_] == '[') depth++;
+                    if (input_[pos_] == ']') depth--;
+                }
+                pos_++;
+                object[key] = "";
+            }
+            else {
+                // Parse number or other value until next delimiter
+                std::string value;
+                while (input_[pos_] != ',' && input_[pos_] != '}') {
+                    value += input_[pos_];
+                    pos_++;
+                }
+                object[key] = value;
+            }
+        }
+        
+        return object;
+    }
+    
+	std::map<std::string, std::string> Parser::parse(const std::string& json) {
+		Parser parser(json.c_str());
+		parser.skip_whitespace();
+		if (parser.input_[parser.pos_] != '{')
+			throw std::runtime_error("Expected object");
+		return parser.parse_object();
+	}
+};
 
 std::string
 JSON::escape_string(const std::string& str)
@@ -177,7 +294,9 @@ fetch_data_in_widget(const Gtk::Widget* w, std::map<std::string, std::string>& d
 			data[w->get_name()] = static_cast<const Gtk::ColorButton*>(w)->get_rgba().to_string();
 		} else if (GTK_IS_FONT_BUTTON(w->gobj())) {
 			// https://docs.gtk.org/Pango/type_func.FontDescription.from_string.html
-			PangoFontDescription* font_desc = gtk_font_chooser_get_font_desc(GTK_FONT_CHOOSER(w));
+			const auto* font_button = static_cast<const Gtk::FontButton*>(w);
+		    data[w->get_name()] = font_button->get_font_name();
+			PangoFontDescription* font_desc = gtk_font_chooser_get_font_desc(GTK_FONT_CHOOSER(w->gobj()));
 			char* str = pango_font_description_to_string(font_desc);
 			pango_font_description_free(font_desc);
 			data[w->get_name()] = str;
@@ -196,14 +315,15 @@ fetch_data_in_widget(const Gtk::Widget* w, std::map<std::string, std::string>& d
 			data[w->get_name()] = static_cast<const Gtk::Entry*>(w)->get_text();
 		}
 	}
-	if (GTK_IS_CONTAINER(w->gobj())) {
+	if (GTK_IS_CONTAINER(w->gobj()) && (w->get_name().find("gtkmm__") == 0)) {
+		// synfig::info("Fetching children of " + w->get_name() + ((w->get_name().find("gtkmm__") == 0) ? "0" : "1"));
 		for (const Gtk::Widget* c : static_cast<const Gtk::Container*>(w)->get_children())
 			fetch_data_in_widget(c, data);
 	}
 };
 
-static std::map<std::string, std::string>
-parse_dialog(const Gtk::Widget& dialog_contents)
+std::map<std::string, std::string>
+studio::PluginManager::parse_dialog(const Gtk::Widget& dialog_contents)
 {
 	std::map<std::string, std::string> data;
 	fetch_data_in_widget(&dialog_contents, data);
@@ -301,6 +421,11 @@ bool studio::Plugin::is_valid() const
 	return !name.fallback().empty();
 }
 
+void studio::Plugin::launch_dir() const
+{
+	synfig::info(pluginDir);
+	synfig::OS::launch_file_async(pluginDir);
+}
 
 studio::ImportExport studio::ImportExport::load(const xmlpp::Node& node)
 {
@@ -349,10 +474,12 @@ studio::PluginManager::load_dir( const std::string &pluginsprefix )
 	} catch ( const Glib::FileError& e ) {
 		synfig::warning("Can't read plugin directory: %s", e.what().c_str());
 	}
+
+	signal_list_changed_.emit();
 } // END of synfigapp::PluginManager::load_dir()
 
 void
-studio::PluginManager::load_plugin( const std::string &file, const std::string &plugindir )
+studio::PluginManager::load_plugin( const std::string &file, const std::string &plugindir, bool notify )
 {
 	synfig::info("   Loading plugin: %s", synfig::filesystem::Path::basename(plugindir).c_str());
 
@@ -386,6 +513,7 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 			plugin.name = PluginString::load(*pNode, "name");
 			PluginScript script = PluginScript::load(*execlist[0], plugindir);
 			plugin.id = id;
+			plugin.pluginDir = plugindir;
 
 			plugin.release = PluginString::load(*pNode, "release");
 			for ( const xmlpp::Node* node : pNode->find("./author") )
@@ -433,6 +561,9 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 		synfig::warning("Error while loading plugin.xml");
 		std::cout << "Exception caught: " << ex.what() << std::endl;
 	}
+
+	if(notify)
+		signal_list_changed_.emit();
 }
 
 void studio::PluginManager::load_import_export(
@@ -542,7 +673,7 @@ bool studio::PluginManager::check_and_run_dialog(const PluginScript& script, std
 					int result = dialog.run();
 					if (result != Gtk::RESPONSE_ACCEPT)
 						return false;
-					auto dialog_data = parse_dialog(*contents);
+					auto dialog_data = PluginManager::parse_dialog(*contents);
 //					delete dialog;
 					for (const auto& d : dialog_data) {
 						if (!dialog_args.empty())
@@ -693,6 +824,52 @@ studio::Plugin studio::PluginManager::get_plugin(const std::string& id) const
 		}
 	}
 	return Plugin();
+}
+
+bool studio::PluginManager::remove_plugin_recursive(const std::string &filename)
+{
+	auto fileSystem = synfig::FileSystemNative::instance();
+
+	if (filename.empty())
+		return false;
+	if (fileSystem->is_file(filename))
+		return fileSystem->file_remove(filename);
+	if (fileSystem->is_directory(filename))
+	{
+		typedef std::vector<std::string> FileList;
+		FileList files;
+		fileSystem->directory_scan(filename, files);
+		bool success = true;
+		for(FileList::const_iterator i = files.begin(); i != files.end(); ++i)
+			if (!remove_plugin_recursive(filename + ETL_DIRECTORY_SEPARATOR + *i))
+				success = false;
+		fileSystem->file_remove(filename);
+		return success;
+	}
+	return true;
+}
+
+void studio::PluginManager::remove_plugin(const std::string& id)
+{
+	try
+	{
+		Plugin plugin = *(std::find_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; }));
+		auto fileSystem = synfig::FileSystemNative::instance();
+		if(remove_plugin_recursive(plugin.pluginDir))
+		{
+			plugins_.erase(std::remove_if(plugins_.begin(), plugins_.end(), [&id](const Plugin& plugin) { return plugin.id == id; }), plugins_.end());
+			signal_list_changed_.emit();
+		}
+	}
+	catch(const std::exception& e)
+	{
+		studio::App::dialog_message_1b("Error", synfig::strprintf(_("Plugin execution failed: %s"), e.what()), _("Plugin Deletion Failed"), _("Close"));
+	}
+}
+
+sigc::signal<void>& studio::PluginManager::signal_list_changed()
+{
+	return signal_list_changed_;
 }
 
 studio::PluginScript::ScriptArgs studio::PluginManager::get_script_args(const std::string& script_id) const
