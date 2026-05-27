@@ -48,6 +48,9 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+struct FaceCache;  
+struct FontMeta;  
+
 class Layer_Freetype : public synfig::Layer_Shape
 {
 	SYNFIG_LAYER_MODULE_EXT
@@ -125,6 +128,10 @@ public:
 
 	static std::vector<TextLine> fetch_text_lines(const std::string& text, int direction);
 
+	static std::vector<std::string> get_possible_font_files(const std::string& newfont, const synfig::filesystem::Path& canvas_path);
+
+	static FT_Face load_font_static(const std::string& family,int style,int weight,const synfig::filesystem::Path &canvas_path);    
+
 protected:
 	synfig::rendering::Task::Handle build_composite_task_vfunc(synfig::ContextParams) const override;
 
@@ -139,8 +146,7 @@ private:
 	bool new_font_(const synfig::String &family, int style=0, int weight=400);
 	bool new_face(const synfig::String &newfont);
 
-	static std::vector<std::string> get_possible_font_directories(const std::string& canvas_path);
-	static std::vector<std::string> get_possible_font_files(const std::string& newfont, const synfig::filesystem::Path& canvas_path);
+	static std::vector<std::string> get_possible_font_directories(const std::string& canvas_path);	
 
 	void on_param_text_changed();
 

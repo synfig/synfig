@@ -31,11 +31,10 @@ private:
     synfig::ValueBase param_grid_fit;  
     synfig::ValueBase param_direction; 
     synfig::ValueBase param_stagger_delay;
+    synfig::ValueBase param_font;
+    FT_Face face;
+
   
-    FT_Face face;  
-#if HAVE_HARFBUZZ  
-    hb_font_t *font;  
-#endif  
   
 public:  
     Layer_TextGroup();  
@@ -44,8 +43,8 @@ public:
     bool set_param(const synfig::String & param, const synfig::ValueBase &value) override;  
     synfig::ValueBase get_param(const synfig::String &param) const override;  
     synfig::Layer::Vocab get_param_vocab() const override;  
-    synfig::String get_local_name() const override;  
-  
+    synfig::String get_local_name() const override;
+      
 private:  
     void sync_glyphs();    
     // void new_font(const synfig::String &family, int style, int weight);

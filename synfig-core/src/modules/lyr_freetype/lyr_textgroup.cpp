@@ -4,7 +4,11 @@
 # ifdef HAVE_CONFIG_H  
 #  include <config.h>  
 # endif  
-  
+
+#ifdef WITH_FONTCONFIG  
+#include <fontconfig/fontconfig.h>  
+#endif
+
 #include "lyr_textgroup.h"  
   
 #include <synfig/canvas.h>  
@@ -39,12 +43,12 @@ SYNFIG_LAYER_SET_LOCAL_NAME(Layer_GlyphShape,N_("Glyph"));
 SYNFIG_LAYER_SET_CATEGORY(Layer_GlyphShape,CATEGORY_DO_NOT_USE);  
 SYNFIG_LAYER_SET_VERSION(Layer_GlyphShape,"0.1");  
   
-Layer_GlyphShape::Layer_GlyphShape()  
-{  
-    param_rotation = ValueBase(Angle::zero());  
-    param_scale    = ValueBase(Vector(1.0, 1.0));
-    SET_INTERPOLATION_DEFAULTS();  
-    SET_STATIC_DEFAULTS();  
+Layer_GlyphShape::Layer_GlyphShape()
+    : param_rotation(ValueBase(Angle::zero()))
+    , param_scale(ValueBase(Vector(1.0, 1.0)))
+{
+    SET_INTERPOLATION_DEFAULTS();
+    SET_STATIC_DEFAULTS();
 }  
   
 Layer_GlyphShape::~Layer_GlyphShape() {}  
@@ -58,8 +62,8 @@ Layer_GlyphShape::get_local_name() const
 void Layer_GlyphShape::set_glyph_chunks(const rendering::Contour::ChunkList& chunks)  
 {  
     stored_chunks = chunks;
-    clear();  // Layer_Shape::clear() - protected, accessible from subclass  
-    add(chunks);  // Layer_Shape::add(ChunkList) - protected, accessible from subclass  
+    clear();    
+    add(chunks);    
     shape_contour().close();  
     
 }  
@@ -85,30 +89,17 @@ Layer_TextGroup::on_canvas_set()
   
 Layer_TextGroup::Layer_TextGroup()  
     : face(nullptr)  
+    , param_text(ValueBase(std::string()))  
+    , param_family(ValueBase(std::string("Sans Serif")))  
+    , param_style(ValueBase(0))  
+    , param_weight(ValueBase(400))  
+    , param_size(ValueBase(Vector(0.25, 0.25)))  
 {  
-    param_text  = ValueBase(std::string());  
-    param_size  = ValueBase(Vector(0.25, 0.25));     
-    param_family = ValueBase(std::string("Sans Serif"));  
-    param_style  = ValueBase(int(0));  
-    param_weight = ValueBase(int(0));  
-    param_stagger_delay = ValueBase(Time(0.1));
     SET_INTERPOLATION_DEFAULTS();  
     SET_STATIC_DEFAULTS();  
-
-    // TODO:
-    // Prototype-stage hardcoded font loading.
-    // Final implementation should reuse Synfig's
-    // existing font discovery/loading pipeline.  
-    FT_New_Face(ft_library,  
-        "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf",  
-        0, &face);  
 }  
   
-Layer_TextGroup::~Layer_TextGroup()  
-{  
-    if (face)  
-        FT_Done_Face(face);  
-}  
+Layer_TextGroup::~Layer_TextGroup(){}  
   
 String  
 Layer_TextGroup::get_local_name() const  
@@ -120,8 +111,31 @@ bool
 Layer_TextGroup::set_param(const String& param, const ValueBase& value)  
 {  
     if (param == "text" && value.can_get(String())) 
-    {  
+    {   
         param_text = value;  
+        sync_glyphs();  
+        return true;  
+    }  
+    if (param == "family" && value.can_get(String())) {  
+        param_family = value;
+		face = nullptr;    	    
+        sync_glyphs();  
+        return true;  
+    }  
+    if (param == "style" && value.can_get(int())) {  
+        param_style = value;  
+		face = nullptr;	
+		sync_glyphs();  
+        return true;  
+    }  
+    if (param == "weight" && value.can_get(int())) {  
+        param_weight = value;  
+    	face = nullptr; 
+		sync_glyphs();  
+        return true;  
+    }  
+    if (param == "size" && value.can_get(Vector())) {  
+        param_size = value;  
         sync_glyphs();  
         return true;  
     }  
@@ -140,6 +154,10 @@ ValueBase
 Layer_TextGroup::get_param(const String& param) const  
 {  
     EXPORT_VALUE(param_text);
+    EXPORT_VALUE(param_family);  
+    EXPORT_VALUE(param_style);  
+    EXPORT_VALUE(param_weight);  
+    EXPORT_VALUE(param_size);  
     EXPORT_NAME();  
     EXPORT_VERSION();  
     return Layer_PasteCanvas::get_param(param);  
@@ -161,6 +179,26 @@ Layer_TextGroup::get_param_vocab() const
     ret.push_back(ParamDesc("text")  
         .set_local_name(_("Text"))  
         .set_description(_("The text to decompose into per-character layers"))  
+    ); 
+
+    ret.push_back(ParamDesc("family")  
+        .set_local_name(_("Font Family"))  
+        .set_description(_("Name of the font family"))  
+    );  
+      
+    ret.push_back(ParamDesc("style")  
+        .set_local_name(_("Font Style"))  
+        .set_description(_("Font style (0=Normal, 1=Italic, 2=Bold, 3=Bold Italic)"))  
+    );  
+      
+    ret.push_back(ParamDesc("weight")  
+        .set_local_name(_("Font Weight"))  
+        .set_description(_("Font weight (400=Normal, 700=Bold)"))  
+    );  
+      
+    ret.push_back(ParamDesc("size")  
+        .set_local_name(_("Font Size"))  
+        .set_description(_("Size of the font"))  
     );  
     return ret;  
 }
@@ -191,7 +229,7 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
     if (rotation != Angle::zero() || scale != Vector(1.0, 1.0))  
     {  
         Vector origin = param_origin.get(Vector());  
-        // Build transform: translate to origin, scale, rotate, translate back  
+          
         Matrix matrix = Matrix().set_translate(origin)  
                       * Matrix().set_rotate(rotation)  
                       * Matrix().set_scale(scale)  
@@ -222,14 +260,29 @@ void
 Layer_TextGroup::sync_glyphs()
 {
     std::string text = param_text.get(std::string());
+    if (text.empty())return;
 
-    if (text.empty() || !face)
-        return;
+    std::string family = param_family.get(std::string());  
+    int style = param_style.get(int());  
+    int weight = param_weight.get(int());  
+    
+    synfig::filesystem::Path canvas_path;  
+    if (get_canvas())  
+        canvas_path = get_canvas()->get_file_path();   
+
+    FT_Face face = Layer_Freetype::load_font_static(family, style, weight, canvas_path);
+
+    if (!face) {  
+        synfig::warning("sync_glyphs: face is null after font loading");  
+        return;  
+    }  
 
     Canvas::Handle canvas = get_sub_canvas();
-
-    if (!canvas)
-        return;
+    if (!canvas){  
+        synfig::warning("sync_glyphs: no sub_canvas");  
+        return;  
+    }  
+        
 
     // TODO:
     // Current implementation uses Glib::ustring iteration as an
@@ -335,10 +388,6 @@ Layer_TextGroup::sync_glyphs()
 
         FT_Done_Glyph(ftglyph);
     }
-
-    // Reuse existing glyph layers where possible
-    // to preserve animation parameters and future
-    // ValueNode connections.
 
     while (static_cast<size_t>(canvas->size()) > glyphs.size())
     {
