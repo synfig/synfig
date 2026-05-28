@@ -124,6 +124,7 @@ set(ICONS
 	layer_blur_motion_icon
 	layer_blur_radial_icon
 	layer_distortion_curvewarp_icon
+	layer_distortion_free_form_deform_icon
 	layer_distortion_insideout_icon
 	layer_distortion_noise_icon
 	layer_distortion_skeletondeformation_icon
@@ -231,6 +232,7 @@ set(ICONS
 	tool_smooth_move_icon
 	tool_spline_icon
 	tool_skeleton_icon
+	tool_ffd_icon
 	tool_star_icon
 	tool_text_icon
 	tool_width_icon

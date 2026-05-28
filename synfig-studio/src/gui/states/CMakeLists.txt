@@ -7,6 +7,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/state_lasso.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_eyedrop.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_fill.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/state_ffd.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_gradient.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_mirror.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_normal.cpp"
