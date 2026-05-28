@@ -16,8 +16,12 @@ private:
 	ValueBase param_grid_size_x;
 	ValueBase param_grid_size_y;
 
-	//! Parameter : (Real) Smoothness: 0.0=Bilinear, 1.0=Catmull-Rom, blended in between
 	ValueBase param_smoothness;
+
+	ValueBase param_source_tl;
+	ValueBase param_source_br;
+
+	bool needs_fit_to_context_;
 
 	//! Get a control point with boundary clamping for edge/corner cells
 	Point get_clamped_ctrl_point(const std::vector<Point>& ctrl_points, int gx, int gy, int cols, int rows) const;
@@ -33,6 +37,7 @@ public:
 	virtual bool set_param(const String & param, const ValueBase & value);
 	virtual ValueBase get_param(const String & param) const;
 	virtual Vocab get_param_vocab() const;
+	virtual void on_canvas_set();
 
 	void prepare_mesh(); // The core math engine
 	void regenerate_grid_points(); // Rebuild uniform grid when size changes

@@ -39,8 +39,9 @@
 #include <glibmm/main.h> //Glib::signal_timeout()
 
 #include <gtkmm/treemodelsort.h>
-
 #include <gui/app.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/statemanager.h>
 #include <gui/cellrenderer/cellrenderer_value.h>
 #include <gui/cellrenderer/cellrenderer_timetrack.h>
 #include <gui/exception_guard.h>
@@ -643,6 +644,16 @@ void
 LayerTree::on_selection_changed()
 {
 	synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
+
+	if (layer_list.size() == 1) {
+		synfig::Layer::Handle layer = layer_list.front();
+		if (layer && layer->get_name() == "free_form_deform") {
+			if (App::get_state_manager()) {
+				Glib::RefPtr<Gtk::Action> action = App::get_state_manager()->get_action_group()->get_action("set-state-ffd");
+				if (action) action->activate();
+			}
+		}
+	}
 
 	Gtk::TreeIter iter;
 	if(last_top_selected_layer && !layer_tree_store_->find_layer_row(last_top_selected_layer,iter))

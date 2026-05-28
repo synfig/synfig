@@ -213,8 +213,8 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
-	// Allow layer clicks so the user can select FFD layers
-	get_work_area()->set_allow_layer_clicks(true);
+	// Disallow layer clicks so the user doesn't accidentally select the underlying image
+	get_work_area()->set_allow_layer_clicks(false);
 
 	get_work_area()->set_cursor(Gdk::ARROW);
 
@@ -430,6 +430,8 @@ Smach::event_result
 StateFFD_Context::event_layer_selection_changed_handler(const Smach::event& /*x*/)
 {
 	update_controls_from_layer();
+	get_work_area()->queue_draw();
+	get_canvas_view()->queue_rebuild_ducks();
 	return Smach::RESULT_ACCEPT;
 }
 

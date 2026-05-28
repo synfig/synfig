@@ -36,7 +36,10 @@ Layer_FreeFormDeform::Layer_FreeFormDeform():
 	Layer_MeshTransform(1.0, Color::BLEND_STRAIGHT),
 	param_grid_size_x(3),
 	param_grid_size_y(3),
-	param_smoothness(Real(1.0)) // Default to full Catmull-Rom
+	param_smoothness(Real(1.0)), // Default to full Catmull-Rom
+	param_source_tl(Point(-2.0, 2.0)),
+	param_source_br(Point(2.0, -2.0)),
+	needs_fit_to_context_(true)
 {
 	std::vector<ValueBase> grid_points;
 	// 3x3 grid centered
@@ -65,7 +68,10 @@ Layer_FreeFormDeform::get_local_name()const
 bool
 Layer_FreeFormDeform::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_VALUE_PLUS(param_grid_points, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_grid_points, {
+		needs_fit_to_context_ = false;
+		prepare_mesh();
+	});
 	IMPORT_VALUE_PLUS(param_grid_size_x, { 
 		int expected = param_grid_size_x.get(int()) * param_grid_size_y.get(int());
 		if ((int)param_grid_points.get_list().size() < expected) regenerate_grid_points();
@@ -77,6 +83,8 @@ Layer_FreeFormDeform::set_param(const String & param, const ValueBase &value)
 		prepare_mesh(); 
 	});
 	IMPORT_VALUE_PLUS(param_smoothness, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_source_tl, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_source_br, prepare_mesh());
 	return Layer_MeshTransform::set_param(param,value);
 }
 
@@ -87,6 +95,8 @@ Layer_FreeFormDeform::get_param(const String& param)const
 	EXPORT_VALUE(param_grid_size_x);
 	EXPORT_VALUE(param_grid_size_y);
 	EXPORT_VALUE(param_smoothness);
+	EXPORT_VALUE(param_source_tl);
+	EXPORT_VALUE(param_source_br);
 	
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -119,6 +129,18 @@ Layer_FreeFormDeform::get_param_vocab()const
 		.set_description(_("0.0 = Bilinear, 1.0 = Catmull-Rom Spline (blended)"))
 	);
 
+	ret.push_back(ParamDesc("source_tl")
+		.set_local_name(_("Source Top Left"))
+		.set_description(_("Top Left corner of the un-deformed grid"))
+		.hidden()
+	);
+
+	ret.push_back(ParamDesc("source_br")
+		.set_local_name(_("Source Bottom Right"))
+		.set_description(_("Bottom Right corner of the un-deformed grid"))
+		.hidden()
+	);
+
 	return ret;
 }
 
@@ -129,12 +151,24 @@ Layer_FreeFormDeform::get_clamped_ctrl_point(
 	const std::vector<Point>& ctrl_points,
 	int gx, int gy, int cols, int rows) const
 {
-	// Clamp indices to grid boundaries (repeat-edge strategy)
-	if (gx < 0) gx = 0;
-	if (gx >= cols) gx = cols - 1;
-	if (gy < 0) gy = 0;
-	if (gy >= rows) gy = rows - 1;
-	return ctrl_points[gy * cols + gx];
+	// Extrapolate indices outside the grid to maintain straight edges
+	auto get_clamped_x = [&](int x, int y) {
+		if (x < 0) return ctrl_points[y * cols + 0] * 2.0 - ctrl_points[y * cols + 1];
+		if (x >= cols) return ctrl_points[y * cols + cols - 1] * 2.0 - ctrl_points[y * cols + cols - 2];
+		return ctrl_points[y * cols + x];
+	};
+
+	if (gy < 0) {
+		Point p0 = get_clamped_x(gx, 0);
+		Point p1 = get_clamped_x(gx, 1);
+		return p0 * 2.0 - p1;
+	} else if (gy >= rows) {
+		Point p0 = get_clamped_x(gx, rows - 1);
+		Point p1 = get_clamped_x(gx, rows - 2);
+		return p0 * 2.0 - p1;
+	} else {
+		return get_clamped_x(gx, gy);
+	}
 }
 
 Real
@@ -153,6 +187,66 @@ Layer_FreeFormDeform::catmull_rom_1d(Real p0, Real p1, Real p2, Real p3, Real t)
 	);
 }
 
+void
+Layer_FreeFormDeform::on_canvas_set()
+{
+	if (needs_fit_to_context_ && get_canvas()) {
+		needs_fit_to_context_ = false;
+
+		Context context = get_canvas()->get_context(ContextParams());
+		while (!context->empty() && (*context).get() != this)
+			context++;
+		
+		if (!context->empty()) {
+			context++; // move past ourselves to the context below
+			Rect bounds = Rect::zero();
+			bool first = true;
+			
+			Context c = context;
+			while (!c->empty()) {
+				Rect layer_bounds = (*c)->get_bounding_rect();
+				if (layer_bounds.is_valid() && !layer_bounds.is_full_infinite() && layer_bounds.area() < 1e10) {
+					if (first) {
+						bounds = layer_bounds;
+						first = false;
+					} else {
+						bounds |= layer_bounds;
+					}
+				}
+				c++;
+			}
+
+			// Fallback to canvas bounds if no finite layers are found
+			if (first) {
+				bounds = get_canvas()->rend_desc().get_rect();
+			}
+			
+			if (bounds.is_valid() && bounds.area() > 0.0001) {
+				int cols = param_grid_size_x.get(int());
+				int rows = param_grid_size_y.get(int());
+				std::vector<ValueBase> grid_points;
+				
+				Real minx = bounds.minx;
+				Real maxx = bounds.maxx;
+				Real miny = bounds.miny;
+				Real maxy = bounds.maxy;
+
+				for (int y = 0; y < rows; ++y) {
+					for (int x = 0; x < cols; ++x) {
+						Real px = minx + x * (maxx - minx) / (cols - 1);
+						Real py = maxy - y * (maxy - miny) / (rows - 1);
+						grid_points.push_back(ValueBase(Point(px, py)));
+					}
+				}
+				param_grid_points.set_list_of(grid_points);
+				param_source_tl.set(Point(minx, maxy));
+				param_source_br.set(Point(maxx, miny));
+				prepare_mesh();
+			}
+		}
+	}
+}
+
 /* ---- Grid regeneration ---- */
 
 void Layer_FreeFormDeform::regenerate_grid_points()
@@ -162,10 +256,12 @@ void Layer_FreeFormDeform::regenerate_grid_points()
 	if (cols < 2 || rows < 2) return;
 
 	std::vector<ValueBase> grid_points;
+	Point tl = param_source_tl.get(Point());
+	Point br = param_source_br.get(Point());
 	for (int y = 0; y < rows; ++y) {
 		for (int x = 0; x < cols; ++x) {
-			Real px = -2.0 + x * 4.0 / (cols - 1);
-			Real py =  2.0 - y * 4.0 / (rows - 1);
+			Real px = tl[0] + x * (br[0] - tl[0]) / (cols - 1);
+			Real py = tl[1] - y * (tl[1] - br[1]) / (rows - 1);
 			grid_points.push_back(ValueBase(Point(px, py)));
 		}
 	}
@@ -189,10 +285,12 @@ std::vector<Point> Layer_FreeFormDeform::get_interpolated_grid(int new_cols, int
 
 	if (new_cols < 2 || new_rows < 2 || ctrl_points.size() < (size_t)(old_cols * old_rows)) {
 		// fallback
+		Point tl = param_source_tl.get(Point());
+		Point br = param_source_br.get(Point());
 		for (int y = 0; y < new_rows; ++y) {
 			for (int x = 0; x < new_cols; ++x) {
-				Real px = -2.0 + x * 4.0 / (new_cols - 1);
-				Real py =  2.0 - y * 4.0 / (new_rows - 1);
+				Real px = tl[0] + x * (br[0] - tl[0]) / (new_cols - 1);
+				Real py = tl[1] - y * (tl[1] - br[1]) / (new_rows - 1);
 				result.push_back(Point(px, py));
 			}
 		}
@@ -282,12 +380,13 @@ void Layer_FreeFormDeform::prepare_mesh()
 
 	if (ctrl_points.size() < (size_t)(cols * rows)) return;
 
-	// Calculate un-deformed bounds based on the assumption it was initially a uniform grid
-	// spanning [-2, 2] x [2, -2] (as initialized)
-	Real min_x = -2.0, max_x = 2.0;
-	Real min_y = 2.0, max_y = -2.0;
-	Real cell_w = (max_x - min_x) / (cols - 1);
-	Real cell_h = (max_y - min_y) / (rows - 1);
+	// Calculate un-deformed bounds based on the initial grid bounds
+	Point tl = param_source_tl.get(Point());
+	Point br = param_source_br.get(Point());
+	Real start_x = tl[0];
+	Real start_y = tl[1];
+	Real cell_w = (br[0] - tl[0]) / (cols - 1);
+	Real cell_h = (br[1] - tl[1]) / (rows - 1);
 
 	int sub_steps = 10;
 
@@ -343,10 +442,10 @@ void Layer_FreeFormDeform::prepare_mesh()
 					}
 
 					// Original undeformed position (always bilinear — it's a uniform grid)
-					Point P00_orig = Point(min_x + x * cell_w, min_y + y * cell_h);
-					Point P10_orig = Point(min_x + (x + 1) * cell_w, min_y + y * cell_h);
-					Point P01_orig = Point(min_x + x * cell_w, min_y + (y + 1) * cell_h);
-					Point P11_orig = Point(min_x + (x + 1) * cell_w, min_y + (y + 1) * cell_h);
+					Point P00_orig = Point(start_x + x * cell_w,       start_y + y * cell_h);
+					Point P10_orig = Point(start_x + (x + 1) * cell_w, start_y + y * cell_h);
+					Point P01_orig = Point(start_x + x * cell_w,       start_y + (y + 1) * cell_h);
+					Point P11_orig = Point(start_x + (x + 1) * cell_w, start_y + (y + 1) * cell_h);
 
 					Point initial_pos =
 						P00_orig * ((1 - u)*(1 - v)) +
