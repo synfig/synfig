@@ -2577,9 +2577,21 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 			synfig::Type &contained_type(value_node->get_contained_type());
 			if (contained_type == type_vector)
 			{
+				bool is_ffd_grid = false;
+				int cols = 0, rows = 0;
+				if (value_desc.parent_is_layer()) {
+					Layer::Handle layer = value_desc.get_layer();
+					if (layer && layer->get_name() == "free_form_deform" && value_desc.get_param_name() == "grid_points") {
+						is_ffd_grid = true;
+						cols = layer->get_param("grid_size_x").get(int());
+						rows = layer->get_param("grid_size_y").get(int());
+					}
+				}
+
 				Bezier bezier;
 				Duck::Handle first_duck, duck;
 				int first = -1;
+				std::vector<Duck::Handle> ducks;
 				for(i=0;i<value_node->link_count();i++)
 				{
 					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
@@ -2607,11 +2619,68 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 //							last_duck()->set_origin(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()).get(synfig::Point()));
 					}
 					duck->set_type(Duck::TYPE_VERTEX);
-					bezier.p1=bezier.p2;bezier.c1=bezier.c2;
-					bezier.p2=bezier.c2=duck;
+					ducks.push_back(duck);
 
-					if (first != i)
+					if (!is_ffd_grid)
 					{
+						bezier.p1=bezier.p2;bezier.c1=bezier.c2;
+						bezier.p2=bezier.c2=duck;
+
+						if (first != i)
+						{
+							Bezier::Handle bezier_(new Bezier());
+							bezier_->p1=bezier.p1;
+							bezier_->c1=bezier.c1;
+							bezier_->p2=bezier.p2;
+							bezier_->c2=bezier.c2;
+							add_bezier(bezier_);
+							last_bezier()->signal_user_click(2).connect(
+								sigc::bind(
+									sigc::mem_fun(
+										*canvas_view,
+										&studio::CanvasView::popup_param_menu_bezier),
+									synfigapp::ValueDesc(value_node,i)));
+						}
+					}
+				}
+
+				if (is_ffd_grid && (int)ducks.size() == cols * rows && cols >= 2 && rows >= 2)
+				{
+					for (int y = 0; y < rows; ++y) {
+						for (int x = 0; x < cols; ++x) {
+							Duck::Handle d = ducks[y * cols + x];
+							if (!d) continue;
+
+							if (x > 0) {
+								Duck::Handle left = ducks[y * cols + (x - 1)];
+								if (left) {
+									Bezier::Handle bezier_(new Bezier());
+									bezier_->p1 = bezier_->c1 = left;
+									bezier_->p2 = bezier_->c2 = d;
+									add_bezier(bezier_);
+								}
+							}
+							if (y > 0) {
+								Duck::Handle top = ducks[(y - 1) * cols + x];
+								if (top) {
+									Bezier::Handle bezier_(new Bezier());
+									bezier_->p1 = bezier_->c1 = top;
+									bezier_->p2 = bezier_->c2 = d;
+									add_bezier(bezier_);
+								}
+							}
+						}
+					}
+				}
+				else if (!is_ffd_grid)
+				{
+					if (value_node->get_loop() && first != -1 && first_duck != duck)
+					{
+						duck = first_duck;
+
+						bezier.p1=bezier.p2;bezier.c1=bezier.c2;
+						bezier.p2=bezier.c2=duck;
+
 						Bezier::Handle bezier_(new Bezier());
 						bezier_->p1=bezier.p1;
 						bezier_->c1=bezier.c1;
@@ -2623,29 +2692,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 								sigc::mem_fun(
 									*canvas_view,
 									&studio::CanvasView::popup_param_menu_bezier),
-								synfigapp::ValueDesc(value_node,i)));
+								synfigapp::ValueDesc(value_node,first)));
 					}
-				}
-
-				if (value_node->get_loop() && first != -1 && first_duck != duck)
-				{
-					duck = first_duck;
-
-					bezier.p1=bezier.p2;bezier.c1=bezier.c2;
-					bezier.p2=bezier.c2=duck;
-
-					Bezier::Handle bezier_(new Bezier());
-					bezier_->p1=bezier.p1;
-					bezier_->c1=bezier.c1;
-					bezier_->p2=bezier.p2;
-					bezier_->c2=bezier.c2;
-					add_bezier(bezier_);
-					last_bezier()->signal_user_click(2).connect(
-						sigc::bind(
-							sigc::mem_fun(
-								*canvas_view,
-								&studio::CanvasView::popup_param_menu_bezier),
-							synfigapp::ValueDesc(value_node,first)));
 				}
 			}
 			else
@@ -2816,13 +2864,28 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 
 			if(value_node->get_contained_type()==type_vector)
 			{
+				bool is_ffd_grid = false;
+				int cols = 0, rows = 0;
+				if (value_desc.parent_is_layer()) {
+					Layer::Handle layer = value_desc.get_layer();
+					if (layer && layer->get_name() == "free_form_deform" && value_desc.get_param_name() == "grid_points") {
+						is_ffd_grid = true;
+						cols = layer->get_param("grid_size_x").get(int());
+						rows = layer->get_param("grid_size_y").get(int());
+					}
+				}
+
 				Bezier bezier;
 				Duck::Handle first_duck, duck;
 				int first = -1;
+				std::vector<Duck::Handle> ducks;
 				for(i=0;i<value_node->link_count();i++)
 				{
 					if(!value_node->list[i].status_at_time(get_time()))
+					{
+						ducks.push_back(Duck::Handle()); // maintain grid structure
 						continue;
+					}
 					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
 						return false;
 					duck = last_duck();
@@ -2848,49 +2911,85 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 //							last_duck()->set_origin(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()).get(synfig::Point()));
 					}
 					duck->set_type(Duck::TYPE_VERTEX);
-					bezier.p1 = bezier.p2;
-					bezier.c1 = bezier.c2;
-					bezier.p2 = duck;
-					bezier.c2 = duck;
+					ducks.push_back(duck);
 
-					if (first != i)
+					if (!is_ffd_grid)
 					{
+						bezier.p1 = bezier.p2;
+						bezier.c1 = bezier.c2;
+						bezier.p2 = duck;
+						bezier.c2 = duck;
+
+						if (first != i)
+						{
+							Bezier::Handle bezier_(new Bezier());
+							bezier_->p1=bezier.p1;
+							bezier_->c1=bezier.c1;
+							bezier_->p2=bezier.p2;
+							bezier_->c2=bezier.c2;
+							add_bezier(bezier_);
+							last_bezier()->signal_user_click(2).connect(
+								sigc::bind(
+									sigc::mem_fun(
+										*canvas_view,
+										&studio::CanvasView::popup_param_menu_bezier),
+									synfigapp::ValueDesc(value_node,i)));
+						}
+					}
+				}
+
+				if (is_ffd_grid && (int)ducks.size() == cols * rows && cols >= 2 && rows >= 2)
+				{
+					for (int y = 0; y < rows; ++y) {
+						for (int x = 0; x < cols; ++x) {
+							Duck::Handle d = ducks[y * cols + x];
+							if (!d) continue;
+
+							if (x > 0) {
+								Duck::Handle left = ducks[y * cols + (x - 1)];
+								if (left) {
+									Bezier::Handle bezier_(new Bezier());
+									bezier_->p1 = bezier_->c1 = left;
+									bezier_->p2 = bezier_->c2 = d;
+									add_bezier(bezier_);
+								}
+							}
+							if (y > 0) {
+								Duck::Handle top = ducks[(y - 1) * cols + x];
+								if (top) {
+									Bezier::Handle bezier_(new Bezier());
+									bezier_->p1 = bezier_->c1 = top;
+									bezier_->p2 = bezier_->c2 = d;
+									add_bezier(bezier_);
+								}
+							}
+						}
+					}
+				}
+				else if (!is_ffd_grid)
+				{
+					if (value_node->get_loop() && first != -1 && first_duck != duck)
+					{
+						duck = first_duck;
+
+						bezier.p1 = bezier.p2;
+						bezier.c1 = bezier.c2;
+						bezier.p2 = duck;
+						bezier.c2 = duck;
+
 						Bezier::Handle bezier_(new Bezier());
-						bezier_->p1=bezier.p1;
-						bezier_->c1=bezier.c1;
-						bezier_->p2=bezier.p2;
-						bezier_->c2=bezier.c2;
+						bezier_->p1 = bezier.p1;
+						bezier_->c1 = bezier.c1;
+						bezier_->p2 = bezier.p2;
+						bezier_->c2 = bezier.c2;
 						add_bezier(bezier_);
 						last_bezier()->signal_user_click(2).connect(
 							sigc::bind(
 								sigc::mem_fun(
 									*canvas_view,
 									&studio::CanvasView::popup_param_menu_bezier),
-								synfigapp::ValueDesc(value_node,i)));
+								synfigapp::ValueDesc(value_node,first)));
 					}
-				}
-
-				if (value_node->get_loop() && first != -1 && first_duck != duck)
-				{
-					duck = first_duck;
-
-					bezier.p1 = bezier.p2;
-					bezier.c1 = bezier.c2;
-					bezier.p2 = duck;
-					bezier.c2 = duck;
-
-					Bezier::Handle bezier_(new Bezier());
-					bezier_->p1 = bezier.p1;
-					bezier_->c1 = bezier.c1;
-					bezier_->p2 = bezier.p2;
-					bezier_->c2 = bezier.c2;
-					add_bezier(bezier_);
-					last_bezier()->signal_user_click(2).connect(
-						sigc::bind(
-							sigc::mem_fun(
-								*canvas_view,
-								&studio::CanvasView::popup_param_menu_bezier),
-							synfigapp::ValueDesc(value_node,first)));
 				}
 			}
 			else if(value_node->get_contained_type()==type_segment)
