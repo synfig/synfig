@@ -66,8 +66,16 @@ bool
 Layer_FreeFormDeform::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT_VALUE_PLUS(param_grid_points, prepare_mesh());
-	IMPORT_VALUE_PLUS(param_grid_size_x, { regenerate_grid_points(); prepare_mesh(); });
-	IMPORT_VALUE_PLUS(param_grid_size_y, { regenerate_grid_points(); prepare_mesh(); });
+	IMPORT_VALUE_PLUS(param_grid_size_x, { 
+		int expected = param_grid_size_x.get(int()) * param_grid_size_y.get(int());
+		if ((int)param_grid_points.get_list().size() < expected) regenerate_grid_points();
+		prepare_mesh(); 
+	});
+	IMPORT_VALUE_PLUS(param_grid_size_y, { 
+		int expected = param_grid_size_x.get(int()) * param_grid_size_y.get(int());
+		if ((int)param_grid_points.get_list().size() < expected) regenerate_grid_points();
+		prepare_mesh(); 
+	});
 	IMPORT_VALUE_PLUS(param_smoothness, prepare_mesh());
 	return Layer_MeshTransform::set_param(param,value);
 }
@@ -162,6 +170,91 @@ void Layer_FreeFormDeform::regenerate_grid_points()
 		}
 	}
 	param_grid_points.set_list_of(grid_points);
+}
+
+std::vector<Point> Layer_FreeFormDeform::get_interpolated_grid(int new_cols, int new_rows) const
+{
+	std::vector<Point> result;
+	int old_cols = param_grid_size_x.get(int());
+	int old_rows = param_grid_size_y.get(int());
+	Real smoothness = param_smoothness.get(Real());
+	if (smoothness < 0.0) smoothness = 0.0;
+	if (smoothness > 1.0) smoothness = 1.0;
+
+	std::vector<Point> ctrl_points;
+	const ValueBase::List &points_list = param_grid_points.get_list();
+	for(ValueBase::List::const_iterator i = points_list.begin(); i != points_list.end(); ++i) {
+		if (i->can_get(Point())) ctrl_points.push_back(i->get(Point()));
+	}
+
+	if (new_cols < 2 || new_rows < 2 || ctrl_points.size() < (size_t)(old_cols * old_rows)) {
+		// fallback
+		for (int y = 0; y < new_rows; ++y) {
+			for (int x = 0; x < new_cols; ++x) {
+				Real px = -2.0 + x * 4.0 / (new_cols - 1);
+				Real py =  2.0 - y * 4.0 / (new_rows - 1);
+				result.push_back(Point(px, py));
+			}
+		}
+		return result;
+	}
+
+	for (int ny = 0; ny < new_rows; ++ny) {
+		for (int nx = 0; nx < new_cols; ++nx) {
+			Real u = (Real)nx / (new_cols - 1);
+			Real v = (Real)ny / (new_rows - 1);
+
+			// Map (u,v) to the old grid space
+			Real old_x = u * (old_cols - 1);
+			Real old_y = v * (old_rows - 1);
+
+			int x = (int)floor(old_x);
+			int y = (int)floor(old_y);
+			if (x >= old_cols - 1) x = old_cols - 2;
+			if (y >= old_rows - 1) y = old_rows - 2;
+
+			Real local_u = old_x - x;
+			Real local_v = old_y - y;
+
+			Point P00 = ctrl_points[y * old_cols + x];
+			Point P10 = ctrl_points[y * old_cols + (x + 1)];
+			Point P01 = ctrl_points[(y + 1) * old_cols + x];
+			Point P11 = ctrl_points[(y + 1) * old_cols + (x + 1)];
+
+			Point bilinear_pos =
+				P00 * ((1 - local_u)*(1 - local_v)) +
+				P10 * (local_u*(1 - local_v)) +
+				P01 * ((1 - local_u)*local_v) +
+				P11 * (local_u*local_v);
+
+			Point calculated_pos;
+
+			if (smoothness > 0.0) {
+				Real row_x[4], row_y[4];
+				for (int ky = -1; ky <= 2; ++ky) {
+					Point cp0 = get_clamped_ctrl_point(ctrl_points, x - 1, y + ky, old_cols, old_rows);
+					Point cp1 = get_clamped_ctrl_point(ctrl_points, x,     y + ky, old_cols, old_rows);
+					Point cp2 = get_clamped_ctrl_point(ctrl_points, x + 1, y + ky, old_cols, old_rows);
+					Point cp3 = get_clamped_ctrl_point(ctrl_points, x + 2, y + ky, old_cols, old_rows);
+
+					row_x[ky + 1] = catmull_rom_1d(cp0[0], cp1[0], cp2[0], cp3[0], local_u);
+					row_y[ky + 1] = catmull_rom_1d(cp0[1], cp1[1], cp2[1], cp3[1], local_u);
+				}
+
+				Point catmull_pos = Point(
+					catmull_rom_1d(row_x[0], row_x[1], row_x[2], row_x[3], local_v),
+					catmull_rom_1d(row_y[0], row_y[1], row_y[2], row_y[3], local_v)
+				);
+
+				calculated_pos = bilinear_pos * (1.0 - smoothness) + catmull_pos * smoothness;
+			} else {
+				calculated_pos = bilinear_pos;
+			}
+
+			result.push_back(calculated_pos);
+		}
+	}
+	return result;
 }
 
 /* ---- Core mesh preparation ---- */

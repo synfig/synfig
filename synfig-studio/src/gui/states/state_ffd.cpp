@@ -47,6 +47,10 @@
 #include <synfig/layers/layer_freeformdeform.h>
 
 #include <synfigapp/main.h>
+#include <synfigapp/action.h>
+#include <synfigapp/instance.h>
+#include <synfig/valuenodes/valuenode_dynamiclist.h>
+#include <synfig/valuenodes/valuenode_const.h>
 
 #endif
 
@@ -299,9 +303,49 @@ StateFFD_Context::on_grid_x_changed()
 	synfig::Layer::Handle ffd = get_selected_ffd_layer();
 	if (!ffd) return;
 
-	int val = (int)grid_x_adj->get_value();
-	ffd->set_param("grid_size_x", val);
-	get_canvas_interface()->signal_layer_param_changed()(ffd, "grid_size_x");
+	int old_cols = ffd->get_param("grid_size_x").get(int());
+	int old_rows = ffd->get_param("grid_size_y").get(int());
+	int new_cols = (int)grid_x_adj->get_value();
+	if (new_cols == old_cols) return;
+
+	etl::handle<Layer_FreeFormDeform> ffd_typed = etl::handle<Layer_FreeFormDeform>::cast_dynamic(ffd);
+	if (!ffd_typed) return;
+
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(), _("Change FFD Grid Size X"));
+
+	std::vector<synfig::Point> new_points = ffd_typed->get_interpolated_grid(new_cols, old_rows);
+
+	std::vector<synfig::ValueBase> grid_points;
+	for (auto& p : new_points) {
+		grid_points.push_back(p);
+	}
+	synfig::ValueBase new_grid_points_value(grid_points);
+
+	synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(new_grid_points_value, get_canvas());
+
+	synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
+	action_connect->set_param("canvas", get_canvas());
+	action_connect->set_param("canvas_interface", get_canvas_interface());
+	action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "grid_points"));
+	action_connect->set_param("src", dyn_list);
+
+	if(!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
+		group.cancel();
+		return;
+	}
+
+	synfigapp::Action::Handle action_x = synfigapp::Action::create("ValueDescSet");
+	action_x->set_param("canvas", get_canvas());
+	action_x->set_param("canvas_interface", get_canvas_interface());
+	action_x->set_param("value_desc", synfigapp::ValueDesc(ffd, "grid_size_x"));
+	action_x->set_param("new_value", synfig::ValueBase(new_cols));
+	action_x->set_param("time", get_canvas_interface()->get_time());
+
+	if(!action_x->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_x)) {
+		group.cancel();
+		return;
+	}
+
 	get_canvas_view()->queue_rebuild_ducks();
 	get_work_area()->queue_render();
 }
@@ -314,9 +358,49 @@ StateFFD_Context::on_grid_y_changed()
 	synfig::Layer::Handle ffd = get_selected_ffd_layer();
 	if (!ffd) return;
 
-	int val = (int)grid_y_adj->get_value();
-	ffd->set_param("grid_size_y", val);
-	get_canvas_interface()->signal_layer_param_changed()(ffd, "grid_size_y");
+	int old_cols = ffd->get_param("grid_size_x").get(int());
+	int old_rows = ffd->get_param("grid_size_y").get(int());
+	int new_rows = (int)grid_y_adj->get_value();
+	if (new_rows == old_rows) return;
+
+	etl::handle<Layer_FreeFormDeform> ffd_typed = etl::handle<Layer_FreeFormDeform>::cast_dynamic(ffd);
+	if (!ffd_typed) return;
+
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(), _("Change FFD Grid Size Y"));
+
+	std::vector<synfig::Point> new_points = ffd_typed->get_interpolated_grid(old_cols, new_rows);
+
+	std::vector<synfig::ValueBase> grid_points;
+	for (auto& p : new_points) {
+		grid_points.push_back(p);
+	}
+	synfig::ValueBase new_grid_points_value(grid_points);
+
+	synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(new_grid_points_value, get_canvas());
+
+	synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
+	action_connect->set_param("canvas", get_canvas());
+	action_connect->set_param("canvas_interface", get_canvas_interface());
+	action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "grid_points"));
+	action_connect->set_param("src", dyn_list);
+
+	if(!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
+		group.cancel();
+		return;
+	}
+
+	synfigapp::Action::Handle action_y = synfigapp::Action::create("ValueDescSet");
+	action_y->set_param("canvas", get_canvas());
+	action_y->set_param("canvas_interface", get_canvas_interface());
+	action_y->set_param("value_desc", synfigapp::ValueDesc(ffd, "grid_size_y"));
+	action_y->set_param("new_value", synfig::ValueBase(new_rows));
+	action_y->set_param("time", get_canvas_interface()->get_time());
+
+	if(!action_y->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_y)) {
+		group.cancel();
+		return;
+	}
+
 	get_canvas_view()->queue_rebuild_ducks();
 	get_work_area()->queue_render();
 }

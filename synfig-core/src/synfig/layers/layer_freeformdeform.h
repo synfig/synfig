@@ -36,6 +36,7 @@ public:
 
 	void prepare_mesh(); // The core math engine
 	void regenerate_grid_points(); // Rebuild uniform grid when size changes
+	std::vector<Point> get_interpolated_grid(int new_cols, int new_rows) const;
 };
 }
 #endif
