@@ -1520,3 +1520,59 @@ Layer_Freetype::build_composite_task_vfunc(ContextParams context_params) const
 	task = task_transformation;
 	return task;
 }
+
+FT_Face  
+Layer_Freetype::load_font_static(  
+    const std::string& family,   
+    int style,   
+    int weight,  
+    const synfig::filesystem::Path& canvas_path)  
+{  
+    FontMeta meta(family, style, weight);  
+    meta.canvas_path = canvas_path.u8string();  
+       
+      
+    FT_Face cached_face = face_cache.get(meta);
+
+    if (cached_face)
+        return cached_face;
+
+    auto cache_face = [&](FT_Face face)
+    {
+        
+        if (!canvas_path.empty())
+            meta.canvas_path.clear();
+
+        face_cache.put(meta, face);
+
+        return face;
+    }; 
+       
+    if (has_valid_font_extension(family)) {  
+        FT_Face tmp_face;  
+        if (FT_New_Face(ft_library, family.c_str(), 0, &tmp_face) == 0)  
+            return cache_face(tmp_face);  
+    }  
+      
+#ifdef WITH_FONTCONFIG  
+    
+    std::string fc_file = fontconfig_get_filename(family, style, weight);  
+    if (!fc_file.empty()) {  
+        FT_Face tmp_face;  
+        if (FT_New_Face(ft_library, fc_file.c_str(), 0, &tmp_face) == 0)  
+            return cache_face(tmp_face);  
+    }  
+#endif  
+      
+      
+    std::vector<std::string> filename_list;  
+    get_possible_font_filenames(family, style, weight, filename_list);  
+      
+    for (const std::string& filename : filename_list) {  
+        FT_Face tmp_face;  
+        if (FT_New_Face(ft_library, filename.c_str(), 0, &tmp_face) == 0)  
+            return cache_face(tmp_face);  
+    }  
+      
+    return nullptr;   
+}

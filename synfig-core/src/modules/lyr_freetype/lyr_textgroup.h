@@ -1,0 +1,86 @@
+#ifndef __SYNFIG_LYR_TEXTGROUP_H  
+#define __SYNFIG_LYR_TEXTGROUP_H  
+
+#include <synfig/layer.h>
+#include <synfig/layers/layer_shape.h>
+#include <synfig/layers/layer_pastecanvas.h>  
+#include <synfig/rendering/primitive/contour.h>
+#include <synfig/value.h>
+#include <synfig/string.h>
+
+#include <ft2build.h>  
+#include FT_FREETYPE_H  
+#include FT_GLYPH_H  
+#if HAVE_HARFBUZZ  
+#include <hb.h>  
+#endif  
+
+class Layer_TextGroup : public synfig::Layer_PasteCanvas  
+{  
+    SYNFIG_LAYER_MODULE_EXT  
+private:  
+    synfig::ValueBase param_text;  
+    synfig::ValueBase param_family;  
+    synfig::ValueBase param_style;  
+    synfig::ValueBase param_weight;  
+    synfig::ValueBase param_size;  
+    synfig::ValueBase param_compress;  
+    synfig::ValueBase param_vcompress;  
+    synfig::ValueBase param_orient;  
+    synfig::ValueBase param_use_kerning;  
+    synfig::ValueBase param_grid_fit;  
+    synfig::ValueBase param_direction; 
+    synfig::ValueBase param_stagger_delay;
+    synfig::ValueBase param_font;
+    FT_Face face;
+
+  
+  
+public:  
+    Layer_TextGroup();  
+    ~Layer_TextGroup();  
+  
+    bool set_param(const synfig::String & param, const synfig::ValueBase &value) override;  
+    synfig::ValueBase get_param(const synfig::String &param) const override;  
+    synfig::Layer::Vocab get_param_vocab() const override;  
+    synfig::String get_local_name() const override;
+      
+private:  
+    void sync_glyphs();    
+    // void new_font(const synfig::String &family, int style, int weight);
+    protected:
+    virtual void on_canvas_set();     
+    virtual void set_time_vfunc(synfig::IndependentContext context,
+                            synfig::Time time) const override;
+
+};  
+
+class Layer_GlyphShape : public synfig::Layer_Shape  
+{  
+    SYNFIG_LAYER_MODULE_EXT  
+  
+private:  
+    synfig::rendering::Contour::ChunkList stored_chunks;  
+    synfig::ValueBase param_scale;
+    synfig::ValueBase param_rotation;
+  
+public:  
+    Layer_GlyphShape();  
+    ~Layer_GlyphShape();  
+  
+    virtual synfig::String get_local_name() const;  
+  
+     
+    void set_glyph_chunks(const synfig::rendering::Contour::ChunkList& chunks);
+    bool set_param(const synfig::String &param, const synfig::ValueBase &value) override;  
+    synfig::ValueBase get_param(const synfig::String &param) const override;  
+    Layer::Vocab get_param_vocab() const override;  
+  
+protected:  
+    virtual void sync_vfunc();
+    synfig::rendering::Task::Handle build_composite_task_vfunc(  
+   	    synfig::ContextParams context_params) const override;  
+    
+}; 
+  
+#endif

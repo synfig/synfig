@@ -48,6 +48,9 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
+struct FaceCache;  
+struct FontMeta;  
+
 class Layer_Freetype : public synfig::Layer_Shape
 {
 	SYNFIG_LAYER_MODULE_EXT
@@ -119,6 +122,16 @@ public:
 	bool set_version(const synfig::String &ver) override { if (ver=="0.1") old_version=true; return true; }
 	void reset_version() override {old_version=false;}
 
+	static void convert_outline_to_contours(const FT_OutlineGlyphRec* glyph, synfig::rendering::Contour::ChunkList& chunks);
+
+	static void shift_contour_chunks(synfig::rendering::Contour::ChunkList &chunks, const synfig::Vector &offset);
+
+	static std::vector<TextLine> fetch_text_lines(const std::string& text, int direction);
+
+	static std::vector<std::string> get_possible_font_files(const std::string& newfont, const synfig::filesystem::Path& canvas_path);
+
+	static FT_Face load_font_static(const std::string& family,int style,int weight,const synfig::filesystem::Path &canvas_path);    
+
 protected:
 	synfig::rendering::Task::Handle build_composite_task_vfunc(synfig::ContextParams) const override;
 
@@ -133,18 +146,11 @@ private:
 	bool new_font_(const synfig::String &family, int style=0, int weight=400);
 	bool new_face(const synfig::String &newfont);
 
-	static std::vector<std::string> get_possible_font_directories(const std::string& canvas_path);
-	static std::vector<std::string> get_possible_font_files(const std::string& newfont, const synfig::filesystem::Path& canvas_path);
+	static std::vector<std::string> get_possible_font_directories(const std::string& canvas_path);	
 
 	void on_param_text_changed();
 
-	static std::vector<TextLine> fetch_text_lines(const std::string& text, int direction);
-
-	static void convert_outline_to_contours(const FT_OutlineGlyphRec* glyph, synfig::rendering::Contour::ChunkList& chunks);
-
-	static void shift_contour_chunks(synfig::rendering::Contour::ChunkList &chunks, const synfig::Vector &offset);
-
-	synfig::Point world_to_contour(const synfig::Point& p) const;
+    synfig::Point world_to_contour(const synfig::Point& p) const;
 	synfig::Point contour_to_world(const synfig::Point& p) const;
 
 	enum SyncFlags {
