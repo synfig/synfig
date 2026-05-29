@@ -112,7 +112,7 @@ public:
 
 	void refresh_tool_options();
 
-	StateFFD_Context(CanvasView* canvas_view);
+	explicit StateFFD_Context(CanvasView* canvas_view);
 	~StateFFD_Context();
 
 	const CanvasView::Handle& get_canvas_view() const { return canvas_view_; }
@@ -439,5 +439,4 @@ Smach::event_result
 StateFFD_Context::event_stop_handler(const Smach::event& /*x*/)
 {
 	throw &state_normal;
-	return Smach::RESULT_OK;
 }
