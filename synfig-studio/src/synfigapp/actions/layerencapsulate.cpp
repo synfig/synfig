@@ -160,7 +160,7 @@ Action::LayerEncapsulate::prepare()
 	if(!child_canvas)
 		child_canvas=Canvas::create_inline(get_canvas());
 
-	Layer::Handle new_layer(Layer::create("group"));
+	new_layer=Layer::create("group");
 
 	if (!description.empty())
 		new_layer->set_description(description);
@@ -244,5 +244,15 @@ Action::LayerEncapsulate::prepare()
 
 			add_action(action);
 		}
+	}
+}
+
+void
+Action::LayerEncapsulate::perform()
+{
+	Super::perform();
+	if(new_layer && get_canvas_interface()){
+		get_canvas_interface()->get_selection_manager()->clear_selected_layers();
+		get_canvas_interface()->get_selection_manager()->set_selected_layer(new_layer);
 	}
 }
