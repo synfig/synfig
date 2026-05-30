@@ -146,6 +146,7 @@ protected:
 	bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr);
 	bool on_event(GdkEvent *event);
 	void on_keyframe_selected(synfig::Keyframe keyframe);
+	void on_keyframe_changed(synfig::Keyframe keyframe);
 }; // END of class Keyframe_List
 
 }; // END of namespace studio

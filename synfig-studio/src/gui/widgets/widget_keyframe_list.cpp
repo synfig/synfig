@@ -65,6 +65,11 @@ Widget_Keyframe_List::get_keyframe_around(Time t, bool ignore_disabled)
 	KeyframeList::iterator ret(kf_list->end());
 	Keyframe* kf = nullptr;
 
+	if (kf_list->find(t, ret)) {
+		if (!ignore_disabled || ret->active())
+			return &*ret;
+	}
+
 	Time p_t, n_t;
 	kf_list->find_prev_next(t, p_t, n_t, ignore_disabled);
 
@@ -258,6 +263,16 @@ Widget_Keyframe_List::set_selected_keyframe(const Keyframe &x)
 void
 Widget_Keyframe_List::on_keyframe_selected(Keyframe keyframe)
 	{ set_selected_keyframe(keyframe); }
+
+void
+Widget_Keyframe_List::on_keyframe_changed(Keyframe keyframe)
+{
+	if (selected && keyframe == selected_kf) {
+		// Keyframe::operator== only on uniqueid::operator==
+		selected_kf = keyframe;
+	}
+	queue_draw();
+}
 
 bool
 Widget_Keyframe_List::perform_move_kf(bool delta)
@@ -465,14 +480,12 @@ Widget_Keyframe_List::set_canvas_interface(const etl::loose_handle<CanvasInterfa
 				sigc::hide(
 					sigc::mem_fun(*this,&Widget_Keyframe_List::queue_draw) )));
 		keyframe_changed = canvas_interface->signal_keyframe_changed().connect(
-			sigc::hide_return(
-				sigc::hide(
-					sigc::mem_fun(*this,&Widget_Keyframe_List::queue_draw) )));
+			sigc::mem_fun(*this, &Widget_Keyframe_List::on_keyframe_changed) );
 		keyframe_removed = canvas_interface->signal_keyframe_removed().connect(
 			sigc::hide_return(
 				sigc::hide(
 					sigc::mem_fun(*this,&Widget_Keyframe_List::queue_draw) )));
 		keyframe_selected = canvas_interface->signal_keyframe_selected().connect(
-				sigc::mem_fun(*this,&Widget_Keyframe_List::on_keyframe_selected) );
+			sigc::mem_fun(*this, &Widget_Keyframe_List::set_selected_keyframe) );
 	}
 }
