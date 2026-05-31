@@ -76,8 +76,21 @@ struct ColorStop {
 	 ColorStop(const String& color, float opacity, const Gamma& gamma, float pos);
 };
 
-struct LinearGradient{
+struct SVGGradient
+{
+	enum class SpreadMethod {
+		PAD = 1,
+		REFLECT = 2,
+		REPEAT = 3,
+	} spread_method = SpreadMethod::PAD;
+
+	static SpreadMethod parse_spread_method(const std::string& x);
+};
+
+struct LinearGradient : public SVGGradient
+{
 	std::string name;
+
 	float x1,x2,y1,y2;
 	std::list<ColorStop> stops;
 	SVGMatrix transform;
@@ -85,7 +98,8 @@ struct LinearGradient{
 	LinearGradient(const String &name, float x1, float y1, float x2, float y2, std::list<ColorStop> stops, SVGMatrix transform);
 };
 
-struct RadialGradient{
+struct RadialGradient: public SVGGradient
+{
 	std::string name;
 	float cx,cy;//center point
 	//float fx,fy; //not supported by Synfig
@@ -231,6 +245,7 @@ private:
 		void build_param (xmlpp::Element* root, const String& name, const String& type, const String& value);
 		void build_param (xmlpp::Element* root, const String& name, const String& type, float value);
 		void build_param (xmlpp::Element* root, const String& name, const String& type, int value);
+		void build_param (xmlpp::Element* root, const String& name, bool value);
 		void build_integer (xmlpp::Element* root, const String& name, int value);
 		void build_real (xmlpp::Element* root, const String& name, float value);
 		void build_vector (xmlpp::Element* root, const String& name, float x, float y);

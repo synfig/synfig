@@ -1823,8 +1823,12 @@ Svg_parser::build_linearGradient(xmlpp::Element* root, const LinearGradient& dat
 	child_stops->set_attribute("name","gradient");
 	child_stops->set_attribute("guid",GUID::hasher(data.name).get_string());
 	build_stop_color (child_stops->add_child("gradient"),data.stops);
-	build_param (gradient->add_child("param"),"loop","bool","false");
-	build_param (gradient->add_child("param"),"zigzag","bool","false");
+
+	const bool loop = data.spread_method != SVGGradient::SpreadMethod::PAD;
+	const bool zigzag = data.spread_method == SVGGradient::SpreadMethod::REFLECT;
+
+	build_param(gradient->add_child("param"), "loop", loop);
+	build_param(gradient->add_child("param"), "zigzag", zigzag);
 }
 
 void
@@ -1881,9 +1885,12 @@ Svg_parser::build_radialGradient(xmlpp::Element* root, const RadialGradient& dat
 	r=r/kux;
 	build_vector (gradient->add_child("param"),"center",cx,cy);
 	build_param (gradient->add_child("param"),"radius","real",r);
+	
+	const bool loop = data.spread_method != SVGGradient::SpreadMethod::PAD;
+	const bool zigzag = data.spread_method == SVGGradient::SpreadMethod::REFLECT;
 
-	build_param (gradient->add_child("param"),"loop","bool","false");
-	build_param (gradient->add_child("param"),"zigzag","bool","false");
+	build_param(gradient->add_child("param"), "loop", loop);
+	build_param(gradient->add_child("param"), "zigzag", zigzag);
 }
 
 void
@@ -1897,6 +1904,7 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node)
 		float y2			=atof(nodeElement->get_attribute_value("y2").data());
 		Glib::ustring link	=nodeElement->get_attribute_value("href");
 		Glib::ustring transform	=nodeElement->get_attribute_value("gradientTransform");
+		const std::string spread_method_string = nodeElement->get_attribute_value("spreadMethod");
 
 		if(link.empty())
 			link = nodeElement->get_attribute_value("href","xlink");			
@@ -1928,8 +1936,11 @@ Svg_parser::parser_linearGradient(const xmlpp::Node* node)
     			}
 			}
 		}
-		if (!stops.empty())
-			lg.push_back(LinearGradient(id,x1,y1,x2,y2,stops,mtx));
+		if (!stops.empty()) {
+			LinearGradient linear_gradient(id,x1,y1,x2,y2,stops,mtx);
+			linear_gradient.spread_method = SVGGradient::parse_spread_method(spread_method_string);
+			lg.push_back(linear_gradient);
+		}
 	}
 }
 
@@ -1945,6 +1956,7 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node)
 		float r				=atof(nodeElement->get_attribute_value("r").data());
 		Glib::ustring link	=nodeElement->get_attribute_value("href");//basic
 		Glib::ustring transform	=nodeElement->get_attribute_value("gradientTransform");
+		const std::string spread_method_string = nodeElement->get_attribute_value("spreadMethod");
 
 		if(link.empty())
 			link = nodeElement->get_attribute_value("href","xlink");
@@ -1960,10 +1972,32 @@ Svg_parser::parser_radialGradient(const xmlpp::Node* node)
 		if(!link.empty()){
 			//inkscape always use link, i don't need parser stops here, but it's possible
 			std::list<ColorStop> stops = get_colorStop(link);
-			if (!stops.empty())
-				rg.push_back(RadialGradient(id,cx,cy,r,stops,mtx));
+			if (!stops.empty()) {
+				RadialGradient radial_gradient(id,cx,cy,r,stops,mtx);
+				radial_gradient.spread_method = SVGGradient::parse_spread_method(spread_method_string);
+				rg.push_back(radial_gradient);
+			}
 		}
 	}
+}
+
+SVGGradient::SpreadMethod
+SVGGradient::parse_spread_method(const std::string& x)
+{
+	if (x.empty())
+		return SpreadMethod::PAD;
+
+	std::string s = x;
+	synfig::strtolower(s);
+	if (s == "pad")
+		return SpreadMethod::PAD;
+	if (s == "repeat")
+		return SpreadMethod::REPEAT;
+	if (s == "reflect")
+		return SpreadMethod::REFLECT;
+
+	synfig::error(_("Unknown gradient spreadMethod: %s. Assuming 'pad'"), x.c_str());
+	return SpreadMethod::PAD;
 }
 
 ColorStop::ColorStop(const String& color, float opacity, const Gamma& gamma, float pos)
@@ -2136,6 +2170,15 @@ Svg_parser::build_param(xmlpp::Element* root, const String& name, const String& 
 	}else{
 		root->get_parent()->remove_child(root);
 	}
+}
+
+void
+synfig::Svg_parser::build_param(xmlpp::Element* root, const String& name, bool value)
+{
+	if (!name.empty())
+		root->set_attribute("name", name);
+	xmlpp::Element* child = root->add_child("bool");
+	child->set_attribute("value", value ? "true" : "false");
 }
 
 void
