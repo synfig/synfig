@@ -1,3 +1,4 @@
+#include "synfig/paramdesc.h"
 #ifdef USING_PCH  
 # include "pch.h"  
 #else  
@@ -88,12 +89,12 @@ Layer_TextGroup::on_canvas_set()
  
   
 Layer_TextGroup::Layer_TextGroup()  
-    : face(nullptr)  
-    , param_text(ValueBase(std::string()))  
+    : param_text(ValueBase(std::string()))  
     , param_family(ValueBase(std::string("Sans Serif")))  
     , param_style(ValueBase(0))  
     , param_weight(ValueBase(400))  
-    , param_size(ValueBase(Vector(0.25, 0.25)))  
+    , param_size(ValueBase(Vector(0.25, 0.25)))
+    , param_direction(ValueBase(0))
 {  
     SET_INTERPOLATION_DEFAULTS();  
     SET_STATIC_DEFAULTS();  
@@ -118,20 +119,17 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
     }  
     if (param == "family" && value.can_get(String())) {  
         param_family = value;
-		face = nullptr;    	    
         sync_glyphs();  
         return true;  
     }  
     if (param == "style" && value.can_get(int())) {  
         param_style = value;  
-		face = nullptr;	
 		sync_glyphs();  
         return true;  
     }  
     if (param == "weight" && value.can_get(int())) {  
         param_weight = value;  
-    	face = nullptr; 
-		sync_glyphs();  
+    	sync_glyphs();  
         return true;  
     }  
     if (param == "size" && value.can_get(Vector())) {  
@@ -139,6 +137,12 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
         sync_glyphs();  
         return true;  
     }  
+    if (param == "direction" && value.can_get(int()))
+	{
+    	param_direction = value;
+    	sync_glyphs();
+    	return true;
+	}
     return Layer_PasteCanvas::set_param(param, value);
       
 } 
@@ -157,7 +161,8 @@ Layer_TextGroup::get_param(const String& param) const
     EXPORT_VALUE(param_family);  
     EXPORT_VALUE(param_style);  
     EXPORT_VALUE(param_weight);  
-    EXPORT_VALUE(param_size);  
+    EXPORT_VALUE(param_size);
+    EXPORT_VALUE(param_direction);
     EXPORT_NAME();  
     EXPORT_VERSION();  
     return Layer_PasteCanvas::get_param(param);  
@@ -200,6 +205,11 @@ Layer_TextGroup::get_param_vocab() const
         .set_local_name(_("Font Size"))  
         .set_description(_("Size of the font"))  
     );  
+
+    ret.push_back(ParamDesc("direction")
+    	.set_local_name(_("Direction"))
+    	.set_description(_("Text direction"))
+    );
     return ret;  
 }
 
@@ -255,138 +265,144 @@ void Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) cons
     Time time_offset = get_time_offset();  
     canvas->set_time(time * time_dilation + time_offset);  
 }
- 
+
 void
 Layer_TextGroup::sync_glyphs()
 {
     std::string text = param_text.get(std::string());
-    if (text.empty())return;
 
-    std::string family = param_family.get(std::string());  
-    int style = param_style.get(int());  
-    int weight = param_weight.get(int());  
-    
-    synfig::filesystem::Path canvas_path;  
-    if (get_canvas())  
-        canvas_path = get_canvas()->get_file_path();   
+    if (text.empty())
+        return;
 
-    FT_Face face = Layer_Freetype::load_font_static(family, style, weight, canvas_path);
+    FT_Face face =
+        Layer_Freetype::load_font_static(
+            param_family.get(std::string()),
+            param_style.get(int()),
+            param_weight.get(int()),
+            get_canvas()
+                ? get_canvas()->get_file_path()
+                : synfig::filesystem::Path()
+        );
 
-    if (!face) {  
-        synfig::warning("sync_glyphs: face is null after font loading");  
-        return;  
-    }  
+    if (!face)
+    {
+        synfig::warning("Layer_TextGroup: failed to load font");
+        return;
+    }
 
     Canvas::Handle canvas = get_sub_canvas();
-    if (!canvas){  
-        synfig::warning("sync_glyphs: no sub_canvas");  
-        return;  
-    }  
-        
+
+    if (!canvas)
+        return;
 
     // TODO:
-    // Current implementation uses Glib::ustring iteration as an
-    // intermediate improvement over raw byte iteration.
-    //
-    // Final implementation should use HarfBuzz cluster-aware shaping
-    // and preserve glyph/codepoint mapping correctly for ligatures,
-    // RTL text, combining marks, etc.
-
-    Glib::ustring utf8_text(text);
+    // Replace codepoint iteration with HarfBuzz-shaped
+    // glyph iteration so TextGroup uses the same shaping
+    // pipeline as Layer_Freetype.
+    auto lines =
+        Layer_Freetype::fetch_text_lines(
+            text,
+            param_direction.get(int())
+        );
 
     struct GlyphData
     {
         rendering::Contour::ChunkList outline;
         uint32_t charcode;
-
-        // TODO:
-        // Future implementation may use stored glyph metadata
-        // for stable cluster/glyph identity tracking.
-        Vector offset;
     };
 
     std::vector<GlyphData> glyphs;
 
     Vector size = param_size.get(Vector()) * 2;
 
-    Real scale_x = size[0] / face->units_per_EM;
-    Real scale_y = size[1] / face->units_per_EM;
+    const Real scale_x =
+        size[0] / face->units_per_EM;
+
+    const Real scale_y =
+        size[1] / face->units_per_EM;
 
     Vector offset(0, 0);
 
-    for (auto it = utf8_text.begin(); it != utf8_text.end(); ++it)
+    for (const auto& line : lines)
     {
-        uint32_t charcode = *it;
-
-        // TODO:
-        // Current implementation maps Unicode codepoints
-        // directly to glyph indices.
-        //
-        // Final implementation should use HarfBuzz-shaped
-        // glyph clusters instead.
-
-        FT_UInt glyph_index =
-            FT_Get_Char_Index(face, charcode);
-
-        if (!glyph_index)
-            continue;
-
-        FT_Error error =
-            FT_Load_Glyph(face, glyph_index, FT_LOAD_NO_SCALE);
-
-        if (error)
-            continue;
-
-        FT_Glyph ftglyph;
-
-        error = FT_Get_Glyph(face->glyph, &ftglyph);
-
-        if (error)
-            continue;
-
-        rendering::Contour::ChunkList outline;
-
-        if (ftglyph->format == FT_GLYPH_FORMAT_OUTLINE)
+        for (const auto& span : line)
         {
-            FT_OutlineGlyph outline_glyph =
-                reinterpret_cast<FT_OutlineGlyph>(ftglyph);
-
-            Layer_Freetype::convert_outline_to_contours(
-                outline_glyph,
-                outline
-            );
-        }
-
-        if (!outline.empty())
-        {
-            Layer_Freetype::shift_contour_chunks(
-                outline,
-                offset
-            );
-
-            for (auto &chunk : outline)
+            for (uint32_t charcode : span.codepoints)
             {
-                chunk.p1[0]  *= scale_x;
-                chunk.p1[1]  *= scale_y;
+                FT_UInt glyph_index =
+                    FT_Get_Char_Index(face, charcode);
 
-                chunk.pp0[0] *= scale_x;
-                chunk.pp0[1] *= scale_y;
+                if (!glyph_index)
+                    continue;
 
-                chunk.pp1[0] *= scale_x;
-                chunk.pp1[1] *= scale_y;
+                FT_Error error =
+                    FT_Load_Glyph(
+                        face,
+                        glyph_index,
+                        FT_LOAD_NO_SCALE
+                    );
+
+                if (error)
+                    continue;
+
+                FT_Glyph ftglyph;
+
+                error =
+                    FT_Get_Glyph(
+                        face->glyph,
+                        &ftglyph
+                    );
+
+                if (error)
+                    continue;
+
+                rendering::Contour::ChunkList outline;
+
+                if (ftglyph->format ==
+                    FT_GLYPH_FORMAT_OUTLINE)
+                {
+                    FT_OutlineGlyph outline_glyph =
+                        reinterpret_cast<FT_OutlineGlyph>(
+                            ftglyph
+                        );
+
+                    Layer_Freetype::convert_outline_to_contours(
+                        outline_glyph,
+                        outline
+                    );
+
+                    Layer_Freetype::shift_contour_chunks(
+                        outline,
+                        offset
+                    );
+
+                    for (auto& chunk : outline)
+                    {
+                        chunk.p1[0] *= scale_x;
+                        chunk.p1[1] *= scale_y;
+
+                        chunk.pp0[0] *= scale_x;
+                        chunk.pp0[1] *= scale_y;
+
+                        chunk.pp1[0] *= scale_x;
+                        chunk.pp1[1] *= scale_y;
+                    }
+
+                    if (!outline.empty())
+                    {
+                        glyphs.push_back({
+                            outline,
+                            charcode
+                        });
+                    }
+                }
+
+                offset[0] += ftglyph->advance.x >> 10;
+                offset[1] += ftglyph->advance.y >> 10;
+
+                FT_Done_Glyph(ftglyph);
             }
-
-            glyphs.push_back({
-                outline,
-                charcode,
-                offset
-            });
         }
-
-        offset[0] += ftglyph->advance.x >> 10;
-        offset[1] += ftglyph->advance.y >> 10;
-
-        FT_Done_Glyph(ftglyph);
     }
 
     while (static_cast<size_t>(canvas->size()) > glyphs.size())
@@ -397,28 +413,34 @@ Layer_TextGroup::sync_glyphs()
     while (static_cast<size_t>(canvas->size()) < glyphs.size())
     {
         Layer::Handle child(new Layer_GlyphShape());
-
         canvas->push_back(child);
     }
 
     auto layer_iter = canvas->begin();
 
-    for (const auto &glyph : glyphs)
+    for (const auto& glyph : glyphs)
     {
         if (layer_iter == canvas->end())
             break;
 
         Layer::Handle child = *layer_iter;
 
-        Layer_GlyphShape *glyph_layer =
-            dynamic_cast<Layer_GlyphShape*>(child.get());
+        Layer_GlyphShape* glyph_layer =
+            dynamic_cast<Layer_GlyphShape*>(
+                child.get()
+            );
 
         if (glyph_layer)
         {
-            glyph_layer->set_glyph_chunks(glyph.outline);
+            glyph_layer->set_glyph_chunks(
+                glyph.outline
+            );
 
             child->set_description(
-                Glib::ustring(1, glyph.charcode)
+                Glib::ustring(
+                    1,
+                    glyph.charcode
+                )
             );
         }
 
@@ -426,14 +448,14 @@ Layer_TextGroup::sync_glyphs()
     }
 
     // TODO:
-    // Current synchronization preserves layer instances
-    // by index/order only.
+    // Current synchronization preserves glyph layers
+    // by index only.
     //
-    // Future implementation should preserve stable glyph
-    // identity across insertions/deletions using shaped
-    // cluster mapping so animation state survives edits.
+    // Future implementation should use HarfBuzz
+    // cluster information to maintain stable glyph
+    // identity across insertions, deletions and
+    // ligature formation.
 
     signal_subcanvas_changed()();
-
     changed();
 }

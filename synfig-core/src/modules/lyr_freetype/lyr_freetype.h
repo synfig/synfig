@@ -92,8 +92,6 @@ private:
 #endif
 	};
 
-	typedef std::vector<TextSpan> TextLine;
-	std::vector<TextLine> lines;
 
 	bool font_path_from_canvas;
 
@@ -108,6 +106,8 @@ public:
 	Layer_Freetype();
 	~Layer_Freetype() override = default;
 
+	typedef std::vector<TextSpan> TextLine;
+	std::vector<TextLine> lines;	
 	void on_canvas_set() override;
 
 	bool set_simple_shape_param(const synfig::String & param, const synfig::ValueBase &value);

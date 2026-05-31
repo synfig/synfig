@@ -32,9 +32,7 @@ private:
     synfig::ValueBase param_direction; 
     synfig::ValueBase param_stagger_delay;
     synfig::ValueBase param_font;
-    FT_Face face;
-
-  
+     
   
 public:  
     Layer_TextGroup();  
@@ -48,8 +46,8 @@ public:
 private:  
     void sync_glyphs();    
     // void new_font(const synfig::String &family, int style, int weight);
-    protected:
-    virtual void on_canvas_set();     
+protected:
+    void on_canvas_set() override;     
     virtual void set_time_vfunc(synfig::IndependentContext context,
                             synfig::Time time) const override;
 
@@ -68,7 +66,7 @@ public:
     Layer_GlyphShape();  
     ~Layer_GlyphShape();  
   
-    virtual synfig::String get_local_name() const;  
+    synfig::String get_local_name() const override;  
   
      
     void set_glyph_chunks(const synfig::rendering::Contour::ChunkList& chunks);
@@ -77,7 +75,8 @@ public:
     Layer::Vocab get_param_vocab() const override;  
   
 protected:  
-    virtual void sync_vfunc();
+    void sync_vfunc() override;
+
     synfig::rendering::Task::Handle build_composite_task_vfunc(  
    	    synfig::ContextParams context_params) const override;  
     

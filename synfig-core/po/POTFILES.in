@@ -1,6 +1,8 @@
 # FIXME: move libsynfig into a separate domain
 src/modules/lyr_freetype/lyr_freetype.cpp
 src/modules/lyr_freetype/lyr_freetype.h
+src/modules/lyr_freetype/lyr_textgroup.cpp
+src/modlues/lyr_freetype/lyr_textgroup.h
 src/modules/lyr_freetype/main.cpp
 src/modules/lyr_std/bevel.cpp
 src/modules/lyr_std/bevel.h
