@@ -21,6 +21,8 @@
 #include <synfig/value.h>
 
 #include <vector>
+#include <synfig/general.h>
+#include "layer_pastecanvas.h"
 
 #endif
 
@@ -52,6 +54,9 @@ Layer_FreeFormDeform::Layer_FreeFormDeform():
 	
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
+	
+	// Reset to true, as SET_STATIC_DEFAULTS triggers set_param which sets it to false
+	needs_fit_to_context_ = true;
 }
 
 Layer_FreeFormDeform::~Layer_FreeFormDeform()
@@ -194,34 +199,47 @@ Layer_FreeFormDeform::on_canvas_set()
 		needs_fit_to_context_ = false;
 
 		Context context = get_canvas()->get_context(ContextParams());
-		while (!context->empty() && (*context).get() != this)
-			context++;
+		Context context_iter = context;
 		
-		if (!context->empty()) {
-			context++; // move past ourselves to the context below
-			Rect bounds = Rect::zero();
-			bool first = true;
-			
-			Context c = context;
-			while (!c->empty()) {
-				Rect layer_bounds = (*c)->get_bounding_rect();
-				if (layer_bounds.is_valid() && !layer_bounds.is_full_infinite() && layer_bounds.area() < 1e10) {
-					if (first) {
-						bounds = layer_bounds;
-						first = false;
-					} else {
-						bounds |= layer_bounds;
-					}
-				}
-				c++;
+		while (!context_iter->empty() && (*context_iter).get() != this)
+			context_iter++;
+		
+		if (!context_iter->empty()) {
+			context_iter++; // move past ourselves to the context below
+		} else {
+			// We are not in the canvas yet (e.g. during LayerAdd), so the entire context is below us
+			context_iter = context; 
+		}
+		
+		Rect bounds = Rect::zero();
+		bool first = true;
+		
+		while (!context_iter->empty()) {
+			Rect layer_bounds;
+			if (Layer_PasteCanvas::Handle pc = Layer_PasteCanvas::Handle::cast_dynamic(*context_iter)) {
+				layer_bounds = pc->get_bounding_rect_context_dependent(ContextParams());
+			} else {
+				layer_bounds = (*context_iter)->get_bounding_rect();
 			}
 
-			// Fallback to canvas bounds if no finite layers are found
-			if (first) {
-				bounds = get_canvas()->rend_desc().get_rect();
+			if (layer_bounds.is_valid() && !layer_bounds.is_full_infinite() && layer_bounds.area() < 1e10) {
+				if (first) {
+					bounds = layer_bounds;
+					first = false;
+				} else {
+					bounds |= layer_bounds;
+				}
 			}
-			
-			if (bounds.is_valid() && bounds.area() > 0.0001) {
+			context_iter++;
+		}
+
+		// Fallback to canvas bounds if no finite layers are found
+		if (first) {
+			bounds = get_canvas()->rend_desc().get_rect();
+		}
+		
+		if (bounds.is_valid() && bounds.area() > 0.0001) {
+				    
 				int cols = param_grid_size_x.get(int());
 				int rows = param_grid_size_y.get(int());
 				std::vector<ValueBase> grid_points;
@@ -245,7 +263,6 @@ Layer_FreeFormDeform::on_canvas_set()
 			}
 		}
 	}
-}
 
 /* ---- Grid regeneration ---- */
 

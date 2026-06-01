@@ -1611,6 +1611,101 @@ CanvasView::add_layer(String x)
 			}
 		}		
 	}
+	else if (x == "free_form_deform")
+	{
+		if (layer_list.size() == 1 && layer_list.front()->get_name() == "switch")
+		{
+			synfigapp::Action::PassiveGrouper group(get_instance().get(), _("Create FFD for Switch"));
+			Layer::Handle switch_layer = layer_list.front();
+			
+			Layer::Handle new_group = canvas_interface()->add_layer_to("group", canvas, target_depth);
+			if (new_group)
+			{
+				Action::Handle action(Action::create("LayerSetDesc"));
+				action->set_param("canvas", canvas);
+				action->set_param("canvas_interface", canvas_interface());
+				action->set_param("layer", new_group);
+				action->set_param("new_description", String("ffd group"));
+				get_instance()->perform_action(action);
+
+				Canvas::Handle child_canvas = new_group->get_param("canvas").get(Canvas::Handle());
+
+				Action::Handle rem_action(Action::create("LayerRemove"));
+				rem_action->set_param("canvas", canvas);
+				rem_action->set_param("canvas_interface", canvas_interface());
+				rem_action->set_param("layer", switch_layer);
+				get_instance()->perform_action(rem_action);
+
+				Action::Handle add_action(Action::create("LayerAdd"));
+				add_action->set_param("canvas", child_canvas);
+				add_action->set_param("canvas_interface", canvas_interface());
+				add_action->set_param("new", switch_layer);
+				get_instance()->perform_action(add_action);
+
+				auto transfer_param = [&](const String& param_name, const ValueBase& default_val) {
+					ValueBase val = switch_layer->get_param(param_name);
+					auto dyn_param = switch_layer->dynamic_param_list().find(param_name);
+					
+					if (dyn_param != switch_layer->dynamic_param_list().end()) {
+						ValueNode::Handle vn = dyn_param->second;
+						
+						Action::Handle param_connect(Action::create("LayerParamConnect"));
+						param_connect->set_param("canvas", canvas);
+						param_connect->set_param("canvas_interface", canvas_interface());
+						param_connect->set_param("layer", new_group);
+						param_connect->set_param("param", param_name);
+						param_connect->set_param("value_node", vn);
+						get_instance()->perform_action(param_connect);
+
+						Action::Handle param_disconnect(Action::create("LayerParamDisconnect"));
+						param_disconnect->set_param("canvas", child_canvas);
+						param_disconnect->set_param("canvas_interface", canvas_interface());
+						param_disconnect->set_param("layer", switch_layer);
+						param_disconnect->set_param("param", param_name);
+						get_instance()->perform_action(param_disconnect);
+
+						Action::Handle param_set(Action::create("LayerParamSet"));
+						param_set->set_param("canvas", child_canvas);
+						param_set->set_param("canvas_interface", canvas_interface());
+						param_set->set_param("layer", switch_layer);
+						param_set->set_param("param", param_name);
+						param_set->set_param("new_value", default_val);
+						get_instance()->perform_action(param_set);
+					} else {
+						Action::Handle param_set_group(Action::create("LayerParamSet"));
+						param_set_group->set_param("canvas", canvas);
+						param_set_group->set_param("canvas_interface", canvas_interface());
+						param_set_group->set_param("layer", new_group);
+						param_set_group->set_param("param", param_name);
+						param_set_group->set_param("new_value", val);
+						get_instance()->perform_action(param_set_group);
+
+						Action::Handle param_set_switch(Action::create("LayerParamSet"));
+						param_set_switch->set_param("canvas", child_canvas);
+						param_set_switch->set_param("canvas_interface", canvas_interface());
+						param_set_switch->set_param("layer", switch_layer);
+						param_set_switch->set_param("param", param_name);
+						param_set_switch->set_param("new_value", default_val);
+						get_instance()->perform_action(param_set_switch);
+					}
+				};
+
+				transfer_param("origin", ValueBase(synfig::Vector(0,0)));
+				transfer_param("transformation", ValueBase(synfig::Transformation()));
+
+				layer = canvas_interface()->add_layer_to("free_form_deform", child_canvas, 0);
+			}
+		}
+		else
+		{
+			App::dialog_message_1b(
+				"ERROR",
+				_("The Free-Form Deformation (FFD) layer only works on imported images (Switch layers) for now. Please select a single image layer before creating an FFD layer."),
+				"details",
+				_("Close"));
+			return;
+		}
+	}
 	else
 	{
 		layer = canvas_interface()->add_layer_to(x,canvas,target_depth);
