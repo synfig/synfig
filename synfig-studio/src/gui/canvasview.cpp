@@ -1625,7 +1625,7 @@ CanvasView::add_layer(String x)
 				action->set_param("canvas", canvas);
 				action->set_param("canvas_interface", canvas_interface());
 				action->set_param("layer", new_group);
-				action->set_param("new_description", String("ffd group"));
+				action->set_param("new_description", String("FFD Group"));
 				get_instance()->perform_action(action);
 
 				Canvas::Handle child_canvas = new_group->get_param("canvas").get(Canvas::Handle());
