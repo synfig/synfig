@@ -21,7 +21,7 @@ private:
 	ValueBase param_source_tl;
 	ValueBase param_source_br;
 
-	bool needs_fit_to_context_;
+	bool needs_reset_;
 
 	//! Get a control point with boundary clamping for edge/corner cells
 	Point get_clamped_ctrl_point(const std::vector<Point>& ctrl_points, int gx, int gy, int cols, int rows) const;
@@ -42,6 +42,8 @@ public:
 	void prepare_mesh(); // The core math engine
 	void regenerate_grid_points(); // Rebuild uniform grid when size changes
 	std::vector<Point> get_interpolated_grid(int new_cols, int new_rows) const;
+	synfig::Rect get_context_bounds() const;
+	std::vector<synfig::Point> compute_grid_for_bounds(const synfig::Rect& bounds, int cols, int rows) const;
 };
 }
 #endif

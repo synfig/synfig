@@ -41,7 +41,7 @@ Layer_FreeFormDeform::Layer_FreeFormDeform():
 	param_smoothness(Real(1.0)), // Default to full Catmull-Rom
 	param_source_tl(Point(-2.0, 2.0)),
 	param_source_br(Point(2.0, -2.0)),
-	needs_fit_to_context_(true)
+	needs_reset_(true)
 {
 	std::vector<ValueBase> grid_points;
 	// 3x3 grid centered
@@ -56,7 +56,7 @@ Layer_FreeFormDeform::Layer_FreeFormDeform():
 	SET_STATIC_DEFAULTS();
 	
 	// Reset to true, as SET_STATIC_DEFAULTS triggers set_param which sets it to false
-	needs_fit_to_context_ = true;
+	needs_reset_ = true;
 }
 
 Layer_FreeFormDeform::~Layer_FreeFormDeform()
@@ -74,7 +74,7 @@ bool
 Layer_FreeFormDeform::set_param(const String & param, const ValueBase &value)
 {
 	IMPORT_VALUE_PLUS(param_grid_points, {
-		needs_fit_to_context_ = false;
+		needs_reset_ = false;
 		prepare_mesh();
 	});
 	IMPORT_VALUE_PLUS(param_grid_size_x, { 
@@ -195,74 +195,93 @@ Layer_FreeFormDeform::catmull_rom_1d(Real p0, Real p1, Real p2, Real p3, Real t)
 void
 Layer_FreeFormDeform::on_canvas_set()
 {
-	if (needs_fit_to_context_ && get_canvas()) {
-		needs_fit_to_context_ = false;
+	if (needs_reset_ && get_canvas()) {
+		needs_reset_ = false;
 
-		Context context = get_canvas()->get_context(ContextParams());
-		Context context_iter = context;
-		
-		while (!context_iter->empty() && (*context_iter).get() != this)
-			context_iter++;
-		
-		if (!context_iter->empty()) {
-			context_iter++; // move past ourselves to the context below
-		} else {
-			// We are not in the canvas yet (e.g. during LayerAdd), so the entire context is below us
-			context_iter = context; 
-		}
-		
-		Rect bounds = Rect::zero();
-		bool first = true;
-		
-		while (!context_iter->empty()) {
-			Rect layer_bounds;
-			if (Layer_PasteCanvas::Handle pc = Layer_PasteCanvas::Handle::cast_dynamic(*context_iter)) {
-				layer_bounds = pc->get_bounding_rect_context_dependent(ContextParams());
-			} else {
-				layer_bounds = (*context_iter)->get_bounding_rect();
-			}
-
-			if (layer_bounds.is_valid() && !layer_bounds.is_full_infinite() && layer_bounds.area() < 1e10) {
-				if (first) {
-					bounds = layer_bounds;
-					first = false;
-				} else {
-					bounds |= layer_bounds;
-				}
-			}
-			context_iter++;
-		}
-
-		// Fallback to canvas bounds if no finite layers are found
-		if (first) {
-			bounds = get_canvas()->rend_desc().get_rect();
-		}
+		Rect bounds = get_context_bounds();
 		
 		if (bounds.is_valid() && bounds.area() > 0.0001) {
-				    
-				int cols = param_grid_size_x.get(int());
-				int rows = param_grid_size_y.get(int());
-				std::vector<ValueBase> grid_points;
-				
-				Real minx = bounds.minx;
-				Real maxx = bounds.maxx;
-				Real miny = bounds.miny;
-				Real maxy = bounds.maxy;
+			int cols = param_grid_size_x.get(int());
+			int rows = param_grid_size_y.get(int());
+			
+			std::vector<Point> grid_points = compute_grid_for_bounds(bounds, cols, rows);
+			std::vector<ValueBase> grid_points_vb;
+			for (const auto& p : grid_points) grid_points_vb.push_back(ValueBase(p));
 
-				for (int y = 0; y < rows; ++y) {
-					for (int x = 0; x < cols; ++x) {
-						Real px = minx + x * (maxx - minx) / (cols - 1);
-						Real py = maxy - y * (maxy - miny) / (rows - 1);
-						grid_points.push_back(ValueBase(Point(px, py)));
-					}
-				}
-				param_grid_points.set_list_of(grid_points);
-				param_source_tl.set(Point(minx, maxy));
-				param_source_br.set(Point(maxx, miny));
-				prepare_mesh();
-			}
+			param_grid_points.set_list_of(grid_points_vb);
+			param_source_tl.set(Point(bounds.minx, bounds.maxy));
+			param_source_br.set(Point(bounds.maxx, bounds.miny));
+			prepare_mesh();
 		}
 	}
+}
+
+synfig::Rect
+Layer_FreeFormDeform::get_context_bounds() const
+{
+	Rect bounds = Rect::zero();
+	if (!get_canvas()) return bounds;
+
+	Context context = get_canvas()->get_context(ContextParams());
+	Context context_iter = context;
+	
+	while (!context_iter->empty() && (*context_iter).get() != this)
+		context_iter++;
+	
+	if (!context_iter->empty()) {
+		context_iter++; // move past ourselves to the context below
+	} else {
+		// We are not in the canvas yet (e.g. during LayerAdd), so the entire context is below us
+		context_iter = context; 
+	}
+	
+	bool first = true;
+	
+	while (!context_iter->empty()) {
+		Rect layer_bounds;
+		if (Layer_PasteCanvas::Handle pc = Layer_PasteCanvas::Handle::cast_dynamic(*context_iter)) {
+			layer_bounds = pc->get_bounding_rect_context_dependent(ContextParams());
+		} else {
+			layer_bounds = (*context_iter)->get_bounding_rect();
+		}
+
+		if (layer_bounds.is_valid() && !layer_bounds.is_full_infinite() && layer_bounds.area() < 1e10) {
+			if (first) {
+				bounds = layer_bounds;
+				first = false;
+			} else {
+				bounds |= layer_bounds;
+			}
+		}
+		context_iter++;
+	}
+
+	// Fallback to canvas bounds if no finite layers are found
+	if (first) {
+		bounds = get_canvas()->rend_desc().get_rect();
+	}
+
+	return bounds;
+}
+
+std::vector<synfig::Point>
+Layer_FreeFormDeform::compute_grid_for_bounds(const synfig::Rect& bounds, int cols, int rows) const
+{
+	std::vector<synfig::Point> grid_points;
+	Real minx = bounds.minx;
+	Real maxx = bounds.maxx;
+	Real miny = bounds.miny;
+	Real maxy = bounds.maxy;
+
+	for (int y = 0; y < rows; ++y) {
+		for (int x = 0; x < cols; ++x) {
+			Real px = minx + x * (maxx - minx) / (cols - 1);
+			Real py = maxy - y * (maxy - miny) / (rows - 1);
+			grid_points.push_back(Point(px, py));
+		}
+	}
+	return grid_points;
+}
 
 /* ---- Grid regeneration ---- */
 

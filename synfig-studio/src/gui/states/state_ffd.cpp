@@ -97,9 +97,12 @@ class studio::StateFFD_Context : public sigc::trackable
 	// Signal blocking flag
 	bool updating_from_layer_;
 
+	Gtk::Button reset_button;
+
 	void on_grid_x_changed();
 	void on_grid_y_changed();
 	void on_smoothness_changed();
+	void on_reset_pressed();
 
 	synfig::Layer::Handle get_selected_ffd_layer() const;
 	void update_controls_from_layer();
@@ -151,6 +154,7 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	grid_y_spin(grid_y_adj, 1, 0),
 	smoothness_adj(Gtk::Adjustment::create(1.0, 0.0, 1.0, 0.01, 0.1)),
 	smoothness_hscl(smoothness_adj, Gtk::ORIENTATION_HORIZONTAL),
+	reset_button(_("Reset Grid")),
 	updating_from_layer_(false)
 {
 	get_canvas_interface()->set_state("ffd");
@@ -193,6 +197,7 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	options_table.attach(grid_y_spin,       1, 3, 1, 1);
 	options_table.attach(smoothness_label,  0, 4, 1, 1);
 	options_table.attach(smoothness_hscl,   1, 4, 1, 1);
+	options_table.attach(reset_button,      0, 5, 2, 1);
 
 	options_table.set_border_width(GAP*2);
 	options_table.set_row_spacing(GAP);
@@ -206,6 +211,8 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 		sigc::mem_fun(*this, &StateFFD_Context::on_grid_y_changed));
 	smoothness_hscl.signal_value_changed().connect(
 		sigc::mem_fun(*this, &StateFFD_Context::on_smoothness_changed));
+	reset_button.signal_clicked().connect(
+		sigc::mem_fun(*this, &StateFFD_Context::on_reset_pressed));
 
 	// Update controls from current selection
 	update_controls_from_layer();
@@ -284,6 +291,7 @@ StateFFD_Context::update_controls_from_layer()
 		grid_y_spin.show();
 		smoothness_label.show();
 		smoothness_hscl.show();
+		reset_button.show();
 	} else {
 		status_label.set_label(_("Select a Free-Form Deformation layer"));
 		grid_x_label.hide();
@@ -292,6 +300,7 @@ StateFFD_Context::update_controls_from_layer()
 		grid_y_spin.hide();
 		smoothness_label.hide();
 		smoothness_hscl.hide();
+		reset_button.hide();
 	}
 }
 
@@ -439,4 +448,62 @@ Smach::event_result
 StateFFD_Context::event_stop_handler(const Smach::event& /*x*/)
 {
 	throw &state_normal;
+}
+
+void
+StateFFD_Context::on_reset_pressed()
+{
+	synfig::Layer::Handle ffd = get_selected_ffd_layer();
+	if (!ffd) return;
+
+	etl::handle<Layer_FreeFormDeform> ffd_typed = etl::handle<Layer_FreeFormDeform>::cast_dynamic(ffd);
+	if (!ffd_typed) return;
+
+	synfig::Rect bounds = ffd_typed->get_context_bounds();
+	if (!bounds.is_valid() || bounds.area() <= 0.0001) return;
+
+	int cols = ffd_typed->get_param("grid_size_x").get(int());
+	int rows = ffd_typed->get_param("grid_size_y").get(int());
+
+	std::vector<synfig::Point> grid_points = ffd_typed->compute_grid_for_bounds(bounds, cols, rows);
+	std::vector<synfig::ValueBase> grid_points_vb;
+	for (const auto& p : grid_points) grid_points_vb.push_back(synfig::ValueBase(p));
+
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(), _("Reset FFD Grid"));
+
+	synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(grid_points_vb), get_canvas());
+	synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
+	action_connect->set_param("canvas", get_canvas());
+	action_connect->set_param("canvas_interface", get_canvas_interface());
+	action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "grid_points"));
+	action_connect->set_param("src", dyn_list);
+	if (!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
+		group.cancel();
+		return;
+	}
+
+	synfigapp::Action::Handle action_tl = synfigapp::Action::create("ValueDescSet");
+	action_tl->set_param("canvas", get_canvas());
+	action_tl->set_param("canvas_interface", get_canvas_interface());
+	action_tl->set_param("value_desc", synfigapp::ValueDesc(ffd, "source_tl"));
+	action_tl->set_param("new_value", synfig::ValueBase(synfig::Point(bounds.minx, bounds.maxy)));
+	action_tl->set_param("time", get_canvas_interface()->get_time());
+	if (!action_tl->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_tl)) {
+		group.cancel();
+		return;
+	}
+
+	synfigapp::Action::Handle action_br = synfigapp::Action::create("ValueDescSet");
+	action_br->set_param("canvas", get_canvas());
+	action_br->set_param("canvas_interface", get_canvas_interface());
+	action_br->set_param("value_desc", synfigapp::ValueDesc(ffd, "source_br"));
+	action_br->set_param("new_value", synfig::ValueBase(synfig::Point(bounds.maxx, bounds.miny)));
+	action_br->set_param("time", get_canvas_interface()->get_time());
+	if (!action_br->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_br)) {
+		group.cancel();
+		return;
+	}
+
+	get_canvas_view()->queue_rebuild_ducks();
+	get_work_area()->queue_render();
 }
