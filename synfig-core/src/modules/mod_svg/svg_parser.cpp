@@ -136,8 +136,8 @@ Svg_parser::Svg_parser(const Gamma &gamma):
 	height(0),
 	kux(60),
 	set_canvas(false), //we must run parser_canvas method
-	ox(0),
-	oy(0)
+	ox_(0),
+	oy_(0)
 {
 }
 /*
@@ -212,6 +212,18 @@ Svg_parser::parser_svg(const xmlpp::Node* node)
 
 		width = getDimension(nodeElement->get_attribute_value("width"), inkscape_version < 0.92f && approximate_not_zero(inkscape_version));
 		height = getDimension(nodeElement->get_attribute_value("height"), inkscape_version < 0.92f && approximate_not_zero(inkscape_version));
+
+		const auto vb = tokenize(nodeElement->get_attribute_value("viewBox"), ", \x09\x0a\x0d\x0c");
+		if (!vb.empty()) {
+			if (vb.size() != 4) {
+				synfig::error(_("SVG Parser: SVG viewBox is not a list of 4 elements"));
+			} else {
+				view_box_.minx = atof(vb[0].c_str());
+				view_box_.miny = atof(vb[1].c_str());
+				view_box_.maxx = view_box_.minx + atof(vb[2].c_str());
+				view_box_.maxy = view_box_.miny + atof(vb[3].c_str());
+			}
+		}
 	}
 }
 
@@ -242,6 +254,17 @@ Svg_parser::parser_canvas(const xmlpp::Node* node)
 			width=1024;
 			height=768;
 		}
+
+		if (approximate_zero(view_box_.get_width())) {
+			view_box_.maxx = view_box_.minx + width / kux;
+		}
+		if (approximate_zero(view_box_.get_height())) {
+			view_box_.maxy = view_box_.miny + height / kux; // kuy
+		}
+
+		ox_ = view_box_.minx + view_box_.get_width() / 2;
+		oy_ = view_box_.miny + view_box_.get_height() / 2;
+
 		//build
 		nodeRoot=document.create_root_node("canvas", "", "");
 		nodeRoot->set_attribute("version","0.5");
@@ -249,15 +272,7 @@ Svg_parser::parser_canvas(const xmlpp::Node* node)
 		nodeRoot->set_attribute("height",strprintf("%lf", height));
 		nodeRoot->set_attribute("xres","2834.645752");
 		nodeRoot->set_attribute("yres","2834.645752");
-		double view_x = width/kux;
-		double view_y = height/kux;
-		view_x /= 2.0;
-		view_y /= 2.0;
-		char attr_view_box[64];
-		snprintf(attr_view_box,sizeof(attr_view_box),"%f %f %f %f",-1.0*view_x,view_y,view_x,-1.0*view_y);
-		nodeRoot->set_attribute("view-box",attr_view_box);
-		ox = width/2;
-		oy = height/2;
+		nodeRoot->set_attribute("view-box", strprintf("%f %f %f %f", view_box_.minx, view_box_.miny, view_box_.maxx, view_box_.maxy));
 		nodeRoot->set_attribute("antialias","1");
 		nodeRoot->set_attribute("fps","24.000");
 		nodeRoot->set_attribute("begin-time","0f");
@@ -2270,9 +2285,9 @@ Svg_parser::coor2vect(float *x,float *y){
 	float sx, sy;
 	sx=*x;
 	sy=*y;
-	sy= height-sy;
-	sx= sx - ox;
-	sy= sy - oy;
+	sy = view_box_.get_height() - sy;
+	sx = sx - ox_;
+	sy = sy - oy_; // (h - sy) - y0 - h/2 = -sy + h/2 - y0
 	sx= sx / kux;
 	sy= sy / kux;
 	*x=sx; *y=sy;
