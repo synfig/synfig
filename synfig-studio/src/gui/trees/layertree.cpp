@@ -432,6 +432,7 @@ LayerTree::select_layer(synfig::Layer::Handle layer)
 
 		layer_tree_view().scroll_to_row(path);
 		layer_tree_view().get_selection()->select(iter);
+		layer_tree_view().set_cursor(path);
 	}
 }
 
