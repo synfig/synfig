@@ -237,3 +237,6 @@ class Vector:
             (None)
         """
         self.type = _type
+
+
+// Fix applied
