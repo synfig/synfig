@@ -1700,7 +1700,7 @@ CanvasView::add_layer(String x)
 		{
 			App::dialog_message_1b(
 				"ERROR",
-				_("The Free-Form Deformation (FFD) layer only works on imported images (Switch layers) for now. Please select a single image layer before creating an FFD layer."),
+				_("The Free-Form Deformation (FFD) layer only works with a Switch layer. If you want to deform shapes or images, please group them into a Switch layer first and select it before creating an FFD layer."),
 				"details",
 				_("Close"));
 			return;
