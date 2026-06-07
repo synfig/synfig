@@ -237,3 +237,54 @@ class Vector:
             (None)
         """
         self.type = _type
+
+
+- Output the file content with the same formatting as the repository
+
+---
+// FILE: synfig-studio/plugins/lottie-exporter/common/Vector.py
+# pylint: disable=line-too-long
+"""
+Vector.py
+This module will store the Vector class
+"""
+
+import sys
+import math
+import common
+sys.path.append("..")
+
+
+class Vector:
+    """
+    To store the position of layers
+    val1 represents the x-axis value
+    val2 represents the y-axis value
+
+    For other parameters
+    val1 represents the value of the parameter
+    val2 represents the time parameter
+
+    type represents what this vector is representing
+    """
+
+    def __init__(self, val1=0, val2=0, _type=None):
+        """
+        Args:
+            val1  (float) : First value of the vector
+            val2  (float) : Second value of the vector
+            _type (:obj: `str`, optional)  : Type of vector
+
+        Returns:
+            (None)
+        """
+         
+        #print(type(val2), isinstance(val2, common.Angle.Angle))
+        if isinstance(val2, common.Angle.Angle):
+            self.val1 = val1 * common.Angle.CosAngle(val2).get()
+            self.val2 = val1 * common.Angle.SinAngle(val2).get()
+            self.type = _type
+        else:
+            self.val1 = val1
+            self.val2 = val2
+            self
