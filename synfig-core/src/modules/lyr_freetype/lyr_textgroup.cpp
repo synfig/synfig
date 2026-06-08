@@ -188,17 +188,18 @@ Layer_TextGroup::get_param_vocab() const
 
     ret.push_back(ParamDesc("family")  
         .set_local_name(_("Font Family"))  
-        .set_description(_("Name of the font family"))  
+        .set_description(_("Name of the font family"))
+        .set_hint("font_family")
     );  
       
     ret.push_back(ParamDesc("style")  
         .set_local_name(_("Font Style"))  
-        .set_description(_("Font style (0=Normal, 1=Italic, 2=Bold, 3=Bold Italic)"))  
+        .set_description(_("Font style (0=Normal, 1=Italic, 2=Bold, 3=Bold Italic)"))
     );  
       
     ret.push_back(ParamDesc("weight")  
         .set_local_name(_("Font Weight"))  
-        .set_description(_("Font weight (400=Normal, 700=Bold)"))  
+        .set_description(_("Font weight (400=Normal, 700=Bold)"))
     );  
       
     ret.push_back(ParamDesc("size")  
@@ -271,9 +272,6 @@ Layer_TextGroup::sync_glyphs()
 {
     std::string text = param_text.get(std::string());
 
-    if (text.empty())
-        return;
-
     FT_Face face =
         Layer_Freetype::load_font_static(
             param_family.get(std::string()),
@@ -294,6 +292,14 @@ Layer_TextGroup::sync_glyphs()
 
     if (!canvas)
         return;
+
+    if (text.empty()) {  
+        while (!canvas->empty())  
+            canvas->erase(canvas->begin());  
+        signal_subcanvas_changed()();  
+        changed();  
+        return;  
+    }  
 
     // TODO:
     // Replace codepoint iteration with HarfBuzz-shaped

@@ -1547,11 +1547,23 @@ Layer_Freetype::load_font_static(
 
         return face;
     }; 
+
+     auto init_face = [&](FT_Face face, const std::string& path)
+     {
+#if HAVE_HARFBUZZ
+        hb_font_t* hb_font = hb_ft_font_create(face, nullptr);
+        FaceMetaData::add_to_face(face, path, hb_font);
+#else
+        FaceMetaData::add_to_face(face, path);
+#endif
+     };
        
     if (has_valid_font_extension(family)) {  
         FT_Face tmp_face;  
-        if (FT_New_Face(ft_library, family.c_str(), 0, &tmp_face) == 0)  
-            return cache_face(tmp_face);  
+        if (FT_New_Face(ft_library, family.c_str(), 0, &tmp_face) == 0){
+			init_face(tmp_face, family);
+        	return cache_face(tmp_face);  
+        }
     }  
       
 #ifdef WITH_FONTCONFIG  
@@ -1559,8 +1571,10 @@ Layer_Freetype::load_font_static(
     std::string fc_file = fontconfig_get_filename(family, style, weight);  
     if (!fc_file.empty()) {  
         FT_Face tmp_face;  
-        if (FT_New_Face(ft_library, fc_file.c_str(), 0, &tmp_face) == 0)  
-            return cache_face(tmp_face);  
+        if (FT_New_Face(ft_library, fc_file.c_str(), 0, &tmp_face) == 0){  
+            init_face(tmp_face, fc_file);
+        	return cache_face(tmp_face);  
+       	}
     }  
 #endif  
       
@@ -1570,8 +1584,10 @@ Layer_Freetype::load_font_static(
       
     for (const std::string& filename : filename_list) {  
         FT_Face tmp_face;  
-        if (FT_New_Face(ft_library, filename.c_str(), 0, &tmp_face) == 0)  
+        if (FT_New_Face(ft_library, filename.c_str(), 0, &tmp_face) == 0){
+            init_face(tmp_face, filename);
             return cache_face(tmp_face);  
+        }
     }  
       
     return nullptr;   
