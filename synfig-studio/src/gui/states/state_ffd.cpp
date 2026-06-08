@@ -543,7 +543,6 @@ StateFFD_Context::event_layer_selection_changed_handler(const Smach::event& /*x*
 	get_work_area()->queue_draw();
 	get_canvas_view()->queue_rebuild_ducks();
 	
-	// Removed the timeout from here, the refresh handler does it safer!
 	return Smach::RESULT_ACCEPT;
 }
 
@@ -743,12 +742,16 @@ StateFFD_Context::on_make_ffd_pressed()
 	synfig::Canvas::Handle target_canvas = get_canvas();
 
 	synfig::Vector origin_offset(0,0);
+	synfig::Transformation layer_transform; // Automatically defaults to identity
 
 	if (selected && selected->get_name() == "switch") {
 		synfig::Layer::Handle switch_layer = selected;
 		
 		if (switch_layer->get_param("origin").get_type() == synfig::type_vector) {
 			origin_offset = switch_layer->get_param("origin").get(synfig::Vector(0,0));
+		}
+		if (switch_layer->get_param("transformation").get_type() == synfig::type_transformation) {
+			layer_transform = switch_layer->get_param("transformation").get(synfig::Transformation());
 		}
 		
 		synfig::Layer::Handle new_group = get_canvas_interface()->add_layer_to("group", target_canvas, depth);
@@ -850,7 +853,28 @@ StateFFD_Context::on_make_ffd_pressed()
 
 		std::vector<synfig::ValueBase> pts_vb;
 		for (auto& p : polygon_point_list) {
-			pts_vb.push_back(p - origin_offset);
+			// 1. Subtract the origin
+			synfig::Point local_p = p - origin_offset;
+			
+			// 2. Apply Inverse Transformation (offset, angle, skew, scale)
+			local_p -= layer_transform.offset;
+			
+			// Un-rotate
+			synfig::Real sn = synfig::Angle::sin(-layer_transform.angle).get();
+			synfig::Real cs = synfig::Angle::cos(-layer_transform.angle).get();
+			synfig::Point unrot;
+			unrot[0] = local_p[0] * cs - local_p[1] * sn;
+			unrot[1] = local_p[0] * sn + local_p[1] * cs;
+			local_p = unrot;
+			
+			// Un-skew
+			local_p[0] -= local_p[1] * synfig::Angle::tan(layer_transform.skew_angle).get();
+			
+			// Un-scale
+			if (layer_transform.scale[0] != 0.0) local_p[0] /= layer_transform.scale[0];
+			if (layer_transform.scale[1] != 0.0) local_p[1] /= layer_transform.scale[1];
+
+			pts_vb.push_back(local_p);
 		}
 
 		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(pts_vb), get_canvas());
