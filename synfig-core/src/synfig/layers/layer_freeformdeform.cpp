@@ -553,34 +553,67 @@ void Layer_FreeFormDeform::prepare_mesh()
 			return; // Not enough points or mismatch
 		}
 
-		// --- CORNER PIN METHOD TO PREVENT CLIPPING ---
-		// We automatically add the 4 corners of the context bounds to the triangulation.
-		// This forces the mesh to cover the entire underlying image, preventing any clipping
-		// when using BLEND_STRAIGHT, without needing a mask stage!
-		Rect bounds = get_context_bounds();
-		// Expand the bounds by a decent margin so we don't accidentally clip edges
-		// during extreme warping.
-		bounds.expand(bounds.get_min() - Point(10, 10));
-		bounds.expand(bounds.get_max() + Point(10, 10));
+		// 1. Calculate the bounding box of the USER's points (e.g. The Mouth)
+		Real mx = initial_pts[0][0], Mx = initial_pts[0][0];
+		Real my = initial_pts[0][1], My = initial_pts[0][1];
+		for (const auto& p : initial_pts) {
+			mx = std::min(mx, p[0]); Mx = std::max(Mx, p[0]);
+			my = std::min(my, p[1]); My = std::max(My, p[1]);
+		}
 		
-		Point tl(bounds.get_min()[0], bounds.get_max()[1]);
-		Point tr(bounds.get_max()[0], bounds.get_max()[1]);
-		Point bl(bounds.get_min()[0], bounds.get_min()[1]);
-		Point br(bounds.get_max()[0], bounds.get_min()[1]);
+		// 2. Create an "Invisible Fence" just outside the user's points.
+		Real padding_x = (Mx - mx) * 0.5;
+		Real padding_y = (My - my) * 0.5;
+		if (padding_x < 0.05) padding_x = 0.05;
+		if (padding_y < 0.05) padding_y = 0.05;
 
-		// Add corners to initial points
-		initial_pts.push_back(tl);
-		initial_pts.push_back(tr);
-		initial_pts.push_back(bl);
-		initial_pts.push_back(br);
+		Point f_tl(mx - padding_x, My + padding_y);
+		Point f_tr(Mx + padding_x, My + padding_y);
+		Point f_bl(mx - padding_x, my - padding_y);
+		Point f_br(Mx + padding_x, my - padding_y);
 
-		// Add corners to deformed points
-		deformed_pts.push_back(tl);
-		deformed_pts.push_back(tr);
-		deformed_pts.push_back(bl);
-		deformed_pts.push_back(br);
+		// 3. Get Safe Image Corners using the layer's actual bounds!
+		Point stl = param_source_tl.get(Point());
+		Point sbr = param_source_br.get(Point());
+		
+		Real min_x = std::min(stl[0], sbr[0]) - 1.0;
+		Real max_x = std::max(stl[0], sbr[0]) + 1.0;
+		Real max_y = std::max(stl[1], sbr[1]) + 1.0;
+		Real min_y = std::min(stl[1], sbr[1]) - 1.0;
 
-		// Triangulate based on initial points (which defines the actual shape without self-intersections ideally)
+		// 8 points around the outer edge to guarantee perfectly stable triangles
+		Point c_tl(min_x, max_y);
+		Point c_tm((min_x + max_x) * 0.5, max_y);
+		Point c_tr(max_x, max_y);
+		Point c_rm(max_x, (min_y + max_y) * 0.5);
+		Point c_br(max_x, min_y);
+		Point c_bm((min_x + max_x) * 0.5, min_y);
+		Point c_bl(min_x, min_y);
+		Point c_lm(min_x, (min_y + max_y) * 0.5);
+
+		// 4. Add the Fence and Outer Boundary to the mesh
+		auto add_static_anchor = [&](const Point& p) {
+			initial_pts.push_back(p);
+			deformed_pts.push_back(p); // By keeping them identical, they NEVER move.
+		};
+
+		// Add Fence Anchors
+		add_static_anchor(f_tl);
+		add_static_anchor(f_tr);
+		add_static_anchor(f_bl);
+		add_static_anchor(f_br);
+		
+		// Add Outer Bounds Anchors
+		add_static_anchor(c_tl);
+		add_static_anchor(c_tm);
+		add_static_anchor(c_tr);
+		add_static_anchor(c_rm);
+		add_static_anchor(c_br);
+		add_static_anchor(c_bm);
+		add_static_anchor(c_bl);
+		add_static_anchor(c_lm);
+
+		// Triangulate
 		std::vector<rendering::Mesh::Triangle> triangles = triangulate(initial_pts);
 
 		// Add vertices
@@ -590,6 +623,16 @@ void Layer_FreeFormDeform::prepare_mesh()
 
 		mesh->triangles = triangles;
 
+		// --- BYPASS MASK TO PREVENT CRASH ---
+		rendering::Contour::Handle mask(new rendering::Contour());
+		mask->antialias = false; 
+		mask->move_to(c_tl);
+		mask->line_to(c_tr);
+		mask->line_to(c_br);
+		mask->line_to(c_bl);
+		mask->close();
+
+		this->mask = mask;
 		this->mesh = mesh;
 		return;
 	}
