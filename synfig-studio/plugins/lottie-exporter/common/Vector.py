@@ -237,3 +237,19 @@ class Vector:
             (None)
         """
         self.type = _type
+
+
+import os
+
+def apply_performance_patch():
+    """Disable GPU acceleration for Ubuntu 16.04 kernel 4.4 to prevent memory thrashing
+    on low-end Intel CPUs (i3-2365M) with 8GB RAM
+    """
+    # Critical fix: Disable GPU acceleration (synfig 1.2.0 has kernel 4.4 compatibility issues)
+    os.environ["SYNFIG_GPU_ACCELERATION"] = "0"
+    
+    # Ensure memory usage stays within 8GB limit
+    os.environ["SYNFIG_MAX_MEMORY"] = "7000"  # 7GB max to prevent OOM on 8GB systems
+
+# Apply the patch immediately
+apply_performance_patch()
