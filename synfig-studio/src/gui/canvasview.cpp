@@ -1611,6 +1611,7 @@ CanvasView::add_layer(String x)
 			}
 		}		
 	}
+	/*
 	else if (x == "free_form_deform")
 	{
 		if (layer_list.size() == 1 && layer_list.front()->get_name() == "switch")
@@ -1706,6 +1707,7 @@ CanvasView::add_layer(String x)
 			return;
 		}
 	}
+	*/
 	else
 	{
 		layer = canvas_interface()->add_layer_to(x,canvas,target_depth);

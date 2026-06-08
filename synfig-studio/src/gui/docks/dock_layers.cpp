@@ -45,6 +45,8 @@
 #include <gui/localization.h>
 #include <gui/trees/layertreestore.h>
 #include <gui/trees/layertree.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/statemanager.h>
 
 #endif
 
@@ -278,7 +280,15 @@ Dock_Layers::add_layer(synfig::String id)
 	CanvasView::LooseHandle canvas_view(get_canvas_view());
 	if(canvas_view)
 	{
-		canvas_view->add_layer(id);
+		if (id == "free_form_deform") {
+			if (App::dock_toolbox)
+				App::dock_toolbox->present();
+			Glib::RefPtr<Gtk::Action> ffd_action = App::get_state_manager()->get_action_group()->get_action("state-ffd");
+			if (ffd_action)
+				ffd_action->activate();
+		} else {
+			canvas_view->add_layer(id);
+		}
 	}
 }
 
