@@ -51,6 +51,7 @@
 #include <synfigapp/instance.h>
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfig/valuenodes/valuenode_const.h>
+#include <gui/widgets/widget_enum.h>
 
 #endif
 
@@ -99,19 +100,40 @@ class studio::StateFFD_Context : public sigc::trackable
 
 	Gtk::Button reset_button;
 
+	// Creation mode widgets
+	Gtk::Label mesh_mode_label;
+	Widget_Enum mesh_mode_enum;
+	Gtk::Label create_grid_x_label;
+	Gtk::SpinButton create_grid_x_spin;
+	Gtk::Label create_grid_y_label;
+	Gtk::SpinButton create_grid_y_spin;
+	Gtk::Button make_ffd_button;
+	Gtk::Button clear_button;
+
+	std::list<synfig::Point> polygon_point_list;
+
 	void on_grid_x_changed();
 	void on_grid_y_changed();
 	void on_smoothness_changed();
 	void on_reset_pressed();
 
+	void on_make_ffd_pressed();
+	void reset();
+	bool on_polygon_duck_change(const studio::Duck &duck, std::list<synfig::Point>::iterator iter);
+	void refresh_ducks();
+
 	synfig::Layer::Handle get_selected_ffd_layer() const;
 	void update_controls_from_layer();
+	void on_mesh_mode_changed();
 
 public:
 
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& x);
 	Smach::event_result event_stop_handler(const Smach::event& x);
+	Smach::event_result event_mouse_click_handler(const Smach::event& x);
+	Smach::event_result event_mouse_doubleclick_handler(const Smach::event& x);
+	Smach::event_result event_refresh_handler(const Smach::event& x);
 
 	void refresh_tool_options();
 
@@ -133,7 +155,10 @@ StateFFD::StateFFD() :
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED, &StateFFD_Context::event_layer_selection_changed_handler));
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,    &StateFFD_Context::event_refresh_tool_options));
 	insert(event_def(EVENT_STOP,                    &StateFFD_Context::event_stop_handler));
-	insert(event_def(EVENT_REFRESH_DUCKS,           &StateFFD_Context::event_refresh_tool_options));
+	insert(event_def(EVENT_REFRESH,                 &StateFFD_Context::event_refresh_handler));
+	insert(event_def(EVENT_REFRESH_DUCKS,           &StateFFD_Context::event_refresh_handler));
+	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,   &StateFFD_Context::event_mouse_click_handler));
+	insert(event_def(EVENT_WORKAREA_MOUSE_2BUTTON_DOWN,  &StateFFD_Context::event_mouse_doubleclick_handler));
 }
 
 StateFFD::~StateFFD()
@@ -188,9 +213,34 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	status_label.set_label(_("Select a Free-Form Deformation layer"));
 	status_label.set_halign(Gtk::ALIGN_START);
 
+	// Creation UI
+	mesh_mode_label.set_label(_("Creation Mode:"));
+	mesh_mode_label.set_halign(Gtk::ALIGN_START);
+	mesh_mode_enum.set_param_desc(ParamDesc("mesh_mode")
+		.set_local_name(_("Mode"))
+		.set_description(_("0 = Grid, 1 = Custom Mesh"))
+		.add_enum_value(0, "grid", _("Grid"))
+		.add_enum_value(1, "custom", _("Custom Mesh"))
+	);
+	mesh_mode_enum.set_value(1);
+
+	create_grid_x_label.set_label(_("Cols (Grid):"));
+	create_grid_x_label.set_halign(Gtk::ALIGN_START);
+	create_grid_x_spin.set_adjustment(grid_x_adj); // reuse adjustment
+	create_grid_x_spin.set_hexpand(true);
+
+	create_grid_y_label.set_label(_("Rows (Grid):"));
+	create_grid_y_label.set_halign(Gtk::ALIGN_START);
+	create_grid_y_spin.set_adjustment(grid_y_adj);
+	create_grid_y_spin.set_hexpand(true);
+
+	make_ffd_button.set_label(_("Make FFD Layer"));
+	clear_button.set_label(_("Clear Points"));
+
 	// Layout
 	options_table.attach(title_label,       0, 0, 2, 1);
 	options_table.attach(status_label,      0, 1, 2, 1);
+	// Edit UI
 	options_table.attach(grid_x_label,      0, 2, 1, 1);
 	options_table.attach(grid_x_spin,       1, 2, 1, 1);
 	options_table.attach(grid_y_label,      0, 3, 1, 1);
@@ -198,6 +248,16 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	options_table.attach(smoothness_label,  0, 4, 1, 1);
 	options_table.attach(smoothness_hscl,   1, 4, 1, 1);
 	options_table.attach(reset_button,      0, 5, 2, 1);
+
+	// Creation UI
+	options_table.attach(mesh_mode_label,     0, 6, 1, 1);
+	options_table.attach(mesh_mode_enum,      1, 6, 1, 1);
+	options_table.attach(create_grid_x_label, 0, 7, 1, 1);
+	options_table.attach(create_grid_x_spin,  1, 7, 1, 1);
+	options_table.attach(create_grid_y_label, 0, 8, 1, 1);
+	options_table.attach(create_grid_y_spin,  1, 8, 1, 1);
+	options_table.attach(make_ffd_button,     0, 9, 2, 1);
+	options_table.attach(clear_button,        0, 10, 2, 1);
 
 	options_table.set_border_width(GAP*2);
 	options_table.set_row_spacing(GAP);
@@ -213,17 +273,28 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 		sigc::mem_fun(*this, &StateFFD_Context::on_smoothness_changed));
 	reset_button.signal_clicked().connect(
 		sigc::mem_fun(*this, &StateFFD_Context::on_reset_pressed));
+	make_ffd_button.signal_clicked().connect(
+		sigc::mem_fun(*this, &StateFFD_Context::on_make_ffd_pressed));
+	clear_button.signal_clicked().connect(
+		sigc::mem_fun(*this, &StateFFD_Context::reset));
+	mesh_mode_enum.signal_changed().connect(
+		sigc::mem_fun(*this, &StateFFD_Context::on_mesh_mode_changed));
 
 	// Update controls from current selection
 	update_controls_from_layer();
+	on_mesh_mode_changed(); // Initialize sensitivity
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
 
+	// clear out the ducks
+	get_work_area()->clear_ducks();
+	get_work_area()->queue_draw();
+
 	// Disallow layer clicks so the user doesn't accidentally select the underlying image
 	get_work_area()->set_allow_layer_clicks(false);
 
-	get_work_area()->set_cursor(Gdk::ARROW);
+	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
 	App::dock_toolbox->refresh();
 }
@@ -235,6 +306,15 @@ StateFFD_Context::refresh_tool_options()
 	App::dialog_tool_options->set_widget(options_table);
 	App::dialog_tool_options->set_local_name(_("FFD Tool"));
 	App::dialog_tool_options->set_icon("tool_ffd_icon");
+}
+
+void
+StateFFD_Context::on_mesh_mode_changed()
+{
+	bool is_grid = (mesh_mode_enum.get_value() == 0);
+	create_grid_x_spin.set_sensitive(is_grid);
+	create_grid_y_spin.set_sensitive(is_grid);
+	refresh_ducks();
 }
 
 StateFFD_Context::~StateFFD_Context()
@@ -292,8 +372,18 @@ StateFFD_Context::update_controls_from_layer()
 		smoothness_label.show();
 		smoothness_hscl.show();
 		reset_button.show();
+
+		mesh_mode_label.hide();
+		mesh_mode_enum.hide();
+		create_grid_x_label.hide();
+		create_grid_x_spin.hide();
+		create_grid_y_label.hide();
+		create_grid_y_spin.hide();
+		make_ffd_button.hide();
+		clear_button.hide();
+		get_work_area()->set_cursor(Gdk::ARROW);
 	} else {
-		status_label.set_label(_("Select a Free-Form Deformation layer"));
+		status_label.set_label(_("Creation Settings"));
 		grid_x_label.hide();
 		grid_x_spin.hide();
 		grid_y_label.hide();
@@ -301,6 +391,16 @@ StateFFD_Context::update_controls_from_layer()
 		smoothness_label.hide();
 		smoothness_hscl.hide();
 		reset_button.hide();
+
+		mesh_mode_label.show();
+		mesh_mode_enum.show();
+		create_grid_x_label.show();
+		create_grid_x_spin.show();
+		create_grid_y_label.show();
+		create_grid_y_spin.show();
+		make_ffd_button.show();
+		clear_button.show();
+		get_work_area()->set_cursor(Gdk::CROSSHAIR);
 	}
 }
 
@@ -447,7 +547,126 @@ StateFFD_Context::event_layer_selection_changed_handler(const Smach::event& /*x*
 Smach::event_result
 StateFFD_Context::event_stop_handler(const Smach::event& /*x*/)
 {
+	reset();
 	throw &state_normal;
+}
+
+Smach::event_result
+StateFFD_Context::event_refresh_handler(const Smach::event& /*x*/)
+{
+	refresh_ducks();
+	return Smach::RESULT_ACCEPT;
+}
+
+Smach::event_result
+StateFFD_Context::event_mouse_click_handler(const Smach::event& x)
+{
+	if (get_selected_ffd_layer()) return Smach::RESULT_OK; // Ignore if editing
+
+	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+	switch(event.button)
+	{
+	case BUTTON_LEFT:
+		polygon_point_list.push_back(get_work_area()->snap_point_to_grid(event.pos));
+		refresh_ducks();
+		return Smach::RESULT_ACCEPT;
+
+	default:
+		return Smach::RESULT_OK;
+	}
+}
+
+Smach::event_result
+StateFFD_Context::event_mouse_doubleclick_handler(const Smach::event& x)
+{
+	if (get_selected_ffd_layer()) return Smach::RESULT_OK;
+
+	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
+	switch(event.button)
+	{
+	case BUTTON_LEFT:
+		on_make_ffd_pressed();
+		return Smach::RESULT_ACCEPT;
+
+	default:
+		return Smach::RESULT_OK;
+	}
+}
+
+void
+StateFFD_Context::reset()
+{
+	polygon_point_list.clear();
+	refresh_ducks();
+}
+
+bool
+StateFFD_Context::on_polygon_duck_change(const studio::Duck &duck, std::list<synfig::Point>::iterator iter)
+{
+	*iter = duck.get_point();
+	return true;
+}
+
+void
+StateFFD_Context::refresh_ducks()
+{
+	get_work_area()->clear_ducks();
+	get_work_area()->queue_draw();
+
+	if (polygon_point_list.empty()) return;
+
+	std::vector<synfig::Point> pts;
+	std::vector<etl::handle<WorkArea::Duck>> duck_list;
+
+	std::list<synfig::Point>::iterator iter = polygon_point_list.begin();
+
+	etl::handle<WorkArea::Duck> duck = new WorkArea::Duck(*iter);
+	duck->set_editable(true);
+	duck->set_name(strprintf("%p", &*iter));
+	duck->set_type(Duck::TYPE_VERTEX);
+	duck->signal_edited().connect(
+		sigc::bind(sigc::mem_fun(*this, &studio::StateFFD_Context::on_polygon_duck_change), iter)
+	);
+	get_work_area()->add_duck(duck);
+	duck_list.push_back(duck);
+	pts.push_back(*iter);
+
+	for (++iter; iter != polygon_point_list.end(); ++iter)
+	{
+		duck = new WorkArea::Duck(*iter);
+		duck->set_editable(true);
+		duck->set_name(strprintf("%p", &*iter));
+		duck->set_type(Duck::TYPE_VERTEX);
+		duck->signal_edited().connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::StateFFD_Context::on_polygon_duck_change), iter)
+		);
+		get_work_area()->add_duck(duck);
+		duck_list.push_back(duck);
+		pts.push_back(*iter);
+	}
+
+	// Draw triangulation if Custom Mesh mode
+	if (mesh_mode_enum.get_value() == 1 && duck_list.size() > 2) {
+		std::vector<rendering::Mesh::Triangle> tris = synfig::Layer_FreeFormDeform::triangulate(pts);
+		for (const auto& tri : tris) {
+			etl::handle<WorkArea::Bezier> b1(new WorkArea::Bezier());
+			b1->p1 = b1->c1 = duck_list[tri.vertices[0]];
+			b1->p2 = b1->c2 = duck_list[tri.vertices[1]];
+			get_work_area()->add_bezier(b1);
+
+			etl::handle<WorkArea::Bezier> b2(new WorkArea::Bezier());
+			b2->p1 = b2->c1 = duck_list[tri.vertices[1]];
+			b2->p2 = b2->c2 = duck_list[tri.vertices[2]];
+			get_work_area()->add_bezier(b2);
+
+			etl::handle<WorkArea::Bezier> b3(new WorkArea::Bezier());
+			b3->p1 = b3->c1 = duck_list[tri.vertices[2]];
+			b3->p2 = b3->c2 = duck_list[tri.vertices[0]];
+			get_work_area()->add_bezier(b3);
+		}
+	}
+
+	get_work_area()->queue_draw();
 }
 
 void
@@ -506,4 +725,79 @@ StateFFD_Context::on_reset_pressed()
 
 	get_canvas_view()->queue_rebuild_ducks();
 	get_work_area()->queue_render();
+}
+
+void
+StateFFD_Context::on_make_ffd_pressed()
+{
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(), _("Make FFD Layer"));
+	
+	int depth = 0;
+	synfig::Layer::Handle selected = get_canvas_interface()->get_selection_manager()->get_selected_layer();
+	if (selected) depth = selected->get_depth();
+
+	Layer::Handle layer = get_canvas_interface()->add_layer_to("free_form_deform", get_canvas(), depth);
+	if (!layer) {
+		group.cancel();
+		return;
+	}
+
+	int mode = mesh_mode_enum.get_value();
+	layer->set_param("mesh_mode", synfig::ValueBase(mode));
+
+	if (mode == 1) { // Custom Mesh
+		if (polygon_point_list.size() < 3) {
+			get_canvas_view()->get_ui_interface()->error(_("Need at least 3 points to create a Custom Mesh FFD."));
+			group.cancel();
+			return;
+		}
+
+		std::vector<synfig::ValueBase> pts_vb;
+		for (auto& p : polygon_point_list) pts_vb.push_back(p);
+
+		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(pts_vb), get_canvas());
+		
+		synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
+		action_connect->set_param("canvas", get_canvas());
+		action_connect->set_param("canvas_interface", get_canvas_interface());
+		action_connect->set_param("dest", synfigapp::ValueDesc(layer, "grid_points"));
+		action_connect->set_param("src", dyn_list);
+		if (!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
+			group.cancel();
+			return;
+		}
+
+		synfigapp::Action::Handle action_src = synfigapp::Action::create("ValueDescSet");
+		action_src->set_param("canvas", get_canvas());
+		action_src->set_param("canvas_interface", get_canvas_interface());
+		action_src->set_param("value_desc", synfigapp::ValueDesc(layer, "source_points"));
+		action_src->set_param("new_value", synfig::ValueBase(pts_vb));
+		action_src->set_param("time", get_canvas_interface()->get_time());
+		if (!action_src->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_src)) {
+			group.cancel();
+			return;
+		}
+	} else {
+		synfigapp::Action::Handle action_x = synfigapp::Action::create("ValueDescSet");
+		action_x->set_param("canvas", get_canvas());
+		action_x->set_param("canvas_interface", get_canvas_interface());
+		action_x->set_param("value_desc", synfigapp::ValueDesc(layer, "grid_size_x"));
+		action_x->set_param("new_value", synfig::ValueBase((int)create_grid_x_spin.get_value()));
+		action_x->set_param("time", get_canvas_interface()->get_time());
+		get_canvas_interface()->get_instance()->perform_action(action_x);
+
+		synfigapp::Action::Handle action_y = synfigapp::Action::create("ValueDescSet");
+		action_y->set_param("canvas", get_canvas());
+		action_y->set_param("canvas_interface", get_canvas_interface());
+		action_y->set_param("value_desc", synfigapp::ValueDesc(layer, "grid_size_y"));
+		action_y->set_param("new_value", synfig::ValueBase((int)create_grid_y_spin.get_value()));
+		action_y->set_param("time", get_canvas_interface()->get_time());
+		get_canvas_interface()->get_instance()->perform_action(action_y);
+	}
+
+	synfigapp::SelectionManager::LayerList layer_selection;
+	layer_selection.push_back(layer);
+	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
+	
+	reset();
 }

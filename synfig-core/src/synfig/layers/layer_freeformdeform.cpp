@@ -41,6 +41,7 @@ Layer_FreeFormDeform::Layer_FreeFormDeform():
 	param_smoothness(Real(1.0)), // Default to full Catmull-Rom
 	param_source_tl(Point(-2.0, 2.0)),
 	param_source_br(Point(2.0, -2.0)),
+	param_mesh_mode(0), // 0 = Grid, 1 = Custom Mesh
 	needs_reset_(true)
 {
 	std::vector<ValueBase> grid_points;
@@ -51,6 +52,9 @@ Layer_FreeFormDeform::Layer_FreeFormDeform():
 		}
 	}
 	param_grid_points.set_list_of(grid_points);
+	
+	std::vector<ValueBase> empty_points;
+	param_source_points.set_list_of(empty_points);
 	
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -90,6 +94,8 @@ Layer_FreeFormDeform::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE_PLUS(param_smoothness, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_source_tl, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_source_br, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_source_points, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_mesh_mode, prepare_mesh());
 	return Layer_MeshTransform::set_param(param,value);
 }
 
@@ -102,6 +108,8 @@ Layer_FreeFormDeform::get_param(const String& param)const
 	EXPORT_VALUE(param_smoothness);
 	EXPORT_VALUE(param_source_tl);
 	EXPORT_VALUE(param_source_br);
+	EXPORT_VALUE(param_source_points);
+	EXPORT_VALUE(param_mesh_mode);
 	
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -143,6 +151,18 @@ Layer_FreeFormDeform::get_param_vocab()const
 	ret.push_back(ParamDesc("source_br")
 		.set_local_name(_("Source Bottom Right"))
 		.set_description(_("Bottom Right corner of the un-deformed grid"))
+		.hidden()
+	);
+
+	ret.push_back(ParamDesc("source_points")
+		.set_local_name(_("Source Points"))
+		.set_description(_("Original points of the custom mesh polygon"))
+		.hidden()
+	);
+
+	ret.push_back(ParamDesc("mesh_mode")
+		.set_local_name(_("Mesh Mode"))
+		.set_description(_("0 = Grid, 1 = Custom Mesh"))
 		.hidden()
 	);
 
@@ -190,6 +210,120 @@ Layer_FreeFormDeform::catmull_rom_1d(Real p0, Real p1, Real p2, Real p3, Real t)
 		(-3.0*t3 + 4.0*t2 + t)   * p2 +
 		( t3 - t2)               * p3
 	);
+}
+
+std::vector<rendering::Mesh::Triangle>
+Layer_FreeFormDeform::triangulate(const std::vector<Point>& pts)
+{
+	std::vector<rendering::Mesh::Triangle> triangles;
+	if (pts.size() < 3) return triangles;
+
+	Real min_x = pts[0][0], max_x = pts[0][0];
+	Real min_y = pts[0][1], max_y = pts[0][1];
+	for (const auto& p : pts) {
+		min_x = std::min(min_x, p[0]);
+		max_x = std::max(max_x, p[0]);
+		min_y = std::min(min_y, p[1]);
+		max_y = std::max(max_y, p[1]);
+	}
+	Real dx = max_x - min_x;
+	Real dy = max_y - min_y;
+	Real dmax = std::max(dx, dy);
+	if (dmax < 1e-5) dmax = 1.0;
+	Real mid_x = (min_x + max_x) * 0.5;
+	Real mid_y = (min_y + max_y) * 0.5;
+
+	std::vector<Point> all_pts = pts;
+	// Super-triangle vertices
+	all_pts.push_back(Point(mid_x - 20 * dmax, mid_y - dmax));
+	all_pts.push_back(Point(mid_x, mid_y + 20 * dmax));
+	all_pts.push_back(Point(mid_x + 20 * dmax, mid_y - dmax));
+
+	int st1 = pts.size();
+	int st2 = pts.size() + 1;
+	int st3 = pts.size() + 2;
+
+	triangles.push_back(rendering::Mesh::Triangle(st1, st2, st3));
+
+	auto in_circumcircle = [&](int pi, int a_i, int b_i, int c_i) {
+		Point p = all_pts[pi];
+		Point a = all_pts[a_i];
+		Point b = all_pts[b_i];
+		Point c = all_pts[c_i];
+		
+		Real D = 2.0 * (a[0]*(b[1]-c[1]) + b[0]*(c[1]-a[1]) + c[0]*(a[1]-b[1]));
+		if (std::abs(D) < 1e-6) return false;
+
+		Real ux = ((a[0]*a[0] + a[1]*a[1]) * (b[1] - c[1]) + 
+				   (b[0]*b[0] + b[1]*b[1]) * (c[1] - a[1]) + 
+				   (c[0]*c[0] + c[1]*c[1]) * (a[1] - b[1])) / D;
+		Real uy = ((a[0]*a[0] + a[1]*a[1]) * (c[0] - b[0]) + 
+				   (b[0]*b[0] + b[1]*b[1]) * (a[0] - c[0]) + 
+				   (c[0]*c[0] + c[1]*c[1]) * (b[0] - a[0])) / D;
+				   
+		Point center(ux, uy);
+		Real r2 = (a - center).mag_squared();
+		return (p - center).mag_squared() <= r2 + 1e-5;
+	};
+
+	for (size_t i = 0; i < pts.size(); ++i) {
+		std::vector<int> bad_triangles;
+		std::vector<std::pair<int, int>> polygon;
+
+		for (size_t j = 0; j < triangles.size(); ++j) {
+			auto& tri = triangles[j];
+			if (in_circumcircle(i, tri.vertices[0], tri.vertices[1], tri.vertices[2])) {
+				bad_triangles.push_back(j);
+				polygon.push_back({tri.vertices[0], tri.vertices[1]});
+				polygon.push_back({tri.vertices[1], tri.vertices[2]});
+				polygon.push_back({tri.vertices[2], tri.vertices[0]});
+			}
+		}
+
+		std::vector<std::pair<int, int>> boundary;
+		for (size_t j = 0; j < polygon.size(); ++j) {
+			bool shared = false;
+			for (size_t k = 0; k < polygon.size(); ++k) {
+				if (j != k && ((polygon[j].first == polygon[k].first && polygon[j].second == polygon[k].second) ||
+							   (polygon[j].first == polygon[k].second && polygon[j].second == polygon[k].first))) {
+					shared = true;
+					break;
+				}
+			}
+			if (!shared) {
+				boundary.push_back(polygon[j]);
+			}
+		}
+
+		for (auto it = bad_triangles.rbegin(); it != bad_triangles.rend(); ++it) {
+			triangles.erase(triangles.begin() + *it);
+		}
+
+		for (const auto& edge : boundary) {
+			triangles.push_back(rendering::Mesh::Triangle(edge.first, edge.second, i));
+		}
+	}
+
+	std::vector<rendering::Mesh::Triangle> final_triangles;
+	for (const auto& tri : triangles) {
+		if (tri.vertices[0] == st1 || tri.vertices[0] == st2 || tri.vertices[0] == st3 ||
+			tri.vertices[1] == st1 || tri.vertices[1] == st2 || tri.vertices[1] == st3 ||
+			tri.vertices[2] == st1 || tri.vertices[2] == st2 || tri.vertices[2] == st3) {
+			continue;
+		}
+		
+		// Ensure consistent CCW orientation for rendering
+		Point a = all_pts[tri.vertices[0]];
+		Point b = all_pts[tri.vertices[1]];
+		Point c = all_pts[tri.vertices[2]];
+		if ((b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]) > 0.0) {
+		    final_triangles.push_back(rendering::Mesh::Triangle(tri.vertices[0], tri.vertices[2], tri.vertices[1]));
+		} else {
+		    final_triangles.push_back(tri);
+		}
+	}
+
+	return final_triangles;
 }
 
 void
@@ -397,6 +531,50 @@ void Layer_FreeFormDeform::prepare_mesh()
 {
 	rendering::Mesh::Handle mesh(new rendering::Mesh());
 
+	int mode = param_mesh_mode.get(int());
+
+	if (mode == 1) {
+		// --- CUSTOM MESH MODE ---
+		std::vector<Point> deformed_pts;
+		const ValueBase::List &grid_list = param_grid_points.get_list();
+		for(auto i = grid_list.begin(); i != grid_list.end(); ++i) {
+			if (i->can_get(Point())) deformed_pts.push_back(i->get(Point()));
+		}
+
+		std::vector<Point> initial_pts;
+		const ValueBase::List &source_list = param_source_points.get_list();
+		for(auto i = source_list.begin(); i != source_list.end(); ++i) {
+			if (i->can_get(Point())) initial_pts.push_back(i->get(Point()));
+		}
+
+		if (deformed_pts.size() < 3 || initial_pts.size() != deformed_pts.size()) {
+			this->mesh = mesh;
+			return; // Not enough points or mismatch
+		}
+
+		// Triangulate based on initial points (which defines the actual shape without self-intersections ideally)
+		std::vector<rendering::Mesh::Triangle> triangles = triangulate(initial_pts);
+
+		// Add vertices
+		for (size_t i = 0; i < deformed_pts.size(); ++i) {
+			mesh->vertices.push_back(rendering::Mesh::Vertex(deformed_pts[i], initial_pts[i]));
+		}
+
+		mesh->triangles = triangles;
+
+		// Create bounding mask contour
+		rendering::Contour::Handle mask(new rendering::Contour());
+		mask->antialias = true;
+		mask->move_to(deformed_pts[0]);
+		for (size_t i = 1; i < deformed_pts.size(); ++i) mask->line_to(deformed_pts[i]);
+		mask->close();
+		this->mask = mask;
+
+		this->mesh = mesh;
+		return;
+	}
+
+	// --- GRID MODE ---
 	int cols = param_grid_size_x.get(int());
 	int rows = param_grid_size_y.get(int());
 	Real smoothness = param_smoothness.get(Real());

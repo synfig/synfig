@@ -21,6 +21,9 @@ private:
 	ValueBase param_source_tl;
 	ValueBase param_source_br;
 
+	ValueBase param_source_points;
+	ValueBase param_mesh_mode; // 0 = Grid, 1 = Custom Mesh
+
 	bool needs_reset_;
 
 	//! Get a control point with boundary clamping for edge/corner cells
@@ -32,6 +35,9 @@ private:
 public:
 	Layer_FreeFormDeform();
 	virtual ~Layer_FreeFormDeform();
+
+	// Custom Mesh Triangulation Helpers
+	static std::vector<rendering::Mesh::Triangle> triangulate(const std::vector<Point>& pts);
 
 	virtual String get_local_name() const;
 	virtual bool set_param(const String & param, const ValueBase & value);
