@@ -45,9 +45,10 @@ Layer_FreeFormDeform::Layer_FreeFormDeform():
 	needs_reset_(true)
 {
 	std::vector<ValueBase> grid_points;
-	// 3x3 grid centered
-	for (int y = 0; y < 3; ++y) {
-		for (int x = 0; x < 3; ++x) {
+	const int rows = param_grid_size_y.get(int());
+	const int cols = param_grid_size_x.get(int());
+	for (int y = 0; y < rows; ++y) {
+		for (int x = 0; x < cols; ++x) {
 			grid_points.push_back(ValueBase(Point(-2.0 + x * 2.0, 2.0 - y * 2.0)));
 		}
 	}
@@ -562,12 +563,58 @@ void Layer_FreeFormDeform::prepare_mesh()
 
 		mesh->triangles = triangles;
 
-		// Create bounding mask contour
+		// --- NEW MASK BOUNDARY ALGORITHM ---
+		// Create bounding mask contour from boundary edges of the Delaunay mesh
 		rendering::Contour::Handle mask(new rendering::Contour());
 		mask->antialias = true;
-		mask->move_to(deformed_pts[0]);
-		for (size_t i = 1; i < deformed_pts.size(); ++i) mask->line_to(deformed_pts[i]);
-		mask->close();
+
+		if (!triangles.empty() && !deformed_pts.empty()) {
+			std::map<std::pair<int, int>, int> edge_counts;
+			std::map<int, int> next_node;
+
+			// 1. Count how many triangles share each edge
+			for (const auto& tri : triangles) {
+				for (int i = 0; i < 3; ++i) {
+					int a = tri.vertices[i];
+					int b = tri.vertices[(i + 1) % 3];
+					int min_idx = std::min(a, b);
+					int max_idx = std::max(a, b);
+					edge_counts[{min_idx, max_idx}]++;
+				}
+			}
+
+			// 2. Identify boundary edges (they only belong to exactly 1 triangle)
+			for (const auto& tri : triangles) {
+				for (int i = 0; i < 3; ++i) {
+					int a = tri.vertices[i];
+					int b = tri.vertices[(i + 1) % 3];
+					int min_idx = std::min(a, b);
+					int max_idx = std::max(a, b);
+					
+					// Maintain the Counter-Clockwise direction for the mask
+					if (edge_counts[{min_idx, max_idx}] == 1) {
+						next_node[a] = b;
+					}
+				}
+			}
+
+			// 3. Trace the outer boundary loop to make a perfect clipping mask
+			if (!next_node.empty()) {
+				int start_node = next_node.begin()->first;
+				mask->move_to(deformed_pts[start_node]);
+				
+				int curr = next_node[start_node];
+				int safe_guard = 0;
+				int max_verts = deformed_pts.size() + 2;
+				
+				while (curr != start_node && next_node.count(curr) && safe_guard < max_verts) {
+					mask->line_to(deformed_pts[curr]);
+					curr = next_node[curr];
+					safe_guard++;
+				}
+				mask->close();
+			}
+		}
 		this->mask = mask;
 
 		this->mesh = mesh;

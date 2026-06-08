@@ -542,6 +542,8 @@ StateFFD_Context::event_layer_selection_changed_handler(const Smach::event& /*x*
 	update_controls_from_layer();
 	get_work_area()->queue_draw();
 	get_canvas_view()->queue_rebuild_ducks();
+	
+	// Removed the timeout from here, the refresh handler does it safer!
 	return Smach::RESULT_ACCEPT;
 }
 
@@ -740,8 +742,15 @@ StateFFD_Context::on_make_ffd_pressed()
 	synfig::Layer::Handle layer;
 	synfig::Canvas::Handle target_canvas = get_canvas();
 
+	synfig::Vector origin_offset(0,0);
+
 	if (selected && selected->get_name() == "switch") {
 		synfig::Layer::Handle switch_layer = selected;
+		
+		if (switch_layer->get_param("origin").get_type() == synfig::type_vector) {
+			origin_offset = switch_layer->get_param("origin").get(synfig::Vector(0,0));
+		}
+		
 		synfig::Layer::Handle new_group = get_canvas_interface()->add_layer_to("group", target_canvas, depth);
 		if (new_group) {
 			synfigapp::Action::Handle action(synfigapp::Action::create("LayerSetDesc"));
@@ -840,7 +849,9 @@ StateFFD_Context::on_make_ffd_pressed()
 		}
 
 		std::vector<synfig::ValueBase> pts_vb;
-		for (auto& p : polygon_point_list) pts_vb.push_back(p);
+		for (auto& p : polygon_point_list) {
+			pts_vb.push_back(p - origin_offset);
+		}
 
 		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(pts_vb), get_canvas());
 		

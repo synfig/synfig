@@ -55,6 +55,7 @@
 #include <synfig/curve_helper.h>
 #include <synfig/layers/layer_filtergroup.h>
 #include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/layers/layer_freeformdeform.h>
 #include <synfig/pair.h>
 #include <synfig/paramdesc.h>
 #include <synfig/segment.h>
@@ -2577,12 +2578,14 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 			synfig::Type &contained_type(value_node->get_contained_type());
 			if (contained_type == type_vector)
 			{
-				bool is_ffd_grid = false;
+				bool is_ffd = false;
+				int ffd_mode = 0;
 				int cols = 0, rows = 0;
 				if (value_desc.parent_is_layer()) {
 					Layer::Handle layer = value_desc.get_layer();
 					if (layer && layer->get_name() == "free_form_deform" && value_desc.get_param_name() == "grid_points") {
-						is_ffd_grid = true;
+						is_ffd = true;
+						ffd_mode = layer->get_param("mesh_mode").get(int());
 						cols = layer->get_param("grid_size_x").get(int());
 						rows = layer->get_param("grid_size_y").get(int());
 					}
@@ -2598,30 +2601,17 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 						return false;
 					duck = last_duck();
 
-					// remember the index of the first vertex we didn't skip
-					if (first == -1)
-					{
-						first = i;
-						first_duck = duck;
-					}
+					if (first == -1) { first = i; first_duck = duck; }
 
-					if(param_desc && !param_desc->get_origin().empty())
-					{
+					if(param_desc && !param_desc->get_origin().empty()) {
 						synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
 						add_to_ducks(value_desc_origin,canvas_view, transform_stack);
 						duck->set_origin(last_duck());
-/*
-						ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
-						if(value.same_type_as(synfig::Point()))
-							duck->set_origin(value.get(synfig::Point()));
-*/
-//						if(!param_desc->get_origin().empty())
-//							last_duck()->set_origin(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()).get(synfig::Point()));
 					}
 					duck->set_type(Duck::TYPE_VERTEX);
 					ducks.push_back(duck);
 
-					if (!is_ffd_grid)
+					if (!is_ffd)
 					{
 						bezier.p1=bezier.p2;bezier.c1=bezier.c2;
 						bezier.p2=bezier.c2=duck;
@@ -2629,50 +2619,69 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 						if (first != i)
 						{
 							Bezier::Handle bezier_(new Bezier());
-							bezier_->p1=bezier.p1;
-							bezier_->c1=bezier.c1;
-							bezier_->p2=bezier.p2;
-							bezier_->c2=bezier.c2;
+							bezier_->p1=bezier.p1; bezier_->c1=bezier.c1;
+							bezier_->p2=bezier.p2; bezier_->c2=bezier.c2;
 							add_bezier(bezier_);
 							last_bezier()->signal_user_click(2).connect(
-								sigc::bind(
-									sigc::mem_fun(
-										*canvas_view,
-										&studio::CanvasView::popup_param_menu_bezier),
-									synfigapp::ValueDesc(value_node,i)));
+								sigc::bind(sigc::mem_fun(*canvas_view, &studio::CanvasView::popup_param_menu_bezier), synfigapp::ValueDesc(value_node,i)));
 						}
 					}
 				}
 
-				if (is_ffd_grid && (int)ducks.size() == cols * rows && cols >= 2 && rows >= 2)
+				if (is_ffd)
 				{
-					for (int y = 0; y < rows; ++y) {
-						for (int x = 0; x < cols; ++x) {
-							Duck::Handle d = ducks[y * cols + x];
-							if (!d) continue;
+					if (ffd_mode == 0 && (int)ducks.size() == cols * rows && cols >= 2 && rows >= 2)
+					{
+						// --- GRID MODE ---
+						for (int y = 0; y < rows; ++y) {
+							for (int x = 0; x < cols; ++x) {
+								Duck::Handle d = ducks[y * cols + x];
+								if (!d) continue;
 
-							if (x > 0) {
-								Duck::Handle left = ducks[y * cols + (x - 1)];
-								if (left) {
-									Bezier::Handle bezier_(new Bezier());
-									bezier_->p1 = bezier_->c1 = left;
-									bezier_->p2 = bezier_->c2 = d;
-									add_bezier(bezier_);
+								if (x > 0) {
+									Duck::Handle left = ducks[y * cols + (x - 1)];
+									if (left) {
+										Bezier::Handle bezier_(new Bezier());
+										bezier_->p1 = bezier_->c1 = left;
+										bezier_->p2 = bezier_->c2 = d;
+										add_bezier(bezier_);
+									}
 								}
-							}
-							if (y > 0) {
-								Duck::Handle top = ducks[(y - 1) * cols + x];
-								if (top) {
-									Bezier::Handle bezier_(new Bezier());
-									bezier_->p1 = bezier_->c1 = top;
-									bezier_->p2 = bezier_->c2 = d;
-									add_bezier(bezier_);
+								if (y > 0) {
+									Duck::Handle top = ducks[(y - 1) * cols + x];
+									if (top) {
+										Bezier::Handle bezier_(new Bezier());
+										bezier_->p1 = bezier_->c1 = top;
+										bezier_->p2 = bezier_->c2 = d;
+										add_bezier(bezier_);
+									}
 								}
 							}
 						}
 					}
+					else if (ffd_mode == 1 && ducks.size() >= 3)
+					{
+						// --- CUSTOM MESH MODE ---
+						std::vector<synfig::Point> pts;
+						for (const auto& d : ducks) {
+							if (d) pts.push_back(d->get_point());
+						}
+						
+						std::vector<rendering::Mesh::Triangle> tris = synfig::Layer_FreeFormDeform::triangulate(pts);
+						for (const auto& tri : tris) {
+							auto add_tri_edge = [&](int i1, int i2) {
+								Bezier::Handle bezier_(new Bezier());
+								bezier_->p1 = bezier_->c1 = ducks[i1];
+								bezier_->p2 = bezier_->c2 = ducks[i2];
+								add_bezier(bezier_);
+							};
+							add_tri_edge(tri.vertices[0], tri.vertices[1]);
+							add_tri_edge(tri.vertices[1], tri.vertices[2]);
+							add_tri_edge(tri.vertices[2], tri.vertices[0]);
+						}
+					}
 				}
-				else if (!is_ffd_grid)
+				else if (!is_ffd)
 				{
 					if (value_node->get_loop() && first != -1 && first_duck != duck)
 					{
@@ -2864,12 +2873,14 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 
 			if(value_node->get_contained_type()==type_vector)
 			{
-				bool is_ffd_grid = false;
+				bool is_ffd = false;
+				int ffd_mode = 0;
 				int cols = 0, rows = 0;
 				if (value_desc.parent_is_layer()) {
 					Layer::Handle layer = value_desc.get_layer();
 					if (layer && layer->get_name() == "free_form_deform" && value_desc.get_param_name() == "grid_points") {
-						is_ffd_grid = true;
+						is_ffd = true;
+						ffd_mode = layer->get_param("mesh_mode").get(int());
 						cols = layer->get_param("grid_size_x").get(int());
 						rows = layer->get_param("grid_size_y").get(int());
 					}
@@ -2890,30 +2901,17 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 						return false;
 					duck = last_duck();
 
-					// remember the index of the first vertex we didn't skip
-					if (first == -1)
-					{
-						first = i;
-						first_duck = duck;
-					}
+					if (first == -1) { first = i; first_duck = duck; }
 
-					if(param_desc && !param_desc->get_origin().empty())
-					{
+					if(param_desc && !param_desc->get_origin().empty()) {
 						synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
 						add_to_ducks(value_desc_origin,canvas_view, transform_stack);
 						duck->set_origin(last_duck());
-/*
-						ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
-						if(value.same_type_as(synfig::Point()))
-							duck->set_origin(value.get(synfig::Point()));
-*/
-//						if(!param_desc->get_origin().empty())
-//							last_duck()->set_origin(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()).get(synfig::Point()));
 					}
 					duck->set_type(Duck::TYPE_VERTEX);
 					ducks.push_back(duck);
 
-					if (!is_ffd_grid)
+					if (!is_ffd)
 					{
 						bezier.p1 = bezier.p2;
 						bezier.c1 = bezier.c2;
@@ -2938,35 +2936,60 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 					}
 				}
 
-				if (is_ffd_grid && (int)ducks.size() == cols * rows && cols >= 2 && rows >= 2)
+				if (is_ffd)
 				{
-					for (int y = 0; y < rows; ++y) {
-						for (int x = 0; x < cols; ++x) {
-							Duck::Handle d = ducks[y * cols + x];
-							if (!d) continue;
+					if (ffd_mode == 0 && (int)ducks.size() == cols * rows && cols >= 2 && rows >= 2)
+					{
+						// --- GRID MODE ---
+						for (int y = 0; y < rows; ++y) {
+							for (int x = 0; x < cols; ++x) {
+								Duck::Handle d = ducks[y * cols + x];
+								if (!d) continue;
 
-							if (x > 0) {
-								Duck::Handle left = ducks[y * cols + (x - 1)];
-								if (left) {
-									Bezier::Handle bezier_(new Bezier());
-									bezier_->p1 = bezier_->c1 = left;
-									bezier_->p2 = bezier_->c2 = d;
-									add_bezier(bezier_);
+								if (x > 0) {
+									Duck::Handle left = ducks[y * cols + (x - 1)];
+									if (left) {
+										Bezier::Handle bezier_(new Bezier());
+										bezier_->p1 = bezier_->c1 = left;
+										bezier_->p2 = bezier_->c2 = d;
+										add_bezier(bezier_);
+									}
 								}
-							}
-							if (y > 0) {
-								Duck::Handle top = ducks[(y - 1) * cols + x];
-								if (top) {
-									Bezier::Handle bezier_(new Bezier());
-									bezier_->p1 = bezier_->c1 = top;
-									bezier_->p2 = bezier_->c2 = d;
-									add_bezier(bezier_);
+								if (y > 0) {
+									Duck::Handle top = ducks[(y - 1) * cols + x];
+									if (top) {
+										Bezier::Handle bezier_(new Bezier());
+										bezier_->p1 = bezier_->c1 = top;
+										bezier_->p2 = bezier_->c2 = d;
+										add_bezier(bezier_);
+									}
 								}
 							}
 						}
 					}
+					else if (ffd_mode == 1 && ducks.size() >= 3)
+					{
+						// --- CUSTOM MESH MODE ---
+						std::vector<synfig::Point> pts;
+						for (const auto& d : ducks) {
+							if (d) pts.push_back(d->get_point());
+						}
+						
+						std::vector<rendering::Mesh::Triangle> tris = synfig::Layer_FreeFormDeform::triangulate(pts);
+						for (const auto& tri : tris) {
+							auto add_tri_edge = [&](int i1, int i2) {
+								Bezier::Handle bezier_(new Bezier());
+								bezier_->p1 = bezier_->c1 = ducks[i1];
+								bezier_->p2 = bezier_->c2 = ducks[i2];
+								add_bezier(bezier_);
+							};
+							add_tri_edge(tri.vertices[0], tri.vertices[1]);
+							add_tri_edge(tri.vertices[1], tri.vertices[2]);
+							add_tri_edge(tri.vertices[2], tri.vertices[0]);
+						}
+					}
 				}
-				else if (!is_ffd_grid)
+				else if (!is_ffd)
 				{
 					if (value_node->get_loop() && first != -1 && first_duck != duck)
 					{
