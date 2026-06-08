@@ -553,6 +553,33 @@ void Layer_FreeFormDeform::prepare_mesh()
 			return; // Not enough points or mismatch
 		}
 
+		// --- CORNER PIN METHOD TO PREVENT CLIPPING ---
+		// We automatically add the 4 corners of the context bounds to the triangulation.
+		// This forces the mesh to cover the entire underlying image, preventing any clipping
+		// when using BLEND_STRAIGHT, without needing a mask stage!
+		Rect bounds = get_context_bounds();
+		// Expand the bounds by a decent margin so we don't accidentally clip edges
+		// during extreme warping.
+		bounds.expand(bounds.get_min() - Point(10, 10));
+		bounds.expand(bounds.get_max() + Point(10, 10));
+		
+		Point tl(bounds.get_min()[0], bounds.get_max()[1]);
+		Point tr(bounds.get_max()[0], bounds.get_max()[1]);
+		Point bl(bounds.get_min()[0], bounds.get_min()[1]);
+		Point br(bounds.get_max()[0], bounds.get_min()[1]);
+
+		// Add corners to initial points
+		initial_pts.push_back(tl);
+		initial_pts.push_back(tr);
+		initial_pts.push_back(bl);
+		initial_pts.push_back(br);
+
+		// Add corners to deformed points
+		deformed_pts.push_back(tl);
+		deformed_pts.push_back(tr);
+		deformed_pts.push_back(bl);
+		deformed_pts.push_back(br);
+
 		// Triangulate based on initial points (which defines the actual shape without self-intersections ideally)
 		std::vector<rendering::Mesh::Triangle> triangles = triangulate(initial_pts);
 
@@ -562,60 +589,6 @@ void Layer_FreeFormDeform::prepare_mesh()
 		}
 
 		mesh->triangles = triangles;
-
-		// --- NEW MASK BOUNDARY ALGORITHM ---
-		// Create bounding mask contour from boundary edges of the Delaunay mesh
-		rendering::Contour::Handle mask(new rendering::Contour());
-		mask->antialias = true;
-
-		if (!triangles.empty() && !deformed_pts.empty()) {
-			std::map<std::pair<int, int>, int> edge_counts;
-			std::map<int, int> next_node;
-
-			// 1. Count how many triangles share each edge
-			for (const auto& tri : triangles) {
-				for (int i = 0; i < 3; ++i) {
-					int a = tri.vertices[i];
-					int b = tri.vertices[(i + 1) % 3];
-					int min_idx = std::min(a, b);
-					int max_idx = std::max(a, b);
-					edge_counts[{min_idx, max_idx}]++;
-				}
-			}
-
-			// 2. Identify boundary edges (they only belong to exactly 1 triangle)
-			for (const auto& tri : triangles) {
-				for (int i = 0; i < 3; ++i) {
-					int a = tri.vertices[i];
-					int b = tri.vertices[(i + 1) % 3];
-					int min_idx = std::min(a, b);
-					int max_idx = std::max(a, b);
-					
-					// Maintain the Counter-Clockwise direction for the mask
-					if (edge_counts[{min_idx, max_idx}] == 1) {
-						next_node[a] = b;
-					}
-				}
-			}
-
-			// 3. Trace the outer boundary loop to make a perfect clipping mask
-			if (!next_node.empty()) {
-				int start_node = next_node.begin()->first;
-				mask->move_to(deformed_pts[start_node]);
-				
-				int curr = next_node[start_node];
-				int safe_guard = 0;
-				int max_verts = deformed_pts.size() + 2;
-				
-				while (curr != start_node && next_node.count(curr) && safe_guard < max_verts) {
-					mask->line_to(deformed_pts[curr]);
-					curr = next_node[curr];
-					safe_guard++;
-				}
-				mask->close();
-			}
-		}
-		this->mask = mask;
 
 		this->mesh = mesh;
 		return;
