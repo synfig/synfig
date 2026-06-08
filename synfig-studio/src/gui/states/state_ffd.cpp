@@ -46,8 +46,9 @@
 #include <synfig/general.h>
 #include <synfig/layers/layer_freeformdeform.h>
 
+#include <synfigapp/blineconvert.h>
 #include <synfigapp/main.h>
-#include <synfigapp/action.h>
+#include <synfig/transformation.h>
 #include <synfigapp/instance.h>
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfig/valuenodes/valuenode_const.h>
@@ -736,7 +737,93 @@ StateFFD_Context::on_make_ffd_pressed()
 	synfig::Layer::Handle selected = get_canvas_interface()->get_selection_manager()->get_selected_layer();
 	if (selected) depth = selected->get_depth();
 
-	Layer::Handle layer = get_canvas_interface()->add_layer_to("free_form_deform", get_canvas(), depth);
+	synfig::Layer::Handle layer;
+	synfig::Canvas::Handle target_canvas = get_canvas();
+
+	if (selected && selected->get_name() == "switch") {
+		synfig::Layer::Handle switch_layer = selected;
+		synfig::Layer::Handle new_group = get_canvas_interface()->add_layer_to("group", target_canvas, depth);
+		if (new_group) {
+			synfigapp::Action::Handle action(synfigapp::Action::create("LayerSetDesc"));
+			action->set_param("canvas", target_canvas);
+			action->set_param("canvas_interface", get_canvas_interface());
+			action->set_param("layer", new_group);
+			action->set_param("new_description", synfig::String("FFD Group"));
+			get_canvas_interface()->get_instance()->perform_action(action);
+
+			synfig::Canvas::Handle child_canvas = new_group->get_param("canvas").get(synfig::Canvas::Handle());
+
+			synfigapp::Action::Handle rem_action(synfigapp::Action::create("LayerRemove"));
+			rem_action->set_param("canvas", target_canvas);
+			rem_action->set_param("canvas_interface", get_canvas_interface());
+			rem_action->set_param("layer", switch_layer);
+			get_canvas_interface()->get_instance()->perform_action(rem_action);
+
+			synfigapp::Action::Handle add_action(synfigapp::Action::create("LayerAdd"));
+			add_action->set_param("canvas", child_canvas);
+			add_action->set_param("canvas_interface", get_canvas_interface());
+			add_action->set_param("new", switch_layer);
+			get_canvas_interface()->get_instance()->perform_action(add_action);
+
+			auto transfer_param = [&](const synfig::String& param_name, const synfig::ValueBase& default_val) {
+				synfig::ValueBase val = switch_layer->get_param(param_name);
+				auto dyn_param = switch_layer->dynamic_param_list().find(param_name);
+				
+				if (dyn_param != switch_layer->dynamic_param_list().end()) {
+					synfig::ValueNode::Handle vn = dyn_param->second;
+					
+					synfigapp::Action::Handle param_connect(synfigapp::Action::create("LayerParamConnect"));
+					param_connect->set_param("canvas", target_canvas);
+					param_connect->set_param("canvas_interface", get_canvas_interface());
+					param_connect->set_param("layer", new_group);
+					param_connect->set_param("param", param_name);
+					param_connect->set_param("value_node", vn);
+					get_canvas_interface()->get_instance()->perform_action(param_connect);
+
+					synfigapp::Action::Handle param_disconnect(synfigapp::Action::create("LayerParamDisconnect"));
+					param_disconnect->set_param("canvas", child_canvas);
+					param_disconnect->set_param("canvas_interface", get_canvas_interface());
+					param_disconnect->set_param("layer", switch_layer);
+					param_disconnect->set_param("param", param_name);
+					get_canvas_interface()->get_instance()->perform_action(param_disconnect);
+
+					synfigapp::Action::Handle param_set(synfigapp::Action::create("LayerParamSet"));
+					param_set->set_param("canvas", child_canvas);
+					param_set->set_param("canvas_interface", get_canvas_interface());
+					param_set->set_param("layer", switch_layer);
+					param_set->set_param("param", param_name);
+					param_set->set_param("new_value", default_val);
+					get_canvas_interface()->get_instance()->perform_action(param_set);
+				} else {
+					synfigapp::Action::Handle param_set_group(synfigapp::Action::create("LayerParamSet"));
+					param_set_group->set_param("canvas", target_canvas);
+					param_set_group->set_param("canvas_interface", get_canvas_interface());
+					param_set_group->set_param("layer", new_group);
+					param_set_group->set_param("param", param_name);
+					param_set_group->set_param("new_value", val);
+					get_canvas_interface()->get_instance()->perform_action(param_set_group);
+
+					synfigapp::Action::Handle param_set_switch(synfigapp::Action::create("LayerParamSet"));
+					param_set_switch->set_param("canvas", child_canvas);
+					param_set_switch->set_param("canvas_interface", get_canvas_interface());
+					param_set_switch->set_param("layer", switch_layer);
+					param_set_switch->set_param("param", param_name);
+					param_set_switch->set_param("new_value", default_val);
+					get_canvas_interface()->get_instance()->perform_action(param_set_switch);
+				}
+			};
+
+			transfer_param("origin", synfig::ValueBase(synfig::Vector(0,0)));
+			transfer_param("transformation", synfig::ValueBase(synfig::Transformation()));
+
+			layer = get_canvas_interface()->add_layer_to("free_form_deform", child_canvas, 0);
+		} else {
+			layer = get_canvas_interface()->add_layer_to("free_form_deform", target_canvas, depth);
+		}
+	} else {
+		layer = get_canvas_interface()->add_layer_to("free_form_deform", target_canvas, depth);
+	}
+
 	if (!layer) {
 		group.cancel();
 		return;
