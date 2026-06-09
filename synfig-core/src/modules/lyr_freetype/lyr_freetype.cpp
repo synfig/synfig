@@ -64,42 +64,6 @@
 
 using namespace synfig;
 
-/* === M A C R O S ========================================================= */
-
-// Copy of PangoStyle
-// It is necessary to keep original values if Pango ever change them
-//  - because it would change layer rendering as Synfig stores the parameter
-//     value as an integer (ie. not a weight name string)
-enum TextStyle{
-	TEXT_STYLE_NORMAL = 0,
-	TEXT_STYLE_OBLIQUE = 1,
-	TEXT_STYLE_ITALIC = 2
-};
-
-// Copy of PangoWeight
-// It is necessary to keep original values if Pango ever change them
-//  - because it would change layer rendering as Synfig stores the parameter
-//     value as an integer (ie. not a weight name string)
-enum TextWeight{
-	TEXT_WEIGHT_THIN = 100,
-	TEXT_WEIGHT_ULTRALIGHT = 200,
-	TEXT_WEIGHT_LIGHT = 300,
-	TEXT_WEIGHT_SEMILIGHT = 350,
-	TEXT_WEIGHT_BOOK = 380,
-	TEXT_WEIGHT_NORMAL = 400,
-	TEXT_WEIGHT_MEDIUM = 500,
-	TEXT_WEIGHT_SEMIBOLD = 600,
-	TEXT_WEIGHT_BOLD = 700,
-	TEXT_WEIGHT_ULTRABOLD = 800,
-	TEXT_WEIGHT_HEAVY = 900,
-	TEXT_WEIGHT_ULTRAHEAVY = 1000
-};
-
-enum TextDirection{
-	TEXT_DIRECTION_AUTO = 0,
-	TEXT_DIRECTION_LTR = 1,
-	TEXT_DIRECTION_RTL = 2,
-};
 
 /* === G L O B A L S ======================================================= */
 
