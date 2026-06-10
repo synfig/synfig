@@ -401,15 +401,14 @@ StateFFD_Context::update_controls_from_layer()
 			grid_x_spin.show();
 			grid_y_label.show();
 			grid_y_spin.show();
-			reset_button.show();
 		} else { // Custom Mesh
 			grid_x_label.hide();
 			grid_x_spin.hide();
 			grid_y_label.hide();
 			grid_y_spin.hide();
-			reset_button.hide();
 		}
 
+		reset_button.show();
 		smoothness_label.show();
 		smoothness_hscl.show();
 
@@ -716,49 +715,68 @@ StateFFD_Context::on_reset_pressed()
 	etl::handle<Layer_FreeFormDeform> ffd_typed = etl::handle<Layer_FreeFormDeform>::cast_dynamic(ffd);
 	if (!ffd_typed) return;
 
-	synfig::Rect bounds = ffd_typed->get_context_bounds();
-	if (!bounds.is_valid() || bounds.area() <= 0.0001) return;
-
-	int cols = ffd_typed->get_param("grid_size_x").get(int());
-	int rows = ffd_typed->get_param("grid_size_y").get(int());
-
-	std::vector<synfig::Point> grid_points = ffd_typed->compute_grid_for_bounds(bounds, cols, rows);
-	std::vector<synfig::ValueBase> grid_points_vb;
-	for (const auto& p : grid_points) grid_points_vb.push_back(synfig::ValueBase(p));
-
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(), _("Reset FFD Grid"));
 
-	synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(grid_points_vb), get_canvas());
-	synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
-	action_connect->set_param("canvas", get_canvas());
-	action_connect->set_param("canvas_interface", get_canvas_interface());
-	action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "grid_points"));
-	action_connect->set_param("src", dyn_list);
-	if (!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
-		group.cancel();
-		return;
-	}
+	int mesh_mode = ffd_typed->get_param("mesh_mode").get(int());
+	
+	if (mesh_mode == 1) {
+		// Custom Mesh: Reset grid_points to source_points
+		synfig::ValueBase source_points_vb = ffd_typed->get_param("source_points");
+		
+		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(source_points_vb, get_canvas());
+		synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
+		action_connect->set_param("canvas", get_canvas());
+		action_connect->set_param("canvas_interface", get_canvas_interface());
+		action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "grid_points"));
+		action_connect->set_param("src", dyn_list);
+		if (!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
+			group.cancel();
+			return;
+		}
+	} else {
+		// Grid Mode
+		synfig::Rect bounds = ffd_typed->get_context_bounds();
+		if (!bounds.is_valid() || bounds.area() <= 0.0001) return;
 
-	synfigapp::Action::Handle action_tl = synfigapp::Action::create("ValueDescSet");
-	action_tl->set_param("canvas", get_canvas());
-	action_tl->set_param("canvas_interface", get_canvas_interface());
-	action_tl->set_param("value_desc", synfigapp::ValueDesc(ffd, "source_tl"));
-	action_tl->set_param("new_value", synfig::ValueBase(synfig::Point(bounds.minx, bounds.maxy)));
-	action_tl->set_param("time", get_canvas_interface()->get_time());
-	if (!action_tl->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_tl)) {
-		group.cancel();
-		return;
-	}
+		int cols = ffd_typed->get_param("grid_size_x").get(int());
+		int rows = ffd_typed->get_param("grid_size_y").get(int());
 
-	synfigapp::Action::Handle action_br = synfigapp::Action::create("ValueDescSet");
-	action_br->set_param("canvas", get_canvas());
-	action_br->set_param("canvas_interface", get_canvas_interface());
-	action_br->set_param("value_desc", synfigapp::ValueDesc(ffd, "source_br"));
-	action_br->set_param("new_value", synfig::ValueBase(synfig::Point(bounds.maxx, bounds.miny)));
-	action_br->set_param("time", get_canvas_interface()->get_time());
-	if (!action_br->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_br)) {
-		group.cancel();
-		return;
+		std::vector<synfig::Point> grid_points = ffd_typed->compute_grid_for_bounds(bounds, cols, rows);
+		std::vector<synfig::ValueBase> grid_points_vb;
+		for (const auto& p : grid_points) grid_points_vb.push_back(synfig::ValueBase(p));
+
+		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(grid_points_vb), get_canvas());
+		synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
+		action_connect->set_param("canvas", get_canvas());
+		action_connect->set_param("canvas_interface", get_canvas_interface());
+		action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "grid_points"));
+		action_connect->set_param("src", dyn_list);
+		if (!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
+			group.cancel();
+			return;
+		}
+
+		synfigapp::Action::Handle action_tl = synfigapp::Action::create("ValueDescSet");
+		action_tl->set_param("canvas", get_canvas());
+		action_tl->set_param("canvas_interface", get_canvas_interface());
+		action_tl->set_param("value_desc", synfigapp::ValueDesc(ffd, "source_tl"));
+		action_tl->set_param("new_value", synfig::ValueBase(synfig::Point(bounds.minx, bounds.maxy)));
+		action_tl->set_param("time", get_canvas_interface()->get_time());
+		if (!action_tl->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_tl)) {
+			group.cancel();
+			return;
+		}
+
+		synfigapp::Action::Handle action_br = synfigapp::Action::create("ValueDescSet");
+		action_br->set_param("canvas", get_canvas());
+		action_br->set_param("canvas_interface", get_canvas_interface());
+		action_br->set_param("value_desc", synfigapp::ValueDesc(ffd, "source_br"));
+		action_br->set_param("new_value", synfig::ValueBase(synfig::Point(bounds.maxx, bounds.miny)));
+		action_br->set_param("time", get_canvas_interface()->get_time());
+		if (!action_br->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_br)) {
+			group.cancel();
+			return;
+		}
 	}
 
 	get_canvas_view()->queue_rebuild_ducks();
