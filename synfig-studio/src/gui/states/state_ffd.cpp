@@ -99,6 +99,9 @@ class studio::StateFFD_Context : public sigc::trackable
 	// Signal blocking flag
 	bool updating_from_layer_;
 
+	sigc::connection layer_param_changed_connection;
+	void on_layer_param_changed(synfig::Layer::Handle layer, synfig::String param_name);
+
 	Gtk::Button reset_button;
 
 	// Creation mode widgets
@@ -298,6 +301,9 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
 	App::dock_toolbox->refresh();
+
+	layer_param_changed_connection = get_canvas_interface()->signal_layer_param_changed().connect(
+		sigc::mem_fun(*this, &StateFFD_Context::on_layer_param_changed));
 }
 
 void
@@ -310,16 +316,38 @@ StateFFD_Context::refresh_tool_options()
 }
 
 void
+StateFFD_Context::on_layer_param_changed(synfig::Layer::Handle layer, synfig::String param_name)
+{
+	synfig::Layer::Handle ffd = get_selected_ffd_layer();
+	if (ffd && layer == ffd) {
+		if (param_name == "grid_size_x" || param_name == "grid_size_y" || param_name == "smoothness" || param_name == "mesh_mode") {
+			update_controls_from_layer();
+		}
+	}
+}
+
+void
 StateFFD_Context::on_mesh_mode_changed()
 {
 	bool is_grid = (mesh_mode_enum.get_value() == 0);
-	create_grid_x_spin.set_sensitive(is_grid);
-	create_grid_y_spin.set_sensitive(is_grid);
+	if (is_grid) {
+		create_grid_x_label.show();
+		create_grid_x_spin.show();
+		create_grid_y_label.show();
+		create_grid_y_spin.show();
+	} else {
+		create_grid_x_label.hide();
+		create_grid_x_spin.hide();
+		create_grid_y_label.hide();
+		create_grid_y_spin.hide();
+	}
 	refresh_ducks();
 }
 
 StateFFD_Context::~StateFFD_Context()
 {
+	layer_param_changed_connection.disconnect();
+
 	get_canvas_interface()->set_state("");
 
 	App::dialog_tool_options->clear();
@@ -366,13 +394,24 @@ StateFFD_Context::update_controls_from_layer()
 		updating_from_layer_ = false;
 
 		status_label.set_label(_("FFD layer selected"));
-		grid_x_label.show();
-		grid_x_spin.show();
-		grid_y_label.show();
-		grid_y_spin.show();
+		
+		int mesh_mode = ffd->get_param("mesh_mode").get(int());
+		if (mesh_mode == 0) { // Grid
+			grid_x_label.show();
+			grid_x_spin.show();
+			grid_y_label.show();
+			grid_y_spin.show();
+			reset_button.show();
+		} else { // Custom Mesh
+			grid_x_label.hide();
+			grid_x_spin.hide();
+			grid_y_label.hide();
+			grid_y_spin.hide();
+			reset_button.hide();
+		}
+
 		smoothness_label.show();
 		smoothness_hscl.show();
-		reset_button.show();
 
 		mesh_mode_label.hide();
 		mesh_mode_enum.hide();
@@ -395,10 +434,7 @@ StateFFD_Context::update_controls_from_layer()
 
 		mesh_mode_label.show();
 		mesh_mode_enum.show();
-		create_grid_x_label.show();
-		create_grid_x_spin.show();
-		create_grid_y_label.show();
-		create_grid_y_spin.show();
+		on_mesh_mode_changed();
 		make_ffd_button.show();
 		clear_button.show();
 		get_work_area()->set_cursor(Gdk::CROSSHAIR);
