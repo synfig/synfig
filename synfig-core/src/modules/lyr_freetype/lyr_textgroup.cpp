@@ -69,15 +69,29 @@ void Layer_GlyphShape::set_glyph_chunks(const rendering::Contour::ChunkList& chu
     
 }  
   
-void  
-Layer_GlyphShape::sync_vfunc()  
+void Layer_GlyphShape::sync_vfunc()  
 {  
     clear();  
-    if (!stored_chunks.empty())
-	{  
-        add(stored_chunks);    
-	    shape_contour().close();
-    } 
+    if (stored_chunks.empty()) return;  
+  
+    Vector scale   = param_scale.get(Vector());  
+    Angle rotation = param_rotation.get(Angle());  
+  
+    // Build transform matrix: scale then rotate around glyph origin  
+    Matrix m;  
+    m.set_rotate(rotation);  
+    m.m00 *= scale[0]; m.m01 *= scale[0];  
+    m.m10 *= scale[1]; m.m11 *= scale[1];  
+  
+    rendering::Contour::ChunkList transformed = stored_chunks;  
+    for (auto& chunk : transformed) {  
+        chunk.p1  = m.get_transformed(chunk.p1);  
+        chunk.pp0 = m.get_transformed(chunk.pp0);  
+        chunk.pp1 = m.get_transformed(chunk.pp1);  
+    }  
+  
+    add(transformed);  
+    shape_contour().close();  
 }
 
 void
@@ -94,15 +108,16 @@ Layer_TextGroup::Layer_TextGroup()
     , param_style(ValueBase(0))  
     , param_weight(ValueBase(400))  
     , param_size(ValueBase(Vector(0.25, 0.25)))
-    , param_direction(ValueBase(0))
-    , param_compress(ValueBase(Real(1.0)))
-	, param_vcompress(ValueBase(Real(1.0)))
-	, param_orient(ValueBase(Vector(0.5, 0.5)))
+	, param_compress(ValueBase(Real(1.0)))
+	, param_vcompress(ValueBase(Real(1.0)))    
+	, param_direction(ValueBase(0))
+    , param_orient(ValueBase(Vector(0.5, 0.5)))
 	, param_use_kerning(ValueBase(true))
 	, param_grid_fit(ValueBase(false))
 	, param_color(ValueBase(Color::black()))
 	, param_invert(ValueBase(false))
 	, param_font(ValueBase(std::string()))
+	, param_stagger_delay(ValueBase(Real(0.0)))
 {  
     SET_INTERPOLATION_DEFAULTS();  
     SET_STATIC_DEFAULTS();  
@@ -404,11 +419,16 @@ void Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) cons
     context.set_time(time);  
     Canvas::Handle canvas = get_sub_canvas();  
     if (!canvas) return;  
-      
-    // Use base class behavior - no stagger for now  
-    Real time_dilation = get_time_dilation();  
-    Time time_offset = get_time_offset();  
-    canvas->set_time(time * time_dilation + time_offset);  
+  
+    Real stagger = param_stagger_delay.get(Real());  
+    Real time_dilation = param_time_dilation.get(Real());  
+    Time time_offset   = param_time_offset.get(Time());  
+  
+    int i = 0;  
+    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter, ++i) {  
+        Time glyph_time = time * time_dilation + time_offset + Time(i * stagger);  
+        (*iter)->set_time(context, glyph_time);  
+    }  
 }
 
 void  
@@ -561,31 +581,44 @@ Layer_TextGroup::sync_glyphs()
             glyphs.push_back(glyph);  
         }  
     }  
+   
+	std::map<std::string, std::vector<Layer::Handle>> available_layers;  
+	for (auto it = canvas->begin(); it != canvas->end(); ++it) {  
+    	std::string desc = (*it)->get_description();  
+    	available_layers[desc].push_back(*it);  
+	}  
   
-    while (static_cast<size_t>(canvas->size()) > glyphs.size())  
-        canvas->erase(--canvas->end());  
-    while (static_cast<size_t>(canvas->size()) < glyphs.size())  
-        canvas->push_back(Layer::Handle(new Layer_GlyphShape()));  
   
-    auto layer_iter = canvas->begin();  
-    for (const auto& glyph : glyphs)  
-    {  
-        if (layer_iter == canvas->end()) break;  
+	std::vector<Layer::Handle> new_order;  
+	for (const auto& glyph : glyphs) {  
+    	std::string char_key = Glib::ustring(1, glyph.charcode);  
+      
+    	Layer::Handle matched;  
+    	auto it = available_layers.find(char_key);  
+    	if (it != available_layers.end() && !it->second.empty()) {  
+        	matched = it->second.front();  
+        	it->second.erase(it->second.begin());  
+    	} else {  
+           matched = Layer::Handle(new Layer_GlyphShape());  
+    	}  
+    	new_order.push_back(matched);  
+	}  
   
-        Layer::Handle child = *layer_iter;  
-        Layer_GlyphShape* glyph_layer =  
-            dynamic_cast<Layer_GlyphShape*>(child.get());  
-  
-        if (glyph_layer)  
-        {  
-            glyph_layer->set_glyph_chunks(glyph.outline);  
-            child->set_description(Glib::ustring(1, glyph.charcode));  
-            child->set_param("color",  ValueBase(color));  
-            child->set_param("invert", ValueBase(invert));  
-        }  
-  
-        ++layer_iter;  
-    }  
+  	canvas->clear();  
+	for (auto& layer : new_order)  
+   		canvas->push_back(layer);  
+	auto layer_iter = canvas->begin();  
+	for (const auto& glyph : glyphs) {  
+    	Layer_GlyphShape* glyph_layer =  
+        	dynamic_cast<Layer_GlyphShape*>(layer_iter->get());  
+    	if (glyph_layer) {  
+        	glyph_layer->set_glyph_chunks(glyph.outline);  
+        	(*layer_iter)->set_description(Glib::ustring(1, glyph.charcode));  
+        	(*layer_iter)->set_param("color",  ValueBase(color));  
+        	(*layer_iter)->set_param("invert", ValueBase(invert));  
+    	}  
+    	++layer_iter;  
+	}  
 
     // TODO:
     // Current synchronization preserves glyph layers
