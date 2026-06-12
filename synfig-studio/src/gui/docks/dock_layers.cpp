@@ -81,7 +81,7 @@ Dock_Layers::Dock_Layers()
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
 	if (layer_action_manager)
-		layer_action_manager->set_action_widget(App::main_window);
+		layer_action_manager->set_action_widget_and_menus(App::main_window, App::menuitem_layer, App::menuitem_layer2);
 
 	layer_action_manager->signal_add_layer_selected().connect([=](const std::string& layer_id) {add_layer(layer_id); return true;});
 
@@ -245,7 +245,7 @@ Dock_Layers::add_layer(synfig::String id)
 
 void Dock_Layers::popup_add_layer_menu()
 {
-	Gtk::Menu* menu = Gtk::manage(new Gtk::Menu(layer_action_manager->create_add_layer_menu()));
+	Gtk::Menu* menu = Gtk::manage(new Gtk::Menu(layer_action_manager->get_add_layer_menu()));
 	if (!menu) {
 		synfig::error(_("Internal error: couldn't instantiate menu Add Layer to pop it up."));
 		return;
@@ -266,7 +266,7 @@ Dock_Layers::on_layertree_layer_clicked(int button, Gtk::TreeRow row, LayerTree:
 				return true;
 			}
 			auto context_menu_model = layer_action_manager->create_context_menu(selected_layers);
-			auto add_layer_menu_model = layer_action_manager->create_add_layer_menu();
+			auto add_layer_menu_model = layer_action_manager->get_add_layer_menu();
 			if (context_menu_model && add_layer_menu_model) {
 				context_menu_model->prepend_submenu(_("New Layer"), add_layer_menu_model);
 				Gtk::Menu* menu = Gtk::manage(new Gtk::Menu(context_menu_model));

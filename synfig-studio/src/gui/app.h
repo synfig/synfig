@@ -232,6 +232,8 @@ public:
 	static synfig::String navigator_renderer;
 	static synfig::String workarea_renderer;
 	static int number_of_threads;
+	static Gtk::MenuItem* menuitem_layer;
+	static Gtk::MenuItem* menuitem_layer2;
 	static Glib::RefPtr<Gio::Menu> menu_keyframe;
 	static bool enable_mainwin_menubar;
 	static bool enable_mainwin_toolbar;

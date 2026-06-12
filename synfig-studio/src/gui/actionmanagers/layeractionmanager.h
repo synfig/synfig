@@ -33,6 +33,7 @@
 #include <giomm/menu.h>
 #include <giomm/simpleactiongroup.h>
 
+#include <gtkmm/menuitem.h>
 #include <gtkmm/widget.h>
 
 #include <synfigapp/canvasinterface.h>
@@ -70,6 +71,8 @@ class LayerActionManager
 
 	std::list<synfig::Layer::Handle> clipboard_;
 
+	Glib::RefPtr<Gio::Menu> menu_add_layer_;
+
 	sigc::connection select_all_child_layers_connection;
 	sigc::connection selection_changed_connection;
 
@@ -77,6 +80,9 @@ class LayerActionManager
 	sigc::connection queue_refresh_connection;
 
 	std::list<sigc::connection> update_connection_list;
+
+	Gtk::MenuItem* menuitem_layer_;
+	Gtk::MenuItem* menuitem_layer2_;
 
 	void cut();
 	void copy();
@@ -103,7 +109,7 @@ public:
 	LayerActionManager();
 	~LayerActionManager();
 
-	void set_action_widget(Gtk::Widget* x);
+	void set_action_widget_and_menus(Gtk::Widget* x, Gtk::MenuItem* menuitem_layer, Gtk::MenuItem* menuitem_layer2);
 
 	void set_layer_tree(LayerTree* x);
 	LayerTree* get_layer_tree()const { return layer_tree_; }
@@ -116,6 +122,7 @@ public:
 	void refresh();
 	void clear();
 
+	Glib::RefPtr<Gio::Menu> get_add_layer_menu();
 	static Glib::RefPtr<Gio::Menu> create_add_layer_menu();
 	Glib::RefPtr<Gio::Menu> create_context_menu(const std::list<synfig::Layer::Handle> layers) const;
 

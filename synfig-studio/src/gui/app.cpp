@@ -298,6 +298,8 @@ float studio::App::preview_quality = 0.5f;
 int studio::App::preview_fps = 12;
 String studio::App::preview_zoom_level = "fit";
 
+Gtk::MenuItem* studio::App::menuitem_layer;
+Gtk::MenuItem* studio::App::menuitem_layer2;
 Glib::RefPtr<Gio::Menu> studio::App::menu_keyframe;
 
 bool   studio::App::enable_mainwin_menubar = true;
@@ -945,7 +947,6 @@ init_ui_manager()
 	menus_action_group->add( Gtk::Action::create("menu-canvas",          _("_Canvas")));
 
 	menus_action_group->add( Gtk::Action::create("menu-layer",           _("_Layer")));
-	menus_action_group->add( Gtk::Action::create("menu-layer-new",       _("New Layer")));
 	menus_action_group->add( Gtk::Action::create("menu-toolbox",         _("Toolbox")));
 	menus_action_group->add( Gtk::Action::create("menu-plugins",         _("Plug-Ins")));
 
@@ -1418,13 +1419,8 @@ App::get_default_accel_map()
 		{"<Mod1>8",                 "<Actions>/canvasview/mask-bone-recursive-ducks"},
 		{"<Mod1>9",                 "<Actions>/canvasview/mask-bone-ducks"},
 		{"<Mod1>5",                 "<Actions>/canvasview/mask-widthpoint-position-ducks"},
-		{"<Shift>Page_Up",          "<Actions>/action_group_layer_action_manager/action-LayerRaise"},
-		{"<Shift>Page_Down",        "<Actions>/action_group_layer_action_manager/action-LayerLower"},
-		{"Delete",                  "<Actions>/action_group_layer_action_manager/action-LayerRemove"},
 		{"<Control>parenleft" ,     "<Actions>/canvasview/decrease-low-res-pixel-size"},
 		{"<Control>parenright" ,    "<Actions>/canvasview/increase-low-res-pixel-size"},
-		{"<Primary>g",              "<Actions>/action_group_layer_action_manager/action-LayerEncapsulate"},
-		{"<Primary>u",              "<Actions>/action_group_layer_action_manager/action-LayerDuplicate"},
 		{"<Control><Mod1>parenleft",  "<Actions>/action_group_layer_action_manager/amount-dec"},
 		{"<Control><Mod1>parenright", "<Actions>/action_group_layer_action_manager/amount-inc"},
 		{"equal",                   "<Actions>/canvasview/canvas-zoom-in"},
@@ -1627,6 +1623,10 @@ void App::init(const synfig::String& rootpath)
 		studio_init_cb.task(_("Init UI Manager..."));
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
+
+		menuitem_layer = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menubar-main/menu-layer"));
+		menuitem_layer2 = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menu-main/menu-layer"));
+
 		action_database = new ActionDatabase();
 
 		studio_init_cb.task(_("Init Dock Manager..."));
