@@ -57,6 +57,9 @@ namespace studio {
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
 
+		/** Create all win. actions */
+		void init_actions();
+
 		//! Mandatory for constructing custom widgets from GTKBuilder files
 		void register_custom_widget_types();
 

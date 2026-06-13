@@ -39,6 +39,7 @@
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
 
+#include <gui/actiondatabase.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_input.h>
@@ -81,6 +82,19 @@ escape_underline(const std::string& raw)
 		quoted += raw.substr(last_pos, ++pos - last_pos) + '_';
 	quoted += raw.substr(last_pos);
 	return quoted;
+}
+
+static void
+on_show_panel_actionated(const Glib::VariantBase& v)
+{
+	if (!App::dock_manager)
+		return;
+
+	const auto panel_name_vrt = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(v);
+	if (panel_name_vrt)
+		App::dock_manager->present(panel_name_vrt.get());
+	else
+		synfig::warning(_("Action show-panel: panel name should be a string"));
 }
 
 /* === M E T H O D S ======================================================= */
@@ -132,6 +146,7 @@ MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
 
 	add(*visible_vbox);
 
+	init_actions();
 	init_menus();
 	window_action_group = Gtk::ActionGroup::create("mainwindow-window");
 	App::ui_manager()->insert_action_group(window_action_group);
@@ -276,6 +291,75 @@ MainWindow::init_menus()
 	App::ui_manager()->insert_action_group(action_group);
 
 	add_custom_workspace_menu_item_handlers();
+}
+
+void
+MainWindow::init_actions()
+{
+	struct ActionMetadata {
+		std::string name;
+		std::string icon;
+		std::string shortcut;
+		std::string label;
+		std::string tooltip;
+		std::function<void()> slot;
+	};
+
+	const std::vector<ActionMetadata> action_list = {
+		{"save-all",                "action_doc_saveall_icon",   "<Primary>e", N_("Save All"),           N_("Save all open documents"),  sigc::ptr_fun(save_all)},
+
+		// pre defined workspace (window ui layout)
+		{"workspace-compositing",   "",                          "",           N_("Compositing"),        "",                             sigc::ptr_fun(MainWindow::set_workspace_compositing)},
+		{"workspace-animating",     "",                          "",           N_("Animating"),          "",                             sigc::ptr_fun(MainWindow::set_workspace_animating)},
+		{"workspace-default",       "",                          "",           N_("Default"),            "",                             sigc::ptr_fun(MainWindow::set_workspace_default)},
+		{"save-workspace",          "action_doc_saveas_icon",    "",           N_("Save workspace..."),  N_("Save workspace..."),                            sigc::mem_fun(*this, &MainWindow::save_custom_workspace)},
+		{"edit-workspacelist",      "",                          "",           N_("Edit workspaces..."), N_("Edit workspaces..."),       sigc::ptr_fun(MainWindow::edit_custom_workspace_list)},
+
+		// animation tabs
+		{"switch-to-tab-1",         "",                          "<Primary>1", N_("Switch to Tab 1"),         "",                        sigc::track_obj([this]() { main_dock_book().set_current_page(0); }, this)},
+		{"switch-to-tab-2",         "",                          "<Primary>2", N_("Switch to Tab 2"),         "",                        sigc::track_obj([this]() { main_dock_book().set_current_page(1); }, this)},
+		{"switch-to-tab-3",         "",                          "<Primary>3", N_("Switch to Tab 3"),         "",                        sigc::track_obj([this]() { main_dock_book().set_current_page(2); }, this)},
+		{"switch-to-tab-4",         "",                          "<Primary>4", N_("Switch to Tab 4"),         "",                        sigc::track_obj([this]() { main_dock_book().set_current_page(3); }, this)},
+		{"switch-to-tab-5",         "",                          "<Primary>5", N_("Switch to Tab 5"),         "",                        sigc::track_obj([this]() { main_dock_book().set_current_page(4); }, this)},
+		{"switch-to-tab-6",         "",                          "<Primary>6", N_("Switch to Tab 6"),         "",                        sigc::track_obj([this]() { main_dock_book().set_current_page(5); }, this)},
+		{"switch-to-tab-7",         "",                          "<Primary>7", N_("Switch to Tab 7"),         "",                        sigc::track_obj([this]() { main_dock_book().set_current_page(6); }, this)},
+		{"switch-to-tab-8",         "",                          "<Primary>8", N_("Switch to Tab 8"),         "",                        sigc::track_obj([this]() { main_dock_book().set_current_page(7); }, this)},
+		{"switch-to-rightmost-tab", "",                          "<Primary>9", N_("Switch to Rightmost Tab"), "",                        sigc::track_obj([this]() { main_dock_book().set_current_page(-1); }, this)},
+
+		// input devices
+		{"input-devices",           "",                          "",           N_("Input Devices..."),   "",                             sigc::ptr_fun(&MainWindow::show_dialog_input)},
+
+		// docks (including open file tabs): set via MainWindow::on_dockable_registered()
+	};
+
+	for (const auto& item : action_list) {
+		App::get_action_database()->add(ActionDatabase::Entry{"win." + item.name, item.label, item.shortcut, item.icon, item.tooltip});
+		add_action(item.name, item.slot);
+	}
+
+	struct BoolActionMetadata {
+		const std::string name;
+		const std::string icon;
+		const std::string label;
+		const std::string tooltip;
+		// bool (WorkArea::*slot_to_get)(void) const;
+		void (MainWindow::*slot_to_toogle)(void);
+	};
+
+	const std::vector<BoolActionMetadata> bool_action_list = {
+		{"show-menubar", "", N_("Show Menubar"), "", &studio::MainWindow::toggle_show_menubar},
+		{"show-toolbar", "", N_("Show Toolbar"), "", &studio::MainWindow::toggle_show_toolbar},
+	};
+
+	for (const auto& item : bool_action_list) {
+		bool current_value = true;
+		auto action_name = item.name;
+		add_action_bool(action_name, sigc::mem_fun(*this, item.slot_to_toogle), current_value);
+
+		App::get_action_database()->add(ActionDatabase::Entry{"win." + action_name, item.label, "", item.icon, item.tooltip});
+	}
+
+	add_action_with_parameter("show-panel", Glib::Variant<Glib::ustring>().variant_type(), sigc::ptr_fun(on_show_panel_actionated));
 }
 
 void MainWindow::register_custom_widget_types()
