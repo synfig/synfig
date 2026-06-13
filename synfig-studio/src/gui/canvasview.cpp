@@ -1044,8 +1044,8 @@ CanvasView::create_top_toolbar()
 
 	// File buttons
 	if (App::show_file_toolbar) {
-		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/new")));
-		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/open")));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("app.new"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("app.open"));
 		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save")));
 		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save-as")));
 		top_toolbar->append(*create_action_toolbutton(App::ui_manager()->get_action("/toolbar-main/save-all")));

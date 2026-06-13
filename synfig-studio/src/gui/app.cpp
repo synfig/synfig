@@ -323,6 +323,52 @@ static ActionDatabase* action_database = nullptr;
 
 static const std::string accelerators_filename{"accelerators"};
 
+
+static const ActionDatabase::EntryList app_action_db =
+{
+	{"app.new",            N_("New"),            {"<Primary>n"}, "action_doc_new_icon", N_("Create a new document")},
+	{"app.open",           N_("Open"),           {"<Primary>o"}, "action_doc_open_icon", N_("Open an existing document")},
+	{"app.quit",           N_("Quit"),           {"<Primary>q"}, "application-exit", N_("Quit application")},
+	{"app.preferences",    N_("Preferences..."), {},             "application-preferences"},
+	{"app.help",           N_("Help"),           {"F1"},         "help-contents"},
+#if GTK_CHECK_VERSION(3, 20, 0)
+	{"app.help-shortcuts", N_("Keyboard Shortcuts"),         {}, ""},
+#endif
+	{"app.help-tutorials", N_("Tutorials"),                  {}, ""},
+	{"app.help-reference", N_("Reference"),                  {}, ""},
+	{"app.help-faq",       N_("Frequently Asked Questions"), {}, "help-faq"},
+	{"app.help-support",   N_("Get Support"),                {}, ""},
+	{"app.about",          N_("About Synfig Studio"),        {}, "help-about"},
+};
+
+static void
+init_app_actions()
+{
+	Glib::RefPtr<Gio::ActionMap> action_map = App::instance();
+	action_map->add_action("new", sigc::hide_return(sigc::ptr_fun(&App::new_instance)));
+	action_map->add_action("open", sigc::hide_return(sigc::bind(sigc::ptr_fun(&App::dialog_open), synfig::filesystem::Path{})));
+	action_map->add_action("quit", sigc::hide_return(sigc::ptr_fun(&App::quit)));
+	action_map->add_action("preferences", sigc::ptr_fun(&App::show_setup));
+	action_map->add_action("help", sigc::ptr_fun(App::dialog_help));
+#if GTK_CHECK_VERSION(3, 20, 0)
+	action_map->add_action("help-shortcuts", sigc::ptr_fun(App::window_shortcuts));
+#endif
+	action_map->add_action("help-tutorials", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://synfig.readthedocs.io/en/latest/tutorials.html")));
+	action_map->add_action("help-reference", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://wiki.synfig.org/Category:Reference")));
+	action_map->add_action("help-faq", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://wiki.synfig.org/FAQ")));
+	action_map->add_action("help-support", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://forums.synfig.org/")));
+	action_map->add_action("about", sigc::ptr_fun(App::dialog_about));
+
+	auto open_recent_slot = [](const Glib::VariantBase& v) {
+		Glib::Variant<Glib::ustring> filename = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(v);
+		App::open_recent(synfig::filesystem::Path(filename.get()));
+	};
+	action_map->add_action_with_parameter("open-recent-file", Glib::VARIANT_TYPE_STRING, open_recent_slot);
+
+	for (const auto& entry : app_action_db)
+		App::get_action_database()->add(entry);
+}
+
 static bool
 really_delete_widget(Gtk::Widget *widget)
 {
@@ -1331,6 +1377,8 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 	}
 }
 
+/* === M E T H O D S ======================================================= */
+
 const std::map<const char*, const char*>&
 App::get_default_accel_map()
 {
@@ -1611,6 +1659,7 @@ void App::init(const synfig::String& rootpath)
 		menu_plugins = Gio::Menu::create();
 
 		action_database = new ActionDatabase();
+		init_app_actions();
 
 		studio_init_cb.task(_("Init Dock Manager..."));
 		dock_manager=new studio::DockManager();
