@@ -591,10 +591,13 @@ void Layer_FreeFormDeform::prepare_mesh()
 		Point c_bl(min_x, min_y);
 		Point c_lm(min_x, (min_y + max_y) * 0.5);
 
-		// 4. Add the Fence and Outer Boundary to the mesh
+		// Save user point count before adding fence/outer anchors
+		const size_t original_pt_count = initial_pts.size();
+
+		// 5. Add fence and outer boundary anchors (they never move)
 		auto add_static_anchor = [&](const Point& p) {
 			initial_pts.push_back(p);
-			deformed_pts.push_back(p); // By keeping them identical, they NEVER move.
+			deformed_pts.push_back(p);
 		};
 
 		// Add Fence Anchors
@@ -623,16 +626,18 @@ void Layer_FreeFormDeform::prepare_mesh()
 
 		mesh->triangles = triangles;
 
-		// --- BYPASS MASK TO PREVENT CRASH ---
-		rendering::Contour::Handle mask(new rendering::Contour());
-		mask->antialias = false; 
-		mask->move_to(c_tl);
-		mask->line_to(c_tr);
-		mask->line_to(c_br);
-		mask->line_to(c_bl);
-		mask->close();
+		// Mask covers the full canvas so outer boundary triangles sample the original image
+		{
+			rendering::Contour::Handle mask(new rendering::Contour());
+			mask->antialias = false;
+			mask->move_to(c_tl);
+			mask->line_to(c_tr);
+			mask->line_to(c_br);
+			mask->line_to(c_bl);
+			mask->close();
+			this->mask = mask;
+		}
 
-		this->mask = mask;
 		this->mesh = mesh;
 		return;
 	}
@@ -677,7 +682,7 @@ void Layer_FreeFormDeform::prepare_mesh()
 					Real u = (Real)u_step / sub_steps;
 					Real v = (Real)v_step / sub_steps;
 
-					// === BILINEAR INTERPOLATION ===
+					// Bilinear interpolation of deformed control points
 					Point P00 = ctrl_points[y * cols + x];
 					Point P10 = ctrl_points[y * cols + (x + 1)];
 					Point P01 = ctrl_points[(y + 1) * cols + x];
@@ -692,9 +697,7 @@ void Layer_FreeFormDeform::prepare_mesh()
 					Point calculated_pos;
 
 					if (smoothness > 0.0) {
-						// === CATMULL-ROM SPLINE INTERPOLATION ===
-						// Tensor-product: interpolate 4 rows along u,
-						// then interpolate the 4 results along v.
+						// Catmull-Rom spline: interpolate along u then v
 
 						Real row_x[4], row_y[4];
 						for (int ky = -1; ky <= 2; ++ky) {
@@ -712,13 +715,13 @@ void Layer_FreeFormDeform::prepare_mesh()
 							catmull_rom_1d(row_y[0], row_y[1], row_y[2], row_y[3], v)
 						);
 
-						// Blend between bilinear and Catmull-Rom using smoothness
+						// Blend bilinear and Catmull-Rom by smoothness
 						calculated_pos = bilinear_pos * (1.0 - smoothness) + catmull_pos * smoothness;
 					} else {
 						calculated_pos = bilinear_pos;
 					}
 
-					// Original undeformed position (always bilinear — it's a uniform grid)
+					// Undeformed (source) position on the uniform grid
 					Point P00_orig = Point(start_x + x * cell_w,       start_y + y * cell_h);
 					Point P10_orig = Point(start_x + (x + 1) * cell_w, start_y + y * cell_h);
 					Point P01_orig = Point(start_x + x * cell_w,       start_y + (y + 1) * cell_h);
@@ -750,7 +753,7 @@ void Layer_FreeFormDeform::prepare_mesh()
 		}
 	}
 
-	// Create the mask contour using the SOURCE (undeformed) bounding rectangle.
+	// Mask = source bounding rect (safe fixed size, never grows with control point movement)
 	rendering::Contour::Handle mask(new rendering::Contour());
 	mask->antialias = true;
 	mask->move_to(tl);
