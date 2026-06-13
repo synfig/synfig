@@ -1356,6 +1356,8 @@ CanvasView::init_menus()
 	- viewmenu
 	*/
 
+	static bool first_time = true;
+
 	struct ActionMetadata {
 		std::string name;
 		std::string icon;
@@ -1437,15 +1439,24 @@ CanvasView::init_menus()
 	// Prevent call to preview window before preview option has created the preview window
 	action_group->get_action("dialog-flipbook")->set_sensitive(false);
 
+	// Plug-ins actions and menu
 	auto instance = get_instance().get();
-	for ( const auto& plugin : App::plugin_manager.plugins() )
-	{
-		std::string id = plugin.id;
-		action_group->add(
-			Gtk::Action::create(id, plugin.name.get()),
-			[instance, id](){instance->run_plugin(id, true);}
-		);
+	for (const auto& plugin : App::plugin_manager.plugins()) {
+		const std::string id = plugin.id;
+		const std::string action_name = "run-plugin-" + id;
+		if (first_time)
+			App::get_action_database()->add(ActionDatabase::Entry{"doc." + action_name, plugin.name.get(), "", "", plugin.description.get()});
+		action_group_->add_action(action_name, [instance, id](){ instance->run_plugin(id, true); });
 	}
+	auto run_plugin_vrb = [](const Glib::VariantBase& v, studio::Instance* instance) {
+		const Glib::Variant<Glib::ustring> id = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(v);
+		if (!id) {
+			synfig::error(_("Plugin ID must be a string"));
+		} else {
+			instance->run_plugin(id.get(), true);
+		}
+	};
+	action_group_->add_action_with_parameter("run-plugin", Glib::VARIANT_TYPE_STRING, sigc::bind(run_plugin_vrb, instance));
 
 	// Low-Res Quality Menu
 	for (int i : get_pixel_sizes()) {
@@ -1549,6 +1560,8 @@ CanvasView::init_menus()
 	}
 
 	insert_action_group("doc", action_group_);
+
+	first_time = false;
 }
 
 void

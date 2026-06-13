@@ -217,6 +217,19 @@ MainWindow::init_menus()
 		sigc::ptr_fun(MainWindow::edit_custom_workspace_list)
 	);
 
+	// plugins
+	if (App::menu_plugins) {
+		for (const auto& plugin : studio::App::plugin_manager.plugins())
+			App::menu_plugins->append(plugin.name.get(), strprintf("doc.run-plugin('%s')", plugin.id.c_str()));
+
+		auto menuitem_plugins = dynamic_cast<Gtk::MenuItem*>(App::ui_manager()->get_widget("/menubar-main/menu-plugins"));
+		auto menuitem_plugins2 = dynamic_cast<Gtk::MenuItem*>(App::ui_manager()->get_widget("/menu-main/menu-plugins"));
+		auto menu = Gtk::manage(new Gtk::Menu(App::menu_plugins));
+		menuitem_plugins->set_submenu(*menu);
+		auto menu2 = Gtk::manage(new Gtk::Menu(App::menu_plugins));
+		menuitem_plugins2->set_submenu(*menu2);
+	}
+
 	//animation tabs
 	for (int i = 1; i <= 8; ++i) {
 		const std::string tab = std::to_string(i);

@@ -301,6 +301,7 @@ String studio::App::preview_zoom_level = "fit";
 Gtk::MenuItem* studio::App::menuitem_layer;
 Gtk::MenuItem* studio::App::menuitem_layer2;
 Glib::RefPtr<Gio::Menu> studio::App::menu_keyframe;
+Glib::RefPtr<Gio::Menu> studio::App::menu_plugins;
 
 bool   studio::App::enable_mainwin_menubar = true;
 bool   studio::App::enable_mainwin_toolbar = true;
@@ -1209,16 +1210,6 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "	<menu action='menu-layer'>"
 "	</menu>"
 "	<menu action='menu-plugins'>"
-;
-
-	for ( const auto& plugin : studio::App::plugin_manager.plugins() ) {
-		// TODO: (Plugins) Arrange menu items into groups
-
-		DEFINE_ACTION(plugin.id, plugin.name.get())
-		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
-	}
-
-	ui_info_menu +=
 "	</menu>"
 "	<menu action='menu-window'>"
 "		<menu action='menu-workspace'>"
@@ -1617,6 +1608,7 @@ void App::init(const synfig::String& rootpath)
 
 		menuitem_layer = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menubar-main/menu-layer"));
 		menuitem_layer2 = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menu-main/menu-layer"));
+		menu_plugins = Gio::Menu::create();
 
 		action_database = new ActionDatabase();
 

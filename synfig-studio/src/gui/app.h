@@ -235,6 +235,7 @@ public:
 	static Gtk::MenuItem* menuitem_layer;
 	static Gtk::MenuItem* menuitem_layer2;
 	static Glib::RefPtr<Gio::Menu> menu_keyframe;
+	static Glib::RefPtr<Gio::Menu> menu_plugins;
 	static bool enable_mainwin_menubar;
 	static bool enable_mainwin_toolbar;
 	static synfig::String ui_language;
