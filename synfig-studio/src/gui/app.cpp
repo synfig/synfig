@@ -1067,10 +1067,6 @@ DEFINE_ACTION("properties",     _("Properties..."))
 DEFINE_ACTION("options",        _("Options..."))
 DEFINE_ACTION("resize-canvas",  _("Resize..."))
 
-// actions in Layer menu
-DEFINE_ACTION("amount-inc", _("Increase Layer Amount"))
-DEFINE_ACTION("amount-dec", _("Decrease Layer Amount"))
-
 // actions in Window menu
 DEFINE_ACTION("workspace-compositing", _("Compositing"))
 DEFINE_ACTION("workspace-default",     _("Default"))
@@ -1211,9 +1207,6 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "	<menu action='menu-toolbox'>"
 "	</menu>"
 "	<menu action='menu-layer'>"
-"		<menu action='menu-layer-new'></menu>"
-"		<menuitem action='amount-inc'/>"
-"		<menuitem action='amount-dec'/>"
 "	</menu>"
 "	<menu action='menu-plugins'>"
 ;
@@ -1421,8 +1414,6 @@ App::get_default_accel_map()
 		{"<Mod1>5",                 "<Actions>/canvasview/mask-widthpoint-position-ducks"},
 		{"<Control>parenleft" ,     "<Actions>/canvasview/decrease-low-res-pixel-size"},
 		{"<Control>parenright" ,    "<Actions>/canvasview/increase-low-res-pixel-size"},
-		{"<Control><Mod1>parenleft",  "<Actions>/action_group_layer_action_manager/amount-dec"},
-		{"<Control><Mod1>parenright", "<Actions>/action_group_layer_action_manager/amount-inc"},
 		{"equal",                   "<Actions>/canvasview/canvas-zoom-in"},
 		{"minus",                   "<Actions>/canvasview/canvas-zoom-out"},
 		{"0",                       "<Actions>/canvasview/canvas-zoom-fit"},

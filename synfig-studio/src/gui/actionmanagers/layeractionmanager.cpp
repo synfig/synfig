@@ -198,10 +198,10 @@ LayerActionManager::LayerActionManager()
 	action_paste_ = Gio::SimpleAction::create("paste");
 	action_paste_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::paste)));
 
-	action_amount_inc_ = Gio::SimpleAction::create("amount-inc");
+	action_amount_inc_ = Gio::SimpleAction::create("increase-amount");
 	action_amount_inc_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::amount_inc)));
 
-	action_amount_dec_ = Gio::SimpleAction::create("amount-dec");
+	action_amount_dec_ = Gio::SimpleAction::create("decrease-amount");
 	action_amount_dec_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::amount_dec)));
 
 	action_select_all_child_layers_ = Gio::SimpleAction::create("select-all-child-layers");
@@ -260,7 +260,7 @@ LayerActionManager::clear()
 {
 	// Remove all synfigapp actions and special actions for specific layer types
 	if (action_widget_) {
-		const auto preservable_actions = {"cut", "copy", "paste", "amount-inc", "amount-dec", "select-all-child-layers", "new"};
+		const auto preservable_actions = {"cut", "copy", "paste", "increase-amount", "decrease-amount", "select-all-child-layers", "new"};
 
 		if (action_group_) {
 			auto actions = action_group_->list_actions();
@@ -824,11 +824,11 @@ LayerActionManager::create_context_menu(const std::list<synfig::Layer::Handle> l
 			decrease_amount_label = _("Decrease Amount");
 		}
 
-		auto menu_item = Gio::MenuItem::create(increase_amount_label, group_name + "." + "amount-inc");
+		auto menu_item = Gio::MenuItem::create(increase_amount_label, group_name + "." + "increase-amount");
 		menu_item->set_icon(Gio::ThemedIcon::create("list-add" + symbolic_suffix));
 		context_menu->append_item(menu_item);
 
-		menu_item = Gio::MenuItem::create(decrease_amount_label, group_name + "." + "amount-dec");
+		menu_item = Gio::MenuItem::create(decrease_amount_label, group_name + "." + "decrease-amount");
 		menu_item->set_icon(Gio::ThemedIcon::create("list-remove" + symbolic_suffix));
 		context_menu->append_item(menu_item);
 	}

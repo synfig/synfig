@@ -121,6 +121,8 @@ Dock_Layers::Dock_Layers()
 			{"layer.cut", "edit-cut", "<Primary>x", _("Cut"), _("Cut layer(s) to clipboard")},
 			{"layer.copy", "edit-copy", "<Primary>c", _("Copy"), _("Copy layer(s) to clipboard")},
 			{"layer.paste", "edit-paste", "<Primary>v", _("Paste"), _("Paste layer(s) from clipboard")},
+			{"layer.increase-amount", "list-add", "<Primary><Mod1>parenright", _("Increase Layer Amount"), _("Increase the layer influence according the blending method")},
+			{"layer.decrease-amount", "list-delete", "<Primary><Mod1>parenleft", _("Decrease Layer Amount"), _("Decrease the layer influence according the blending method")},
 			{"doc.popup-layer-new", "list-add", {}, _("New Layer"), _("Pops up a menu to select a new layer")},
 		};
 		for (const auto& entry : action_list)
