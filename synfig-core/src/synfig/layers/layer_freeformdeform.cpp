@@ -750,14 +750,13 @@ void Layer_FreeFormDeform::prepare_mesh()
 		}
 	}
 
-	// Create bounding masking contour for the FFD based on boundary points
+	// Create the mask contour using the SOURCE (undeformed) bounding rectangle.
 	rendering::Contour::Handle mask(new rendering::Contour());
 	mask->antialias = true;
-	mask->move_to(ctrl_points[0]);
-	for (int x = 1; x < cols; ++x) mask->line_to(ctrl_points[x]);
-	for (int y = 1; y < rows; ++y) mask->line_to(ctrl_points[y * cols + (cols - 1)]);
-	for (int x = cols - 2; x >= 0; --x) mask->line_to(ctrl_points[(rows - 1) * cols + x]);
-	for (int y = rows - 2; y > 0; --y) mask->line_to(ctrl_points[y * cols]);
+	mask->move_to(tl);
+	mask->line_to(Point(br[0], tl[1]));
+	mask->line_to(br);
+	mask->line_to(Point(tl[0], br[1]));
 	mask->close();
 	this->mask = mask;
 
