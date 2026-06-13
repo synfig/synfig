@@ -44,7 +44,7 @@ public:
     synfig::ValueBase get_param(const synfig::String &param) const override;  
     synfig::Layer::Vocab get_param_vocab() const override;  
     synfig::String get_local_name() const override;
-      
+        
 private:  
     void sync_glyphs();    
     // void new_font(const synfig::String &family, int style, int weight);
@@ -63,6 +63,7 @@ private:
     synfig::rendering::Contour::ChunkList stored_chunks;  
     synfig::ValueBase param_scale;
     synfig::ValueBase param_rotation;
+    synfig::ValueBase param_offset;
   
 public:  
     Layer_GlyphShape();  
@@ -75,7 +76,9 @@ public:
     bool set_param(const synfig::String &param, const synfig::ValueBase &value) override;  
     synfig::ValueBase get_param(const synfig::String &param) const override;  
     Layer::Vocab get_param_vocab() const override;  
-  
+
+virtual Layer::Handle clone(etl::loose_handle<synfig::Canvas> canvas,  
+                            const synfig::GUID& deriv_guid = synfig::GUID()) const override;  
 protected:  
     void sync_vfunc() override;
 
