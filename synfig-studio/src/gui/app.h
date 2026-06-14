@@ -232,6 +232,9 @@ public:
 	static synfig::String navigator_renderer;
 	static synfig::String workarea_renderer;
 	static int number_of_threads;
+	static Gtk::MenuItem* menuitem_file_recent;
+	static Gtk::MenuItem* menuitem_file_recent2;
+	static Glib::RefPtr<Gio::Menu> menu_recent_files;
 	static Gtk::MenuItem* menuitem_layer;
 	static Gtk::MenuItem* menuitem_layer2;
 	static Glib::RefPtr<Gio::Menu> menu_keyframe;

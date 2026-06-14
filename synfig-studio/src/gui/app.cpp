@@ -298,8 +298,11 @@ float studio::App::preview_quality = 0.5f;
 int studio::App::preview_fps = 12;
 String studio::App::preview_zoom_level = "fit";
 
+Gtk::MenuItem* studio::App::menuitem_file_recent;
+Gtk::MenuItem* studio::App::menuitem_file_recent2;
 Gtk::MenuItem* studio::App::menuitem_layer;
 Gtk::MenuItem* studio::App::menuitem_layer2;
+Glib::RefPtr<Gio::Menu> studio::App::menu_recent_files;
 Glib::RefPtr<Gio::Menu> studio::App::menu_keyframe;
 Glib::RefPtr<Gio::Menu> studio::App::menu_plugins;
 Glib::RefPtr<Gio::Menu> studio::App::menu_window_custom_workspaces;
@@ -1614,6 +1617,11 @@ void App::init(const synfig::String& rootpath)
 		App::ui_manager_=studio::UIManager::create();
 		init_ui_manager();
 
+		menuitem_file_recent = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menubar-main/menu-file/menu-open-recent"));
+		menuitem_file_recent2 = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menu-main/menu-file/menu-open-recent"));
+		menu_recent_files = Gio::Menu::create();
+		App::menuitem_file_recent->set_submenu(*Gtk::manage(new Gtk::Menu(App::menu_recent_files)));
+		App::menuitem_file_recent2->set_submenu(*Gtk::manage(new Gtk::Menu(App::menu_recent_files)));
 		menuitem_layer = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menubar-main/menu-layer"));
 		menuitem_layer2 = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menu-main/menu-layer"));
 		menu_plugins = Gio::Menu::create();
