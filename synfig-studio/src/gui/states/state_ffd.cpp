@@ -40,6 +40,8 @@
 #include <gui/docks/dialog_tooloptions.h>
 #include <gui/docks/dock_toolbox.h>
 #include <gui/event_mouse.h>
+#include <gui/event_keyboard.h>
+#include <gdk/gdkkeysyms.h>
 #include <gui/localization.h>
 #include <gui/workarea.h>
 
@@ -115,6 +117,7 @@ class studio::StateFFD_Context : public sigc::trackable
 	Gtk::Button clear_button;
 
 	std::list<synfig::Point> polygon_point_list;
+	std::list<synfig::Point> redo_point_list;
 
 	void on_grid_x_changed();
 	void on_grid_y_changed();
@@ -137,6 +140,7 @@ public:
 	Smach::event_result event_stop_handler(const Smach::event& x);
 	Smach::event_result event_mouse_click_handler(const Smach::event& x);
 	Smach::event_result event_mouse_doubleclick_handler(const Smach::event& x);
+	Smach::event_result event_key_press_handler(const Smach::event& x);
 	Smach::event_result event_refresh_handler(const Smach::event& x);
 
 	void refresh_tool_options();
@@ -161,6 +165,7 @@ StateFFD::StateFFD() :
 	insert(event_def(EVENT_STOP,                    &StateFFD_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,                 &StateFFD_Context::event_refresh_handler));
 	insert(event_def(EVENT_REFRESH_DUCKS,           &StateFFD_Context::event_refresh_handler));
+	insert(event_def(EVENT_WORKAREA_KEY_DOWN,      &StateFFD_Context::event_key_press_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,   &StateFFD_Context::event_mouse_click_handler));
 	insert(event_def(EVENT_WORKAREA_MOUSE_2BUTTON_DOWN,  &StateFFD_Context::event_mouse_doubleclick_handler));
 }
@@ -605,8 +610,18 @@ StateFFD_Context::event_mouse_click_handler(const Smach::event& x)
 	{
 	case BUTTON_LEFT:
 		polygon_point_list.push_back(get_work_area()->snap_point_to_grid(event.pos));
+		redo_point_list.clear();
 		refresh_ducks();
 		return Smach::RESULT_ACCEPT;
+
+	case BUTTON_RIGHT:
+		if (!polygon_point_list.empty()) {
+			redo_point_list.push_back(polygon_point_list.back());
+			polygon_point_list.pop_back();
+			refresh_ducks();
+			return Smach::RESULT_ACCEPT;
+		}
+		return Smach::RESULT_OK;
 
 	default:
 		return Smach::RESULT_OK;
@@ -630,10 +645,53 @@ StateFFD_Context::event_mouse_doubleclick_handler(const Smach::event& x)
 	}
 }
 
+Smach::event_result
+StateFFD_Context::event_key_press_handler(const Smach::event& x)
+{
+	if (get_selected_ffd_layer()) return Smach::RESULT_OK;
+
+	const EventKeyboard& event(*reinterpret_cast<const EventKeyboard*>(&x));
+	switch(event.keyval)
+	{
+	case GDK_KEY_BackSpace:
+	case GDK_KEY_Delete:
+	case GDK_KEY_z:
+	case GDK_KEY_Z:
+		if ((event.keyval == GDK_KEY_z || event.keyval == GDK_KEY_Z) &&
+			!(event.modifier & Gdk::CONTROL_MASK)) {
+			return Smach::RESULT_OK;
+		}
+		if (!polygon_point_list.empty()) {
+			redo_point_list.push_back(polygon_point_list.back());
+			polygon_point_list.pop_back();
+			refresh_ducks();
+			return Smach::RESULT_ACCEPT;
+		}
+		return Smach::RESULT_OK;
+
+	case GDK_KEY_y:
+	case GDK_KEY_Y:
+		if (!(event.modifier & Gdk::CONTROL_MASK)) {
+			return Smach::RESULT_OK;
+		}
+		if (!redo_point_list.empty()) {
+			polygon_point_list.push_back(redo_point_list.back());
+			redo_point_list.pop_back();
+			refresh_ducks();
+			return Smach::RESULT_ACCEPT;
+		}
+		return Smach::RESULT_OK;
+
+	default:
+		return Smach::RESULT_OK;
+	}
+}
+
 void
 StateFFD_Context::reset()
 {
 	polygon_point_list.clear();
+	redo_point_list.clear();
 	refresh_ducks();
 }
 
@@ -932,43 +990,11 @@ StateFFD_Context::on_make_ffd_pressed()
 		}
 
 		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(pts_vb), get_canvas());
-		
-		synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
-		action_connect->set_param("canvas", get_canvas());
-		action_connect->set_param("canvas_interface", get_canvas_interface());
-		action_connect->set_param("dest", synfigapp::ValueDesc(layer, "grid_points"));
-		action_connect->set_param("src", dyn_list);
-		if (!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
-			group.cancel();
-			return;
-		}
-
-		synfigapp::Action::Handle action_src = synfigapp::Action::create("ValueDescSet");
-		action_src->set_param("canvas", get_canvas());
-		action_src->set_param("canvas_interface", get_canvas_interface());
-		action_src->set_param("value_desc", synfigapp::ValueDesc(layer, "source_points"));
-		action_src->set_param("new_value", synfig::ValueBase(pts_vb));
-		action_src->set_param("time", get_canvas_interface()->get_time());
-		if (!action_src->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_src)) {
-			group.cancel();
-			return;
-		}
+		layer->connect_dynamic_param("grid_points", dyn_list);
+		layer->set_param("source_points", synfig::ValueBase(pts_vb));
 	} else {
-		synfigapp::Action::Handle action_x = synfigapp::Action::create("ValueDescSet");
-		action_x->set_param("canvas", get_canvas());
-		action_x->set_param("canvas_interface", get_canvas_interface());
-		action_x->set_param("value_desc", synfigapp::ValueDesc(layer, "grid_size_x"));
-		action_x->set_param("new_value", synfig::ValueBase((int)create_grid_x_spin.get_value()));
-		action_x->set_param("time", get_canvas_interface()->get_time());
-		get_canvas_interface()->get_instance()->perform_action(action_x);
-
-		synfigapp::Action::Handle action_y = synfigapp::Action::create("ValueDescSet");
-		action_y->set_param("canvas", get_canvas());
-		action_y->set_param("canvas_interface", get_canvas_interface());
-		action_y->set_param("value_desc", synfigapp::ValueDesc(layer, "grid_size_y"));
-		action_y->set_param("new_value", synfig::ValueBase((int)create_grid_y_spin.get_value()));
-		action_y->set_param("time", get_canvas_interface()->get_time());
-		get_canvas_interface()->get_instance()->perform_action(action_y);
+		layer->set_param("grid_size_x", synfig::ValueBase((int)create_grid_x_spin.get_value()));
+		layer->set_param("grid_size_y", synfig::ValueBase((int)create_grid_y_spin.get_value()));
 	}
 
 	synfigapp::SelectionManager::LayerList layer_selection;
