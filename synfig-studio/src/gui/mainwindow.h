@@ -30,7 +30,6 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/actiongroup.h>
 #include <gtkmm/applicationwindow.h>
 
 #include <synfig/filesystem_path.h>
@@ -52,7 +51,6 @@ namespace studio {
 	private:
 		Gtk::Bin *bin_;
 		DockBook *main_dock_book_;
-		Glib::RefPtr<Gtk::ActionGroup> window_action_group;
 
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
