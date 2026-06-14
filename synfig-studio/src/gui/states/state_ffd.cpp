@@ -119,9 +119,13 @@ class studio::StateFFD_Context : public sigc::trackable
 	Gtk::SpinButton create_grid_y_spin;
 	Gtk::Button make_ffd_button;
 	Gtk::Button clear_button;
+	
+	Gtk::Button edit_mesh_button;
+	Gtk::Button update_ffd_button;
 
 	std::list<synfig::Point> polygon_point_list;
 	std::list<synfig::Point> redo_point_list;
+	bool editing_existing_mesh_;
 
 	void on_grid_x_changed();
 	void on_grid_y_changed();
@@ -130,8 +134,11 @@ class studio::StateFFD_Context : public sigc::trackable
 	void on_reset_pressed();
 
 	void on_make_ffd_pressed();
+	void on_edit_mesh_pressed();
+	void on_update_ffd_pressed();
 	void reset();
 	bool on_polygon_duck_change(const studio::Duck &duck, std::list<synfig::Point>::iterator iter);
+	void on_duck_right_click(std::list<synfig::Point>::iterator iter);
 	void refresh_ducks();
 
 	synfig::Layer::Handle get_selected_ffd_layer() const;
@@ -256,7 +263,22 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	create_grid_y_spin.set_hexpand(true);
 
 	make_ffd_button.set_label(_("Make FFD Layer"));
+	make_ffd_button.set_hexpand(true);
+	make_ffd_button.set_halign(Gtk::ALIGN_FILL);
+	
 	clear_button.set_label(_("Clear Points"));
+	clear_button.set_hexpand(true);
+	clear_button.set_halign(Gtk::ALIGN_FILL);
+	
+	edit_mesh_button.set_label(_("Edit Custom Mesh"));
+	edit_mesh_button.set_hexpand(true);
+	edit_mesh_button.set_halign(Gtk::ALIGN_FILL);
+	
+	update_ffd_button.set_label(_("Update Mesh"));
+	update_ffd_button.set_hexpand(true);
+	update_ffd_button.set_halign(Gtk::ALIGN_FILL);
+
+	editing_existing_mesh_ = false;
 
 	// Layout
 	options_table.attach(title_label,       0, 0, 2, 1);
@@ -281,6 +303,8 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	options_table.attach(create_grid_y_spin,  1, 9, 1, 1);
 	options_table.attach(make_ffd_button,     0, 10, 2, 1);
 	options_table.attach(clear_button,        0, 11, 2, 1);
+	options_table.attach(edit_mesh_button,    0, 12, 2, 1);
+	options_table.attach(update_ffd_button,   0, 13, 2, 1);
 
 	options_table.set_border_width(GAP*2);
 	options_table.set_row_spacing(GAP);
@@ -300,6 +324,10 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 		sigc::mem_fun(*this, &StateFFD_Context::on_reset_pressed));
 	make_ffd_button.signal_clicked().connect(
 		sigc::mem_fun(*this, &StateFFD_Context::on_make_ffd_pressed));
+	edit_mesh_button.signal_clicked().connect(
+		sigc::mem_fun(*this, &StateFFD_Context::on_edit_mesh_pressed));
+	update_ffd_button.signal_clicked().connect(
+		sigc::mem_fun(*this, &StateFFD_Context::on_update_ffd_pressed));
 	clear_button.signal_clicked().connect(
 		sigc::mem_fun(*this, &StateFFD_Context::reset));
 	mesh_mode_enum.signal_changed().connect(
@@ -420,39 +448,69 @@ StateFFD_Context::update_controls_from_layer()
 
 		updating_from_layer_ = false;
 
-		status_label.set_label(_("FFD layer selected"));
+		status_label.set_label(editing_existing_mesh_ ? _("Updating FFD Mesh") : _("FFD layer selected"));
 		
 		int mesh_mode = ffd->get_param("mesh_mode").get(int());
-		if (mesh_mode == 0) { // Grid
-			grid_x_label.show();
-			grid_x_spin.show();
-			grid_y_label.show();
-			grid_y_spin.show();
-			cull_threshold_label.hide();
-			cull_threshold_spin.hide();
-		} else { // Custom Mesh
+
+		if (editing_existing_mesh_) {
 			grid_x_label.hide();
 			grid_x_spin.hide();
 			grid_y_label.hide();
 			grid_y_spin.hide();
-			cull_threshold_label.show();
-			cull_threshold_spin.show();
+			cull_threshold_label.hide();
+			cull_threshold_spin.hide();
+			smoothness_label.hide();
+			smoothness_hscl.hide();
+			reset_button.hide();
+			edit_mesh_button.hide();
+
+			mesh_mode_label.hide();
+			mesh_mode_enum.hide();
+			create_grid_x_label.hide();
+			create_grid_x_spin.hide();
+			create_grid_y_label.hide();
+			create_grid_y_spin.hide();
+			make_ffd_button.hide();
+			
+			update_ffd_button.show();
+			clear_button.show();
+			get_work_area()->set_cursor(Gdk::CROSSHAIR);
+		} else {
+			if (mesh_mode == 0) { // Grid
+				grid_x_label.show();
+				grid_x_spin.show();
+				grid_y_label.show();
+				grid_y_spin.show();
+				cull_threshold_label.hide();
+				cull_threshold_spin.hide();
+				edit_mesh_button.hide();
+			} else { // Custom Mesh
+				grid_x_label.hide();
+				grid_x_spin.hide();
+				grid_y_label.hide();
+				grid_y_spin.hide();
+				cull_threshold_label.show();
+				cull_threshold_spin.show();
+				edit_mesh_button.show();
+			}
+
+			reset_button.show();
+			smoothness_label.show();
+			smoothness_hscl.show();
+
+			mesh_mode_label.hide();
+			mesh_mode_enum.hide();
+			create_grid_x_label.hide();
+			create_grid_x_spin.hide();
+			create_grid_y_label.hide();
+			create_grid_y_spin.hide();
+			make_ffd_button.hide();
+			update_ffd_button.hide();
+			clear_button.hide();
+			get_work_area()->set_cursor(Gdk::ARROW);
 		}
-
-		reset_button.show();
-		smoothness_label.show();
-		smoothness_hscl.show();
-
-		mesh_mode_label.hide();
-		mesh_mode_enum.hide();
-		create_grid_x_label.hide();
-		create_grid_x_spin.hide();
-		create_grid_y_label.hide();
-		create_grid_y_spin.hide();
-		make_ffd_button.hide();
-		clear_button.hide();
-		get_work_area()->set_cursor(Gdk::ARROW);
 	} else {
+		editing_existing_mesh_ = false;
 		status_label.set_label(_("Creation Settings"));
 		grid_x_label.hide();
 		grid_x_spin.hide();
@@ -461,6 +519,8 @@ StateFFD_Context::update_controls_from_layer()
 		smoothness_label.hide();
 		smoothness_hscl.hide();
 		reset_button.hide();
+		edit_mesh_button.hide();
+		update_ffd_button.hide();
 
 		mesh_mode_label.show();
 		mesh_mode_enum.show();
@@ -624,6 +684,13 @@ StateFFD_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 Smach::event_result
 StateFFD_Context::event_layer_selection_changed_handler(const Smach::event& /*x*/)
 {
+	if (editing_existing_mesh_) {
+		synfig::Layer::Handle ffd = get_selected_ffd_layer();
+		if (!ffd) {
+			editing_existing_mesh_ = false;
+			reset();
+		}
+	}
 	update_controls_from_layer();
 	get_work_area()->queue_draw();
 	get_canvas_view()->queue_rebuild_ducks();
@@ -652,7 +719,7 @@ StateFFD_Context::event_refresh_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateFFD_Context::event_mouse_click_handler(const Smach::event& x)
 {
-	if (get_selected_ffd_layer()) return Smach::RESULT_OK; // Ignore if editing
+	if (get_selected_ffd_layer() && !editing_existing_mesh_) return Smach::RESULT_OK; // Ignore if editing (normal mode)
 
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 	switch(event.button)
@@ -665,10 +732,26 @@ StateFFD_Context::event_mouse_click_handler(const Smach::event& x)
 
 	case BUTTON_RIGHT:
 		if (!polygon_point_list.empty()) {
-			redo_point_list.push_back(polygon_point_list.back());
-			polygon_point_list.pop_back();
-			refresh_ducks();
-			return Smach::RESULT_ACCEPT;
+			synfig::Real min_dist = 1e10;
+			auto closest_it = polygon_point_list.end();
+			for (auto it = polygon_point_list.begin(); it != polygon_point_list.end(); ++it) {
+				synfig::Real dist = (*it - event.pos).mag_squared();
+				if (dist < min_dist) {
+					min_dist = dist;
+					closest_it = it;
+				}
+			}
+
+			// Approx 10 pixels screen distance in canvas coordinates
+			synfig::Real pw = get_work_area()->get_pw();
+			synfig::Real threshold_sq = (10.0 * pw) * (10.0 * pw);
+
+			if (min_dist < threshold_sq && closest_it != polygon_point_list.end()) {
+				redo_point_list.push_back(*closest_it);
+				polygon_point_list.erase(closest_it);
+				refresh_ducks();
+				return Smach::RESULT_ACCEPT;
+			}
 		}
 		return Smach::RESULT_OK;
 
@@ -752,12 +835,20 @@ StateFFD_Context::on_polygon_duck_change(const studio::Duck &duck, std::list<syn
 }
 
 void
+StateFFD_Context::on_duck_right_click(std::list<synfig::Point>::iterator iter)
+{
+	redo_point_list.push_back(*iter);
+	polygon_point_list.erase(iter);
+	refresh_ducks();
+}
+
+void
 StateFFD_Context::refresh_ducks()
 {
-	if (polygon_point_list.empty()) return;
-
 	get_work_area()->clear_ducks();
 	get_work_area()->queue_draw();
+
+	if (polygon_point_list.empty()) return;
 
 	std::vector<synfig::Point> pts;
 	std::vector<etl::handle<WorkArea::Duck>> duck_list;
@@ -771,6 +862,9 @@ StateFFD_Context::refresh_ducks()
 	duck->signal_edited().connect(
 		sigc::bind(sigc::mem_fun(*this, &studio::StateFFD_Context::on_polygon_duck_change), iter)
 	);
+	duck->signal_user_click(2).connect(
+		sigc::bind(sigc::mem_fun(*this, &studio::StateFFD_Context::on_duck_right_click), iter)
+	);
 	get_work_area()->add_duck(duck);
 	duck_list.push_back(duck);
 	pts.push_back(*iter);
@@ -783,6 +877,9 @@ StateFFD_Context::refresh_ducks()
 		duck->set_type(Duck::TYPE_VERTEX);
 		duck->signal_edited().connect(
 			sigc::bind(sigc::mem_fun(*this, &studio::StateFFD_Context::on_polygon_duck_change), iter)
+		);
+		duck->signal_user_click(2).connect(
+			sigc::bind(sigc::mem_fun(*this, &studio::StateFFD_Context::on_duck_right_click), iter)
 		);
 		get_work_area()->add_duck(duck);
 		duck_list.push_back(duck);
@@ -1081,4 +1178,81 @@ StateFFD_Context::on_make_ffd_pressed()
 	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
 	
 	reset();
+}
+
+void
+StateFFD_Context::on_edit_mesh_pressed()
+{
+	synfig::Layer::Handle ffd = get_selected_ffd_layer();
+	if (!ffd) return;
+
+	editing_existing_mesh_ = true;
+
+	// Extract existing source points
+	polygon_point_list.clear();
+	const synfig::ValueBase& src_vb = ffd->get_param("source_points");
+	if (src_vb.get_type() == synfig::type_list) {
+		const synfig::ValueBase::List& list = src_vb.get_list();
+		for (const auto& item : list) {
+			if (item.can_get(synfig::Point())) {
+				polygon_point_list.push_back(item.get(synfig::Point()));
+			}
+		}
+	}
+
+	update_controls_from_layer();
+	refresh_ducks();
+	get_work_area()->queue_draw();
+}
+
+void
+StateFFD_Context::on_update_ffd_pressed()
+{
+	synfig::Layer::Handle ffd = get_selected_ffd_layer();
+	if (!ffd || !editing_existing_mesh_) return;
+
+	if (polygon_point_list.size() < 3) {
+		get_canvas_view()->get_ui_interface()->error(_("Need at least 3 points to update Custom Mesh FFD."));
+		return;
+	}
+
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(), _("Update FFD Mesh"));
+
+	std::vector<synfig::ValueBase> pts_vb;
+	for (auto& p : polygon_point_list) {
+		// Note: We assume points are in the same local space they were extracted from.
+		pts_vb.push_back(p);
+	}
+
+	synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(pts_vb), get_canvas());
+
+	synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
+	action_connect->set_param("canvas", get_canvas());
+	action_connect->set_param("canvas_interface", get_canvas_interface());
+	action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "grid_points"));
+	action_connect->set_param("src", dyn_list);
+
+	if(!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
+		group.cancel();
+		return;
+	}
+
+	synfigapp::Action::Handle action_src = synfigapp::Action::create("LayerParamSet");
+	action_src->set_param("canvas", get_canvas());
+	action_src->set_param("canvas_interface", get_canvas_interface());
+	action_src->set_param("layer", ffd);
+	action_src->set_param("param", synfig::String("source_points"));
+	action_src->set_param("new_value", synfig::ValueBase(pts_vb));
+
+	if(!action_src->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_src)) {
+		group.cancel();
+		return;
+	}
+
+	editing_existing_mesh_ = false;
+	reset(); // clears polygon_point_list
+
+	update_controls_from_layer();
+	get_canvas_view()->queue_rebuild_ducks();
+	get_work_area()->queue_render();
 }
