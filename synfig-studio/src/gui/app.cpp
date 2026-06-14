@@ -1297,15 +1297,6 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 "		<menuitem action='seek-next-second'/>"
 "		<menuitem action='seek-begin'/>"
 "		<menuitem action='seek-end'/>"
-"		<menu action='switch-to-tab-1' />"
-"		<menu action='switch-to-tab-2' />"
-"		<menu action='switch-to-tab-3' />"
-"		<menu action='switch-to-tab-4' />"
-"		<menu action='switch-to-tab-5' />"
-"		<menu action='switch-to-tab-6' />"
-"		<menu action='switch-to-tab-7' />"
-"		<menu action='switch-to-tab-8' />"
-"		<menu action='switch-to-rightmost-tab' />"
 "	</menu>";
 
 	hidden_ui_info_menu +=
