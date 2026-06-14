@@ -302,6 +302,9 @@ Gtk::MenuItem* studio::App::menuitem_layer;
 Gtk::MenuItem* studio::App::menuitem_layer2;
 Glib::RefPtr<Gio::Menu> studio::App::menu_keyframe;
 Glib::RefPtr<Gio::Menu> studio::App::menu_plugins;
+Glib::RefPtr<Gio::Menu> studio::App::menu_window_custom_workspaces;
+Glib::RefPtr<Gio::Menu> studio::App::menu_window_docks;
+Glib::RefPtr<Gio::Menu> studio::App::menu_window_canvases;
 
 bool   studio::App::enable_mainwin_menubar = true;
 bool   studio::App::enable_mainwin_toolbar = true;
@@ -999,8 +1002,6 @@ init_ui_manager()
 
 	menus_action_group->add( Gtk::Action::create("menu-window",          _("_Window")));
 
-	menus_action_group->add( Gtk::Action::create("menu-workspace",       _("Work_space")));
-
 	menus_action_group->add( Gtk::Action::create("menu-help",            _("_Help")));
 
 	menus_action_group->add(Gtk::Action::create("menu-keyframe",          _("Keyframe")));
@@ -1152,12 +1153,6 @@ DEFINE_ACTION("about",          Gtk::StockID("synfig-about"))
 // actions: Keyframe
 DEFINE_ACTION("keyframe-properties", _("Properties"))
 
-// actions: move to tab
-for (int i = 1; i <= 8; ++i) {
-	const std::string tab = std::to_string(i);
-	DEFINE_ACTION("switch-to-tab-" + tab, strprintf(_("Switch to Tab %i"), i))
-}
-DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 
 //Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
 	Glib::ustring ui_info_menu =
@@ -1258,32 +1253,6 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "	<menu action='menu-plugins'>"
 "	</menu>"
 "	<menu action='menu-window'>"
-"		<menu action='menu-workspace'>"
-"			<menuitem action='workspace-default' />"
-"			<menuitem action='workspace-compositing' />"
-"			<menuitem action='workspace-animating' />"
-"		</menu>"
-"		<separator />"
-"		<menuitem action='dialog-flipbook'/>"
-"		<menuitem action='panel-toolbox' />"
-"		<menuitem action='panel-tool_options' />"
-"		<menuitem action='panel-history' />"
-"		<menuitem action='panel-canvases' />"
-"		<menuitem action='panel-keyframes' />"
-"		<menuitem action='panel-layers' />"
-"		<menuitem action='panel-params' />"
-"		<menuitem action='panel-meta_data' />"
-"		<menuitem action='panel-children' />"
-"		<menuitem action='panel-info' />"
-"		<menuitem action='panel-navigator' />"
-"		<menuitem action='panel-timetrack-old' />"
-"		<menuitem action='panel-timetrack' />"
-"		<menuitem action='panel-curves' />"
-"		<menuitem action='panel-groups' />"
-"		<menuitem action='panel-pal_edit' />"
-"		<menuitem action='panel-soundwave' />"
-"		<separator />"
-// opened documents will be listed here below the above separator.
 "	</menu>"
 "	<menu action='menu-help'>"
 "		<menuitem action='help'/>"
@@ -1428,15 +1397,6 @@ App::get_default_accel_map()
 		{"<Control>n",              "<Actions>/mainwindow/new"},
 		{"<Control>o",              "<Actions>/mainwindow/open"},
 		{"<Control>e",              "<Actions>/mainwindow/save-all"},
-		{"<Primary>1",              "<Actions>/mainwindow/switch-to-tab-1"},
-		{"<Primary>2",              "<Actions>/mainwindow/switch-to-tab-2"},
-		{"<Primary>3",              "<Actions>/mainwindow/switch-to-tab-3"},
-		{"<Primary>4",              "<Actions>/mainwindow/switch-to-tab-4"},
-		{"<Primary>5",              "<Actions>/mainwindow/switch-to-tab-5"},
-		{"<Primary>6",              "<Actions>/mainwindow/switch-to-tab-6"},
-		{"<Primary>7",              "<Actions>/mainwindow/switch-to-tab-7"},
-		{"<Primary>8",              "<Actions>/mainwindow/switch-to-tab-8"},
-		{"<Primary>9",              "<Actions>/mainwindow/switch-to-rightmost-tab"},
 		{"<Control>s",              "<Actions>/canvasview/save"},
 		{"<Control><Shift>s",       "<Actions>/canvasview/save-as"},
 		{"<Control>grave",          "<Actions>/canvasview/toggle-low-res"},

@@ -97,11 +97,23 @@ on_show_panel_actionated(const Glib::VariantBase& v)
 		synfig::warning(_("Action show-panel: panel name should be a string"));
 }
 
+static void
+on_set_workspace_actionated(const Glib::VariantBase& v)
+{
+	if (!App::main_window)
+		return;
+
+	const auto workspace_name_vrt = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(v);
+	if (workspace_name_vrt)
+		App::main_window->set_workspace_from_name(workspace_name_vrt.get());
+	else
+		synfig::warning(_("Action show-panel: panel name should be a string"));
+}
+
 /* === M E T H O D S ======================================================= */
 
 MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
-	: Gtk::ApplicationWindow(application),
-	  save_workspace_merge_id(0), custom_workspaces_merge_id(0)
+	: Gtk::ApplicationWindow(application)
 {
 	register_custom_widget_types();
 
@@ -214,24 +226,6 @@ MainWindow::init_menus()
 	toggle_toolbar->set_active(App::enable_mainwin_toolbar);
 	action_group->add(toggle_toolbar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_toolbar));
 	
-	// pre defined workspace (window ui layout)
-	action_group->add( Gtk::Action::create("workspace-compositing", _("Compositing")),
-		sigc::ptr_fun(MainWindow::set_workspace_compositing)
-	);
-	action_group->add( Gtk::Action::create("workspace-animating", _("Animating")),
-		sigc::ptr_fun(MainWindow::set_workspace_animating)
-	);
-	action_group->add( Gtk::Action::create("workspace-default", _("Default")),
-		sigc::ptr_fun(MainWindow::set_workspace_default)
-	);
-	action_group->add( Gtk::Action::create_with_icon_name("save-workspace", "action_doc_saveas_icon", _("Save workspace..."), _("Save workspace...")),
-		sigc::mem_fun(*this, &MainWindow::save_custom_workspace)
-	);
-
-	action_group->add( Gtk::Action::create("edit-workspacelist", _("Edit workspaces...")),
-		sigc::ptr_fun(MainWindow::edit_custom_workspace_list)
-	);
-
 	// plugins
 	if (App::menu_plugins) {
 		for (const auto& plugin : studio::App::plugin_manager.plugins())
@@ -290,7 +284,29 @@ MainWindow::init_menus()
 
 	App::ui_manager()->insert_action_group(action_group);
 
-	add_custom_workspace_menu_item_handlers();
+	// Workspace menu
+	auto menu_window = Gio::Menu::create();
+	auto menu_window_workspaces = Gio::Menu::create();
+	App::menu_window_custom_workspaces = Gio::Menu::create();
+	App::menu_window_docks = Gio::Menu::create();
+	App::menu_window_canvases = Gio::Menu::create();
+	auto menu_window_default_workspaces = Gio::Menu::create();
+	menu_window_default_workspaces->append(_("Default"), "win.workspace-default");
+	menu_window_default_workspaces->append(_("Compositing"), "win.workspace-compositing");
+	menu_window_default_workspaces->append(_("Animating"), "win.workspace-animating");
+	menu_window_workspaces->append_section(menu_window_default_workspaces);
+	menu_window_workspaces->append_section(App::menu_window_custom_workspaces);
+	auto menu_window_workspaces_actions = Gio::Menu::create();
+	menu_window_workspaces_actions->append(_("Save workspace..."), "win.save-workspace");
+	menu_window_workspaces_actions->append(_("Edit workspaces..."), "win.edit-workspacelist");
+	menu_window_workspaces->append_section(menu_window_workspaces_actions);
+	menu_window->append_submenu(_("Workspace"), menu_window_workspaces);
+	menu_window->append_section(App::menu_window_docks);
+	menu_window->append_section(App::menu_window_canvases);
+	auto menuitem_window = dynamic_cast<Gtk::MenuItem*>(App::ui_manager()->get_widget("/menubar-main/menu-window"));
+	menuitem_window->set_submenu(*Gtk::manage(new Gtk::Menu(menu_window)));
+	auto menuitem_window2 = dynamic_cast<Gtk::MenuItem*>(App::ui_manager()->get_widget("/menu-main/menu-window"));
+	menuitem_window2->set_submenu(*Gtk::manage(new Gtk::Menu(menu_window)));
 }
 
 void
@@ -360,6 +376,7 @@ MainWindow::init_actions()
 	}
 
 	add_action_with_parameter("show-panel", Glib::Variant<Glib::ustring>().variant_type(), sigc::ptr_fun(on_show_panel_actionated));
+	add_action_with_parameter("set-workspace", Glib::Variant<Glib::ustring>().variant_type(), sigc::ptr_fun(on_set_workspace_actionated));
 }
 
 void MainWindow::register_custom_widget_types()
@@ -399,31 +416,6 @@ MainWindow::save_all()
 {
 	for (auto& instance : App::instance_list)
 		instance->save();
-}
-
-void MainWindow::add_custom_workspace_menu_item_handlers()
-{
-	std::string ui_info_menu =
-			"<menu action='menu-window'>"
-			"	<menu action='menu-workspace'>"
-			"	    <separator name='sep-window2'/>"
-			"		<menuitem action='save-workspace' />"
-			"		<menuitem action='edit-workspacelist' />"
-			"	</menu>"
-			"</menu>";
-
-	std::string ui_info =
-			"<ui>"
-			"  <popup name='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
-			"  <menubar name='menubar-main' action='menubar-main'>" + ui_info_menu + "</menubar>"
-			"</ui>";
-
-	save_workspace_merge_id = App::ui_manager()->add_ui_from_string(ui_info);
-}
-
-void MainWindow::remove_custom_workspace_menu_item_handlers()
-{
-	App::ui_manager()->remove_ui(save_workspace_merge_id);
 }
 
 const std::vector<std::string>
@@ -772,96 +764,80 @@ MainWindow::edit_custom_workspace_list()
 void
 MainWindow::on_custom_workspaces_changed()
 {
-	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow-customworkspaces");
+	App::menu_window_custom_workspaces->remove_all();
+	auto workspace_group = Gio::SimpleActionGroup::create();
 
 	std::vector<std::string> workspaces = get_workspaces();
 
-	std::string menu_items;
 	unsigned int num_custom_workspaces = 0;
-	for (auto it = workspaces.cbegin(); it != workspaces.cend(); ++it, ++num_custom_workspaces) {
-		std::string raw = *it;
-		std::string quoted = escape_underline(raw);
+	for (const auto& workspace_name : workspaces) {
+		const std::string action_name = synfig::strprintf("custom-workspace-%d", num_custom_workspaces);
 
-		std::string action_name = synfig::strprintf("custom-workspace-%d", num_custom_workspaces);
-		menu_items += "<menuitem action='" + action_name +"' />";
+		workspace_group->add_action(action_name, sigc::bind(sigc::ptr_fun(&MainWindow::set_workspace_from_name), workspace_name));
+		App::menu_window_custom_workspaces->append(workspace_name, "workspace." + action_name);
 
-		action_group->add( Gtk::Action::create(action_name, quoted),
-			sigc::bind(sigc::ptr_fun(&MainWindow::set_workspace_from_name), workspaces[num_custom_workspaces])
-		);
+		++num_custom_workspaces;
 	}
-	if (num_custom_workspaces > 0)
-		menu_items = "<separator name='sep-window1' />" + menu_items;
-
-	remove_custom_workspace_menu_item_handlers();
-	if (custom_workspaces_merge_id)
-		App::ui_manager()->remove_ui(custom_workspaces_merge_id);
-
-	std::string ui_info =
-		"<menu action='menu-window'><menu action='menu-workspace'>"
-	  + menu_items
-	  + "</menu></menu>";
-	std::string ui_info_popup =
-		"<popup action='menu-main'>" + ui_info + "</popup>";
-	std::string ui_info_menubar =
-		"<menubar action='menubar-main'>" + ui_info + "</menubar>";
 
 	// remove group if exists
-	typedef std::vector< Glib::RefPtr<Gtk::ActionGroup> > ActionGroupList;
-	ActionGroupList groups = App::ui_manager()->get_action_groups();
-	for(ActionGroupList::const_iterator it = groups.begin(); it != groups.end(); ++it)
-		if ((*it)->get_name() == action_group->get_name()) {
-			App::ui_manager()->remove_action_group(*it);
-			break;
-		}
-	groups.clear();
-	App::ui_manager()->ensure_update();
-
-	App::ui_manager()->insert_action_group(action_group);
-	custom_workspaces_merge_id = App::ui_manager()->add_ui_from_string("<ui>" + ui_info_popup + ui_info_menubar + "</ui>");
-
-	add_custom_workspace_menu_item_handlers();
+	remove_action_group("workspace");
+	insert_action_group("workspace", workspace_group);
 }
 
 void
 MainWindow::on_dockable_registered(Dockable* dockable)
 {
-	std::string raw = dockable->get_local_name();
-	std::string quoted = escape_underline(raw);
+	const std::string local_name = dockable->get_local_name();
+	const std::string escaped_local_name = escape_underline(local_name);
 
-	window_action_group->add( Gtk::Action::create("panel-" + dockable->get_name(), quoted),
-		sigc::mem_fun(*dockable, &Dockable::present)
-	);
+	// Action created to help add shortcuts to it
+	add_action("panel-"+dockable->get_name(), sigc::mem_fun(*dockable, &Dockable::present));
+	App::get_action_database()->add({"win.panel-"+dockable->get_name(), strprintf(_("Panel %s"), escaped_local_name.c_str()), ""});
 
-	const std::string ui_info =
-		"<menu action='menu-window'>"
-	    "<menuitem action='panel-" + dockable->get_name() + "' />"
-	    "</menu>";
-	const std::string ui_info_popup =
-		"<ui><popup action='menu-main'>" + ui_info + "</popup></ui>";
-	const std::string ui_info_menubar =
-		"<ui><menubar action='menubar-main'>" + ui_info + "</menubar></ui>";
+	const bool is_canvas_view = dynamic_cast<CanvasView*>(dockable);
+	const std::string detailed_action_name = "win.show-panel('" + dockable->get_name() + "')";
 
-	Gtk::UIManager::ui_merge_id merge_id_popup = App::ui_manager()->add_ui_from_string(ui_info_popup);
-	Gtk::UIManager::ui_merge_id merge_id_menubar = App::ui_manager()->add_ui_from_string(ui_info_menubar);
+	if (is_canvas_view) {
+		App::menu_window_canvases->append(escaped_local_name, detailed_action_name);
+	} else {
+		// Sort docks by local name
+		const int max_items = App::menu_window_docks->get_n_items();
+		bool inserted = false;
+		for (int i = 0; i < max_items; ++i) {
+			const auto attribute = App::menu_window_docks->get_item_attribute(i, Gio::MENU_ATTRIBUTE_LABEL, Glib::VARIANT_TYPE_STRING);
+			const auto label = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(attribute).get();
+			if (label.compare(escaped_local_name) > 0) {
+				App::menu_window_docks->insert(i, escaped_local_name, detailed_action_name);
+				inserted = true;
+				break;
+			}
+		}
 
-	// record CanvasView toolbar and popup id's
-	CanvasView *canvas_view = dynamic_cast<CanvasView*>(dockable);
-	if(canvas_view)
-	{
-		canvas_view->set_popup_id(merge_id_popup);
-		canvas_view->set_toolbar_id(merge_id_menubar);
+		if (!inserted)
+			App::menu_window_docks->append(escaped_local_name, detailed_action_name);
 	}
 }
 
 void
 MainWindow::on_dockable_unregistered(Dockable* dockable)
 {
-	// remove the document from the menus
-	CanvasView *canvas_view = dynamic_cast<CanvasView*>(dockable);
-	if(canvas_view)
-	{
-		App::ui_manager()->remove_ui(canvas_view->get_popup_id());
-		App::ui_manager()->remove_ui(canvas_view->get_toolbar_id());
+	const std::string dock_action_name = "win.show-panel";
+	const bool is_canvas_view = dynamic_cast<CanvasView*>(dockable);
+
+	auto menu_section = is_canvas_view ? App::menu_window_canvases : App::menu_window_docks;
+	int i = menu_section->get_n_items();
+	while (--i >= 0) {
+		const auto attribute = menu_section->get_item_attribute(i, Gio::MENU_ATTRIBUTE_ACTION, Glib::VARIANT_TYPE_STRING);
+		const auto action_name = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(attribute).get();
+		if (action_name == dock_action_name) {
+			const auto attribute = menu_section->get_item_attribute(i, Gio::MENU_ATTRIBUTE_TARGET, Glib::VARIANT_TYPE_STRING);
+			const auto target_name = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(attribute).get();
+			if (target_name == dockable->get_name()) {
+				menu_section->remove(i);
+				// TODO: remove action?
+				break;
+			}
+		}
 	}
 }
 /* === E N T R Y P O I N T ================================================= */
