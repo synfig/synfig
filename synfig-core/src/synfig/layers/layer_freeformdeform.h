@@ -23,6 +23,7 @@ private:
 
 	ValueBase param_source_points;
 	ValueBase param_mesh_mode; // 0 = Grid, 1 = Custom Mesh
+	ValueBase param_cull_threshold;
 
 	bool needs_reset_;
 

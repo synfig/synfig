@@ -96,6 +96,10 @@ class studio::StateFFD_Context : public sigc::trackable
 	Glib::RefPtr<Gtk::Adjustment> smoothness_adj;
 	Gtk::Scale smoothness_hscl;
 
+	Gtk::Label cull_threshold_label;
+	Glib::RefPtr<Gtk::Adjustment> cull_threshold_adj;
+	Gtk::SpinButton cull_threshold_spin;
+
 	Gtk::Label status_label;
 
 	// Signal blocking flag
@@ -122,6 +126,7 @@ class studio::StateFFD_Context : public sigc::trackable
 	void on_grid_x_changed();
 	void on_grid_y_changed();
 	void on_smoothness_changed();
+	void on_cull_threshold_changed();
 	void on_reset_pressed();
 
 	void on_make_ffd_pressed();
@@ -188,6 +193,8 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	grid_y_spin(grid_y_adj, 1, 0),
 	smoothness_adj(Gtk::Adjustment::create(1.0, 0.0, 1.0, 0.01, 0.1)),
 	smoothness_hscl(smoothness_adj, Gtk::ORIENTATION_HORIZONTAL),
+	cull_threshold_adj(Gtk::Adjustment::create(0.0, 0.0, 1000.0, 0.01, 1.0)),
+	cull_threshold_spin(cull_threshold_adj, 0.01, 2),
 	reset_button(_("Reset Grid")),
 	updating_from_layer_(false)
 {
@@ -217,6 +224,11 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	smoothness_hscl.set_value_pos(Gtk::POS_LEFT);
 	smoothness_hscl.set_tooltip_text(_("0 = Bilinear (sharp), 1 = Catmull-Rom (smooth)"));
 	smoothness_hscl.set_hexpand(true);
+
+	cull_threshold_label.set_label(_("Cull Threshold:"));
+	cull_threshold_label.set_halign(Gtk::ALIGN_START);
+	cull_threshold_spin.set_tooltip_text(_("Removes triangles larger than this threshold (0 = disable)"));
+	cull_threshold_spin.set_hexpand(true);
 
 	// Status label
 	status_label.set_label(_("Select a Free-Form Deformation layer"));
@@ -256,17 +268,19 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	options_table.attach(grid_y_spin,       1, 3, 1, 1);
 	options_table.attach(smoothness_label,  0, 4, 1, 1);
 	options_table.attach(smoothness_hscl,   1, 4, 1, 1);
-	options_table.attach(reset_button,      0, 5, 2, 1);
+	options_table.attach(cull_threshold_label, 0, 5, 1, 1);
+	options_table.attach(cull_threshold_spin,  1, 5, 1, 1);
+	options_table.attach(reset_button,      0, 6, 2, 1);
 
 	// Creation UI
-	options_table.attach(mesh_mode_label,     0, 6, 1, 1);
-	options_table.attach(mesh_mode_enum,      1, 6, 1, 1);
-	options_table.attach(create_grid_x_label, 0, 7, 1, 1);
-	options_table.attach(create_grid_x_spin,  1, 7, 1, 1);
-	options_table.attach(create_grid_y_label, 0, 8, 1, 1);
-	options_table.attach(create_grid_y_spin,  1, 8, 1, 1);
-	options_table.attach(make_ffd_button,     0, 9, 2, 1);
-	options_table.attach(clear_button,        0, 10, 2, 1);
+	options_table.attach(mesh_mode_label,     0, 7, 1, 1);
+	options_table.attach(mesh_mode_enum,      1, 7, 1, 1);
+	options_table.attach(create_grid_x_label, 0, 8, 1, 1);
+	options_table.attach(create_grid_x_spin,  1, 8, 1, 1);
+	options_table.attach(create_grid_y_label, 0, 9, 1, 1);
+	options_table.attach(create_grid_y_spin,  1, 9, 1, 1);
+	options_table.attach(make_ffd_button,     0, 10, 2, 1);
+	options_table.attach(clear_button,        0, 11, 2, 1);
 
 	options_table.set_border_width(GAP*2);
 	options_table.set_row_spacing(GAP);
@@ -280,6 +294,8 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 		sigc::mem_fun(*this, &StateFFD_Context::on_grid_y_changed));
 	smoothness_hscl.signal_value_changed().connect(
 		sigc::mem_fun(*this, &StateFFD_Context::on_smoothness_changed));
+	cull_threshold_spin.signal_value_changed().connect(
+		sigc::mem_fun(*this, &StateFFD_Context::on_cull_threshold_changed));
 	reset_button.signal_clicked().connect(
 		sigc::mem_fun(*this, &StateFFD_Context::on_reset_pressed));
 	make_ffd_button.signal_clicked().connect(
@@ -325,7 +341,7 @@ StateFFD_Context::on_layer_param_changed(synfig::Layer::Handle layer, synfig::St
 {
 	synfig::Layer::Handle ffd = get_selected_ffd_layer();
 	if (ffd && layer == ffd) {
-		if (param_name == "grid_size_x" || param_name == "grid_size_y" || param_name == "smoothness" || param_name == "mesh_mode") {
+		if (param_name == "grid_size_x" || param_name == "grid_size_y" || param_name == "smoothness" || param_name == "mesh_mode" || param_name == "cull_threshold") {
 			update_controls_from_layer();
 		}
 	}
@@ -340,11 +356,15 @@ StateFFD_Context::on_mesh_mode_changed()
 		create_grid_x_spin.show();
 		create_grid_y_label.show();
 		create_grid_y_spin.show();
+		cull_threshold_label.hide();
+		cull_threshold_spin.hide();
 	} else {
 		create_grid_x_label.hide();
 		create_grid_x_spin.hide();
 		create_grid_y_label.hide();
 		create_grid_y_spin.hide();
+		cull_threshold_label.show();
+		cull_threshold_spin.show();
 	}
 	refresh_ducks();
 }
@@ -391,10 +411,12 @@ StateFFD_Context::update_controls_from_layer()
 		int gx = ffd->get_param("grid_size_x").get(int());
 		int gy = ffd->get_param("grid_size_y").get(int());
 		synfig::Real sm = ffd->get_param("smoothness").get(synfig::Real());
+		synfig::Real ct = ffd->get_param("cull_threshold").get(synfig::Real());
 
 		grid_x_adj->set_value(gx);
 		grid_y_adj->set_value(gy);
 		smoothness_hscl.set_value(sm);
+		cull_threshold_adj->set_value(ct);
 
 		updating_from_layer_ = false;
 
@@ -406,11 +428,15 @@ StateFFD_Context::update_controls_from_layer()
 			grid_x_spin.show();
 			grid_y_label.show();
 			grid_y_spin.show();
+			cull_threshold_label.hide();
+			cull_threshold_spin.hide();
 		} else { // Custom Mesh
 			grid_x_label.hide();
 			grid_x_spin.hide();
 			grid_y_label.hide();
 			grid_y_spin.hide();
+			cull_threshold_label.show();
+			cull_threshold_spin.show();
 		}
 
 		reset_button.show();
@@ -569,6 +595,25 @@ StateFFD_Context::on_smoothness_changed()
 	get_work_area()->queue_render();
 }
 
+void
+StateFFD_Context::on_cull_threshold_changed()
+{
+	if (updating_from_layer_) return;
+
+	// Update preview lines if in creation mode
+	if (!polygon_point_list.empty()) {
+		refresh_ducks();
+	}
+
+	synfig::Layer::Handle ffd = get_selected_ffd_layer();
+	if (!ffd) return;
+
+	synfig::Real val = cull_threshold_adj->get_value();
+	ffd->set_param("cull_threshold", val);
+	get_canvas_interface()->signal_layer_param_changed()(ffd, "cull_threshold");
+	get_work_area()->queue_render();
+}
+
 Smach::event_result
 StateFFD_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
@@ -596,7 +641,11 @@ StateFFD_Context::event_stop_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateFFD_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
-	refresh_ducks();
+	if (!polygon_point_list.empty()) {
+		refresh_ducks();
+	} else {
+		get_canvas_view()->queue_rebuild_ducks();
+	}
 	return Smach::RESULT_ACCEPT;
 }
 
@@ -705,10 +754,10 @@ StateFFD_Context::on_polygon_duck_change(const studio::Duck &duck, std::list<syn
 void
 StateFFD_Context::refresh_ducks()
 {
+	if (polygon_point_list.empty()) return;
+
 	get_work_area()->clear_ducks();
 	get_work_area()->queue_draw();
-
-	if (polygon_point_list.empty()) return;
 
 	std::vector<synfig::Point> pts;
 	std::vector<etl::handle<WorkArea::Duck>> duck_list;
@@ -743,6 +792,35 @@ StateFFD_Context::refresh_ducks()
 	// Draw triangulation if Custom Mesh mode
 	if (mesh_mode_enum.get_value() == 1 && duck_list.size() > 2) {
 		std::vector<rendering::Mesh::Triangle> tris = synfig::Layer_FreeFormDeform::triangulate(pts);
+
+		// Apply Cull Threshold to Preview Mesh
+		synfig::Real cull_threshold = cull_threshold_adj->get_value();
+		if (cull_threshold > 0.0) {
+			synfig::Real cull_sq = cull_threshold * cull_threshold;
+			std::vector<rendering::Mesh::Triangle> culled_tris;
+			for (const auto& tri : tris) {
+				synfig::Point a = pts[tri.vertices[0]];
+				synfig::Point b = pts[tri.vertices[1]];
+				synfig::Point c = pts[tri.vertices[2]];
+				
+				synfig::Real D = 2.0 * (a[0]*(b[1]-c[1]) + b[0]*(c[1]-a[1]) + c[0]*(a[1]-b[1]));
+				if (std::abs(D) > 1e-6) {
+					synfig::Real ux = ((a[0]*a[0] + a[1]*a[1]) * (b[1] - c[1]) + 
+							   (b[0]*b[0] + b[1]*b[1]) * (c[1] - a[1]) + 
+							   (c[0]*c[0] + c[1]*c[1]) * (a[1] - b[1])) / D;
+					synfig::Real uy = ((a[0]*a[0] + a[1]*a[1]) * (c[0] - b[0]) + 
+							   (b[0]*b[0] + b[1]*b[1]) * (a[0] - c[0]) + 
+							   (c[0]*c[0] + c[1]*c[1]) * (b[0] - a[0])) / D;
+					synfig::Point center(ux, uy);
+					if ((a - center).mag_squared() > cull_sq) {
+						continue; // Cull this preview triangle
+					}
+				}
+				culled_tris.push_back(tri);
+			}
+			tris = culled_tris;
+		}
+
 		for (const auto& tri : tris) {
 			etl::handle<WorkArea::Bezier> b1(new WorkArea::Bezier());
 			b1->p1 = b1->c1 = duck_list[tri.vertices[0]];
@@ -955,6 +1033,7 @@ StateFFD_Context::on_make_ffd_pressed()
 
 	int mode = mesh_mode_enum.get_value();
 	layer->set_param("mesh_mode", synfig::ValueBase(mode));
+	layer->set_param("cull_threshold", synfig::ValueBase(cull_threshold_adj->get_value()));
 
 	if (mode == 1) { // Custom Mesh
 		if (polygon_point_list.size() < 3) {

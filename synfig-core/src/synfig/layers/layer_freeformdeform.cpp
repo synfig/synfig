@@ -42,6 +42,7 @@ Layer_FreeFormDeform::Layer_FreeFormDeform():
 	param_source_tl(Point(-2.0, 2.0)),
 	param_source_br(Point(2.0, -2.0)),
 	param_mesh_mode(0), // 0 = Grid, 1 = Custom Mesh
+	param_cull_threshold(0.0), // 0 = disabled
 	needs_reset_(true)
 {
 	std::vector<ValueBase> grid_points;
@@ -97,6 +98,7 @@ Layer_FreeFormDeform::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE_PLUS(param_source_br, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_source_points, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_mesh_mode, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_cull_threshold, prepare_mesh());
 	return Layer_MeshTransform::set_param(param,value);
 }
 
@@ -111,6 +113,7 @@ Layer_FreeFormDeform::get_param(const String& param)const
 	EXPORT_VALUE(param_source_br);
 	EXPORT_VALUE(param_source_points);
 	EXPORT_VALUE(param_mesh_mode);
+	EXPORT_VALUE(param_cull_threshold);
 	
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -165,6 +168,11 @@ Layer_FreeFormDeform::get_param_vocab()const
 		.set_local_name(_("Mesh Mode"))
 		.set_description(_("0 = Grid, 1 = Custom Mesh"))
 		.hidden()
+	);
+
+	ret.push_back(ParamDesc("cull_threshold")
+		.set_local_name(_("Cull Threshold"))
+		.set_description(_("Threshold for removing long triangles (Alpha Shape)"))
 	);
 
 	return ret;
@@ -618,6 +626,61 @@ void Layer_FreeFormDeform::prepare_mesh()
 
 		// Triangulate
 		std::vector<rendering::Mesh::Triangle> triangles = triangulate(initial_pts);
+
+		// Apply Cull Threshold (Alpha Shape)
+		Real cull_threshold = param_cull_threshold.get(Real());
+		if (cull_threshold > 0.0) {
+			Real cull_sq = cull_threshold * cull_threshold;
+			std::vector<rendering::Mesh::Triangle> culled_triangles;
+			
+			for (const auto& tri : triangles) {
+				// Only check triangles formed entirely by user points
+				if (tri.vertices[0] < original_pt_count && 
+					tri.vertices[1] < original_pt_count && 
+					tri.vertices[2] < original_pt_count) {
+					
+					Point a = initial_pts[tri.vertices[0]];
+					Point b = initial_pts[tri.vertices[1]];
+					Point c = initial_pts[tri.vertices[2]];
+					
+					Real D = 2.0 * (a[0]*(b[1]-c[1]) + b[0]*(c[1]-a[1]) + c[0]*(a[1]-b[1]));
+					if (std::abs(D) > 1e-6) {
+						Real ux = ((a[0]*a[0] + a[1]*a[1]) * (b[1] - c[1]) + 
+								   (b[0]*b[0] + b[1]*b[1]) * (c[1] - a[1]) + 
+								   (c[0]*c[0] + c[1]*c[1]) * (a[1] - b[1])) / D;
+						Real uy = ((a[0]*a[0] + a[1]*a[1]) * (c[0] - b[0]) + 
+								   (b[0]*b[0] + b[1]*b[1]) * (a[0] - c[0]) + 
+								   (c[0]*c[0] + c[1]*c[1]) * (b[0] - a[0])) / D;
+						Point center(ux, uy);
+						Real r2 = (a - center).mag_squared();
+						
+						if (r2 > cull_sq) {
+							// FREEZE THIS TRIANGLE
+							// Instead of culling (which leaves a hole and causes clipping),
+							// we lock its vertices to their initial positions.
+							// We duplicate the vertices so we don't freeze adjacent valid triangles.
+							rendering::Mesh::Triangle frozen_tri;
+							frozen_tri.vertices[0] = deformed_pts.size();
+							deformed_pts.push_back(a);
+							initial_pts.push_back(a);
+							
+							frozen_tri.vertices[1] = deformed_pts.size();
+							deformed_pts.push_back(b);
+							initial_pts.push_back(b);
+							
+							frozen_tri.vertices[2] = deformed_pts.size();
+							deformed_pts.push_back(c);
+							initial_pts.push_back(c);
+							
+							culled_triangles.push_back(frozen_tri);
+							continue;
+						}
+					}
+				}
+				culled_triangles.push_back(tri);
+			}
+			triangles = culled_triangles;
+		}
 
 		// Add vertices
 		for (size_t i = 0; i < deformed_pts.size(); ++i) {

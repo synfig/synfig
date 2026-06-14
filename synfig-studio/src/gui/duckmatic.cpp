@@ -2581,6 +2581,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 				bool is_ffd = false;
 				int ffd_mode = 0;
 				int cols = 0, rows = 0;
+				synfig::Real ffd_cull_threshold = 0.0;
 				if (value_desc.parent_is_layer()) {
 					Layer::Handle layer = value_desc.get_layer();
 					if (layer && layer->get_name() == "free_form_deform" && value_desc.get_param_name() == "grid_points") {
@@ -2588,6 +2589,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 						ffd_mode = layer->get_param("mesh_mode").get(int());
 						cols = layer->get_param("grid_size_x").get(int());
 						rows = layer->get_param("grid_size_y").get(int());
+						ffd_cull_threshold = layer->get_param("cull_threshold").get(synfig::Real());
 					}
 				}
 
@@ -2668,6 +2670,31 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 						}
 						
 						std::vector<rendering::Mesh::Triangle> tris = synfig::Layer_FreeFormDeform::triangulate(pts);
+						
+						if (ffd_cull_threshold > 0.0) {
+							synfig::Real cull_sq = ffd_cull_threshold * ffd_cull_threshold;
+							std::vector<rendering::Mesh::Triangle> culled_tris;
+							for (const auto& tri : tris) {
+								synfig::Point a = pts[tri.vertices[0]];
+								synfig::Point b = pts[tri.vertices[1]];
+								synfig::Point c = pts[tri.vertices[2]];
+								synfig::Real D = 2.0 * (a[0]*(b[1]-c[1]) + b[0]*(c[1]-a[1]) + c[0]*(a[1]-b[1]));
+								if (std::abs(D) > 1e-6) {
+									synfig::Real ux = ((a[0]*a[0] + a[1]*a[1]) * (b[1] - c[1]) + 
+											   (b[0]*b[0] + b[1]*b[1]) * (c[1] - a[1]) + 
+											   (c[0]*c[0] + c[1]*c[1]) * (a[1] - b[1])) / D;
+									synfig::Real uy = ((a[0]*a[0] + a[1]*a[1]) * (c[0] - b[0]) + 
+											   (b[0]*b[0] + b[1]*b[1]) * (a[0] - c[0]) + 
+											   (c[0]*c[0] + c[1]*c[1]) * (b[0] - a[0])) / D;
+									if ((a - synfig::Point(ux, uy)).mag_squared() > cull_sq) {
+										continue;
+									}
+								}
+								culled_tris.push_back(tri);
+							}
+							tris = culled_tris;
+						}
+
 						for (const auto& tri : tris) {
 							auto add_tri_edge = [&](int i1, int i2) {
 								Bezier::Handle bezier_(new Bezier());
@@ -2876,6 +2903,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 				bool is_ffd = false;
 				int ffd_mode = 0;
 				int cols = 0, rows = 0;
+				synfig::Real ffd_cull_threshold = 0.0;
 				if (value_desc.parent_is_layer()) {
 					Layer::Handle layer = value_desc.get_layer();
 					if (layer && layer->get_name() == "free_form_deform" && value_desc.get_param_name() == "grid_points") {
@@ -2883,6 +2911,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 						ffd_mode = layer->get_param("mesh_mode").get(int());
 						cols = layer->get_param("grid_size_x").get(int());
 						rows = layer->get_param("grid_size_y").get(int());
+						ffd_cull_threshold = layer->get_param("cull_threshold").get(synfig::Real());
 					}
 				}
 
@@ -2976,6 +3005,31 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 						}
 						
 						std::vector<rendering::Mesh::Triangle> tris = synfig::Layer_FreeFormDeform::triangulate(pts);
+						
+						if (ffd_cull_threshold > 0.0) {
+							synfig::Real cull_sq = ffd_cull_threshold * ffd_cull_threshold;
+							std::vector<rendering::Mesh::Triangle> culled_tris;
+							for (const auto& tri : tris) {
+								synfig::Point a = pts[tri.vertices[0]];
+								synfig::Point b = pts[tri.vertices[1]];
+								synfig::Point c = pts[tri.vertices[2]];
+								synfig::Real D = 2.0 * (a[0]*(b[1]-c[1]) + b[0]*(c[1]-a[1]) + c[0]*(a[1]-b[1]));
+								if (std::abs(D) > 1e-6) {
+									synfig::Real ux = ((a[0]*a[0] + a[1]*a[1]) * (b[1] - c[1]) + 
+											   (b[0]*b[0] + b[1]*b[1]) * (c[1] - a[1]) + 
+											   (c[0]*c[0] + c[1]*c[1]) * (a[1] - b[1])) / D;
+									synfig::Real uy = ((a[0]*a[0] + a[1]*a[1]) * (c[0] - b[0]) + 
+											   (b[0]*b[0] + b[1]*b[1]) * (a[0] - c[0]) + 
+											   (c[0]*c[0] + c[1]*c[1]) * (b[0] - a[0])) / D;
+									if ((a - synfig::Point(ux, uy)).mag_squared() > cull_sq) {
+										continue;
+									}
+								}
+								culled_tris.push_back(tri);
+							}
+							tris = culled_tris;
+						}
+
 						for (const auto& tri : tris) {
 							auto add_tri_edge = [&](int i1, int i2) {
 								Bezier::Handle bezier_(new Bezier());
