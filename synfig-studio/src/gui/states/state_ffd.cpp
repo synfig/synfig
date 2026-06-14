@@ -457,10 +457,10 @@ StateFFD_Context::update_controls_from_layer()
 			grid_x_spin.hide();
 			grid_y_label.hide();
 			grid_y_spin.hide();
-			cull_threshold_label.hide();
-			cull_threshold_spin.hide();
-			smoothness_label.hide();
-			smoothness_hscl.hide();
+			cull_threshold_label.show();
+			cull_threshold_spin.show();
+			smoothness_label.show();
+			smoothness_hscl.show();
 			reset_button.hide();
 			edit_mesh_button.hide();
 

@@ -2708,7 +2708,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 						}
 					}
 				}
-				else if (!is_ffd)
+				else
 				{
 					if (value_node->get_loop() && first != -1 && first_duck != duck)
 					{
