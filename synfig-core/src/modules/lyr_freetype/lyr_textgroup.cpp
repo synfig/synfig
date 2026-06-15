@@ -69,17 +69,16 @@ Layer_GlyphShape::get_local_name() const
 void Layer_GlyphShape::set_glyph_chunks(const rendering::Contour::ChunkList& chunks)  
 {  
     stored_chunks = chunks;
-    clear();    
-    add(chunks);    
-    shape_contour().close();  
+    force_sync();
+    // clear();    
+    // add(chunks);    
+    // shape_contour().close();  
     
 }  
 
-void
-Layer_GlyphShape::set_wave_offset(const Vector& v)
+void Layer_GlyphShape::set_wave_offset(const Vector& v)
 {
-    wave_offset_ = v;
-    force_sync();
+   wave_offset_ = v;
 }
   
 void Layer_GlyphShape::sync_vfunc()  
@@ -227,22 +226,18 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
     	param_font = value;
     	sync_glyphs();
     	return true;
-	}   
-	if (param == "stagger_delay" && value.can_get(Time()))  
-	{  
-    	param_stagger_delay = value;  
-    	return true;  
-	}
-	if (param == "wave_amplitude" && value.can_get(Real()))
-    {
-        param_wave_amplitude = value;
-        return true;
-	}
-	if (param == "wave_period" && value.can_get(Time()))
-    {
-        param_wave_period = value;
-        return true;
-	}
+	} 
+
+	IMPORT_VALUE_PLUS(param_stagger_delay, {  
+    	changed();  
+    });  
+	IMPORT_VALUE_PLUS(param_wave_amplitude, {  
+    	changed();  
+	});  
+	IMPORT_VALUE_PLUS(param_wave_period, {  
+    	changed();  
+	});  
+
 	return Layer_PasteCanvas::set_param(param, value);
       
 } 
@@ -459,36 +454,50 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
     return task;  
 }
 
+void Layer_TextGroup::update_wave_offsets(Time time) const  
+{  
+    Canvas::Handle canvas = get_sub_canvas();  
+    if (!canvas) return;  
+  
+    Time stagger    = param_stagger_delay.get(Time());  
+    Real dilation   = get_time_dilation();  
+    Time toffset    = get_time_offset();  
+    Real wave_amp   = param_wave_amplitude.get(Real());  
+    Time wave_period = param_wave_period.get(Time());  
+  
+    int i = 0;  
+    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter, ++i) {  
+        Layer_GlyphShape* gl = dynamic_cast<Layer_GlyphShape*>(iter->get());  
+        if (!gl) continue;  
+  
+        Time glyph_time = time * dilation + toffset + Time(i * (double)stagger);  
+        Vector wave_off(0.0, 0.0);  
+        if (wave_amp != 0.0 && (double)wave_period != 0.0)  
+            wave_off[1] = wave_amp * std::sin(2.0 * M_PI * (double)glyph_time  
+                                              / (double)wave_period);  
+
+        gl->set_wave_offset(wave_off);  
+    }  
+}
+
 void Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) const  
 {  
     context.set_time(time);  
     Canvas::Handle canvas = get_sub_canvas();  
     if (!canvas) return;  
-  
-    Time stagger = param_stagger_delay.get(Time());  
-    Real time_dilation = get_time_dilation();  
-    Time time_offset   = get_time_offset();  
-    Real wave_amp = param_wave_amplitude.get(Real());  
-	Time wave_period    = param_wave_period.get(Time()); 
-	  
+    update_wave_offsets(time);
+    
+    Time stagger  = param_stagger_delay.get(Time());
+    Real dilation = get_time_dilation();
+    Time toffset  = get_time_offset(); 
+
     int i = 0;  
     for (auto iter = canvas->begin(); iter != canvas->end(); ++iter, ++i) {  
-        Time glyph_time = time * time_dilation + time_offset + Time(i * (double)stagger);  
+        Time glyph_time = time * dilation + toffset + Time(i * (double)stagger);  
 
-        Layer_GlyphShape* glyph_layer = dynamic_cast<Layer_GlyphShape*>(iter->get());  
-        if (glyph_layer) {  
-            Vector wave_off(0.0, 0.0); 
-            
-            if (wave_amp != 0.0 && (double)wave_period != 0.0) {  
-                wave_off[1] = wave_amp * std::sin(2.0 * M_PI * (double)glyph_time  
-                                                  / (double)wave_period);  
-            }  
-
-            glyph_layer->set_wave_offset(wave_off);  
-        }  
-  
-        (*iter)->set_time(context, glyph_time);  
-    }  
+		(*iter)->set_time(IndependentContext(canvas->begin()), glyph_time);  
+           
+	}  
 }
 
 Layer::Handle  
@@ -698,7 +707,11 @@ Layer_TextGroup::sync_glyphs()
 
     // TODO:
     // Current synchronization preserves glyph layers
-    // by index only.
+//  //using glyph descriptions/characters.
+//
+//  //This works for simple text edits but does not
+//  //provide stable identity for ligatures, glyph
+//  //substitutions, or complex-script shaping.
     //
     // Future implementation should use HarfBuzz
     // cluster information to maintain stable glyph

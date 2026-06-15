@@ -47,7 +47,8 @@ public:
     synfig::String get_local_name() const override;
             
 private:  
-    void sync_glyphs();    
+    void sync_glyphs();
+	void update_wave_offsets(synfig::Time time) const;    
     // void new_font(const synfig::String &family, int style, int weight);
 protected:
     void on_canvas_set() override;     
