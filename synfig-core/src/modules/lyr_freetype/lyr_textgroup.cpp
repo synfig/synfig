@@ -1,3 +1,7 @@
+#include "synfig/layer.h"
+#include "synfig/real.h"
+#include "synfig/value.h"
+#include "synfig/valuenodes/valuenode_angle.h"
 #ifdef USING_PCH  
 # include "pch.h"  
 #else  
@@ -48,6 +52,7 @@ Layer_GlyphShape::Layer_GlyphShape()
     : param_scale(ValueBase(Vector(1.0, 1.0)))
     , param_rotation(ValueBase(Angle::zero()))
     , param_offset(ValueBase(Vector(0.0, 0.0)))
+    , wave_offset_(0,0) 
 {
     SET_INTERPOLATION_DEFAULTS();
     SET_STATIC_DEFAULTS();
@@ -69,13 +74,20 @@ void Layer_GlyphShape::set_glyph_chunks(const rendering::Contour::ChunkList& chu
     shape_contour().close();  
     
 }  
+
+void
+Layer_GlyphShape::set_wave_offset(const Vector& v)
+{
+    wave_offset_ = v;
+    force_sync();
+}
   
 void Layer_GlyphShape::sync_vfunc()  
 {  
     clear();  
     if (stored_chunks.empty()) return;  
     rendering::Contour::ChunkList shifted = stored_chunks;
-	Vector off = param_offset.get(Vector());   
+	Vector off =param_offset.get(Vector())+ wave_offset_;   
 	if (off[0] != 0.0 || off[1] != 0.0) {  
         for (auto& chunk : shifted) {  
             chunk.p1  += off;  
@@ -84,14 +96,13 @@ void Layer_GlyphShape::sync_vfunc()
         }  
     }    
     add(shifted);  
-    shape_contour().close();  
+    // shape_contour().close();  
 }
 
 void
 Layer_TextGroup::on_canvas_set()
 {
     Layer_PasteCanvas::on_canvas_set();   
-    sync_glyphs();
 }
  
   
@@ -111,6 +122,8 @@ Layer_TextGroup::Layer_TextGroup()
     , param_font(ValueBase(std::string()))           
     , param_color(ValueBase(Color::black()))        
     , param_invert(ValueBase(false))
+    , param_wave_amplitude(ValueBase(Real(0.05)))
+    , param_wave_period(ValueBase(Time(1.0))) 
 {  
     SET_INTERPOLATION_DEFAULTS();  
     SET_STATIC_DEFAULTS();  
@@ -220,6 +233,16 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
     	param_stagger_delay = value;  
     	return true;  
 	}
+	if (param == "wave_amplitude" && value.can_get(Real()))
+    {
+        param_wave_amplitude = value;
+        return true;
+	}
+	if (param == "wave_period" && value.can_get(Time()))
+    {
+        param_wave_period = value;
+        return true;
+	}
 	return Layer_PasteCanvas::set_param(param, value);
       
 } 
@@ -250,6 +273,8 @@ Layer_TextGroup::get_param(const String& param) const
 	EXPORT_VALUE(param_invert);
 	EXPORT_VALUE(param_font);
 	EXPORT_VALUE(param_stagger_delay);
+	EXPORT_VALUE(param_wave_amplitude);
+	EXPORT_VALUE(param_wave_period); 
     EXPORT_NAME();  
     EXPORT_VERSION();  
     return Layer_PasteCanvas::get_param(param);  
@@ -373,7 +398,17 @@ Layer_TextGroup::get_param_vocab() const
 	);
 	ret.push_back(ParamDesc("stagger_delay")  
     	.set_local_name(_("Stagger Delay"))  
-    	.set_description(_("Time offset between consecutive glyph animations"))  
+    	.set_description(_("Time offset between consecutive glyph animations"))
+    	.set_hint("time")
+	);
+	ret.push_back(ParamDesc("wave_amplitude")  
+    	.set_local_name(_("Wave Amplitude"))  
+    	.set_description(_("Vertical amplitude of the wave effect"))  
+    	.set_is_distance()  
+	);  
+	ret.push_back(ParamDesc("wave_period")  
+    	.set_local_name(_("Wave Period"))  
+    	.set_description(_("Duration of one full wave cycle"))  
 	);
 	return ret;  
 }
@@ -393,6 +428,7 @@ Layer::Vocab Layer_GlyphShape::get_param_vocab() const
     ret.push_back(ParamDesc("offset")  
     	.set_local_name(_("Offset"))  
     	.set_description(_("Per-glyph position offset"))  
+    	.set_is_distance()
 	);
     return ret;  
 }
@@ -407,7 +443,7 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
   
     if (rotation != Angle::zero() || scale != Vector(1.0, 1.0))  
     {  
-        Vector pivot = param_offset.get(Vector());    
+        Vector pivot = param_offset.get(Vector())+ wave_offset_;    
           
         Matrix matrix = Matrix().set_translate(pivot)  
                       * Matrix().set_rotate(rotation)  
@@ -430,12 +466,27 @@ void Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) cons
     if (!canvas) return;  
   
     Time stagger = param_stagger_delay.get(Time());  
-    Real time_dilation = param_time_dilation.get(Real());  
-    Time time_offset   = param_time_offset.get(Time());  
-  
+    Real time_dilation = get_time_dilation();  
+    Time time_offset   = get_time_offset();  
+    Real wave_amp = param_wave_amplitude.get(Real());  
+	Time wave_period    = param_wave_period.get(Time()); 
+	  
     int i = 0;  
     for (auto iter = canvas->begin(); iter != canvas->end(); ++iter, ++i) {  
-        Time glyph_time = time * time_dilation + time_offset + Time(i * stagger);  
+        Time glyph_time = time * time_dilation + time_offset + Time(i * (double)stagger);  
+
+        Layer_GlyphShape* glyph_layer = dynamic_cast<Layer_GlyphShape*>(iter->get());  
+        if (glyph_layer) {  
+            Vector wave_off(0.0, 0.0); 
+            
+            if (wave_amp != 0.0 && (double)wave_period != 0.0) {  
+                wave_off[1] = wave_amp * std::sin(2.0 * M_PI * (double)glyph_time  
+                                                  / (double)wave_period);  
+            }  
+
+            glyph_layer->set_wave_offset(wave_off);  
+        }  
+  
         (*iter)->set_time(context, glyph_time);  
     }  
 }
@@ -549,7 +600,7 @@ Layer_TextGroup::sync_glyphs()
                     FT_OutlineGlyph og =  
                         reinterpret_cast<FT_OutlineGlyph>(ftglyph);  
                     Layer_Freetype::convert_outline_to_contours(og, outline);  
-                    Layer_Freetype::shift_contour_chunks(outline, offset);  
+                    // Layer_Freetype::shift_contour_chunks(outline, offset);  
   					
                     if (line_glyphs.empty() && cur_line.empty())  
                     {  
@@ -584,15 +635,14 @@ Layer_TextGroup::sync_glyphs()
     {  
         Vector shift;  
         shift[0] = -orient[0] * line_widths[i];  
-        shift[1] =  orient[1] * text_height_fu - initial_y  
-                  - Real(i) * face->height * vcompress;  
-  
+        shift[1] =  orient[1] * text_height_fu - initial_y; 
+                    
         for (auto& glyph : line_glyphs[i])  
         {  
         	Vector world_pos;  
         	world_pos[0] = (glyph.pen_offset[0] + shift[0]) * scale_x;  
         	world_pos[1] = (glyph.pen_offset[1] + shift[1]) * scale_y;    
-
+		    
             for (auto& chunk : glyph.outline)  
             {  
                 chunk.p1[0]  *= scale_x;  chunk.p1[1]  *= scale_y;  
@@ -636,7 +686,7 @@ Layer_TextGroup::sync_glyphs()
         	dynamic_cast<Layer_GlyphShape*>(layer_iter->get());  
     	if (glyph_layer) { 
 			glyph_layer->set_glyph_chunks(glyph.outline);
-			// glyph_layer->set_param("offset",ValueBase(glyph.pen_offset));
+			glyph_layer->set_param("offset",ValueBase(glyph.pen_offset));
         	  
         	(*layer_iter)->set_description(Glib::ustring(1, glyph.charcode));  
         	(*layer_iter)->set_param("color",  ValueBase(color));  

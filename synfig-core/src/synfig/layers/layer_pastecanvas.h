@@ -57,12 +57,7 @@ class Layer_PasteCanvas : public Layer_Composite, public Layer_NoDeform
 {
 public:
 	typedef etl::handle<Layer_PasteCanvas> Handle;
-
-	//! Parameter: (Real) Time dilation of the paste canvas layer
-	ValueBase param_time_dilation;
-	//! Parameter: (Time) Time offset of the paste canvas layer
-	ValueBase param_time_offset;
-	
+		
 private:
 	//! Parameter: (Origin) Position offset
 	ValueBase param_origin;
@@ -70,6 +65,10 @@ private:
 	ValueBase param_transformation;
 	//! Parameter: (Canvas::LooseHandle) The canvas parameter
 	Canvas::LooseHandle sub_canvas;
+	//! Parameter: (Real) Time dilation of the paste canvas layer
+	ValueBase param_time_dilation;
+	//! Parameter: (Time) Time offset of the paste canvas layer
+	ValueBase param_time_offset;
 	//! Parameter: (Real) The value to grow the children outline layers
 	ValueBase param_outline_grow;
 	//! Parameter: (bool) Value that avoid hit check to go depth into the children.

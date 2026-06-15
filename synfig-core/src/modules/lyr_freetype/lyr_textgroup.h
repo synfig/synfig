@@ -34,8 +34,9 @@ private:
     synfig::ValueBase param_font;
     synfig::ValueBase param_color;
     synfig::ValueBase param_invert;
-     
-  
+	synfig::ValueBase param_wave_amplitude;
+	synfig::ValueBase param_wave_period;
+
 public:  
     Layer_TextGroup();  
     ~Layer_TextGroup();  
@@ -44,7 +45,7 @@ public:
     synfig::ValueBase get_param(const synfig::String &param) const override;  
     synfig::Layer::Vocab get_param_vocab() const override;  
     synfig::String get_local_name() const override;
-        
+            
 private:  
     void sync_glyphs();    
     // void new_font(const synfig::String &family, int style, int weight);
@@ -64,20 +65,21 @@ private:
     synfig::ValueBase param_scale;
     synfig::ValueBase param_rotation;
     synfig::ValueBase param_offset;
-  
+	mutable synfig::Vector wave_offset_;  
+
 public:  
     Layer_GlyphShape();  
     ~Layer_GlyphShape();  
   
-    synfig::String get_local_name() const override;  
-  
-     
+    synfig::String get_local_name() const override; 
+        
     void set_glyph_chunks(const synfig::rendering::Contour::ChunkList& chunks);
     bool set_param(const synfig::String &param, const synfig::ValueBase &value) override;  
     synfig::ValueBase get_param(const synfig::String &param) const override;  
     Layer::Vocab get_param_vocab() const override;  
+    void set_wave_offset(const synfig::Vector& v);
 
-virtual Layer::Handle clone(etl::loose_handle<synfig::Canvas> canvas,  
+	virtual Layer::Handle clone(etl::loose_handle<synfig::Canvas> canvas,  
                             const synfig::GUID& deriv_guid = synfig::GUID()) const override;  
 protected:  
     void sync_vfunc() override;
