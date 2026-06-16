@@ -53,12 +53,16 @@ class ResolutionDial
 	Gtk::ToggleToolButton use_low_resolution;
 
 public:
-	ResolutionDial();
+	/**
+	 * @param action_prefix if empty, it doesn't use Gio::Actions. In this case, rely on the signal_*() methods
+	 */
+	ResolutionDial(const std::string& action_prefix);
 
 	void insert_to_toolbar(Gtk::Toolbar &toolbar, int index = -1);
 	void remove_from_toolbar(Gtk::Toolbar &toolbar);
 
 	void update_lowres(bool flag);
+
 	Glib::SignalProxy0<void> signal_increase_resolution()  { return increase_resolution.signal_clicked(); }
 	Glib::SignalProxy0<void> signal_decrease_resolution()  { return decrease_resolution.signal_clicked(); }
 	Glib::SignalProxy0<void> signal_use_low_resolution()   { return use_low_resolution. signal_toggled(); }

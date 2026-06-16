@@ -36,6 +36,9 @@
 
 #include "resolutiondial.h"
 
+#include <gui/actiondatabase.h>
+#include <gui/actionwidgethelper.h>
+#include <gui/app.h>
 #include <gui/localization.h>
 
 #endif
@@ -50,34 +53,22 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
-static void
-init_button(Gtk::ToolButton& button, const std::string& icon_name, const std::string& label, const std::string& tooltip)
-{
-	button.set_icon_name(icon_name);
-	button.set_label(label);
-	button.set_tooltip_text(tooltip);
-	button.show();
-}
-
-static void
-init_toggle_button(Gtk::ToggleToolButton& button, const std::string& label, const std::string& tooltip)
-{
-	// For label left/right padding
-	button.set_name("low-resolution");
-
-	button.set_label(label);
-	button.set_tooltip_text(tooltip);
-	button.set_is_important(true);
-	button.show();
-}
-
 /* === M E T H O D S ======================================================= */
 
-ResolutionDial::ResolutionDial()
+ResolutionDial::ResolutionDial(const std::string& action_prefix)
 {
-	init_button(increase_resolution, "incr_resolution_icon", _("Increase Resolution"), _("Increase Display Resolution"));
-	init_button(decrease_resolution, "decr_resolution_icon", _("Decrease Resolution"), _("Decrease Display Resolution"));
-	init_toggle_button(use_low_resolution, _("Low Res"), _("Use Low Resolution when enabled"));
+	const std::string action_increase_resolution = action_prefix.empty() ? "" : action_prefix + "." + "decrease-low-res-pixel-size";
+	const std::string action_decrease_resolution = action_prefix.empty() ? "" : action_prefix + "." + "increase-low-res-pixel-size";
+	const std::string action_toggle_low_res      = action_prefix.empty() ? "" : action_prefix + "." + "toggle-low-res";
+	if (App::get_action_database()->has(action_increase_resolution)) {
+		ActionWidgetHelper::init_icon_only_toolbutton(increase_resolution, action_increase_resolution);
+		ActionWidgetHelper::init_icon_only_toolbutton(decrease_resolution, action_decrease_resolution);
+		ActionWidgetHelper::init_toolbutton(use_low_resolution, action_toggle_low_res);
+	} else {
+		ActionWidgetHelper::init_toolbutton(increase_resolution, action_increase_resolution, "incr_resolution_icon", _("Increase Resolution"), _("Increase Display Resolution"));
+		ActionWidgetHelper::init_toolbutton(decrease_resolution, action_decrease_resolution, "decr_resolution_icon", _("Decrease Resolution"), _("Decrease Display Resolution"));
+		ActionWidgetHelper::init_toolbutton(use_low_resolution, action_toggle_low_res, "", _("Low Res"), _("Use Low Resolution when enabled"));
+	}
 }
 
 void

@@ -500,7 +500,7 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 	statusbar                (manage(new class Gtk::Statusbar())),
 	progressbar              (manage(new class Gtk::ProgressBar())),
 	toggleducksdial          ("doc"),
-	resolutiondial_          (new studio::ResolutionDial()),
+	resolutiondial_          (new ResolutionDial("doc")),
 	future_onion_adjustment_ (Gtk::Adjustment::create(0,0,ONION_SKIN_FUTURE,1,1,0)),
 	past_onion_adjustment_   (Gtk::Adjustment::create(1,0,ONION_SKIN_PAST,1,1,0)),
 
@@ -1079,12 +1079,6 @@ CanvasView::create_top_toolbar()
 
 	// ResolutionDial widget
 	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
-	resolutiondial_->signal_increase_resolution().connect(
-		sigc::mem_fun(*this, &CanvasView::decrease_low_res_pixel_size));
-	resolutiondial_->signal_decrease_resolution().connect(
-		sigc::mem_fun(*this, &CanvasView::increase_low_res_pixel_size));
-	resolutiondial_->signal_use_low_resolution().connect(
-		sigc::mem_fun(*this, &CanvasView::toggle_low_res_pixel_flag));
 	resolutiondial_->insert_to_toolbar(*top_toolbar);
 
 	// Separator
