@@ -1016,15 +1016,6 @@ CanvasView::create_work_area()
 	return work_area;
 }
 
-Gtk::ToolButton*
-CanvasView::create_action_toolbutton(const Glib::RefPtr<Gtk::Action> &action)
-{
-	Gtk::ToolButton *button = Gtk::manage(new Gtk::ToolButton());
-	button->set_related_action(action);
-	button->show();
-	return button;
-}
-
 Gtk::SeparatorToolItem*
 CanvasView::create_tool_separator()
 {
@@ -1052,8 +1043,8 @@ CanvasView::create_top_toolbar()
 	if (App::show_file_toolbar) {
 		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("app.new"));
 		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("app.open"));
-		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save")));
-		top_toolbar->append(*create_action_toolbutton(action_group->get_action("save-as")));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.save"));
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.save-as"));
 		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("win.save-all"));
 
 		// Separator
@@ -1068,41 +1059,18 @@ CanvasView::create_top_toolbar()
 	top_toolbar->append(*create_tool_separator());
 
 	{ // Preview Settings dialog button
-		preview_options_button = Gtk::manage(new Gtk::ToolButton());
-		preview_options_button->set_icon_name("preview_options_icon");
-		preview_options_button->signal_clicked().connect(
-			sigc::mem_fun(*this,&CanvasView::on_preview_option));
-		preview_options_button->set_label(_("Preview"));
-		preview_options_button->set_tooltip_text(_("Shows the Preview Settings Dialog"));
-		preview_options_button->show();
-
-		top_toolbar->append(*preview_options_button);
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.preview"));
 	}
 
 	{ // Render Settings dialog button
-		render_options_button = Gtk::manage(new Gtk::ToolButton());
-		render_options_button->set_icon_name("render_options_icon");
-		render_options_button->signal_clicked().connect(
-			sigc::mem_fun0(render_settings,&RenderSettings::present));
-		render_options_button->set_label(_("Render"));
-		render_options_button->set_tooltip_text(_("Shows the Render Settings Dialog"));
-		render_options_button->show();
-
-		top_toolbar->append(*render_options_button);
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.render"));
 	}
 
 	// Separator
 	top_toolbar->append(*create_tool_separator());
 
 	{ // Refresh button
-		refreshbutton = Gtk::manage(new Gtk::ToolButton());
-		refreshbutton->set_icon_name("view-refresh");
-		refreshbutton->signal_clicked().connect(SLOT_EVENT(EVENT_REFRESH));
-		refreshbutton->set_label(_("Refresh"));
-		refreshbutton->set_tooltip_text( _("Refresh workarea"));
-		refreshbutton->show();
-
-		top_toolbar->append(*refreshbutton);
+		top_toolbar->append(*ActionWidgetHelper::create_action_toolbutton("doc.refresh"));
 	}
 
 	{ // Rendering mode ComboBox
@@ -1222,11 +1190,8 @@ CanvasView::create_top_toolbar()
 Gtk::Widget*
 CanvasView::create_stop_button()
 {
-	stopbutton = Gtk::manage(new Gtk::Button());
-	stopbutton->set_image_from_icon_name("process-stop");
-	stopbutton->signal_clicked().connect(SLOT_EVENT(EVENT_STOP));
+	stopbutton = ActionWidgetHelper::create_action_button("doc.stop-process");
 	stopbutton->set_relief(Gtk::RELIEF_NONE);
-	stopbutton->set_tooltip_text(_("Stop current operation"));
 	stopbutton->set_sensitive(false);
 	stopbutton->show();
 
