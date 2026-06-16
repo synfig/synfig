@@ -499,7 +499,7 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 	time_model_              (new TimeModel()),
 	statusbar                (manage(new class Gtk::Statusbar())),
 	progressbar              (manage(new class Gtk::ProgressBar())),
-	toggleducksdial          (Gtk::IconSize::from_name("synfig-small_icon_16x16")),
+	toggleducksdial          ("doc"),
 	resolutiondial_          (new studio::ResolutionDial()),
 	future_onion_adjustment_ (Gtk::Adjustment::create(0,0,ONION_SKIN_FUTURE,1,1,0)),
 	past_onion_adjustment_   (Gtk::Adjustment::create(1,0,ONION_SKIN_PAST,1,1,0)),
@@ -1184,20 +1184,6 @@ CanvasView::create_right_toolbar()
 	right_toolbar->append(*create_tool_separator());
 
 	// ToggleDuckDial widget
-	Duck::Type m = work_area->get_type_mask();
-	toggleducksdial.update_toggles(m);
-	toggleducksdial.signal_ducks_position().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_POSITION));
-	toggleducksdial.signal_ducks_vertex().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_VERTEX));
-	toggleducksdial.signal_ducks_tangent().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_TANGENT));
-	toggleducksdial.signal_ducks_radius().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_RADIUS));
-	toggleducksdial.signal_ducks_width().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_WIDTH));
-	toggleducksdial.signal_ducks_angle().connect(
-		sigc::bind(sigc::mem_fun(*this, &CanvasView::toggle_duck_mask),Duck::TYPE_ANGLE));
 	toggleducksdial.insert_to_toolbar(*right_toolbar);
 
 	right_toolbar->show();
@@ -3078,10 +3064,10 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 		return;
 	toggling_ducks_=true;
 
-	Duckmatic::Type check_type = type;
+	const Duckmatic::Type check_type = type;
 	if(type & Duck::TYPE_WIDTH)
 		type=type|Duck::TYPE_WIDTHPOINT_POSITION;
-	bool is_currently_on(work_area->get_type_mask()&check_type);
+	const bool is_currently_on(work_area->get_type_mask()&check_type);
 
 	if(is_currently_on)
 		work_area->set_type_mask(work_area->get_type_mask()-type);
@@ -3094,22 +3080,24 @@ CanvasView::toggle_duck_mask(Duckmatic::Type type)
 	work_area->queue_draw();
 	try
 	{
+		const std::vector<std::pair<std::string, Duck::Type>> duck_types
+		{
+			{"mask-position-ducks", Duck::TYPE_POSITION},
+			{"mask-tangent-ducks",  Duck::TYPE_TANGENT},
+			{"mask-vertex-ducks",   Duck::TYPE_VERTEX},
+			{"mask-radius-ducks",   Duck::TYPE_RADIUS},
+			{"mask-width-ducks",    Duck::TYPE_WIDTH},
+			{"mask-angle-ducks",    Duck::TYPE_ANGLE},
+		};
+
 		// Update the toggle ducks actions
 		Glib::RefPtr<Gtk::ToggleAction> action;
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-position-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_POSITION));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-tangent-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_TANGENT));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-vertex-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_VERTEX));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-radius-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_RADIUS));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-width-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_WIDTH));
-		action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action("mask-angle-ducks"));
-		action->set_active((bool)(work_area->get_type_mask()&Duck::TYPE_ANGLE));
+		for (const auto& item : duck_types) {
+			action = Glib::RefPtr<Gtk::ToggleAction>::cast_dynamic(action_group->get_action(item.first));
+			action->set_active((bool)(work_area->get_type_mask() & item.second));
+			action_group_->change_action_state(item.first, Glib::Variant<bool>::create(work_area->get_type_mask() & item.second));
+		}
 		// Update toggle ducks buttons
-		action->get_active();
 		toggleducksdial.update_toggles(work_area->get_type_mask());
 	}
 	catch(...)
