@@ -847,31 +847,9 @@ CanvasView::create_time_bar()
 	interpolation_refresh();
 
 	//Setup the Animation Mode Button and the Keyframe Lock button
-	{
-		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
-		animatebutton = Gtk::manage(new Gtk::ToggleButton());
-		animatebutton->set_image_from_icon_name("animate_mode_off_icon", iconsize);
-		animatebutton->set_tooltip_text(_("Turn on animate editing mode"));
+	animatebutton = ActionWidgetHelper::create_action_togglebutton("doc.toggle-animate-mode");
 
-		// Set hotkey to toggle animate button on and off
-		auto accel_group = App::ui_manager()->get_accel_group();
-		animatebutton->set_accel_path("<Actions>/canvasview/animate", accel_group);
-
-		animatebutton->signal_toggled().connect(sigc::mem_fun(*this, &CanvasView::toggle_animatebutton));
-		animatebutton->set_relief(Gtk::RELIEF_NONE);
-		animatebutton->show();
-	}
-
-	{
-		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
-		timetrackbutton = Gtk::manage(new Gtk::ToggleButton());
-		timetrackbutton->set_image_from_icon_name("time_track_icon", iconsize);
-		timetrackbutton->set_tooltip_text(_("Toggle timebar"));
-
-		timetrackbutton->signal_toggled().connect(sigc::mem_fun(*this, &CanvasView::toggle_timetrackbutton));
-		timetrackbutton->set_relief(Gtk::RELIEF_NONE);
-		timetrackbutton->show();
-	}
+	timetrackbutton = ActionWidgetHelper::create_action_togglebutton("doc.toggle-timebar");
 
 	//Setup the current time widget
 	current_time_widget=manage(new Widget_Time);
@@ -1092,15 +1070,7 @@ CanvasView::create_top_toolbar()
 	}
 
 	{ // Background rendering button
-		background_rendering_button = Gtk::manage(new Gtk::ToggleToolButton());
-		background_rendering_button->set_active(work_area->get_background_rendering());
-		background_rendering_button->set_icon_name("background_rendering_icon");
-		background_rendering_button->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_background_rendering));
-		background_rendering_button->set_label(_("Background rendering"));
-		background_rendering_button->set_tooltip_text(_("Render future and past frames in background when enabled"));
-		background_rendering_button->show();
-
+		background_rendering_button = ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-background-rendering");
 		top_toolbar->append(*background_rendering_button);
 	}
 
@@ -1121,15 +1091,7 @@ CanvasView::create_top_toolbar()
 	top_toolbar->append(*create_tool_separator());
 
 	{ // Onion skin toggle button
-		onion_skin = Gtk::manage(new Gtk::ToggleToolButton());
-		onion_skin->set_active(work_area->get_onion_skin());
-		onion_skin->set_icon_name("onion_skin_icon");
-		onion_skin->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_onion_skin));
-		onion_skin->set_label(_("Onion Skin"));
-		onion_skin->set_tooltip_text(_("Show Onion Skin when enabled"));
-		onion_skin->show();
-
+		onion_skin = ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-onion-skin");
 		top_toolbar->append(*onion_skin);
 	}
 
@@ -1166,15 +1128,7 @@ CanvasView::create_top_toolbar()
 	}
 
 	{ // Onion skin on Keyframes/Frames toggle button
-		onion_skin_keyframes = Gtk::manage(new Gtk::ToggleToolButton());
-		onion_skin_keyframes->set_active(work_area->get_onion_skin_keyframes());
-		onion_skin_keyframes->set_icon_name("keyframe_icon");
-		onion_skin_keyframes->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_onion_skin_keyframes));
-		onion_skin_keyframes->set_label(_("Keyframes"));
-		onion_skin_keyframes->set_tooltip_text(_("Show Onion Skin on Keyframes when enabled, on Frames when disabled"));
-		onion_skin_keyframes->show();
-
+		onion_skin_keyframes = ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-onion-skin-keyframes");
 		top_toolbar->append(*onion_skin_keyframes);
 	}
 
@@ -1207,54 +1161,22 @@ CanvasView::create_right_toolbar()
 	right_toolbar->set_property("orientation", Gtk::ORIENTATION_VERTICAL);
 
 	{ // Show grid toggle button
-		show_grid = Gtk::manage(new Gtk::ToggleToolButton());
-		show_grid->set_active(work_area->grid_status());
-		show_grid->set_icon_name("show_grid_icon");
-		show_grid->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_show_grid));
-		show_grid->set_label(_("Show Grid"));
-		show_grid->set_tooltip_text(_("Show Grid when enabled"));
-		show_grid->show();
-
+		show_grid = ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-grid-show");
 		right_toolbar->append(*show_grid);
 	}
 
 	{ // Snap to grid toggle button
-		snap_grid = Gtk::manage(new Gtk::ToggleToolButton());
-		snap_grid->set_active(work_area->grid_status());
-		snap_grid->set_icon_name("snap_grid_icon");
-		snap_grid->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_snap_grid));
-		snap_grid->set_label(_("Snap to Grid"));
-		snap_grid->set_tooltip_text(_("Snap to Grid when enabled"));
-		snap_grid->show();
-
+		snap_grid = ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-grid-snap");
 		right_toolbar->append(*snap_grid);
 	}
 
 	{ // Show guide toggle button
-		show_guides = Gtk::manage(new Gtk::ToggleToolButton());
-		show_guides->set_active(work_area->get_show_guides());
-		show_guides->set_icon_name("show_guideline_icon");
-		show_guides->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_show_guides));
-		show_guides->set_label(_("Show Guides"));
-		show_guides->set_tooltip_text(_("Show Guides when enabled"));
-		show_guides->show();
-
+		show_guides = ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-guide-show");
 		right_toolbar->append(*show_guides);
 	}
 
 	{ // Snap to guides toggle button
-		snap_guides = Gtk::manage(new Gtk::ToggleToolButton());
-		snap_guides->set_active(work_area->get_guide_snap());
-		snap_guides->set_icon_name("snap_guideline_icon");
-		snap_guides->signal_toggled().connect(
-			sigc::mem_fun(*this, &CanvasView::toggle_snap_guides));
-		snap_guides->set_label(_("Snap to Guides"));
-		snap_guides->set_tooltip_text(_("Snap to Guides when enabled"));
-		snap_guides->show();
-
+		snap_guides = ActionWidgetHelper::create_action_toggletoolbutton("doc.toggle-guide-snap");
 		right_toolbar->append(*snap_guides);
 	}
 
@@ -1401,6 +1323,8 @@ CanvasView::register_doc_actions()
 		{"toggle-onion-skin-keyframes", "keyframe_icon",             "",               N_("Onion Skin on Keyframes"), N_("Show Onion Skin on Keyframes when enabled, on Frames when disabled") },
 		{"toggle-keyframe-lock-past",   "keyframe_lock_past_on_icon",  "<Control>Left",  N_("Lock Past Keyframes"),   N_("When a parameter is changed, waypoints will be created in the immediately preceding keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode.") },
 		{"toggle-keyframe-lock-future", "keyframe_lock_future_on_icon","<Control>Right", N_("Lock Future Keyframes"), N_("When a parameter is changed, waypoints will be created in the immediately following keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode.") },
+		{"toggle-timebar",              "time_track_icon",           "",               N_("Show Timebar"),           N_("Show Timebar below the canvas when enabled") },
+		{"toggle-animate-mode",         "animate_mode_off_icon",     "<Primary>space", N_("Enable animation"), N_("Turn on animate editing mode")},
 	};
 
 	struct DuckActionMetaData {
@@ -1624,6 +1548,9 @@ CanvasView::init_menus()
 		}
 		action_group_->add_action_bool(item.name, sigc::mem_fun(*this, item.slot_to_toogle), current_value);
 	}
+	// Other boolean actions
+	action_group_->add_action_bool("toggle-timebar", sigc::mem_fun(*this, &CanvasView::toggle_timetrackbutton), false);
+	action_group_->add_action_bool("toggle-animate-mode", sigc::mem_fun(*this, &CanvasView::toggle_animatebutton), false);
 	work_area->set_show_rulers(work_area->get_show_rulers());
 
 	rulers_show_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-rulers-show"));

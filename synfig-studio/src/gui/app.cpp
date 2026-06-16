@@ -1427,7 +1427,6 @@ App::get_default_accel_map()
 		{"<Control>0",              "<Actions>/canvasview/canvas-zoom-fit-2"},
 		{"space",                   "<Actions>/canvasview/play"},
 		{"<Shift>space",            "<Actions>/canvasview/pause"},
-		{"<Control>space",          "<Actions>/canvasview/animate"},
 		{"<Control>Left",           "<Actions>/canvasview/toggle-keyframe-lock-past"},
 		{"<Control>Right",          "<Actions>/canvasview/toggle-keyframe-lock-future"},
 	};
