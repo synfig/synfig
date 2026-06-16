@@ -1615,7 +1615,6 @@ CanvasView::init_menus()
 	}
 
 	// Prevent call to preview window before preview option has created the preview window
-	action_group->get_action("dialog-flipbook")->set_sensitive(false);
 	action_group_->lookup_action("dialog-flipbook")->set_property("enabled", false);
 
 	// Low-Res Quality Menu
@@ -3517,11 +3516,7 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 	preview_dialog.present();
 
 	// Preview Window created, the action can be enabled
-	{
-		Glib::RefPtr< Gtk::Action > action = action_group->get_action("dialog-flipbook");
-		action->set_sensitive(true);
-		action_group_->lookup_action("dialog-flipbook")->set_property("enabled", true);
-	}
+	action_group_->lookup_action("dialog-flipbook")->set_property("enabled", true);
 
 }
 

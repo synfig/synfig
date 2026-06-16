@@ -271,7 +271,7 @@ MainWindow::init_menus()
 
 	App::ui_manager()->insert_action_group(action_group);
 
-	// Workspace menu
+	// Windows (and workspaces) menu
 	auto menu_window = Gio::Menu::create();
 	auto menu_window_workspaces = Gio::Menu::create();
 	App::menu_window_custom_workspaces = Gio::Menu::create();
@@ -288,6 +288,7 @@ MainWindow::init_menus()
 	menu_window_workspaces_actions->append(_("Edit workspaces..."), "win.edit-workspacelist");
 	menu_window_workspaces->append_section(menu_window_workspaces_actions);
 	menu_window->append_submenu(_("Workspace"), menu_window_workspaces);
+	App::menu_window_docks->append(_("Preview Dialog"), "doc.dialog-flipbook");
 	menu_window->append_section(App::menu_window_docks);
 	menu_window->append_section(App::menu_window_canvases);
 	auto menuitem_window = dynamic_cast<Gtk::MenuItem*>(App::ui_manager()->get_widget("/menubar-main/menu-window"));
