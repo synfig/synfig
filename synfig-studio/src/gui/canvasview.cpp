@@ -570,6 +570,12 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 	//info("Canvasview: Before big chunk of allocation and tabling stuff");
 	//create all allocated stuff for this canvas
 
+	static bool actions_registered = false;
+	if (!actions_registered) {
+		register_doc_actions();
+		actions_registered = true;
+	}
+
 	Gtk::Widget *widget_work_area = create_work_area();
 	widget_work_area->set_margin_top(4);
 	init_menus();
@@ -1342,121 +1348,275 @@ CanvasView::on_set_end_time_widget_changed()
 }
 
 void
-CanvasView::init_menus()
+CanvasView::register_doc_actions()
 {
-	//cache the position of desired widgets
-
-	/*Menus to worry about:
-	- filemenu
-	- editmenu
-	- layermenu
-	- duckmaskmenu
-	- mainmenu
-	- canvasmenu
-	- viewmenu
-	*/
-
-	static bool first_time = true;
+	ActionDatabase adb;
 
 	struct ActionMetadata {
 		std::string name;
 		std::string icon;
+		std::string accel;
 		std::string label;
 		std::string tooltip;
+	};
+
+	static const std::vector<ActionMetadata> action_list = {
+		{"save",    "action_doc_save_icon",   "<Primary>s", N_("Save"),      N_("Save") },
+		{"save-as", "action_doc_saveas_icon", "<Primary><Shift>s", N_("Save As..."), N_("Save As") },
+
+		{"export",              "action_doc_saveas_icon", "",           N_("Export..."),            N_("Export") },
+		{"revert",              "document-revert",        "",           N_("Revert"),               N_("Revert document as it was last saved") },
+		{"import",              "",                       "<Primary>i", N_("Import..."),            "" },
+		{"import-sequence",     "",                       "",           N_("Import Sequence..."),   "" },
+		{"show-dependencies",   "",                       "",           N_("Show Dependencies..."), "" },
+		{"render",              "render_options_icon",    "F9",         N_("Render..."),            N_("Shows the Render Settings Dialog") },
+		{"preview",             "preview_options_icon",   "F11",        N_("Preview..."),           N_("Shows the Preview Settings Dialog") },
+		{"show-canvas-options", "",                       "F12",        N_("Options..."),           "" },
+		{"close-document",      "window-close",           "<Primary>w", N_("Close Document"),       "" },
+
+		{"select-all-ducks",    "", "<Primary>a",        N_("Select All Handles"), "" },
+		{"unselect-all-ducks",  "", "<Primary>d",        N_("Unselect All Handles"), "" },
+		{"select-all-layers",   "", "<Primary><Shift>a", N_("Select All Layers"), "" },
+		{"unselect-all-layers", "", "<Primary><Shift>d", N_("Unselect All Layers"), "" },
+		{"select-parent-layer", "", "<Mod1>Page_Up",     N_("Select Parent Layer"), "" },
+
+		{"stop-process",        "process-stop",        "",           N_("Stop"),    N_("Stop current operation") },
+		{"refresh",             "view-refresh",        "",           N_("Refresh"), N_("Refresh workarea") },
+		{"properties",          "document-properties", "F8",         N_("Properties..."), "" },
+		{"resize-canvas",       "",                    "",           N_("Resize..."), "" },
+
+		{"decrease-low-res-pixel-size", "decr_resolution_icon", "<Primary>parenleft",  N_("Increase Resolution"), N_("Increase Display Resolution") },
+		{"increase-low-res-pixel-size", "incr_resolution_icon", "<Primary>parenright", N_("Decrease Resolution"), N_("Decrease Display Resolution") },
+
+		{"play",            "media-playback-start", "space",        N_("_Play"),          N_("Play the current animation timespan") },
+		{"pause",           "animate_pause_icon",   "<Shift>space", N_("Pause"),          N_("Pause current animation playback") },
+		{"dialog-flipbook", "",                     "",             N_("Preview Window"), "" },
+
+		{"canvas-zoom-fit",   "zoom-fit-best", "0",              N_("Best _Fit"),    N_("Best Fit") },
+		{"canvas-zoom-100",   "zoom-original", "",               N_("_Normal Size"), N_("Normal Size") },
+		{"canvas-zoom-fit-2", "zoom-fit-best", "<Primary>0",     N_("Best _Fit"),    N_("Best Fit") },
+		{"canvas-zoom-in",    "zoom-in",       "minus",          N_("Zoom _In"),     N_("Zoom In") },
+		{"canvas-zoom-in-2",  "zoom-in",       "<Primary>minus", N_("Zoom _In"),     N_("Zoom In") },
+		{"canvas-zoom-out",   "zoom-out",      "equal",          N_("Zoom _Out"),    N_("Zoom Out") },
+		{"canvas-zoom-out-2", "zoom-out",      "<Primary>equal", N_("Zoom _Out"),    N_("Zoom Out") },
+
+		{"time-zoom-in",  "zoom-in",  "<Primary>plus",       N_("Zoom In on Timeline"),  "" },
+		{"time-zoom-out", "zoom-out", "<Primary>underscore", N_("Zoom Out on Timeline"), "" },
+
+		{"seek-next-frame",    "animate_seek_next_frame_icon",    "period",                  N_("Seek to Next frame"),     N_("Seek to next frame") },
+		{"seek-prev-frame",    "animate_seek_prev_frame_icon",    "comma",                   N_("Seek to Previous Frame"), N_("Seek to previous frame") },
+
+		{"seek-next-second",   "go-next",                         "<Shift>greater",          N_("Seek Forward"),  N_("Seek Forward") },
+		{"seek-prev-second",   "go-previous",                     "<Shift>less",             N_("Seek Backward"), N_("Seek Backward") },
+
+		{"seek-end",           "animate_seek_end_icon",           "<Primary><Shift>greater", N_("Seek to End"),   N_("Seek to End") },
+		{"seek-begin",         "animate_seek_begin_icon",         "<Primary><Shift>less",    N_("Seek to Begin"), N_("Seek to Begin") },
+
+		{"jump-next-keyframe", "animate_seek_next_keyframe_icon", "bracketright",            N_("Seek to Next Keyframe"),      N_("Seek to next keyframe") },
+		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", "bracketleft",             N_("Seek to Previous Keyframe") , N_("Seek to previous keyframe") },
+	};
+
+	struct BoolActionMetadata {
+		std::string name;
+		std::string icon;
+		std::string shortcut;
+		std::string label;
+		std::string tooltip;
+	};
+
+	static const std::vector<BoolActionMetadata> bool_action_list = {
+		{"toggle-rulers-show",          "",                          "",               N_("Show Rulers"),             "" },
+		{"toggle-grid-show",            "show_grid_icon",            "numbersign",     N_("Show Grid"),               N_("Show Grid when enabled") },
+		{"toggle-grid-snap",            "snap_grid_icon",            "<Primary>l",     N_("Snap to Grid"),            N_("Snap to Grid when enabled") },
+		{"toggle-guide-show",           "show_guideline_icon",       "",               N_("Show Guides"),             N_("Show Guides when enabled") },
+		{"toggle-guide-snap",           "snap_guideline_icon",       "",               N_("Snap to Guides"),          N_("Snap to Guides when enabled") },
+		{"toggle-low-res",              "",                          "<Primary>grave", N_("Low Res"),                 N_("Use Low Resolution when enabled") },
+		{"toggle-background-rendering", "background_rendering_icon", "",               N_("Enable rendering in background"), N_("Render future and past frames in background when enabled") },
+		{"toggle-onion-skin",           "onion_skin_icon",           "<Mod1>o",        N_("Show Onion Skin"),         N_("Show Onion Skin when enabled") },
+		{"toggle-onion-skin-keyframes", "keyframe_icon",             "",               N_("Onion Skin on Keyframes"), N_("Show Onion Skin on Keyframes when enabled, on Frames when disabled") },
+		{"toggle-keyframe-lock-past",   "keyframe_lock_past_on_icon",  "<Control>Left",  N_("Lock Past Keyframes"),   N_("When a parameter is changed, waypoints will be created in the immediately preceding keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode.") },
+		{"toggle-keyframe-lock-future", "keyframe_lock_future_on_icon","<Control>Right", N_("Lock Future Keyframes"), N_("When a parameter is changed, waypoints will be created in the immediately following keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode.") },
+	};
+
+	struct DuckActionMetaData {
+		std::string action;
+		Duck::Type type;
+		const char* icon;
+		const char* shortcut;
+		const char* label;
+		const char* tooltip;
+	};
+
+	static const std::vector<DuckActionMetaData> duck_action_list = {
+		{"mask-position-ducks",            Duck::TYPE_POSITION,            "duck_position_icon", "<Mod1>1", N_("Position handles"), N_("Show Position Handles")},
+		{"mask-tangent-ducks",             Duck::TYPE_TANGENT,             "duck_tangent_icon",  "<Mod1>3", N_("Tangent handles"), N_("Show Tangent Handles")},
+		{"mask-vertex-ducks",              Duck::TYPE_VERTEX,              "duck_vertex_icon",   "<Mod1>2", N_("Vertex handles"), N_("Show Vertex Handles")},
+		{"mask-radius-ducks",              Duck::TYPE_RADIUS,              "duck_radius_icon",   "<Mod1>4", N_("Radius handles"), N_("Show Radius Handles")},
+		{"mask-width-ducks",               Duck::TYPE_WIDTH,               "duck_width_icon",    "<Mod1>5", N_("Width handles"), N_("Show Width Handles")},
+		{"mask-widthpoint-position-ducks", Duck::TYPE_WIDTHPOINT_POSITION, "",                   "<Mod1>5", N_("Width Position handles"), N_("Show WidthPoint Position Handles")},
+		{"mask-angle-ducks",               Duck::TYPE_ANGLE,               "duck_angle_icon",    "<Mod1>6", N_("Angle handles"), N_("Show Angle Handles")},
+		// {"mask-bone-setup",                Duck::TYPE_ANGLE,               "", "", "", ""},
+		{"mask-bone-recursive-ducks",      Duck::TYPE_BONE_RECURSIVE,      "",                   "<Mod1>8", N_("Recursive Bone handles"), N_("Show Recursive Scale Bone Handles")},
+	};
+
+	// Regular actions
+	for (const auto& item : action_list)
+		adb.add({"doc." + item.name, item.label, item.accel, item.icon, item.tooltip});
+
+	// Boolean actions
+	for (const auto& item : bool_action_list)
+		adb.add(ActionDatabase::Entry{"doc." + item.name, item.label, item.shortcut, item.icon, item.tooltip});
+
+	// Actions for plug-ins (to allow custom accelerators)
+	for (const auto& plugin : App::plugin_manager.plugins()) {
+		const std::string id = plugin.id;
+		const std::string action_name = "run-plugin-" + id;
+		App::get_action_database()->add(ActionDatabase::Entry{"doc." + action_name, plugin.name.get(), "", "", plugin.description.get()});
+	}
+
+	// Actions for enabling/disabling handles/ducks
+	adb.add(ActionDatabase::Entry{"doc.mask-none-ducks", _("Toggle None/Last visible Handles"), "<Mod1>0", "", _("Toggle None/Last visible Handles")});
+
+	for (const auto& item : duck_action_list)
+		adb.add(ActionDatabase::Entry{"doc." + item.action, _(item.label), item.shortcut, item.icon, _(item.tooltip)});
+
+	adb.add(ActionDatabase::Entry{"doc.mask-bone-ducks", _("Next Bone Handles"), "<Mod1>9", "", ""});
+
+	// Merge the actions to general database
+	App::get_action_database()->merge(adb);
+	// Apply default accelerators
+	UserAcceleratorList list;
+	list.restore_to_defaults(adb);
+	list.load_from_file(App::get_config_file("accelerators"), false);
+	list.apply(App::instance(), adb);
+}
+
+void
+CanvasView::init_menus()
+{
+	struct ActionMetadata {
+		std::string name;
 		std::function<void()> slot;
 	};
 
 	const std::vector<ActionMetadata> action_list = {
-		{"save",    "action_doc_save_icon",   N_("Save"),      N_("Save"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::save)) },
-		{"save-as", "action_doc_saveas_icon", N_("Save As..."), N_("Save As"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_save_as)) },
+		{"save",                sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::save)) },
+		{"save-as",             sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_save_as)) },
 
-		{"export",            "action_doc_saveas_icon", N_("Export..."),            N_("Export"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_export)) },
-		{"revert",            "document-revert",        N_("Revert"),               N_("Revert document as it was last saved"), sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::safe_revert)) },
-		{"import",            "",                       N_("Import..."),            "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file)) },
-		{"import-sequence",   "",                       N_("Import Sequence..."),   "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence)) },
-		{"show-dependencies", "",                       N_("Show Dependencies..."), "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::show_dependencies)) },
-		{"render",            "render_options_icon",    N_("Render..."),            "", sigc::mem_fun0(render_settings, &RenderSettings::present) },
-		{"preview",           "preview_options_icon",   N_("Preview..."),           "", sigc::mem_fun(*this, &CanvasView::on_preview_option) },
-		{"options",           "",                       N_("Options..."),           "", sigc::mem_fun0(canvas_options, &CanvasOptions::present) },
-		{"close-document",    "window-close",           N_("Close Document"),       "", sigc::hide_return(sigc::mem_fun(*this, &CanvasView::close_instance)) },
-		{"quit",              "application-exit",       N_("Quit"),                 "",  sigc::hide_return(sigc::ptr_fun(&App::quit)) },
+		{"export",              sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::dialog_export)) },
+		{"revert",              sigc::hide_return(sigc::mem_fun(*get_instance(), &studio::Instance::safe_revert)) },
+		{"import",              sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_file)) },
+		{"import-sequence",     sigc::hide_return(sigc::mem_fun(*this, &CanvasView::import_sequence)) },
+		{"show-dependencies",   sigc::hide_return(sigc::mem_fun(*this, &CanvasView::show_dependencies)) },
+		{"render",              sigc::mem_fun0(render_settings, &RenderSettings::present) },
+		{"preview",             sigc::mem_fun(*this, &CanvasView::on_preview_option) },
+		{"show-canvas-options", sigc::mem_fun0(canvas_options, &CanvasOptions::present) },
+		{"close-document",      sigc::hide_return(sigc::mem_fun(*this, &CanvasView::close_instance)) },
 
-		{"select-all-ducks",    "", N_("Select All Handles"), "", sigc::mem_fun(*work_area, &WorkArea::select_all_ducks) },
-		{"unselect-all-ducks",  "", N_("Unselect All Handles"), "", sigc::mem_fun(*work_area, &WorkArea::unselect_all_ducks) },
-		{"select-all-layers",   "", N_("Select All Layers"), "", sigc::mem_fun(*this, &CanvasView::on_select_layers) },
-		{"unselect-all-layers", "", N_("Unselect All Layers"), "", sigc::mem_fun(*this, &CanvasView::on_unselect_layers) },
-		{"select-parent-layer", "", N_("Select Parent Layer"), "", sigc::mem_fun(*this, &CanvasView::on_select_parent_layer) },
+		{"select-all-ducks",    sigc::mem_fun(*work_area, &WorkArea::select_all_ducks) },
+		{"unselect-all-ducks",  sigc::mem_fun(*work_area, &WorkArea::unselect_all_ducks) },
+		{"select-all-layers",   sigc::mem_fun(*this, &CanvasView::on_select_layers) },
+		{"unselect-all-layers", sigc::mem_fun(*this, &CanvasView::on_unselect_layers) },
+		{"select-parent-layer", sigc::mem_fun(*this, &CanvasView::on_select_parent_layer) },
 
-		{"pause",               "animate_pause_icon",  N_("Pause"), "", sigc::mem_fun(*this, &CanvasView::stop_async) },
-		{"refresh",             "view-refresh",        N_("Refresh"), "", sigc::hide_return(sigc::bind(sigc::mem_fun(*this, &CanvasView::process_event_key), EVENT_REFRESH)) },
-		{"properties",          "document-properties", N_("Properties..."), "", sigc::mem_fun0(canvas_properties, &CanvasProperties::present) },
-		{"resize-canvas",       "",                    N_("Resize..."), "", sigc::mem_fun0(canvas_resize, &CanvasResize::present)},
+		{"refresh",             sigc::hide_return(sigc::bind(sigc::mem_fun(*this, &CanvasView::process_event_key), EVENT_REFRESH)) },
+		{"properties",          sigc::mem_fun0(canvas_properties, &CanvasProperties::present) },
+		{"resize-canvas",       sigc::mem_fun0(canvas_resize, &CanvasResize::present)},
 
-		{"decrease-low-res-pixel-size", "", N_("Decrease Low-Res Pixel Size"), "", sigc::mem_fun(this, &CanvasView::decrease_low_res_pixel_size) },
-		{"increase-low-res-pixel-size", "", N_("Increase Low-Res Pixel Size"), "",  sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size) },
+		{"decrease-low-res-pixel-size", sigc::mem_fun(this, &CanvasView::decrease_low_res_pixel_size) },
+		{"increase-low-res-pixel-size", sigc::mem_fun(this, &CanvasView::increase_low_res_pixel_size) },
 
-		{"play",            "media-playback-start", N_("_Play"),          N_("Play"), sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed) },
-		{"dialog-flipbook", "",                     N_("Preview Window"), "", sigc::mem_fun0(preview_dialog, &Dialog_Preview::present) },
+		{"play",                sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed) },
+		{"pause",               sigc::mem_fun(*this, &CanvasView::stop_async) },
+		{"dialog-flipbook",     sigc::mem_fun0(preview_dialog, &Dialog_Preview::present) },
 
-		{"canvas-zoom-fit",   "zoom-fit-best", N_("Best _Fit"),    N_("Best Fit"), sigc::mem_fun(*work_area, &WorkArea::zoom_fit) },
-		{"canvas-zoom-100",   "zoom-original", N_("_Normal Size"), N_("Normal Size"), sigc::mem_fun(*work_area, &WorkArea::zoom_norm) },
-		{"canvas-zoom-fit-2", "zoom-fit-best", N_("Best _Fit"),    N_("Best Fit"), sigc::mem_fun(*work_area, &WorkArea::zoom_fit) },
-		{"canvas-zoom-in",    "zoom-in",       N_("Zoom _In"),     N_("Zoom In"), sigc::mem_fun(*work_area, &WorkArea::zoom_in) },
-		{"canvas-zoom-in-2",  "zoom-in",       N_("Zoom _In"),     N_("Zoom In"), sigc::mem_fun(*work_area, &WorkArea::zoom_in) },
-		{"canvas-zoom-out",   "zoom-out",      N_("Zoom _Out"),    N_("Zoom Out"), sigc::mem_fun(*work_area, &WorkArea::zoom_out) },
-		{"canvas-zoom-out-2", "zoom-out",      N_("Zoom _Out"),    N_("Zoom Out"), sigc::mem_fun(*work_area, &WorkArea::zoom_out) },
+		{"canvas-zoom-fit",     sigc::mem_fun(*work_area, &WorkArea::zoom_fit) },
+		{"canvas-zoom-100",     sigc::mem_fun(*work_area, &WorkArea::zoom_norm) },
+		{"canvas-zoom-fit-2",   sigc::mem_fun(*work_area, &WorkArea::zoom_fit) },
+		{"canvas-zoom-in",      sigc::mem_fun(*work_area, &WorkArea::zoom_in) },
+		{"canvas-zoom-in-2",    sigc::mem_fun(*work_area, &WorkArea::zoom_in) },
+		{"canvas-zoom-out",     sigc::mem_fun(*work_area, &WorkArea::zoom_out) },
+		{"canvas-zoom-out-2",   sigc::mem_fun(*work_area, &WorkArea::zoom_out) },
 
-		{"time-zoom-in",  "zoom-in",  N_("Zoom In on Timeline"),  "", sigc::mem_fun(*this, &CanvasView::time_zoom_in) },
-		{"time-zoom-out", "zoom-out", N_("Zoom Out on Timeline"), "", sigc::mem_fun(*this, &CanvasView::time_zoom_out) },
+		{"time-zoom-in",        sigc::mem_fun(*this, &CanvasView::time_zoom_in) },
+		{"time-zoom-out",       sigc::mem_fun(*this, &CanvasView::time_zoom_out) },
 
-		{"seek-next-frame", "animate_seek_next_frame_icon", N_("Seek to Next frame"),     "", sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_frame),1) },
-		{"seek-prev-frame", "animate_seek_prev_frame_icon", N_("Seek to Previous Frame"), "", sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_frame),-1) },
+		{"seek-next-frame",     sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_frame),1) },
+		{"seek-prev-frame",     sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_frame),-1) },
 
-		{"seek-next-second", "go-next",     N_("Seek Forward"),  N_("Seek Forward"), sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_time),Time(1)) },
-		{"seek-prev-second", "go-previous", N_("Seek Backward"), N_("Seek Backward"), sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_time),Time(-1)) },
+		{"seek-next-second",    sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_time),Time(1)) },
+		{"seek-prev-second",    sigc::bind(sigc::mem_fun(*canvas_interface(), &CanvasInterface::seek_time),Time(-1)) },
 
-		{"seek-end",   "animate_seek_end_icon",   N_("Seek to End"),   "", sigc::mem_fun(*this, &CanvasView::on_seek_end_pressed) },
-		{"seek-begin", "animate_seek_begin_icon", N_("Seek to Begin"), "", sigc::mem_fun(*this, &CanvasView::on_seek_begin_pressed) },
+		{"seek-end",            sigc::mem_fun(*this, &CanvasView::on_seek_end_pressed) },
+		{"seek-begin",          sigc::mem_fun(*this, &CanvasView::on_seek_begin_pressed) },
 
-		{"jump-next-keyframe", "animate_seek_next_keyframe_icon", N_("Seek to Next Keyframe"),      "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_next_keyframe) },
-		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", N_("Seek to Previous Keyframe") , "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_prev_keyframe) },
+		{"jump-next-keyframe",  sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_next_keyframe) },
+		{"jump-prev-keyframe",  sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_prev_keyframe) },
+	};
 
+	struct BoolActionMetadata {
+		std::string name;
+		bool (WorkArea::*slot_to_get)(void) const;
+		void (CanvasView::*slot_to_toogle)(void);
+	};
+
+	static const std::vector<BoolActionMetadata> bool_action_list = {
+		{"toggle-rulers-show",          &WorkArea::get_show_rulers,          &CanvasView::toggle_show_ruler },
+		{"toggle-grid-show",            &WorkArea::grid_status,              &CanvasView::toggle_show_grid },
+		{"toggle-grid-snap",            &WorkArea::get_grid_snap,            &CanvasView::toggle_snap_grid },
+		{"toggle-guide-show",           &WorkArea::get_show_guides,          &CanvasView::toggle_show_guides },
+		{"toggle-guide-snap",           &WorkArea::get_guide_snap,           &CanvasView::toggle_snap_guides },
+		{"toggle-low-res",              &WorkArea::get_low_resolution_flag,  &CanvasView::toggle_low_res_pixel_flag },
+		{"toggle-background-rendering", &WorkArea::get_background_rendering, &CanvasView::toggle_background_rendering },
+		{"toggle-onion-skin",           &WorkArea::get_onion_skin,           &CanvasView::toggle_onion_skin },
+		{"toggle-onion-skin-keyframes", &WorkArea::get_onion_skin_keyframes, &CanvasView::toggle_onion_skin_keyframes },
+		{"toggle-keyframe-lock-past",   &WorkArea::get_keyframe_lock_past,   &CanvasView::toggle_past_keyframe_button },
+		{"toggle-keyframe-lock-future", &WorkArea::get_keyframe_lock_future, &CanvasView::toggle_future_keyframe_button },
+	};
+
+	struct DuckActionMetaData {
+		std::string action;
+		Duck::Type type;
+		const char* label;
+	};
+
+	static const std::vector<DuckActionMetaData> duck_action_list = {
+		{"mask-position-ducks",            Duck::TYPE_POSITION,            N_("Show Position Handles")},
+		{"mask-tangent-ducks",             Duck::TYPE_TANGENT,             N_("Show Tangent Handles")},
+		{"mask-vertex-ducks",              Duck::TYPE_VERTEX,              N_("Show Vertex Handles")},
+		{"mask-radius-ducks",              Duck::TYPE_RADIUS,              N_("Show Radius Handles")},
+		{"mask-width-ducks",               Duck::TYPE_WIDTH,               N_("Show Width Handles")},
+		{"mask-widthpoint-position-ducks", Duck::TYPE_WIDTHPOINT_POSITION, N_("Show WidthPoint Position Handles")},
+		{"mask-angle-ducks",               Duck::TYPE_ANGLE,               N_("Show Angle Handles")},
+		{"mask-bone-recursive-ducks",      Duck::TYPE_BONE_RECURSIVE,      N_("Show Recursive Scale Bone Handles")},
 	};
 
 	action_group = Gtk::ActionGroup::create("canvasview");
 	action_group_ = Gio::SimpleActionGroup::create();
 
+	// Regular actions
 	for (const auto& item : action_list) {
-		if (!item.icon.empty()) {
-			action_group->add( Gtk::Action::create_with_icon_name(item.name, item.icon, _(item.label.c_str()), _(item.tooltip.c_str())),
+		try {
+		const auto entry = App::get_action_database()->get("doc." + item.name);
+		const auto tooltip = entry.get_tooltip(App::instance());
+		if (!entry.icon_.empty()) {
+			action_group->add(
+				Gtk::Action::create_with_icon_name(item.name, entry.icon_, _(entry.get_label().c_str()), _(tooltip.c_str())),
 				item.slot
 			);
 		} else {
-			action_group->add( Gtk::Action::create(item.name, _(item.label.c_str()), _(item.tooltip.c_str())), item.slot);
+			action_group->add( Gtk::Action::create(item.name, _(entry.get_label().c_str()), _(tooltip.c_str())), item.slot);
 		}
+		} catch (...) {
+			synfig::error("couldn't get action '%s' from database", item.name.c_str());
+		}
+
+		action_group_->add_action(item.name, item.slot);
 	}
 
 	// Prevent call to preview window before preview option has created the preview window
 	action_group->get_action("dialog-flipbook")->set_sensitive(false);
-
-	// Plug-ins actions and menu
-	auto instance = get_instance().get();
-	for (const auto& plugin : App::plugin_manager.plugins()) {
-		const std::string id = plugin.id;
-		const std::string action_name = "run-plugin-" + id;
-		if (first_time)
-			App::get_action_database()->add(ActionDatabase::Entry{"doc." + action_name, plugin.name.get(), "", "", plugin.description.get()});
-		action_group_->add_action(action_name, [instance, id](){ instance->run_plugin(id, true); });
-	}
-	auto run_plugin_vrb = [](const Glib::VariantBase& v, studio::Instance* instance) {
-		const Glib::Variant<Glib::ustring> id = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(v);
-		if (!id) {
-			synfig::error(_("Plugin ID must be a string"));
-		} else {
-			instance->run_plugin(id.get(), true);
-		}
-	};
-	action_group_->add_action_with_parameter("run-plugin", Glib::VARIANT_TYPE_STRING, sigc::bind(run_plugin_vrb, instance));
+	action_group_->lookup_action("dialog-flipbook")->set_property("enabled", false);
 
 	// Low-Res Quality Menu
 	for (int i : get_pixel_sizes()) {
@@ -1473,39 +1633,32 @@ CanvasView::init_menus()
 			sigc::bind(sigc::mem_fun(*work_area, &WorkArea::set_low_res_pixel_size), i) );
 	}
 
-	struct BoolActionMetadata {
-		std::string name;
-		std::string icon;
-		std::string label;
-		std::string tooltip;
-		bool (WorkArea::*slot_to_get)(void) const;
-		void (CanvasView::*slot_to_toogle)(void);
-	};
+	const int initial_low_res_pixel_size = 2;
+	action_group_->add_action_radio_integer("set-low-res-pixel-size",
+		sigc::track_obj([=](int n) {
+			action_group_->lookup_action("set-low-res-pixel-size")->change_state(n);
+			work_area->set_low_res_pixel_size(n);
+		}, *this), initial_low_res_pixel_size);
+	work_area->set_low_res_pixel_size(initial_low_res_pixel_size);
 
-	static const std::vector<BoolActionMetadata> bool_action_list = {
-		{"toggle-rulers-show",          "",                          N_("Show Rulers"),             "", &WorkArea::get_show_rulers, &CanvasView::toggle_show_ruler },
-		{"toggle-grid-show",            "show_grid_icon",            N_("Show Grid"),               "", &WorkArea::grid_status, &CanvasView::toggle_show_grid },
-		{"toggle-grid-snap",            "snap_grid_icon",            N_("Snap to Grid"),            "", &WorkArea::get_grid_snap, &CanvasView::toggle_snap_grid },
-		{"toggle-guide-show",           "show_guideline_icon",       N_("Show Guides"),             "", &WorkArea::get_show_guides, &CanvasView::toggle_show_guides },
-		{"toggle-guide-snap",           "snap_guideline_icon",       N_("Snap to Guides"),          "", &WorkArea::get_guide_snap, &CanvasView::toggle_snap_guides },
-		{"toggle-low-res",              "",                          N_("Use Low-Res"),             "", &WorkArea::get_low_resolution_flag, &CanvasView::toggle_low_res_pixel_flag },
-		{"toggle-background-rendering", "background_rendering_icon", N_("Enable rendering in background"), "", &WorkArea::get_background_rendering, &CanvasView::toggle_background_rendering },
-		{"toggle-onion-skin",           "onion_skin_icon",           N_("Show Onion Skin"),         "", &WorkArea::get_onion_skin, &CanvasView::toggle_onion_skin },
-		{"toggle-onion-skin-keyframes", "keyframe_icon",             N_("Onion Skin on Keyframes"), "", &WorkArea::get_onion_skin_keyframes, &CanvasView::toggle_onion_skin_keyframes },
-		{"toggle-keyframe-lock-past",   "keyframe_lock_past_on_icon",   N_("Lock Past Keyframes"),    "", &WorkArea::get_keyframe_lock_past, &CanvasView::toggle_past_keyframe_button },
-		{"toggle-keyframe-lock-future", "keyframe_lock_future_on_icon", N_("Lock Future Keyframes"),  "", &WorkArea::get_keyframe_lock_future, &CanvasView::toggle_future_keyframe_button },
-	};
-
+	// Boolean actions
 	for (const auto& item : bool_action_list) {
-		bool current_value = (work_area->*item.slot_to_get)();
+		const bool current_value = (work_area->*item.slot_to_get)();
+		try {
 
-		auto action = Gtk::ToggleAction::create(item.name, _(item.label.c_str()));
+		const auto entry = App::get_action_database()->get("doc." + item.name);
+		auto action = Gtk::ToggleAction::create(item.name, _(entry.label_.c_str()));
 		action->set_active(current_value);
-		if (!item.icon.empty())
-			action->set_icon_name(item.icon);
-		if (!item.tooltip.empty())
-			action->set_tooltip(_(item.tooltip.c_str()));
+		if (!entry.icon_.empty())
+			action->set_icon_name(entry.icon_);
+		if (!entry.tooltip_.empty())
+			action->set_tooltip(_(entry.tooltip_.c_str()));
 		action_group->add(action, sigc::mem_fun(*this, item.slot_to_toogle));
+
+		} catch (...) {
+			synfig::error("couldn't get boolean action '%s' from database", item.name.c_str());
+		}
+		action_group_->add_action_bool(item.name, sigc::mem_fun(*this, item.slot_to_toogle), current_value);
 	}
 	work_area->set_show_rulers(work_area->get_show_rulers());
 
@@ -1520,28 +1673,31 @@ CanvasView::init_menus()
 	past_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-keyframe-lock-past"));
 	future_keyframes_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-keyframe-lock-future"));
 
+	// Plug-ins actions and menu
+	auto instance = get_instance().get();
+	for (const auto& plugin : App::plugin_manager.plugins()) {
+		const std::string id = plugin.id;
+		const std::string action_name = "run-plugin-" + id;
+		action_group_->add_action(action_name, [instance, id](){ instance->run_plugin(id, true); });
+	}
+	auto run_plugin_vrb = [](const Glib::VariantBase& v, studio::Instance* instance) {
+		const Glib::Variant<Glib::ustring> id = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(v);
+		if (!id) {
+			synfig::error(_("Plugin ID must be a string"));
+		} else {
+			instance->run_plugin(id.get(), true);
+		}
+	};
+	action_group_->add_action_with_parameter("run-plugin", Glib::VARIANT_TYPE_STRING, sigc::bind(run_plugin_vrb, instance));
+
+	// Actions for enabling/disabling handles/ducks
 	{
 		Glib::RefPtr<Gtk::ToggleAction> action;
 		// toggle none/last visible
 		action= Gtk::ToggleAction::create("mask-none-ducks", _("Toggle None/Last visible Handles"));
 		action->set_active(false);
 		action_group->add(action,  sigc::mem_fun(*this,&CanvasView::toggle_duck_mask_all));
-		struct DuckActionMetaData {
-			std::string action;
-			Duck::Type type;
-			const char* label;
-		};
-
-		static const std::vector<DuckActionMetaData> duck_action_list = {
-			{"mask-position-ducks",            Duck::TYPE_POSITION,            N_("Show Position Handles")},
-			{"mask-tangent-ducks",             Duck::TYPE_TANGENT,             N_("Show Tangent Handles")},
-			{"mask-vertex-ducks",              Duck::TYPE_VERTEX,              N_("Show Vertex Handles")},
-			{"mask-radius-ducks",              Duck::TYPE_RADIUS,              N_("Show Radius Handles")},
-			{"mask-width-ducks",               Duck::TYPE_WIDTH,               N_("Show Width Handles")},
-			{"mask-widthpoint-position-ducks", Duck::TYPE_WIDTHPOINT_POSITION, N_("Show WidthPoint Position Handles")},
-			{"mask-angle-ducks",               Duck::TYPE_ANGLE,               N_("Show Angle Handles")},
-			{"mask-bone-recursive-ducks",      Duck::TYPE_BONE_RECURSIVE,      N_("Show Recursive Scale Bone Handles")},
-		};
+		action_group_->add_action("mask-none-ducks", sigc::mem_fun(*this, &CanvasView::toggle_duck_mask_all));
 
 		for (const auto& item : duck_action_list) {
 			bool duck_active = work_area->get_type_mask() & item.type;
@@ -1551,17 +1707,19 @@ CanvasView::init_menus()
 			action=Gtk::ToggleAction::create(item.action, _(item.label));
 			action->set_active(duck_active);
 			action_group->add(action, duck_slot);
+			action_group_->add_action_bool(item.action, duck_slot, duck_active);
 		}
+		// maybe create parameter action doc.toggle-mask-duck() instead?
+
 		action_mask_bone_setup_ducks = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("mask-angle-ducks"));
 		action_mask_bone_recursive_ducks = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("mask-bone-recursive-ducks"));
 
 		action_group->add(Gtk::Action::create("mask-bone-ducks", _("Next Bone Handles")),
 						  sigc::mem_fun(*this,&CanvasView::mask_bone_ducks));
+		action_group_->add_action("mask-bone-ducks", sigc::mem_fun(*this, &CanvasView::mask_bone_ducks));
 	}
 
 	insert_action_group("doc", action_group_);
-
-	first_time = false;
 }
 
 void
@@ -3362,6 +3520,7 @@ CanvasView::on_preview_create(const PreviewInfo &info)
 	{
 		Glib::RefPtr< Gtk::Action > action = action_group->get_action("dialog-flipbook");
 		action->set_sensitive(true);
+		action_group_->lookup_action("dialog-flipbook")->set_property("enabled", true);
 	}
 
 }

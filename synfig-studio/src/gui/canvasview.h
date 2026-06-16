@@ -423,6 +423,8 @@ private:
 	// Constructor is private to force the use of the "create()" constructor
 	CanvasView(etl::loose_handle<Instance> instance,etl::handle<synfigapp::CanvasInterface> canvas_interface);
 
+	void register_doc_actions();
+
 	//! Constructor Helper - Initializes all of the menus
 	void init_menus();
 

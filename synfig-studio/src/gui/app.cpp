@@ -1115,7 +1115,7 @@ DEFINE_ACTION("canvas-zoom-fit-2",  Gtk::StockID("gtk-zoom-fit"))
 
 // actions in Canvas menu
 DEFINE_ACTION("properties",     _("Properties..."))
-DEFINE_ACTION("options",        _("Options..."))
+DEFINE_ACTION("show-canvas-options",        _("Options..."))
 DEFINE_ACTION("resize-canvas",  _("Resize..."))
 
 // actions in Window menu
@@ -1246,7 +1246,7 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 "	</menu>"
 "	<menu action='menu-canvas'>"
 "		<menuitem action='properties'/>"
-"		<menuitem action='options'/>"
+"		<menuitem action='show-canvas-options'/>"
 "		<menuitem action='resize-canvas'/>"
 "	</menu>"
 "	<menu action='menu-toolbox'>"
@@ -1384,7 +1384,7 @@ App::get_default_accel_map()
 		{"F9",                      "<Actions>/canvasview/render"},
 		{"F11",                     "<Actions>/canvasview/preview"},
 		{"F8",                      "<Actions>/canvasview/properties"},
-		{"F12",                     "<Actions>/canvasview/options"},
+		{"F12",                     "<Actions>/canvasview/show-canvas-options"},
 		{"<control>i",              "<Actions>/canvasview/import"},
 		{"numbersign",              "<Actions>/canvasview/toggle-grid-show"},
 		{"<Control>l",              "<Actions>/canvasview/toggle-grid-snap"},
