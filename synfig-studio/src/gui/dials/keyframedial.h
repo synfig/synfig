@@ -35,6 +35,7 @@
 
 #include <gtkmm/box.h>
 #include <gtkmm/togglebutton.h>
+
 #include <synfigapp/editmode.h>
 
 /* === M A C R O S ========================================================= */
@@ -48,15 +49,19 @@ namespace studio
 
 class KeyFrameDial : public Gtk::Box
 {
-	Gtk::ToggleButton *toggle_keyframe_past;
-	Gtk::ToggleButton *toggle_keyframe_future;
+	Gtk::ToggleButton toggle_keyframe_past;
+	Gtk::ToggleButton toggle_keyframe_future;
 
 public:
+	/**
+	 * @param action_prefix if empty, it doesn't use Gio::Actions. In this case, rely on the signal_*() methods
+	 */
+	KeyFrameDial(const std::string& action_prefix);
 
-	KeyFrameDial();
 	void on_mode_changed(synfigapp::EditMode mode); // Updates button icons/state
-	Glib::SignalProxy0<void> signal_toggle_keyframe_past() { return toggle_keyframe_past->signal_toggled(); }
-	Glib::SignalProxy0<void> signal_toggle_keyframe_future() { return toggle_keyframe_future->signal_toggled(); }
+
+	Glib::SignalProxy0<void> signal_toggle_keyframe_past() { return toggle_keyframe_past.signal_toggled(); }
+	Glib::SignalProxy0<void> signal_toggle_keyframe_future() { return toggle_keyframe_future.signal_toggled(); }
 
 }; // END of class KeyFrameDial
 

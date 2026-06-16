@@ -904,9 +904,7 @@ CanvasView::create_time_bar()
 	separator->show();
 
 	//Setup the KeyFrameDial widget
-	keyframedial = Gtk::manage(new KeyFrameDial());
-	keyframedial->signal_toggle_keyframe_past().connect(sigc::mem_fun(*this, &CanvasView::toggle_past_keyframe_button));
-	keyframedial->signal_toggle_keyframe_future().connect(sigc::mem_fun(*this, &CanvasView::toggle_future_keyframe_button));
+	keyframedial = Gtk::manage(new KeyFrameDial("doc"));
 	keyframedial->set_margin_start(4);
 	keyframedial->set_margin_end(4);
 	keyframedial->show();
