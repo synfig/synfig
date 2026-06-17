@@ -45,10 +45,10 @@ public:
     synfig::ValueBase get_param(const synfig::String &param) const override;  
     synfig::Layer::Vocab get_param_vocab() const override;  
     synfig::String get_local_name() const override;
-            
+    
 private:  
     void sync_glyphs();
-	void update_wave_offsets(synfig::Time time) const;    
+	void update_wave_offsets(synfig::Time time, bool force_sync_after = false) const;    
     // void new_font(const synfig::String &family, int style, int weight);
 protected:
     void on_canvas_set() override;     

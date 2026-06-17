@@ -78,7 +78,9 @@ void Layer_GlyphShape::set_glyph_chunks(const rendering::Contour::ChunkList& chu
 
 void Layer_GlyphShape::set_wave_offset(const Vector& v)
 {
-   wave_offset_ = v;
+   if (wave_offset_ != v) {  
+        wave_offset_ = v;  
+	}  
 }
   
 void Layer_GlyphShape::sync_vfunc()  
@@ -137,113 +139,90 @@ Layer_TextGroup::get_local_name() const
 }  
   
 bool  
-Layer_TextGroup::set_param(const String& param, const ValueBase& value)  
+ Layer_TextGroup::set_param(const String& param, const ValueBase& value)  
 {  
-    if (param == "text" && value.can_get(String())) 
-    {   
-        param_text = value;  
-        sync_glyphs();  
-        return true;  
-    }  
-    if (param == "family" && value.can_get(String())) {  
-        param_family = value;
-        sync_glyphs();  
-        return true;  
-    }  
-    if (param == "style" && value.can_get(int())) {  
-        param_style = value;  
-		sync_glyphs();  
-        return true;  
-    }  
-    if (param == "weight" && value.can_get(int())) {  
-        param_weight = value;  
-    	sync_glyphs();  
-        return true;  
-    }  
-    if (param == "size" && value.can_get(Vector())) {  
-        param_size = value;  
-        sync_glyphs();  
-        return true;  
-    }  
-    if (param == "direction" && value.can_get(int()))
-	{
-    	param_direction = value;
-    	sync_glyphs();
-    	return true;
-	}
-
-	if (param == "color" && value.can_get(Color()))
-	{
-    	param_color = value;
-    	sync_glyphs();
-    	return true;
-	}
-
-	if (param == "compress" && value.can_get(Real(1.0)))
-	{
-    	param_compress = value;
-    	sync_glyphs();
-    	return true;
-	}
-
-	if (param == "vcompress" && value.can_get(Real(1.0)))
-	{
-    	param_vcompress = value;
-    	sync_glyphs();
-    	return true;
-	}
-
-	if (param == "orient" && value.can_get(Vector()))
-	{
-    	param_orient = value;
-    	sync_glyphs();
-    	return true;
-	}
-
-	if (param == "use_kerning" && value.can_get(bool()))
-	{
-    	param_use_kerning = value;
-    	sync_glyphs();
-    	return true;
-	}
-
-	if (param == "grid_fit" && value.can_get(bool()))
-	{
-    	param_grid_fit = value;
-    	sync_glyphs();
-    	return true;
-	}
-
-	if (param == "invert" && value.can_get(bool()))
-	{
-    	param_invert = value;
-    	sync_glyphs();
-    	return true;
-	}
-
-	if (param == "font" && value.can_get(String()))
-	{
-    	param_font = value;
-    	sync_glyphs();
-    	return true;
-	} 
-
-	IMPORT_VALUE_PLUS(param_stagger_delay, {  
-    	changed();  
-    });  
-	IMPORT_VALUE_PLUS(param_wave_amplitude, {  
-    	changed();  
-	});  
-	IMPORT_VALUE_PLUS(param_wave_period, {  
-    	changed();  
-	});  
-
-	return Layer_PasteCanvas::set_param(param, value);
       
-} 
+    IMPORT_VALUE_PLUS(param_text,{ 
+        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        sync_glyphs(); 
+    });
+    
+    IMPORT_VALUE_PLUS(param_family,{ 
+        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        sync_glyphs(); 
+    });
+    
+    IMPORT_VALUE_PLUS(param_style,{ 
+        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        sync_glyphs(); 
+    });
+    
+    IMPORT_VALUE_PLUS(param_weight,{ 
+        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        sync_glyphs(); 
+    }); 
+    
+    IMPORT_VALUE_PLUS(param_size,{ 
+        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        sync_glyphs(); 
+    });
+    
+    IMPORT_VALUE_PLUS(param_direction,{ 
+        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        sync_glyphs(); 
+    });
+    
+    IMPORT_VALUE_PLUS(param_color,{ 
+        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        sync_glyphs(); 
+    });
+    
+    IMPORT_VALUE_PLUS(param_compress,{
+        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        sync_glyphs(); 
+    }); 
+    
+    IMPORT_VALUE_PLUS(param_vcompress,{ 
+        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        sync_glyphs(); 
+    });
+    
+    IMPORT_VALUE_PLUS(param_orient,{ 
+        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        sync_glyphs(); 
+    });
+    
+    IMPORT_VALUE_PLUS(param_font, { 
+        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        sync_glyphs(); 
+    });  
+  
+    // Params requiring glyph rebuild but no real-time refresh needed:  
+    IMPORT_VALUE_PLUS(param_use_kerning, sync_glyphs());  
+    IMPORT_VALUE_PLUS(param_grid_fit,    sync_glyphs());  
+    IMPORT_VALUE_PLUS(param_invert,      sync_glyphs());  
+  
+    // Wave animation params  
+    IMPORT_VALUE_PLUS(param_stagger_delay,{ 
+        update_wave_offsets(get_time_mark(), true); 
+        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+    });  
+    IMPORT_VALUE_PLUS(param_wave_amplitude,{ 
+        update_wave_offsets(get_time_mark(), true); 
+        if (get_canvas()) get_canvas()->signal_force_refresh()();
+    });  
+    IMPORT_VALUE_PLUS(param_wave_period,{ 
+        update_wave_offsets(get_time_mark(), true); 
+        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+    });  
+  
+    return Layer_PasteCanvas::set_param(param, value);  
+}
 
 bool Layer_GlyphShape::set_param(const String &param, const ValueBase &value)  
 {  
+    if (param == "origin")  //loadcanvas.cpp renames "offset" -> "origin" for all layers.
+        return true;        //which would store world_pos into param_origin and cause double-offset at render.
     IMPORT_VALUE(param_rotation);  
     IMPORT_VALUE(param_scale);  
 	IMPORT_VALUE(param_offset);    
@@ -278,8 +257,8 @@ Layer_TextGroup::get_param(const String& param) const
 ValueBase Layer_GlyphShape::get_param(const String &param) const  
 {  
     EXPORT_VALUE(param_rotation);  
-    EXPORT_VALUE(param_scale);  
-    EXPORT_VALUE(param_offset);
+    EXPORT_VALUE(param_scale);
+    EXPORT_VALUE(param_offset); 
     EXPORT_NAME();  
     EXPORT_VERSION();  
     return Layer_Shape::get_param(param);  
@@ -454,7 +433,8 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
     return task;  
 }
 
-void Layer_TextGroup::update_wave_offsets(Time time) const  
+
+void Layer_TextGroup::update_wave_offsets(Time time, bool force_sync_after) const  
 {  
     Canvas::Handle canvas = get_sub_canvas();  
     if (!canvas) return;  
@@ -477,6 +457,10 @@ void Layer_TextGroup::update_wave_offsets(Time time) const
                                               / (double)wave_period);  
 
         gl->set_wave_offset(wave_off);  
+        if (force_sync_after){  
+            gl->force_sync();
+            gl->changed();
+        }  
     }  
 }
 
@@ -485,8 +469,8 @@ void Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) cons
     context.set_time(time);  
     Canvas::Handle canvas = get_sub_canvas();  
     if (!canvas) return;  
-    update_wave_offsets(time);
-    
+    update_wave_offsets(time, false);
+        
     Time stagger  = param_stagger_delay.get(Time());
     Real dilation = get_time_dilation();
     Time toffset  = get_time_offset(); 
@@ -495,7 +479,7 @@ void Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) cons
     for (auto iter = canvas->begin(); iter != canvas->end(); ++iter, ++i) {  
         Time glyph_time = time * dilation + toffset + Time(i * (double)stagger);  
 
-		(*iter)->set_time(IndependentContext(canvas->begin()), glyph_time);  
+		(*iter)->set_time(IndependentContext(canvas->end()), glyph_time);  		
            
 	}  
 }
@@ -513,6 +497,7 @@ Layer_GlyphShape::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid
 void  
 Layer_TextGroup::sync_glyphs()  
 {  
+    if (param_text.get(String()).empty()) return;
     std::string text = param_text.get(std::string());  
   
     FT_Face face = Layer_Freetype::load_font_static(  
@@ -568,7 +553,7 @@ Layer_TextGroup::sync_glyphs()
   
     std::vector<std::vector<GlyphData>> line_glyphs;  
     std::vector<Real> line_widths;     
-    Real initial_y = 0;                
+    const Real initial_y = Real(face->ascender);                
   
     Vector line_start(0, 0);           
   
@@ -609,16 +594,7 @@ Layer_TextGroup::sync_glyphs()
                     FT_OutlineGlyph og =  
                         reinterpret_cast<FT_OutlineGlyph>(ftglyph);  
                     Layer_Freetype::convert_outline_to_contours(og, outline);  
-                    // Layer_Freetype::shift_contour_chunks(outline, offset);  
-  					
-                    if (line_glyphs.empty() && cur_line.empty())  
-                    {  
-                        FT_BBox bbox;  
-                        FT_Glyph_Get_CBox(ftglyph,  
-                            ft_glyph_bbox_subpixels, &bbox);  
-                        initial_y = std::max(initial_y, Real(bbox.yMax));  
-                    }  
-  
+                      
                     if (!outline.empty())  
                         cur_line.push_back({outline, charcode, offset});  
                 }  
@@ -707,11 +683,11 @@ Layer_TextGroup::sync_glyphs()
 
     // TODO:
     // Current synchronization preserves glyph layers
-//  //using glyph descriptions/characters.
-//
-//  //This works for simple text edits but does not
-//  //provide stable identity for ligatures, glyph
-//  //substitutions, or complex-script shaping.
+ 	//using glyph descriptions/characters.
+
+ 	//This works for simple text edits but does not
+ 	//provide stable identity for ligatures, glyph
+ 	//substitutions, or complex-script shaping.
     //
     // Future implementation should use HarfBuzz
     // cluster information to maintain stable glyph
