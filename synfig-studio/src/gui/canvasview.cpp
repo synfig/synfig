@@ -864,41 +864,10 @@ CanvasView::create_time_bar()
 	current_time_widget->show();
 
 	//Setup the FrameDial widget
-	framedial = manage(new class FrameDial());
+	framedial = manage(new FrameDial("doc"));
 	//Setup end time widget
 	framedial->set_end_time(get_canvas()->rend_desc().get_frame_rate(), get_canvas()->rend_desc().get_time_end());
 
-	framedial->signal_seek_begin().connect(
-		sigc::mem_fun(*this, &CanvasView::on_seek_begin_pressed) );
-	framedial->signal_seek_prev_keyframe().connect(
-		sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::jump_to_prev_keyframe));
-	framedial->signal_seek_prev_frame().connect(
-		sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_frame), -1));
-	framedial->signal_play().connect(
-		sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed));
-	framedial->signal_pause().connect(
-		sigc::mem_fun(*this, &CanvasView::on_play_pause_pressed));
-	framedial->signal_seek_next_frame().connect(
-		sigc::bind(sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::seek_frame), 1));
-	framedial->signal_seek_next_keyframe().connect(
-		sigc::mem_fun(*canvas_interface().get(), &CanvasInterface::jump_to_next_keyframe));
-	framedial->signal_seek_end().connect(
-		sigc::mem_fun(*this, &CanvasView::on_seek_end_pressed) );
-	framedial->signal_end_time_changed().connect(
-		sigc::mem_fun(*this,&CanvasView::on_set_end_time_widget_changed));
-	framedial->signal_repeat().connect(
-		sigc::mem_fun(*time_model(), &TimeModel::set_play_repeat));
-	framedial->signal_bounds_enable().connect(
-		sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_enabled));
-	framedial->signal_bound_lower().connect(
-		sigc::bind(sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_enabled), true));
-	framedial->signal_bound_lower().connect(
-		sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_lower_to_current));
-	framedial->signal_bound_upper().connect(
-		sigc::bind(sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_enabled), true));
-	framedial->signal_bound_upper().connect(
-		sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_upper_to_current));
-	framedial->show();
 
 	Gtk::Separator *separator = manage(new Gtk::Separator());
 	separator->show();
@@ -1278,7 +1247,10 @@ CanvasView::register_doc_actions()
 		{"seek-begin",         "animate_seek_begin_icon",         "<Primary><Shift>less",    N_("Seek to Begin"), N_("Seek to Begin") },
 
 		{"jump-next-keyframe", "animate_seek_next_keyframe_icon", "bracketright",            N_("Seek to Next Keyframe"),      N_("Seek to next keyframe") },
-		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", "bracketleft",             N_("Seek to Previous Keyframe") , N_("Seek to previous keyframe") },
+		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", "bracketleft",             N_("Seek to Previous Keyframe"),  N_("Seek to previous keyframe") },
+
+		{"set-lower-bound",    "animate_bound_lower_icon",        "",                        N_("Set lower playback bound"),   N_("Set when the animation starts - including when in loop")},
+		{"set-upper-bound",    "animate_bound_upper_icon",        "",                        N_("Set upper playback bound"),   N_("Set when the animation ends - or when it resets when in loop")},
 	};
 
 	struct BoolActionMetadata {
@@ -1303,6 +1275,8 @@ CanvasView::register_doc_actions()
 		{"toggle-keyframe-lock-future", "keyframe_lock_future_on_icon","<Control>Right", N_("Lock Future Keyframes"), N_("When a parameter is changed, waypoints will be created in the immediately following keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode.") },
 		{"toggle-timebar",              "time_track_icon",           "",               N_("Show Timebar"),           N_("Show Timebar below the canvas when enabled") },
 		{"toggle-animate-mode",         "animate_mode_off_icon",     "<Primary>space", N_("Enable animation"), N_("Turn on animate editing mode")},
+		{"toggle-animation-loop",       "animate_loop_icon",         "",               N_("Loop"),                    N_("Restart animation when it ends")},
+		{"toggle-animation-bounds",     "animate_bounds_icon",       "",               N_("Enable animation bounds"), N_("Enable playback bounds")},
 	};
 
 	struct DuckActionMetaData {
@@ -1419,6 +1393,9 @@ CanvasView::init_menus()
 
 		{"jump-next-keyframe",  sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_next_keyframe) },
 		{"jump-prev-keyframe",  sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_prev_keyframe) },
+
+		{"set-lower-bound",     sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_lower_to_current)},
+		{"set-upper-bound",     sigc::mem_fun(*time_model(), &TimeModel::set_play_bounds_upper_to_current)},
 	};
 
 	struct BoolActionMetadata {
@@ -1529,6 +1506,8 @@ CanvasView::init_menus()
 	// Other boolean actions
 	action_group_->add_action_bool("toggle-timebar", sigc::mem_fun(*this, &CanvasView::toggle_timetrackbutton), false);
 	action_group_->add_action_bool("toggle-animate-mode", sigc::mem_fun(*this, &CanvasView::toggle_animatebutton), false);
+	action_group_->add_action_bool("toggle-animation-loop", sigc::mem_fun(*this, &CanvasView::on_animation_loop_toggled), false);
+	action_group_->add_action_bool("toggle-animation-bounds", sigc::mem_fun(*this, &CanvasView::on_animation_bounds_toggled), false);
 	work_area->set_show_rulers(work_area->get_show_rulers());
 
 	rulers_show_toggle = Glib::RefPtr<Gtk::ToggleAction>::cast_static(action_group->get_action("toggle-rulers-show"));
@@ -2141,6 +2120,18 @@ CanvasView::toggle_timetrackbutton()
 		timetrack->set_visible(true);
 	else
 		timetrack->set_visible(false);
+}
+
+void
+CanvasView::on_animation_loop_toggled()
+{
+	time_model_->set_play_repeat(!time_model_->get_play_repeat());
+}
+
+void
+CanvasView::on_animation_bounds_toggled()
+{
+	time_model_->set_play_bounds_enabled(!time_model_->get_play_bounds_enabled());
 }
 
 void

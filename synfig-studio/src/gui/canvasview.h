@@ -471,6 +471,8 @@ private:
 
 	void toggle_animatebutton();
 	void toggle_timetrackbutton();
+	void on_animation_loop_toggled();
+	void on_animation_bounds_toggled();
 
 	void toggle_render_combobox();
 
