@@ -34,9 +34,13 @@
 #endif
 
 #include "zoomdial.h"
+
 #include <gtkmm/image.h>
 #include <gtkmm/stock.h>
 
+#include <gui/actiondatabase.h>
+#include <gui/actionwidgethelper.h>
+#include <gui/app.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
 
@@ -55,13 +59,30 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-ZoomDial::ZoomDial(Gtk::IconSize & size):
-	Gtk::Grid()
+ZoomDial::ZoomDial(const std::string& action_prefix)
+	: Gtk::Grid()
 {
-	zoom_in = create_icon(size, "zoom-in", _("Zoom In"));
-	zoom_out = create_icon(size, "zoom-out", _("Zoom Out"));
-	zoom_fit = create_icon(size, "zoom-fit-best", _("Zoom to Fit"));
-	zoom_norm = create_icon(size, "zoom-original", _("Zoom to 100%"));
+	const std::string action_zoom_in  = action_prefix.empty() ? "" : action_prefix + "." + "canvas-zoom-in";
+	const std::string action_zoom_out = action_prefix.empty() ? "" : action_prefix + "." + "canvas-zoom-out";
+	const std::string action_zoom_fit = action_prefix.empty() ? "" : action_prefix + "." + "canvas-zoom-fit";
+	const std::string action_zoom_100 = action_prefix.empty() ? "" : action_prefix + "." + "canvas-zoom-100";
+
+	if (App::get_action_database()->has(action_zoom_in)) {
+		zoom_in = ActionWidgetHelper::create_action_button(action_zoom_in);
+		zoom_out = ActionWidgetHelper::create_action_button(action_zoom_out);
+		zoom_fit = ActionWidgetHelper::create_action_button(action_zoom_fit);
+		zoom_norm = ActionWidgetHelper::create_action_button(action_zoom_100);
+	} else {
+		zoom_in = ActionWidgetHelper::create_action_button(action_zoom_in, "zoom-in", "", _("Zoom In"));
+		zoom_out = ActionWidgetHelper::create_action_button(action_zoom_out, "zoom-out", "", _("Zoom Out"));
+		zoom_fit = ActionWidgetHelper::create_action_button(action_zoom_fit, "zoom-fit-best", "", _("Zoom to Fit"));
+		zoom_norm = ActionWidgetHelper::create_action_button(action_zoom_100, "zoom-original", "", _("Zoom to 100%"));
+	}
+
+	zoom_in->set_relief(Gtk::RELIEF_NONE);
+	zoom_out->set_relief(Gtk::RELIEF_NONE);
+	zoom_fit->set_relief(Gtk::RELIEF_NONE);
+	zoom_norm->set_relief(Gtk::RELIEF_NONE);
 
 	current_zoom = manage(new Gtk::Entry());
 	set_zoom(1.0);
@@ -109,25 +130,6 @@ ZoomDial::current_zoom_event(GdkEvent* event)
 	}
 	return false;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
-}
-
-
-Gtk::Button *
-ZoomDial::create_icon(Gtk::IconSize size, const std::string & icon_name,
-		const char * tooltip)
-{
-	Gtk::Button *button = manage(new class Gtk::Button());
-	button->set_image_from_icon_name(icon_name, size);
-	button->set_tooltip_text(tooltip);
-	auto icon = button->get_image();
-	icon->set_margin_start(0);
-	icon->set_margin_end(0);
-	icon->set_margin_top(0);
-	icon->set_margin_bottom(0);
-	button->set_relief(Gtk::RELIEF_NONE);
-	button->show();
-
-	return button;
 }
 
 void

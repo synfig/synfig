@@ -237,12 +237,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	hscrollbar1->set_hexpand(true);
 	hscrollbar1->show();
 
-	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
-	zoomdial = manage(new ZoomDial(iconsize));
-	zoomdial->signal_zoom_in().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_in));
-	zoomdial->signal_zoom_out().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_out));
-	zoomdial->signal_zoom_fit().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_fit));
-	zoomdial->signal_zoom_norm().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_norm));
+	zoomdial = manage(new ZoomDial("doc"));
 	zoomdial->signal_zoom_edit().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_edit));
 	zoomdial->show();
 
