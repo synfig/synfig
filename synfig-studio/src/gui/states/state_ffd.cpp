@@ -47,6 +47,8 @@
 
 #include <synfig/general.h>
 #include <synfig/layers/layer_freeformdeform.h>
+#include <synfig/layers/layer_bitmap.h>
+#include <synfig/layers/layer_pastecanvas.h>
 
 #include <synfigapp/blineconvert.h>
 #include <synfigapp/main.h>
@@ -332,10 +334,8 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 		sigc::mem_fun(*this, &StateFFD_Context::reset));
 	mesh_mode_enum.signal_changed().connect(
 		sigc::mem_fun(*this, &StateFFD_Context::on_mesh_mode_changed));
-
-	// Update controls from current selection
+	
 	update_controls_from_layer();
-	on_mesh_mode_changed(); // Initialize sensitivity
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
@@ -413,6 +413,21 @@ StateFFD_Context::~StateFFD_Context()
 	get_work_area()->queue_draw();
 
 	App::dock_toolbox->refresh();
+}
+
+static bool
+switch_group_has_image(const synfig::Layer::Handle& switch_layer)
+{
+	using namespace synfig;
+	Layer_PasteCanvas::Handle pc = Layer_PasteCanvas::Handle::cast_dynamic(switch_layer);
+	if (!pc) return false;
+	Canvas::Handle sub = pc->get_sub_canvas();
+	if (!sub) return false;
+	for (IndependentContext i = sub->get_independent_context(); *i; ++i) {
+		if (Layer_Bitmap::Handle::cast_dynamic(*i))
+			return true;
+	}
+	return false;
 }
 
 synfig::Layer::Handle
@@ -511,7 +526,11 @@ StateFFD_Context::update_controls_from_layer()
 		}
 	} else {
 		editing_existing_mesh_ = false;
-		status_label.set_label(_("Creation Settings"));
+
+		// Check if the current selection is a switch group with an image
+		synfig::Layer::Handle sel = get_canvas_interface()->get_selection_manager()->get_selected_layer();
+		bool valid_target = (sel && sel->get_name() == "switch" && switch_group_has_image(sel));
+
 		grid_x_label.hide();
 		grid_x_spin.hide();
 		grid_y_label.hide();
@@ -522,12 +541,28 @@ StateFFD_Context::update_controls_from_layer()
 		edit_mesh_button.hide();
 		update_ffd_button.hide();
 
-		mesh_mode_label.show();
-		mesh_mode_enum.show();
-		on_mesh_mode_changed();
-		make_ffd_button.show();
-		clear_button.show();
-		get_work_area()->set_cursor(Gdk::CROSSHAIR);
+		if (valid_target) {
+			status_label.set_label(_("Switch Group with image selected"));
+			mesh_mode_label.show();
+			mesh_mode_enum.show();
+			on_mesh_mode_changed();
+			make_ffd_button.show();
+			clear_button.show();
+			get_work_area()->set_cursor(Gdk::CROSSHAIR);
+		} else {
+			status_label.set_label(_("Select a Switch Group with an image"));
+			mesh_mode_label.hide();
+			mesh_mode_enum.hide();
+			create_grid_x_label.hide();
+			create_grid_x_spin.hide();
+			create_grid_y_label.hide();
+			create_grid_y_spin.hide();
+			cull_threshold_label.hide();
+			cull_threshold_spin.hide();
+			make_ffd_button.hide();
+			clear_button.hide();
+			get_work_area()->set_cursor(Gdk::ARROW);
+		}
 	}
 }
 
@@ -1031,7 +1066,7 @@ StateFFD_Context::on_make_ffd_pressed()
 	synfig::Vector origin_offset(0,0);
 	synfig::Transformation layer_transform; // Automatically defaults to identity
 
-	if (selected && selected->get_name() == "switch") {
+	if (selected && selected->get_name() == "switch" && switch_group_has_image(selected)) {
 		synfig::Layer::Handle switch_layer = selected;
 		
 		if (switch_layer->get_param("origin").get_type() == synfig::type_vector) {
@@ -1117,10 +1152,15 @@ StateFFD_Context::on_make_ffd_pressed()
 
 			layer = get_canvas_interface()->add_layer_to("free_form_deform", child_canvas, 0);
 		} else {
-			layer = get_canvas_interface()->add_layer_to("free_form_deform", target_canvas, depth);
+			group.cancel();
+			return;
 		}
 	} else {
-		layer = get_canvas_interface()->add_layer_to("free_form_deform", target_canvas, depth);
+		// Not a switch group with an image — reject and inform the user
+		group.cancel();
+		get_canvas_view()->get_ui_interface()->error(
+			_("FFD requires a Switch Group that contains an image layer."));
+		return;
 	}
 
 	if (!layer) {
