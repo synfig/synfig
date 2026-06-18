@@ -926,32 +926,7 @@ StateFFD_Context::refresh_ducks()
 		std::vector<rendering::Mesh::Triangle> tris = synfig::Layer_FreeFormDeform::triangulate(pts);
 
 		// Apply Cull Threshold to Preview Mesh
-		synfig::Real cull_threshold = cull_threshold_adj->get_value();
-		if (cull_threshold > 0.0) {
-			synfig::Real cull_sq = cull_threshold * cull_threshold;
-			std::vector<rendering::Mesh::Triangle> culled_tris;
-			for (const auto& tri : tris) {
-				synfig::Point a = pts[tri.vertices[0]];
-				synfig::Point b = pts[tri.vertices[1]];
-				synfig::Point c = pts[tri.vertices[2]];
-				
-				synfig::Real D = 2.0 * (a[0]*(b[1]-c[1]) + b[0]*(c[1]-a[1]) + c[0]*(a[1]-b[1]));
-				if (std::abs(D) > 1e-6) {
-					synfig::Real ux = ((a[0]*a[0] + a[1]*a[1]) * (b[1] - c[1]) + 
-							   (b[0]*b[0] + b[1]*b[1]) * (c[1] - a[1]) + 
-							   (c[0]*c[0] + c[1]*c[1]) * (a[1] - b[1])) / D;
-					synfig::Real uy = ((a[0]*a[0] + a[1]*a[1]) * (c[0] - b[0]) + 
-							   (b[0]*b[0] + b[1]*b[1]) * (a[0] - c[0]) + 
-							   (c[0]*c[0] + c[1]*c[1]) * (b[0] - a[0])) / D;
-					synfig::Point center(ux, uy);
-					if ((a - center).mag_squared() > cull_sq) {
-						continue; // Cull this preview triangle
-					}
-				}
-				culled_tris.push_back(tri);
-			}
-			tris = culled_tris;
-		}
+		tris = synfig::Layer_FreeFormDeform::cull_triangles(tris, pts, cull_threshold_adj->get_value());
 
 		for (const auto& tri : tris) {
 			etl::handle<WorkArea::Bezier> b1(new WorkArea::Bezier());

@@ -1164,6 +1164,68 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 }
 
 void
+Duckmatic::draw_ffd_overlay(
+	const std::vector<Duck::Handle>& ducks,
+	int ffd_mode, int cols, int rows,
+	synfig::Real cull_threshold)
+{
+	if (ffd_mode == 0 && (int)ducks.size() == cols * rows && cols >= 2 && rows >= 2)
+	{
+		// --- GRID MODE: draw horizontal and vertical wires ---
+		for (int y = 0; y < rows; ++y) {
+			for (int x = 0; x < cols; ++x) {
+				Duck::Handle d = ducks[y * cols + x];
+				if (!d) continue;
+
+				if (x > 0) {
+					Duck::Handle left = ducks[y * cols + (x - 1)];
+					if (left) {
+						Bezier::Handle b(new Bezier());
+						b->p1 = b->c1 = left;
+						b->p2 = b->c2 = d;
+						add_bezier(b);
+					}
+				}
+				if (y > 0) {
+					Duck::Handle top = ducks[(y - 1) * cols + x];
+					if (top) {
+						Bezier::Handle b(new Bezier());
+						b->p1 = b->c1 = top;
+						b->p2 = b->c2 = d;
+						add_bezier(b);
+					}
+				}
+			}
+		}
+	}
+	else if (ffd_mode == 1 && ducks.size() >= 3)
+	{
+		// --- CUSTOM MESH MODE: triangulate, cull, draw edges ---
+		std::vector<synfig::Point> pts;
+		pts.reserve(ducks.size());
+		for (const auto& d : ducks)
+			if (d) pts.push_back(d->get_point());
+
+		std::vector<rendering::Mesh::Triangle> tris =
+			synfig::Layer_FreeFormDeform::triangulate(pts);
+
+		tris = synfig::Layer_FreeFormDeform::cull_triangles(tris, pts, cull_threshold);
+
+		for (const auto& tri : tris) {
+			auto add_edge = [&](int i1, int i2) {
+				Bezier::Handle b(new Bezier());
+				b->p1 = b->c1 = ducks[i1];
+				b->p2 = b->c2 = ducks[i2];
+				add_bezier(b);
+			};
+			add_edge(tri.vertices[0], tri.vertices[1]);
+			add_edge(tri.vertices[1], tri.vertices[2]);
+			add_edge(tri.vertices[2], tri.vertices[0]);
+		}
+	}
+}
+
+void
 Duckmatic::connect_signals(const Duck::Handle& duck, const synfigapp::ValueDesc& value_desc, CanvasView& canvas_view)
 {
 	duck->signal_edited().connect(
@@ -2632,81 +2694,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 
 				if (is_ffd)
 				{
-					if (ffd_mode == 0 && (int)ducks.size() == cols * rows && cols >= 2 && rows >= 2)
-					{
-						// --- GRID MODE ---
-						for (int y = 0; y < rows; ++y) {
-							for (int x = 0; x < cols; ++x) {
-								Duck::Handle d = ducks[y * cols + x];
-								if (!d) continue;
-
-								if (x > 0) {
-									Duck::Handle left = ducks[y * cols + (x - 1)];
-									if (left) {
-										Bezier::Handle bezier_(new Bezier());
-										bezier_->p1 = bezier_->c1 = left;
-										bezier_->p2 = bezier_->c2 = d;
-										add_bezier(bezier_);
-									}
-								}
-								if (y > 0) {
-									Duck::Handle top = ducks[(y - 1) * cols + x];
-									if (top) {
-										Bezier::Handle bezier_(new Bezier());
-										bezier_->p1 = bezier_->c1 = top;
-										bezier_->p2 = bezier_->c2 = d;
-										add_bezier(bezier_);
-									}
-								}
-							}
-						}
-					}
-					else if (ffd_mode == 1 && ducks.size() >= 3)
-					{
-						// --- CUSTOM MESH MODE ---
-						std::vector<synfig::Point> pts;
-						for (const auto& d : ducks) {
-							if (d) pts.push_back(d->get_point());
-						}
-						
-						std::vector<rendering::Mesh::Triangle> tris = synfig::Layer_FreeFormDeform::triangulate(pts);
-						
-						if (ffd_cull_threshold > 0.0) {
-							synfig::Real cull_sq = ffd_cull_threshold * ffd_cull_threshold;
-							std::vector<rendering::Mesh::Triangle> culled_tris;
-							for (const auto& tri : tris) {
-								synfig::Point a = pts[tri.vertices[0]];
-								synfig::Point b = pts[tri.vertices[1]];
-								synfig::Point c = pts[tri.vertices[2]];
-								synfig::Real D = 2.0 * (a[0]*(b[1]-c[1]) + b[0]*(c[1]-a[1]) + c[0]*(a[1]-b[1]));
-								if (std::abs(D) > 1e-6) {
-									synfig::Real ux = ((a[0]*a[0] + a[1]*a[1]) * (b[1] - c[1]) + 
-											   (b[0]*b[0] + b[1]*b[1]) * (c[1] - a[1]) + 
-											   (c[0]*c[0] + c[1]*c[1]) * (a[1] - b[1])) / D;
-									synfig::Real uy = ((a[0]*a[0] + a[1]*a[1]) * (c[0] - b[0]) + 
-											   (b[0]*b[0] + b[1]*b[1]) * (a[0] - c[0]) + 
-											   (c[0]*c[0] + c[1]*c[1]) * (b[0] - a[0])) / D;
-									if ((a - synfig::Point(ux, uy)).mag_squared() > cull_sq) {
-										continue;
-									}
-								}
-								culled_tris.push_back(tri);
-							}
-							tris = culled_tris;
-						}
-
-						for (const auto& tri : tris) {
-							auto add_tri_edge = [&](int i1, int i2) {
-								Bezier::Handle bezier_(new Bezier());
-								bezier_->p1 = bezier_->c1 = ducks[i1];
-								bezier_->p2 = bezier_->c2 = ducks[i2];
-								add_bezier(bezier_);
-							};
-							add_tri_edge(tri.vertices[0], tri.vertices[1]);
-							add_tri_edge(tri.vertices[1], tri.vertices[2]);
-							add_tri_edge(tri.vertices[2], tri.vertices[0]);
-						}
-					}
+					draw_ffd_overlay(ducks, ffd_mode, cols, rows, ffd_cull_threshold);
 				}
 				else
 				{
@@ -2964,84 +2952,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 						}
 					}
 				}
-
 				if (is_ffd)
 				{
-					if (ffd_mode == 0 && (int)ducks.size() == cols * rows && cols >= 2 && rows >= 2)
-					{
-						// --- GRID MODE ---
-						for (int y = 0; y < rows; ++y) {
-							for (int x = 0; x < cols; ++x) {
-								Duck::Handle d = ducks[y * cols + x];
-								if (!d) continue;
-
-								if (x > 0) {
-									Duck::Handle left = ducks[y * cols + (x - 1)];
-									if (left) {
-										Bezier::Handle bezier_(new Bezier());
-										bezier_->p1 = bezier_->c1 = left;
-										bezier_->p2 = bezier_->c2 = d;
-										add_bezier(bezier_);
-									}
-								}
-								if (y > 0) {
-									Duck::Handle top = ducks[(y - 1) * cols + x];
-									if (top) {
-										Bezier::Handle bezier_(new Bezier());
-										bezier_->p1 = bezier_->c1 = top;
-										bezier_->p2 = bezier_->c2 = d;
-										add_bezier(bezier_);
-									}
-								}
-							}
-						}
-					}
-					else if (ffd_mode == 1 && ducks.size() >= 3)
-					{
-						// --- CUSTOM MESH MODE ---
-						std::vector<synfig::Point> pts;
-						for (const auto& d : ducks) {
-							if (d) pts.push_back(d->get_point());
-						}
-						
-						std::vector<rendering::Mesh::Triangle> tris = synfig::Layer_FreeFormDeform::triangulate(pts);
-						
-						if (ffd_cull_threshold > 0.0) {
-							synfig::Real cull_sq = ffd_cull_threshold * ffd_cull_threshold;
-							std::vector<rendering::Mesh::Triangle> culled_tris;
-							for (const auto& tri : tris) {
-								synfig::Point a = pts[tri.vertices[0]];
-								synfig::Point b = pts[tri.vertices[1]];
-								synfig::Point c = pts[tri.vertices[2]];
-								synfig::Real D = 2.0 * (a[0]*(b[1]-c[1]) + b[0]*(c[1]-a[1]) + c[0]*(a[1]-b[1]));
-								if (std::abs(D) > 1e-6) {
-									synfig::Real ux = ((a[0]*a[0] + a[1]*a[1]) * (b[1] - c[1]) + 
-											   (b[0]*b[0] + b[1]*b[1]) * (c[1] - a[1]) + 
-											   (c[0]*c[0] + c[1]*c[1]) * (a[1] - b[1])) / D;
-									synfig::Real uy = ((a[0]*a[0] + a[1]*a[1]) * (c[0] - b[0]) + 
-											   (b[0]*b[0] + b[1]*b[1]) * (a[0] - c[0]) + 
-											   (c[0]*c[0] + c[1]*c[1]) * (b[0] - a[0])) / D;
-									if ((a - synfig::Point(ux, uy)).mag_squared() > cull_sq) {
-										continue;
-									}
-								}
-								culled_tris.push_back(tri);
-							}
-							tris = culled_tris;
-						}
-
-						for (const auto& tri : tris) {
-							auto add_tri_edge = [&](int i1, int i2) {
-								Bezier::Handle bezier_(new Bezier());
-								bezier_->p1 = bezier_->c1 = ducks[i1];
-								bezier_->p2 = bezier_->c2 = ducks[i2];
-								add_bezier(bezier_);
-							};
-							add_tri_edge(tri.vertices[0], tri.vertices[1]);
-							add_tri_edge(tri.vertices[1], tri.vertices[2]);
-							add_tri_edge(tri.vertices[2], tri.vertices[0]);
-						}
-					}
+					draw_ffd_overlay(ducks, ffd_mode, cols, rows, ffd_cull_threshold);
 				}
 				else
 				{

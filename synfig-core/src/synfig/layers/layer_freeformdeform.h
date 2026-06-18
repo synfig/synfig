@@ -40,6 +40,13 @@ public:
 	// Custom Mesh Triangulation Helpers
 	static std::vector<rendering::Mesh::Triangle> triangulate(const std::vector<Point>& pts);
 
+	//! Remove triangles whose circumradius exceeds the given threshold (Alpha Shape filter).
+	//! Used for both canvas overlay display (duckmatic) and preview (state_ffd).
+	static std::vector<rendering::Mesh::Triangle> cull_triangles(
+		const std::vector<rendering::Mesh::Triangle>& tris,
+		const std::vector<Point>& pts,
+		Real threshold);
+
 	virtual String get_local_name() const;
 	virtual bool set_param(const String & param, const ValueBase & value);
 	virtual ValueBase get_param(const String & param) const;

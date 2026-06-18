@@ -251,6 +251,12 @@ private:
 
 	void connect_signals(const Duck::Handle &duck, const synfigapp::ValueDesc& value_desc, CanvasView &canvas_view);
 
+	//! Draw the FFD control overlay (grid lines or triangle mesh edges) for the given set of ducks.
+	void draw_ffd_overlay(
+		const std::vector<Duck::Handle>& ducks,
+		int ffd_mode, int cols, int rows,
+		synfig::Real cull_threshold);
+
 	double calculate_distance_from_guide(const Guide& guide, const synfig::Point& point)const;
 
 	/*

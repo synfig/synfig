@@ -335,6 +335,40 @@ Layer_FreeFormDeform::triangulate(const std::vector<Point>& pts)
 	return final_triangles;
 }
 
+std::vector<rendering::Mesh::Triangle>
+Layer_FreeFormDeform::cull_triangles(
+	const std::vector<rendering::Mesh::Triangle>& tris,
+	const std::vector<Point>& pts,
+	Real threshold)
+{
+	if (threshold <= 0.0)
+		return tris;
+
+	const Real cull_sq = threshold * threshold;
+	std::vector<rendering::Mesh::Triangle> result;
+	result.reserve(tris.size());
+
+	for (const auto& tri : tris) {
+		const Point& a = pts[tri.vertices[0]];
+		const Point& b = pts[tri.vertices[1]];
+		const Point& c = pts[tri.vertices[2]];
+
+		Real D = 2.0 * (a[0]*(b[1]-c[1]) + b[0]*(c[1]-a[1]) + c[0]*(a[1]-b[1]));
+		if (std::abs(D) > 1e-6) {
+			Real ux = ((a[0]*a[0] + a[1]*a[1]) * (b[1] - c[1]) +
+			           (b[0]*b[0] + b[1]*b[1]) * (c[1] - a[1]) +
+			           (c[0]*c[0] + c[1]*c[1]) * (a[1] - b[1])) / D;
+			Real uy = ((a[0]*a[0] + a[1]*a[1]) * (c[0] - b[0]) +
+			           (b[0]*b[0] + b[1]*b[1]) * (a[0] - c[0]) +
+			           (c[0]*c[0] + c[1]*c[1]) * (b[0] - a[0])) / D;
+			if ((a - Point(ux, uy)).mag_squared() > cull_sq)
+				continue;
+		}
+		result.push_back(tri);
+	}
+	return result;
+}
+
 void
 Layer_FreeFormDeform::on_canvas_set()
 {
