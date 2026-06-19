@@ -124,19 +124,19 @@
 			<section>
 				<item>
 					<attribute name="label" translatable="yes">_Cut</attribute>
-					<attribute name="action">doc.cut</attribute>
+					<attribute name="action">layer.cut</attribute>
 					<attribute name="accel">&lt;Primary&gt;x</attribute>
 					<attribute name="icon">edit-cut</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Copy</attribute>
-					<attribute name="action">doc.copy</attribute>
+					<attribute name="action">layer.copy</attribute>
 					<attribute name="accel">&lt;Primary&gt;c</attribute>
 					<attribute name="icon">edit-copy</attribute>
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Paste</attribute>
-					<attribute name="action">doc.paste</attribute>
+					<attribute name="action">layer.paste</attribute>
 					<attribute name="accel">&lt;Primary&gt;v</attribute>
 					<attribute name="icon">edit-paste</attribute>
 				</item>
@@ -259,34 +259,34 @@
 					<section>
 						<item>
 							<attribute name="label" translatable="yes">_Decrease Low-Res Pixel Size</attribute>
-							<attribute name="action">doc.dec-lowres-pixel</attribute>
+							<attribute name="action">doc.decrease-low-res-pixel-size</attribute>
 	          				<attribute name="accel">&lt;Control&gt;parenleft</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Increase Low-Res Pixel Size</attribute>
-							<attribute name="action">doc.inc-lowres-pixel</attribute>
+							<attribute name="action">doc.increase-low-res-pixel-size</attribute>
 	          				<attribute name="accel">&lt;Control&gt;parenright</attribute>
 						</item>
 					</section>
 					<section>
 						<item>
 							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 2</attribute>
-							<attribute name="action">doc.lowres-pixel</attribute>
+							<attribute name="action">doc.set-low-res-pixel-size</attribute>
 	          				<attribute name="target" type="i">2</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 4</attribute>
-							<attribute name="action">doc.lowres-pixel</attribute>
+							<attribute name="action">doc.set-low-res-pixel-size</attribute>
 	          				<attribute name="target" type="i">4</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 8</attribute>
-							<attribute name="action">doc.lowres-pixel</attribute>
+							<attribute name="action">doc.set-low-res-pixel-size</attribute>
 	          				<attribute name="target" type="i">8</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Set Low-Res pixel size to 16</attribute>
-							<attribute name="action">doc.lowres-pixel</attribute>
+							<attribute name="action">doc.set-low-res-pixel-size</attribute>
 	          				<attribute name="target" type="i">16</attribute>
 						</item>
 					</section>
@@ -295,25 +295,25 @@
 			<section>
 						<item>
 							<attribute name="label" translatable="yes">_Show Ruler</attribute>
-							<attribute name="action">doc.show-ruler</attribute>
+							<attribute name="action">doc.toggle-rulers-show</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Show Grid</attribute>
-							<attribute name="action">doc.show-grid</attribute>
+							<attribute name="action">doc.toggle-grid-show</attribute>
 	          				<attribute name="accel">numbersign</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Snap to Grid</attribute>
-							<attribute name="action">doc.snap-grid</attribute>
+							<attribute name="action">doc.toggle-grid-snap</attribute>
 	          				<attribute name="accel">&lt;Control&gt;L</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Show Guides</attribute>
-							<attribute name="action">doc.show-guides</attribute>
+							<attribute name="action">doc.toggle-guide-show</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Snap to Guides</attribute>
-							<attribute name="action">doc.snap-guides</attribute>
+							<attribute name="action">doc.toggle-guide-snap</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Use Low-Res</attribute>
@@ -322,40 +322,40 @@
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Enable rendering in background</attribute>
-							<attribute name="action">doc.background-rendering</attribute>
+							<attribute name="action">doc.toggle-background-rendering</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Show Onion Skin</attribute>
-							<attribute name="action">doc.onion-skin</attribute>
+							<attribute name="action">doc.toggle-onion-skin</attribute>
 	          				<attribute name="accel">&lt;Alt&gt;O</attribute>
 						</item>
 						<item>
 							<attribute name="label" translatable="yes">_Onion Skin on Keyframes</attribute>
-							<attribute name="action">doc.onion-skin-keyframes</attribute>
+							<attribute name="action">doc.toggle-onion-skin-keyframes</attribute>
 						</item>
 				</section>
 				<section>
                     <item>
                         <attribute name="label" translatable="yes">_Zoom In</attribute>
-                        <attribute name="action">doc.zoom-in</attribute>
+                        <attribute name="action">doc.canvas-zoom-in</attribute>
                         <attribute name="accel">equal</attribute>
                         <attribute name="icon">zoom-in</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Zoom Out</attribute>
-                        <attribute name="action">doc.zoom-out</attribute>
+                        <attribute name="action">doc.canvas-zoom-out</attribute>
                         <attribute name="accel">minus</attribute>
                         <attribute name="icon">zoom-out</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Best Fit</attribute>
-                        <attribute name="action">doc.zoom-fit</attribute>
+                        <attribute name="action">doc.canvas-zoom-fit</attribute>
                         <attribute name="accel">0</attribute>
                         <attribute name="icon">zoom-fit-best</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Normal Size</attribute>
-                        <attribute name="action">doc.zoom-norm</attribute>
+                        <attribute name="action">doc.canvas-zoom-100</attribute>
                         <attribute name="icon">zoom-original</attribute>
                     </item>
 				</section>
@@ -384,7 +384,7 @@
 				</item>
 				<item>
 					<attribute name="label" translatable="yes">_Options...</attribute>
-					<attribute name="action">doc.options</attribute>
+					<attribute name="action">doc.show-canvas-options</attribute>
 					<attribute name="accel">F12</attribute>
 				</item>
 				<item>
@@ -519,64 +519,43 @@
 <!-- Layers menu -->
 		<submenu id="menu-layer">
             <attribute name="label" translatable="yes">_Layer</attribute>
-                <section>
-                    <submenu>
-                        <attribute name="label" translatable="yes">_New Layer</attribute>
-                            <submenu id="Blurs">
-                                <attribute name="label" translatable="yes">_Blurs</attribute>
-                            </submenu>
-                            <submenu id="Distortions">
-                                <attribute name="label" translatable="yes">_Distortions</attribute>
-                            </submenu>
-                            <submenu id="Example">
-                                <attribute name="label" translatable="yes">_Example</attribute>
-                            </submenu>
-                            <submenu id="Filters">
-                                <attribute name="label" translatable="yes">_Filters</attribute>
-                            </submenu>
-                            <submenu id="Fractals">
-                                <attribute name="label" translatable="yes">_Fractals</attribute>
-                            </submenu>
-                            <submenu id="Geometry">
-                                <attribute name="label" translatable="yes">_Geometry</attribute>
-                            </submenu>
-                            <submenu id="Gradients">
-                                <attribute name="label" translatable="yes">_Gradients</attribute>
-                            </submenu>
-                            <submenu id="Other">
-                                <attribute name="label" translatable="yes">_Other</attribute>
-                            </submenu>
-                            <submenu id="Stylize">
-                                <attribute name="label" translatable="yes">_Stylize</attribute>
-                            </submenu>
-                            <submenu id="Time">
-                                <attribute name="label" translatable="yes">_Time</attribute>
-                            </submenu>
-                            <submenu id="Transform">
-                                <attribute name="label" translatable="yes">_Transform</attribute>
-                            </submenu>
-                    </submenu>
+            <section>
+                <submenu id="menu-layer-new">
+                    <attribute name="label" translatable="yes">_New Layer</attribute>
+                </submenu>
             </section>
-            <section id="instance-layers">
+            <section id="selected-layer-actions">
+                <item>
+                    <attribute name="label" translatable="yes">Increase Amount</attribute>
+                    <attribute name="action">layer.increase-amount</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Alt&gt;parenright</attribute>
+                    <attribute name="icon">list-add</attribute>
+                </item>
+                <item>
+                    <attribute name="label" translatable="yes">Decrease Amount</attribute>
+                    <attribute name="action">layer.decrease-amount</attribute>
+                    <attribute name="accel">&lt;Primary&gt;&lt;Alt&gt;parenleft</attribute>
+                    <attribute name="icon">list-remove</attribute>
+                </item>
             </section>
             <section id="special-layer-actions">
             </section>
                 <section>
                     <item>
                         <attribute name="label" translatable="yes">_Cut</attribute>
-                        <attribute name="action">doc.cut</attribute>
+                        <attribute name="action">layer.cut</attribute>
                         <attribute name="accel">&lt;Primary&gt;x</attribute>
                         <attribute name="icon">edit-cut</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Copy</attribute>
-                        <attribute name="action">doc.copy</attribute>
+                        <attribute name="action">layer.copy</attribute>
                         <attribute name="accel">&lt;Primary&gt;c</attribute>
                         <attribute name="icon">edit-copy</attribute>
                     </item>
                     <item>
                         <attribute name="label" translatable="yes">_Paste</attribute>
-                        <attribute name="action">doc.paste</attribute>
+                        <attribute name="action">layer.paste</attribute>
                         <attribute name="accel">&lt;Primary&gt;v</attribute>
                         <attribute name="icon">edit-paste</attribute>
                     </item>
@@ -621,11 +600,11 @@
 			</section>
 			<section id="menu-window-docks">
 						<item>
-						    <attribute name="label" translatable="yes">_Preview Window</attribute>
+						    <attribute name="label" translatable="yes">Preview Window</attribute>
 						    <attribute name="action">doc.dialog-flipbook</attribute>
 						</item>
 			</section>
-			<section id="menu-window-canvas">
+			<section id="menu-window-canvases">
 			</section>
 		</submenu>
 		<submenu id="help">
@@ -678,3 +657,4 @@
 		</submenu>
 	</menu>
 </interface>
+
