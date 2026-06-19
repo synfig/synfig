@@ -237,6 +237,8 @@ public:
 	static Glib::RefPtr<Gio::Menu> menu_recent_files;
 	static Gtk::MenuItem* menuitem_layer;
 	static Gtk::MenuItem* menuitem_layer2;
+	static Glib::RefPtr<Gio::Menu> menu_add_layer;
+	static Glib::RefPtr<Gio::Menu> menu_selected_layers;
 	static Glib::RefPtr<Gio::Menu> menu_keyframe;
 	static Glib::RefPtr<Gio::Menu> menu_plugins;
 	static Glib::RefPtr<Gio::Menu> menu_window_custom_workspaces;

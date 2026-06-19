@@ -303,6 +303,8 @@ Gtk::MenuItem* studio::App::menuitem_file_recent2;
 Gtk::MenuItem* studio::App::menuitem_layer;
 Gtk::MenuItem* studio::App::menuitem_layer2;
 Glib::RefPtr<Gio::Menu> studio::App::menu_recent_files;
+Glib::RefPtr<Gio::Menu> studio::App::menu_add_layer;
+Glib::RefPtr<Gio::Menu> studio::App::menu_selected_layers;
 Glib::RefPtr<Gio::Menu> studio::App::menu_keyframe;
 Glib::RefPtr<Gio::Menu> studio::App::menu_plugins;
 Glib::RefPtr<Gio::Menu> studio::App::menu_window_custom_workspaces;

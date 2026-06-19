@@ -81,7 +81,7 @@ Dock_Layers::Dock_Layers()
 	get_style_context()->add_class("synfigstudio-efficient-workspace");
 
 	if (layer_action_manager)
-		layer_action_manager->set_action_widget_and_menus(App::main_window, App::menuitem_layer, App::menuitem_layer2);
+		layer_action_manager->set_action_widget_and_menus(App::main_window, App::menu_add_layer, App::menu_selected_layers);
 
 	layer_action_manager->signal_add_layer_selected().connect([=](const std::string& layer_id) {add_layer(layer_id); return true;});
 

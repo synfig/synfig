@@ -51,8 +51,8 @@ class LayerTree;
 class LayerActionManager
 {
 	Gtk::Widget* action_widget_;
+	Glib::RefPtr<Gio::Menu> menu_add_layer_;
 	Glib::RefPtr<Gio::Menu> menu_selected_layers_;
-	Glib::RefPtr<Gio::Menu> menu_special_layers_;
 	LayerTree* layer_tree_;
 	etl::handle<synfigapp::CanvasInterface> canvas_interface_;
 
@@ -71,8 +71,6 @@ class LayerActionManager
 
 	std::list<synfig::Layer::Handle> clipboard_;
 
-	Glib::RefPtr<Gio::Menu> menu_add_layer_;
-
 	sigc::connection select_all_child_layers_connection;
 	sigc::connection selection_changed_connection;
 
@@ -81,8 +79,6 @@ class LayerActionManager
 
 	std::list<sigc::connection> update_connection_list;
 
-	Gtk::MenuItem* menuitem_layer_;
-	Gtk::MenuItem* menuitem_layer2_;
 
 	void cut();
 	void copy();
@@ -109,7 +105,7 @@ public:
 	LayerActionManager();
 	~LayerActionManager();
 
-	void set_action_widget_and_menus(Gtk::Widget* x, Gtk::MenuItem* menuitem_layer, Gtk::MenuItem* menuitem_layer2);
+	void set_action_widget_and_menus(Gtk::Widget* x, Glib::RefPtr<Gio::Menu>& menu_add, Glib::RefPtr<Gio::Menu>& menu_selected);
 
 	void set_layer_tree(LayerTree* x);
 	LayerTree* get_layer_tree()const { return layer_tree_; }
@@ -123,7 +119,9 @@ public:
 	void clear();
 
 	Glib::RefPtr<Gio::Menu> get_add_layer_menu();
+	static void add_actions_for_add_layer_menu(Glib::RefPtr<Gio::Menu> menu);
 	static Glib::RefPtr<Gio::Menu> create_add_layer_menu();
+	void add_actions_for_layers(Glib::RefPtr<Gio::Menu> menu, const std::list<synfig::Layer::Handle> layers) const;
 	Glib::RefPtr<Gio::Menu> create_context_menu(const std::list<synfig::Layer::Handle> layers) const;
 
 	sigc::signal<bool, const std::string&> signal_add_layer_selected() { return signal_add_layer_selected_; };

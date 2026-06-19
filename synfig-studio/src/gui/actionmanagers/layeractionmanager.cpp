@@ -187,9 +187,7 @@ LayerActionManager::LayerActionManager()
 	: action_widget_(nullptr),
 	  layer_tree_(nullptr),
 	  action_group_(Gio::SimpleActionGroup::create()),
-	  queued(false),
-	  menuitem_layer_(nullptr),
-	  menuitem_layer2_(nullptr)
+	  queued(false)
 {
 	action_cut_ = Gio::SimpleAction::create("cut");
 	action_cut_->signal_activate().connect(sigc::hide(sigc::mem_fun(*this, &LayerActionManager::cut)));
@@ -227,13 +225,16 @@ LayerActionManager::~LayerActionManager()
 }
 
 void
-LayerActionManager::set_action_widget_and_menus(Gtk::Widget* x, Gtk::MenuItem* menuitem_layer, Gtk::MenuItem* menuitem_layer2)
+LayerActionManager::set_action_widget_and_menus(Gtk::Widget* x, Glib::RefPtr<Gio::Menu>& menu_add, Glib::RefPtr<Gio::Menu>& menu_selected)
 {
 	clear();
 
 	action_widget_ = x;
-	menuitem_layer_ = menuitem_layer;
-	menuitem_layer2_ = menuitem_layer2;
+
+	menu_add_layer_ = menu_add;
+	add_actions_for_add_layer_menu(menu_add_layer_);
+
+	menu_selected_layers_ = menu_selected;
 }
 
 void
@@ -272,6 +273,9 @@ LayerActionManager::clear()
 		}
 
 		action_widget_->remove_action_group(group_name);
+
+		if (menu_selected_layers_)
+			menu_selected_layers_->remove_all();
 	}
 
 	while(!update_connection_list.empty())
@@ -386,28 +390,7 @@ LayerActionManager::refresh()
 	}
 
 	// Update Layer menu in main menu bar
-	Glib::RefPtr<Gio::Menu> menu_layer = create_context_menu(layer_list);
-	const bool has_context_menu = menu_layer.get();
-	if (!has_context_menu) {
-		menu_layer = Gio::Menu::create();
-
-		auto edit_menu_section = Gio::Menu::create();
-		edit_menu_section->append_item(ActionWidgetHelper::create_menu_item_for_action(group_name + ".cut"));
-		edit_menu_section->append_item(ActionWidgetHelper::create_menu_item_for_action(group_name + ".copy"));
-		edit_menu_section->append_item(ActionWidgetHelper::create_menu_item_for_action(group_name + ".paste"));
-		menu_layer->append_section(edit_menu_section);
-	}
-
-	menu_layer->prepend_submenu(_("New Layer"), get_add_layer_menu());
-
-	auto menu = Gtk::manage(new Gtk::Menu(menu_layer));
-	menu->show_all();
-
-	menuitem_layer_->set_submenu(*menu);
-
-	auto menu2 = Gtk::manage(new Gtk::Menu(menu_layer));
-	menu2->show_all();
-	menuitem_layer2_->set_submenu(*menu2);
+	add_actions_for_layers(menu_selected_layers_, layer_list);
 
 	action_widget_->insert_action_group(group_name, action_group_);
 }
@@ -754,12 +737,9 @@ LayerActionManager::get_add_layer_menu()
 	return menu_add_layer_;
 }
 
-Glib::RefPtr<Gio::Menu>
-LayerActionManager::create_add_layer_menu()
+void
+LayerActionManager::add_actions_for_add_layer_menu(Glib::RefPtr<Gio::Menu> menu)
 {
-	// CREATE ONLY ONCE and update when new are registered or unregistered
-	Glib::RefPtr<Gio::Menu> menu_add_layer = Gio::Menu::create();
-
 	// map: category local name -> (layer name, layer local name)
 	std::map<std::string, std::vector<std::pair<std::string, std::string>>> layer_category_map;
 
@@ -784,19 +764,26 @@ LayerActionManager::create_add_layer_menu()
 			item->set_icon(Gio::ThemedIcon::create(layer_icon_name(layer_name) + symbolic_suffix));
 			submenu->append_item(item);
 		}
-		menu_add_layer->append_submenu(category, submenu);
+		menu->append_submenu(category, submenu);
 	}
+}
+
+Glib::RefPtr<Gio::Menu>
+LayerActionManager::create_add_layer_menu()
+{
+	// CREATE ONLY ONCE and update when new are registered or unregistered
+	Glib::RefPtr<Gio::Menu> menu_add_layer = Gio::Menu::create();
+
+	add_actions_for_add_layer_menu(menu_add_layer);
 
 	return menu_add_layer;
 }
 
-Glib::RefPtr<Gio::Menu>
-LayerActionManager::create_context_menu(const std::list<synfig::Layer::Handle> layers) const
+void
+LayerActionManager::add_actions_for_layers(Glib::RefPtr<Gio::Menu> context_menu, const std::list<synfig::Layer::Handle> layers) const
 {
-	if (layers.empty())
-		return Glib::RefPtr<Gio::Menu>();
-
-	Glib::RefPtr<Gio::Menu> context_menu = Gio::Menu::create();
+	if (layers.empty() || !context_menu)
+		return;
 
 	auto instance = etl::handle<studio::Instance>::cast_static(get_canvas_interface()->get_instance());
 
@@ -859,6 +846,17 @@ LayerActionManager::create_context_menu(const std::list<synfig::Layer::Handle> l
 
 	// 4th: special actions for specific layers
 	instance->add_special_layer_actions_to_menu(context_menu, layer);
+}
+
+Glib::RefPtr<Gio::Menu>
+LayerActionManager::create_context_menu(const std::list<synfig::Layer::Handle> layers) const
+{
+	if (layers.empty())
+		return Glib::RefPtr<Gio::Menu>();
+
+	Glib::RefPtr<Gio::Menu> context_menu = Gio::Menu::create();
+
+	add_actions_for_layers(context_menu, layers);
 
 	// 5th: common edit operations
 	auto edit_menu_section = Gio::Menu::create();

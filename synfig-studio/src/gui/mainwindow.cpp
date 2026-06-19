@@ -271,6 +271,19 @@ MainWindow::init_menus()
 
 	App::ui_manager()->insert_action_group(action_group);
 
+	// Layers menu
+	auto menu_layer = Gio::Menu::create();
+	// auto menu_add_layer = Gio::Menu::create();
+	menu_layer->append_submenu(_("New Layer"), App::menu_add_layer);
+	menu_layer->append_section(App::menu_selected_layers);
+	auto menu_edit_layers = Gio::Menu::create();
+	menu_edit_layers->append(_("Cut"), "layer.cut");
+	menu_edit_layers->append(_("Copy"), "layer.copy");
+	menu_edit_layers->append(_("Paste"), "layer.paste");
+	menu_layer->append_section(menu_edit_layers);
+	App::menuitem_layer->set_submenu(*Gtk::manage(new Gtk::Menu(menu_layer)));
+	App::menuitem_layer2->set_submenu(*Gtk::manage(new Gtk::Menu(menu_layer)));
+
 	// Windows (and workspaces) menu
 	auto menu_window = Gio::Menu::create();
 	auto menu_window_workspaces = Gio::Menu::create();
