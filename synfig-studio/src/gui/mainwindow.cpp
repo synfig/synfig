@@ -287,9 +287,6 @@ MainWindow::init_menus()
 	// Windows (and workspaces) menu
 	auto menu_window = Gio::Menu::create();
 	auto menu_window_workspaces = Gio::Menu::create();
-	App::menu_window_custom_workspaces = Gio::Menu::create();
-	App::menu_window_docks = Gio::Menu::create();
-	App::menu_window_canvases = Gio::Menu::create();
 	auto menu_window_default_workspaces = Gio::Menu::create();
 	menu_window_default_workspaces->append(_("Default"), "win.workspace-default");
 	menu_window_default_workspaces->append(_("Compositing"), "win.workspace-compositing");
@@ -301,7 +298,6 @@ MainWindow::init_menus()
 	menu_window_workspaces_actions->append(_("Edit workspaces..."), "win.edit-workspacelist");
 	menu_window_workspaces->append_section(menu_window_workspaces_actions);
 	menu_window->append_submenu(_("Workspace"), menu_window_workspaces);
-	App::menu_window_docks->append(_("Preview Dialog"), "doc.dialog-flipbook");
 	menu_window->append_section(App::menu_window_docks);
 	menu_window->append_section(App::menu_window_canvases);
 	auto menuitem_window = dynamic_cast<Gtk::MenuItem*>(App::ui_manager()->get_widget("/menubar-main/menu-window"));
@@ -390,14 +386,13 @@ void MainWindow::register_custom_widget_types()
 void
 MainWindow::toggle_show_menubar()
 {
-	Gtk::Widget* menubar = App::ui_manager()->get_widget("/menubar-main");
-
 	App::enable_mainwin_menubar = !App::enable_mainwin_menubar;
 
-	if(App::enable_mainwin_menubar)
-		menubar->show();
-	else
-		menubar->hide();
+	Gtk::Widget* menubar = App::ui_manager()->get_widget("/menubar-main");
+	menubar->set_visible(App::enable_mainwin_menubar);
+
+	property_show_menubar() = App::enable_mainwin_menubar;
+	change_action_state("show-menubar", Glib::Variant<bool>::create(App::enable_mainwin_menubar));
 }
 
 void
@@ -410,6 +405,8 @@ MainWindow::toggle_show_toolbar()
 		for (auto& canvas_view : views)
 			canvas_view->set_show_toolbars(App::enable_mainwin_toolbar);
 	}
+
+	change_action_state("show-toolbar", Glib::Variant<bool>::create(App::enable_mainwin_toolbar));
 }
 
 void

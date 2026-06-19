@@ -1572,6 +1572,31 @@ void App::init(const synfig::String& rootpath)
 	init_icon_themes();
 	init_icons(path_to_icons);
 
+	auto builder = Gtk::Builder::create();
+	try
+	{
+		builder->add_from_file(ResourceHelper::get_ui_path("studio_menubar.xml"));
+	}
+	catch (const Glib::Error& ex)
+	{
+		std::cerr << "Building menus failed: " << ex.what();
+	}
+
+	auto object = builder->get_object("studio_menubar");
+	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
+	if (!gmenu) {
+		g_warning("GMenu not found");
+	} else {
+		set_menubar(gmenu);
+		menu_recent_files = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-recent-files"));
+		menu_plugins = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-plugins"));
+		menu_add_layer = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-layer-new"));
+		menu_selected_layers = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("selected-layer-actions"));
+		menu_window_custom_workspaces = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-custom-workspaces"));
+		menu_window_docks = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-docks"));
+		menu_window_canvases = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-canvases"));
+	}
+
 	try
 	{
 		// Try to load settings early to get access to some important
@@ -1610,12 +1635,10 @@ void App::init(const synfig::String& rootpath)
 
 		menuitem_file_recent = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menubar-main/menu-file/menu-open-recent"));
 		menuitem_file_recent2 = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menu-main/menu-file/menu-open-recent"));
-		menu_recent_files = Gio::Menu::create();
 		App::menuitem_file_recent->set_submenu(*Gtk::manage(new Gtk::Menu(App::menu_recent_files)));
 		App::menuitem_file_recent2->set_submenu(*Gtk::manage(new Gtk::Menu(App::menu_recent_files)));
 		menuitem_layer = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menubar-main/menu-layer"));
 		menuitem_layer2 = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menu-main/menu-layer"));
-		menu_plugins = Gio::Menu::create();
 
 		action_database = new ActionDatabase();
 		init_app_actions();
