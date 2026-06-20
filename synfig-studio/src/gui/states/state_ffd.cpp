@@ -56,6 +56,7 @@
 #include <synfigapp/instance.h>
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 #include <synfig/valuenodes/valuenode_const.h>
+#include <synfig/surface.h>
 #include <gui/widgets/widget_enum.h>
 
 #endif
@@ -119,6 +120,7 @@ class studio::StateFFD_Context : public sigc::trackable
 	Gtk::SpinButton create_grid_x_spin;
 	Gtk::Label create_grid_y_label;
 	Gtk::SpinButton create_grid_y_spin;
+	Gtk::CheckButton auto_fit_check;
 	Gtk::Button make_ffd_button;
 	Gtk::Button clear_button;
 	
@@ -264,6 +266,10 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	create_grid_y_spin.set_adjustment(grid_y_adj);
 	create_grid_y_spin.set_hexpand(true);
 
+	auto_fit_check.set_label(_("Auto Fit Grid to Image"));
+	auto_fit_check.set_active(true);
+	auto_fit_check.set_tooltip_text(_("Automatically calculates the tightest oriented bounding box for the target image."));
+
 	make_ffd_button.set_label(_("Make FFD Layer"));
 	make_ffd_button.set_hexpand(true);
 	make_ffd_button.set_halign(Gtk::ALIGN_FILL);
@@ -303,10 +309,11 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	options_table.attach(create_grid_x_spin,  1, 8, 1, 1);
 	options_table.attach(create_grid_y_label, 0, 9, 1, 1);
 	options_table.attach(create_grid_y_spin,  1, 9, 1, 1);
-	options_table.attach(make_ffd_button,     0, 10, 2, 1);
-	options_table.attach(clear_button,        0, 11, 2, 1);
-	options_table.attach(edit_mesh_button,    0, 12, 2, 1);
-	options_table.attach(update_ffd_button,   0, 13, 2, 1);
+	options_table.attach(auto_fit_check,      0, 10, 2, 1);
+	options_table.attach(make_ffd_button,     0, 11, 2, 1);
+	options_table.attach(clear_button,        0, 12, 2, 1);
+	options_table.attach(edit_mesh_button,    0, 13, 2, 1);
+	options_table.attach(update_ffd_button,   0, 14, 2, 1);
 
 	options_table.set_border_width(GAP*2);
 	options_table.set_row_spacing(GAP);
@@ -519,6 +526,7 @@ StateFFD_Context::update_controls_from_layer()
 			create_grid_x_spin.hide();
 			create_grid_y_label.hide();
 			create_grid_y_spin.hide();
+			auto_fit_check.hide();
 			make_ffd_button.hide();
 			update_ffd_button.hide();
 			clear_button.hide();
@@ -557,6 +565,7 @@ StateFFD_Context::update_controls_from_layer()
 			create_grid_x_spin.hide();
 			create_grid_y_label.hide();
 			create_grid_y_spin.hide();
+			auto_fit_check.hide();
 			cull_threshold_label.hide();
 			cull_threshold_spin.hide();
 			make_ffd_button.hide();
@@ -1218,6 +1227,118 @@ StateFFD_Context::on_make_ffd_pressed()
 		int rows = (int)create_grid_y_spin.get_value();
 		layer->set_param("grid_size_x", synfig::ValueBase(cols));
 		layer->set_param("grid_size_y", synfig::ValueBase(rows));
+
+		if (auto_fit_check.get_active()) {
+			synfig::Point tl = layer->get_param("source_tl").get(synfig::Point());
+			synfig::Point br = layer->get_param("source_br").get(synfig::Point());
+			synfig::RendDesc desc;
+			desc.set_tl(tl);
+			desc.set_br(br);
+			desc.set_w(128);
+			desc.set_h(128);
+			
+			synfig::Surface surface;
+			surface.set_wh(128, 128);
+			
+			synfig::Canvas::Handle switch_canvas = selected->get_param("canvas").get(synfig::Canvas::Handle());
+			if (switch_canvas && switch_canvas->get_context(synfig::ContextParams()).accelerated_render(&surface, 0, desc, 0)) {
+				double sum_x = 0, sum_y = 0, sum_w = 0;
+				for (int y = 0; y < 128; ++y) {
+					double cy_pos = tl[1] - (y / 127.0) * (tl[1] - br[1]);
+					for (int x = 0; x < 128; ++x) {
+						double a = surface[y][x].get_a();
+						if (a > 0.05) {
+							double cx_pos = tl[0] + (x / 127.0) * (br[0] - tl[0]);
+							sum_x += cx_pos * a;
+							sum_y += cy_pos * a;
+							sum_w += a;
+						}
+					}
+				}
+				
+				if (sum_w > 0) {
+					double cx = sum_x / sum_w;
+					double cy = sum_y / sum_w;
+					
+					double sum_xx = 0, sum_yy = 0, sum_xy = 0;
+					for (int y = 0; y < 128; ++y) {
+						double cy_pos = tl[1] - (y / 127.0) * (tl[1] - br[1]);
+						for (int x = 0; x < 128; ++x) {
+							double a = surface[y][x].get_a();
+							if (a > 0.05) {
+								double cx_pos = tl[0] + (x / 127.0) * (br[0] - tl[0]);
+								double dx = cx_pos - cx;
+								double dy = cy_pos - cy;
+								sum_xx += dx * dx * a;
+								sum_yy += dy * dy * a;
+								sum_xy += dx * dy * a;
+							}
+						}
+					}
+					
+					sum_xx /= sum_w;
+					sum_yy /= sum_w;
+					sum_xy /= sum_w;
+					
+					double trace = sum_xx + sum_yy;
+					double det = sum_xx * sum_yy - sum_xy * sum_xy;
+					double L1 = trace / 2.0 + std::sqrt(std::max(0.0, trace * trace / 4.0 - det));
+					
+					double ev_x = 1.0, ev_y = 0.0;
+					if (sum_xy != 0.0) {
+						ev_x = L1 - sum_yy;
+						ev_y = sum_xy;
+					} else {
+						ev_x = (sum_xx > sum_yy) ? 1.0 : 0.0;
+						ev_y = (sum_xx > sum_yy) ? 0.0 : 1.0;
+					}
+					
+					double len = std::sqrt(ev_x*ev_x + ev_y*ev_y);
+					if (len > 0) { ev_x /= len; ev_y /= len; }
+					
+					double min_u = 1e10, max_u = -1e10;
+					double min_v = 1e10, max_v = -1e10;
+					
+					for (int y = 0; y < 128; ++y) {
+						double cy_pos = tl[1] - (y / 127.0) * (tl[1] - br[1]);
+						for (int x = 0; x < 128; ++x) {
+							if (surface[y][x].get_a() > 0.05) {
+								double cx_pos = tl[0] + (x / 127.0) * (br[0] - tl[0]);
+								double dx = cx_pos - cx;
+								double dy = cy_pos - cy;
+								double u = dx * ev_x + dy * ev_y;
+								double v = -dx * ev_y + dy * ev_x;
+								min_u = std::min(min_u, u);
+								max_u = std::max(max_u, u);
+								min_v = std::min(min_v, v);
+								max_v = std::max(max_v, v);
+							}
+						}
+					}
+					
+					double center_u = (min_u + max_u) * 0.5;
+					double center_v = (min_v + max_v) * 0.5;
+					double final_cx = cx + center_u * ev_x - center_v * ev_y;
+					double final_cy = cy + center_u * ev_y + center_v * ev_x;
+					
+					double w = (max_u - min_u) * 1.05;
+					double h = (max_v - min_v) * 1.05;
+					
+					double angle_rad = std::atan2(ev_y, ev_x);
+					synfig::Angle angle = synfig::Angle::rad(angle_rad);
+					
+					synfig::Point new_tl(final_cx - w * 0.5, final_cy + h * 0.5);
+					synfig::Point new_br(final_cx + w * 0.5, final_cy - h * 0.5);
+					
+					layer->set_param("source_tl", synfig::ValueBase(new_tl));
+					layer->set_param("source_br", synfig::ValueBase(new_br));
+					layer->set_param("source_angle", synfig::ValueBase(angle));
+					
+					etl::handle<Layer_FreeFormDeform> ffd_typed = etl::handle<Layer_FreeFormDeform>::cast_dynamic(layer);
+					if (ffd_typed) ffd_typed->regenerate_grid_points();
+				}
+			}
+		}
 
 		synfig::ValueBase grid_points_vb = layer->get_param("grid_points");
 		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(grid_points_vb, get_canvas());

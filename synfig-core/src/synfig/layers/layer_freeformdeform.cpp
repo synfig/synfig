@@ -41,6 +41,7 @@ Layer_FreeFormDeform::Layer_FreeFormDeform():
 	param_smoothness(Real(1.0)), // Default to full Catmull-Rom
 	param_source_tl(Point(-2.0, 2.0)),
 	param_source_br(Point(2.0, -2.0)),
+	param_source_angle(Angle::deg(0.0)),
 	param_mesh_mode(0), // 0 = Grid, 1 = Custom Mesh
 	param_cull_threshold(0.0), // 0 = disabled
 	needs_reset_(true)
@@ -96,6 +97,7 @@ Layer_FreeFormDeform::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE_PLUS(param_smoothness, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_source_tl, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_source_br, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_source_angle, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_source_points, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_mesh_mode, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_cull_threshold, prepare_mesh());
@@ -111,6 +113,7 @@ Layer_FreeFormDeform::get_param(const String& param)const
 	EXPORT_VALUE(param_smoothness);
 	EXPORT_VALUE(param_source_tl);
 	EXPORT_VALUE(param_source_br);
+	EXPORT_VALUE(param_source_angle);
 	EXPORT_VALUE(param_source_points);
 	EXPORT_VALUE(param_mesh_mode);
 	EXPORT_VALUE(param_cull_threshold);
@@ -155,6 +158,12 @@ Layer_FreeFormDeform::get_param_vocab()const
 	ret.push_back(ParamDesc("source_br")
 		.set_local_name(_("Source Bottom Right"))
 		.set_description(_("Bottom Right corner of the un-deformed grid"))
+		.hidden()
+	);
+
+	ret.push_back(ParamDesc("source_angle")
+		.set_local_name(_("Source Angle"))
+		.set_description(_("Angle of the un-deformed grid"))
 		.hidden()
 	);
 
@@ -471,11 +480,22 @@ void Layer_FreeFormDeform::regenerate_grid_points()
 	std::vector<ValueBase> grid_points;
 	Point tl = param_source_tl.get(Point());
 	Point br = param_source_br.get(Point());
+	Angle angle = param_source_angle.get(Angle());
+	Point center = (tl + br) * 0.5;
+	Real angle_cos = Angle::cos(angle).get();
+	Real angle_sin = Angle::sin(angle).get();
+
 	for (int y = 0; y < rows; ++y) {
 		for (int x = 0; x < cols; ++x) {
 			Real px = tl[0] + x * (br[0] - tl[0]) / (cols - 1);
 			Real py = tl[1] - y * (tl[1] - br[1]) / (rows - 1);
-			grid_points.push_back(ValueBase(Point(px, py)));
+			
+			Real dx = px - center[0];
+			Real dy = py - center[1];
+			Real rx = center[0] + dx * angle_cos - dy * angle_sin;
+			Real ry = center[1] + dx * angle_sin + dy * angle_cos;
+			
+			grid_points.push_back(ValueBase(Point(rx, ry)));
 		}
 	}
 	param_grid_points.set_list_of(grid_points);
@@ -500,11 +520,22 @@ std::vector<Point> Layer_FreeFormDeform::get_interpolated_grid(int new_cols, int
 		// fallback
 		Point tl = param_source_tl.get(Point());
 		Point br = param_source_br.get(Point());
+		Angle angle = param_source_angle.get(Angle());
+		Point center = (tl + br) * 0.5;
+		Real angle_cos = Angle::cos(angle).get();
+		Real angle_sin = Angle::sin(angle).get();
+
 		for (int y = 0; y < new_rows; ++y) {
 			for (int x = 0; x < new_cols; ++x) {
 				Real px = tl[0] + x * (br[0] - tl[0]) / (new_cols - 1);
 				Real py = tl[1] - y * (tl[1] - br[1]) / (new_rows - 1);
-				result.push_back(Point(px, py));
+				
+				Real dx = px - center[0];
+				Real dy = py - center[1];
+				Real rx = center[0] + dx * angle_cos - dy * angle_sin;
+				Real ry = center[1] + dx * angle_sin + dy * angle_cos;
+				
+				result.push_back(Point(rx, ry));
 			}
 		}
 		return result;
@@ -762,6 +793,11 @@ void Layer_FreeFormDeform::prepare_mesh()
 	// Calculate un-deformed bounds based on the initial grid bounds
 	Point tl = param_source_tl.get(Point());
 	Point br = param_source_br.get(Point());
+	Angle angle = param_source_angle.get(Angle());
+	Point center = (tl + br) * 0.5;
+	Real angle_cos = Angle::cos(angle).get();
+	Real angle_sin = Angle::sin(angle).get();
+
 	Real start_x = tl[0];
 	Real start_y = tl[1];
 	Real cell_w = (br[0] - tl[0]) / (cols - 1);
@@ -830,6 +866,13 @@ void Layer_FreeFormDeform::prepare_mesh()
 						P01_orig * ((1 - u)*v) +
 						P11_orig * (u*v);
 
+					// Rotate the source position to match the rotated grid
+					Real dx = initial_pos[0] - center[0];
+					Real dy = initial_pos[1] - center[1];
+					Real rx = center[0] + dx * angle_cos - dy * angle_sin;
+					Real ry = center[1] + dx * angle_sin + dy * angle_cos;
+					initial_pos = Point(rx, ry);
+
 					mesh->vertices.push_back(rendering::Mesh::Vertex(calculated_pos, initial_pos));
 				}
 			}
@@ -850,13 +893,23 @@ void Layer_FreeFormDeform::prepare_mesh()
 		}
 	}
 
-	// Mask = source bounding rect (safe fixed size, never grows with control point movement)
+	// Mask = source bounding rect (rotated to match the source_angle)
 	rendering::Contour::Handle mask(new rendering::Contour());
 	mask->antialias = true;
-	mask->move_to(tl);
-	mask->line_to(Point(br[0], tl[1]));
-	mask->line_to(br);
-	mask->line_to(Point(tl[0], br[1]));
+
+	auto rotate_pt = [&](const Point& pt) {
+		Real dx = pt[0] - center[0];
+		Real dy = pt[1] - center[1];
+		return Point(
+			center[0] + dx * angle_cos - dy * angle_sin,
+			center[1] + dx * angle_sin + dy * angle_cos
+		);
+	};
+
+	mask->move_to(rotate_pt(tl));
+	mask->line_to(rotate_pt(Point(br[0], tl[1])));
+	mask->line_to(rotate_pt(br));
+	mask->line_to(rotate_pt(Point(tl[0], br[1])));
 	mask->close();
 	this->mask = mask;
 

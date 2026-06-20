@@ -20,6 +20,7 @@ private:
 
 	ValueBase param_source_tl;
 	ValueBase param_source_br;
+	ValueBase param_source_angle;
 
 	ValueBase param_source_points;
 	ValueBase param_mesh_mode; // 0 = Grid, 1 = Custom Mesh
