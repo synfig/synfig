@@ -743,18 +743,30 @@ StateFFD_Context::event_stop_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateFFD_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
-	if (!polygon_point_list.empty()) {
+	if (editing_existing_mesh_ || !polygon_point_list.empty()) {
 		refresh_ducks();
+		return Smach::RESULT_ACCEPT;
 	} else {
-		get_canvas_view()->queue_rebuild_ducks();
+		return Smach::RESULT_OK;
 	}
-	return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
 StateFFD_Context::event_mouse_click_handler(const Smach::event& x)
 {
-	if (get_selected_ffd_layer() && !editing_existing_mesh_) return Smach::RESULT_OK; // Ignore if editing (normal mode)
+	bool can_add_points = editing_existing_mesh_;
+	if (!can_add_points && mesh_mode_enum.get_value() == 1) {
+		synfig::Layer::Handle selected;
+		auto selection = get_canvas_interface()->get_selection_manager()->get_selected_layers();
+		if (!selection.empty()) {
+			selected = selection.front();
+		}
+		if (selected && selected->get_name() == "switch" && switch_group_has_image(selected)) {
+			can_add_points = true;
+		}
+	}
+
+	if (!can_add_points) return Smach::RESULT_OK;
 
 	const EventMouse& event(*reinterpret_cast<const EventMouse*>(&x));
 	switch(event.button)
@@ -815,7 +827,19 @@ StateFFD_Context::event_mouse_doubleclick_handler(const Smach::event& x)
 Smach::event_result
 StateFFD_Context::event_key_press_handler(const Smach::event& x)
 {
-	if (get_selected_ffd_layer()) return Smach::RESULT_OK;
+	bool can_add_points = editing_existing_mesh_;
+	if (!can_add_points && mesh_mode_enum.get_value() == 1) {
+		synfig::Layer::Handle selected;
+		auto selection = get_canvas_interface()->get_selection_manager()->get_selected_layers();
+		if (!selection.empty()) {
+			selected = selection.front();
+		}
+		if (selected && selected->get_name() == "switch" && switch_group_has_image(selected)) {
+			can_add_points = true;
+		}
+	}
+
+	if (!can_add_points) return Smach::RESULT_OK;
 
 	const EventKeyboard& event(*reinterpret_cast<const EventKeyboard*>(&x));
 	switch(event.keyval)
@@ -1190,8 +1214,14 @@ StateFFD_Context::on_make_ffd_pressed()
 		layer->connect_dynamic_param("grid_points", dyn_list);
 		layer->set_param("source_points", synfig::ValueBase(pts_vb));
 	} else {
-		layer->set_param("grid_size_x", synfig::ValueBase((int)create_grid_x_spin.get_value()));
-		layer->set_param("grid_size_y", synfig::ValueBase((int)create_grid_y_spin.get_value()));
+		int cols = (int)create_grid_x_spin.get_value();
+		int rows = (int)create_grid_y_spin.get_value();
+		layer->set_param("grid_size_x", synfig::ValueBase(cols));
+		layer->set_param("grid_size_y", synfig::ValueBase(rows));
+
+		synfig::ValueBase grid_points_vb = layer->get_param("grid_points");
+		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(grid_points_vb, get_canvas());
+		layer->connect_dynamic_param("grid_points", dyn_list);
 	}
 
 	synfigapp::SelectionManager::LayerList layer_selection;
@@ -1199,6 +1229,9 @@ StateFFD_Context::on_make_ffd_pressed()
 	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
 	
 	reset();
+	
+	// Switch back to normal tool to allow user to immediately interact with grid/mesh
+	get_canvas_view()->get_smach().process_event(EVENT_STOP);
 }
 
 void
