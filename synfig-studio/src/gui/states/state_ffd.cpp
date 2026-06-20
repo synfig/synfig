@@ -885,6 +885,10 @@ StateFFD_Context::refresh_ducks()
 
 	if (polygon_point_list.empty()) return;
 
+	synfig::TransformStack transform_stack;
+	if (get_work_area())
+		transform_stack = get_work_area()->get_curr_transform_stack();
+
 	std::vector<synfig::Point> pts;
 	std::vector<etl::handle<WorkArea::Duck>> duck_list;
 
@@ -894,6 +898,7 @@ StateFFD_Context::refresh_ducks()
 	duck->set_editable(true);
 	duck->set_name(strprintf("%p", &*iter));
 	duck->set_type(Duck::TYPE_VERTEX);
+	duck->set_transform_stack(transform_stack);
 	duck->signal_edited().connect(
 		sigc::bind(sigc::mem_fun(*this, &studio::StateFFD_Context::on_polygon_duck_change), iter)
 	);
@@ -910,6 +915,7 @@ StateFFD_Context::refresh_ducks()
 		duck->set_editable(true);
 		duck->set_name(strprintf("%p", &*iter));
 		duck->set_type(Duck::TYPE_VERTEX);
+		duck->set_transform_stack(transform_stack);
 		duck->signal_edited().connect(
 			sigc::bind(sigc::mem_fun(*this, &studio::StateFFD_Context::on_polygon_duck_change), iter)
 		);
