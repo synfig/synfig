@@ -124,6 +124,7 @@ class studio::StateFFD_Context : public sigc::trackable
 	Gtk::SpinButton create_grid_x_spin;
 	Gtk::Label create_grid_y_label;
 	Gtk::SpinButton create_grid_y_spin;
+	Gtk::CheckButton auto_fit_check;
 	Gtk::Button make_ffd_button;
 	Gtk::Button clear_button;
 	
@@ -142,6 +143,7 @@ class studio::StateFFD_Context : public sigc::trackable
 	void on_smoothness_changed();
 	void on_cull_threshold_changed();
 	void on_reset_pressed();
+	void on_auto_fit_changed();
 	void update_auto_fit_preview();
 	void update_creation_controls_visibility();
 
@@ -274,6 +276,11 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	create_grid_y_spin.set_adjustment(grid_y_adj);
 	create_grid_y_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
 
+	auto_fit_check.set_label(_("Auto Fit Grid to Image"));
+	auto_fit_check.set_active(true);
+	auto_fit_check.set_halign(Gtk::ALIGN_START);
+	auto_fit_check.signal_toggled().connect(sigc::mem_fun(*this, &StateFFD_Context::on_auto_fit_changed));
+
 	make_ffd_button.set_label(_("Make FFD Layer"));
 	make_ffd_button.set_hexpand(true);
 	make_ffd_button.set_halign(Gtk::ALIGN_FILL);
@@ -313,6 +320,7 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	options_table.attach(create_grid_x_spin,  1, 8, 1, 1);
 	options_table.attach(create_grid_y_label, 0, 9, 1, 1);
 	options_table.attach(create_grid_y_spin,  1, 9, 1, 1);
+	options_table.attach(auto_fit_check,      0, 10, 2, 1);
 	options_table.attach(make_ffd_button,     0, 11, 2, 1);
 	options_table.attach(clear_button,        0, 12, 2, 1);
 	options_table.attach(edit_mesh_button,    0, 13, 2, 1);
@@ -410,6 +418,17 @@ StateFFD_Context::update_creation_controls_visibility()
 	}
 
 void
+StateFFD_Context::on_auto_fit_changed()
+{
+	if (auto_fit_check.get_active()) {
+		update_auto_fit_preview();
+	} else {
+		polygon_point_list.clear();
+		refresh_ducks();
+	}
+}
+
+void
 StateFFD_Context::on_mesh_mode_changed()
 {
 	update_creation_controls_visibility();
@@ -420,6 +439,7 @@ StateFFD_Context::on_mesh_mode_changed()
 void
 StateFFD_Context::update_auto_fit_preview()
 {
+	if (!auto_fit_check.get_active()) return;
 	synfig::Layer::Handle selected;
 	auto selection = get_canvas_interface()->get_selection_manager()->get_selected_layers();
 	if (!selection.empty()) {
@@ -781,6 +801,7 @@ StateFFD_Context::update_controls_from_layer()
 			create_grid_x_spin.hide();
 			create_grid_y_label.hide();
 			create_grid_y_spin.hide();
+			auto_fit_check.hide();
 			make_ffd_button.hide();
 			update_ffd_button.hide();
 			clear_button.hide();
@@ -807,6 +828,7 @@ StateFFD_Context::update_controls_from_layer()
 			status_label.set_label(_("Switch Group with image selected"));
 			mesh_mode_label.show();
 			mesh_mode_enum.show();
+			auto_fit_check.show();
 			on_mesh_mode_changed();
 			update_auto_fit_preview();
 			make_ffd_button.show();
@@ -820,6 +842,7 @@ StateFFD_Context::update_controls_from_layer()
 			create_grid_x_spin.hide();
 			create_grid_y_label.hide();
 			create_grid_y_spin.hide();
+			auto_fit_check.hide();
 			cull_threshold_label.hide();
 			cull_threshold_spin.hide();
 			make_ffd_button.hide();
@@ -1518,7 +1541,7 @@ StateFFD_Context::on_make_ffd_pressed()
 		layer->set_param("grid_size_x", synfig::ValueBase(cols));
 		layer->set_param("grid_size_y", synfig::ValueBase(rows));
 
-		if (preview_tl != synfig::Point(0,0) || preview_br != synfig::Point(0,0)) {
+		if (auto_fit_check.get_active() && (preview_tl != synfig::Point(0,0) || preview_br != synfig::Point(0,0))) {
 			layer->set_param("source_tl", synfig::ValueBase(preview_tl));
 			layer->set_param("source_br", synfig::ValueBase(preview_br));
 			layer->set_param("source_angle", synfig::ValueBase(preview_angle));
