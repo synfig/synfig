@@ -508,7 +508,7 @@ Svg_parser::parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style
 		// If it has stroke, render as a region, instead of standard shape, to be able to link to outline
 		if(typeFill != FILL_TYPE_NONE && typeStroke == FILL_TYPE_NONE) {
 			if (nodename.compare("rect") == 0 || nodename.compare("circle") == 0) {
-				if (!mtx.is_identity())
+				if (!mtx.is_identity() || typeFill == FILL_TYPE_GRADIENT)
 					child_layer = initializeGroupLayerNode(root->add_child("layer"), label);
 				child_fill=child_layer;
 
