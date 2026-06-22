@@ -37,6 +37,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
+#include "text_processing.h"
 
 #if HAVE_HARFBUZZ
 #include <hb.h>
@@ -44,40 +45,6 @@
 
 /* === M A C R O S ========================================================= */
 
-// Copy of PangoStyle
-// It is necessary to keep original values if Pango ever change them
-//  - because it would change layer rendering as Synfig stores the parameter
-//     value as an integer (ie. not a weight name string)
-enum TextStyle{
-	TEXT_STYLE_NORMAL = 0,
-	TEXT_STYLE_OBLIQUE = 1,
-	TEXT_STYLE_ITALIC = 2
-};
-
-// Copy of PangoWeight
-// It is necessary to keep original values if Pango ever change them
-//  - because it would change layer rendering as Synfig stores the parameter
-//     value as an integer (ie. not a weight name string)
-enum TextWeight{
-	TEXT_WEIGHT_THIN = 100,
-	TEXT_WEIGHT_ULTRALIGHT = 200,
-	TEXT_WEIGHT_LIGHT = 300,
-	TEXT_WEIGHT_SEMILIGHT = 350,
-	TEXT_WEIGHT_BOOK = 380,
-	TEXT_WEIGHT_NORMAL = 400,
-	TEXT_WEIGHT_MEDIUM = 500,
-	TEXT_WEIGHT_SEMIBOLD = 600,
-	TEXT_WEIGHT_BOLD = 700,
-	TEXT_WEIGHT_ULTRABOLD = 800,
-	TEXT_WEIGHT_HEAVY = 900,
-	TEXT_WEIGHT_ULTRAHEAVY = 1000
-};
-
-enum TextDirection{
-	TEXT_DIRECTION_AUTO = 0,
-	TEXT_DIRECTION_LTR = 1,
-	TEXT_DIRECTION_RTL = 2,
-};
 
 /* === T Y P E D E F S ===================================================== */
 
@@ -119,14 +86,6 @@ private:
 #if HAVE_HARFBUZZ
 	hb_font_t *font;
 #endif
-	struct TextSpan
-	{
-		std::vector<uint32_t> codepoints;
-#if HAVE_HARFBUZZ
-		hb_script_t script;
-#endif
-	};
-
 
 	bool font_path_from_canvas;
 
@@ -141,8 +100,7 @@ public:
 	Layer_Freetype();
 	~Layer_Freetype() override = default;
 
-	typedef std::vector<TextSpan> TextLine;
-	std::vector<TextLine> lines;	
+	std::vector<synfig::TextLine> lines;	
 	void on_canvas_set() override;
 
 	bool set_simple_shape_param(const synfig::String & param, const synfig::ValueBase &value);
@@ -156,17 +114,15 @@ public:
 
 	bool set_version(const synfig::String &ver) override { if (ver=="0.1") old_version=true; return true; }
 	void reset_version() override {old_version=false;}
-
-	static void convert_outline_to_contours(const FT_OutlineGlyphRec* glyph, synfig::rendering::Contour::ChunkList& chunks);
-
-	static void shift_contour_chunks(synfig::rendering::Contour::ChunkList &chunks, const synfig::Vector &offset);
-
-	static std::vector<TextLine> fetch_text_lines(const std::string& text, int direction);
-
+	
 	static std::vector<std::string> get_possible_font_files(const std::string& newfont, const synfig::filesystem::Path& canvas_path);
 
 	static FT_Face load_font_static(const std::string& family,int style,int weight,const synfig::filesystem::Path &canvas_path);    
 
+#if HAVE_HARFBUZZ
+static hb_font_t* get_cached_hb_font(FT_Face face);
+#endif
+	
 protected:
 	synfig::rendering::Task::Handle build_composite_task_vfunc(synfig::ContextParams) const override;
 

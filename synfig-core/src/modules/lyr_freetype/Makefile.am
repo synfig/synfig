@@ -19,8 +19,10 @@ liblyr_freetype_la_SOURCES = \
 	main.cpp \
 	lyr_freetype.cpp \
     lyr_textgroup.cpp \
+	textprocessing.cpp \
 	lyr_freetype.h \
-    lyr_textgroup.h
+    lyr_textgroup.h \
+	text_processing.h
 
 liblyr_freetype_la_LIBADD = \
 	../../synfig/libsynfig.la \

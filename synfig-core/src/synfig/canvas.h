@@ -393,6 +393,15 @@ public:
 	//! Returns true if the Canvas is in line
 	bool is_inline()const { return is_inline_; }
 
+	//! Returns the root (non-inline) canvas of this canvas hierarchy.  
+	//! For a root canvas, returns itself.  
+	Handle get_root_canvas() {  
+   		Handle root(this);  
+    	while (root->parent())  
+        	root = root->parent();  
+    	return root;  
+	}
+
 	//! Returns a handle to the RendDesc for this Canvas
 	RendDesc &rend_desc() { return desc_; }
 

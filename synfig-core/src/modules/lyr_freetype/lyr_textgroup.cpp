@@ -9,7 +9,7 @@
 #  include <config.h>  
 #include "synfig/paramdesc.h"
 # endif  
-
+#include <hb-ft.h>
 #ifdef WITH_FONTCONFIG  
 #include <fontconfig/fontconfig.h>  
 #endif
@@ -25,6 +25,7 @@
 #include <synfig/layers/layer_shape.h>  
 #include <synfig/rendering/primitive/contour.h>
 #include "lyr_freetype.h"  
+#include "text_processing.h"
 #include <synfig/rendering/common/task/tasktransformation.h>
   
 #endif  
@@ -33,8 +34,10 @@ using namespace synfig;
   
   
 extern FT_Library ft_library;  
-  
-  
+
+/// NL/LF, VT, FF, CR, NEL, LS and PS
+static const std::vector<uint32_t> line_endings{'\n', '\v', '\f', '\r', 0x0085, 0x2028, 0x2029};
+   
 SYNFIG_LAYER_INIT(Layer_TextGroup);  
 SYNFIG_LAYER_SET_NAME(Layer_TextGroup,"text_group");  
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_TextGroup,N_("Text Group"));  
@@ -70,10 +73,7 @@ void Layer_GlyphShape::set_glyph_chunks(const rendering::Contour::ChunkList& chu
 {  
     stored_chunks = chunks;
     force_sync();
-    // clear();    
-    // add(chunks);    
-    // shape_contour().close();  
-    
+        
 }  
 
 void Layer_GlyphShape::set_wave_offset(const Vector& v)
@@ -97,7 +97,7 @@ void Layer_GlyphShape::sync_vfunc()
         }  
     }    
     add(shifted);  
-    // shape_contour().close();  
+
 }
 
 void
@@ -143,57 +143,57 @@ bool
 {  
       
     IMPORT_VALUE_PLUS(param_text,{ 
-        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_family,{ 
-        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_style,{ 
-        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_weight,{ 
-        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
         sync_glyphs(); 
     }); 
     
     IMPORT_VALUE_PLUS(param_size,{ 
-        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_direction,{ 
-        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_color,{ 
-        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_compress,{
-        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
         sync_glyphs(); 
     }); 
     
     IMPORT_VALUE_PLUS(param_vcompress,{ 
-        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_orient,{ 
-        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_font, { 
-        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
         sync_glyphs(); 
     });  
   
@@ -205,15 +205,15 @@ bool
     // Wave animation params  
     IMPORT_VALUE_PLUS(param_stagger_delay,{ 
         update_wave_offsets(get_time_mark(), true); 
-        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
     });  
     IMPORT_VALUE_PLUS(param_wave_amplitude,{ 
         update_wave_offsets(get_time_mark(), true); 
-        if (get_canvas()) get_canvas()->signal_force_refresh()();
+        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()();
     });  
     IMPORT_VALUE_PLUS(param_wave_period,{ 
         update_wave_offsets(get_time_mark(), true); 
-        if (get_canvas()) get_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
     });  
   
     return Layer_PasteCanvas::set_param(param, value);  
@@ -414,8 +414,12 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
   
     Angle rotation = param_rotation.get(Angle());  
     Vector scale = param_scale.get(Vector());  
+    bool has_wave =
+    wave_offset_[0] != 0.0 ||
+    wave_offset_[1] != 0.0;
+
   
-    if (rotation != Angle::zero() || scale != Vector(1.0, 1.0))  
+    if (rotation != Angle::zero() || scale != Vector(1.0, 1.0) || has_wave)  
     {  
         Vector pivot = param_offset.get(Vector())+ wave_offset_;    
           
@@ -494,6 +498,7 @@ Layer_GlyphShape::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid
     return base;  
 }
 
+
 void  
 Layer_TextGroup::sync_glyphs()  
 {  
@@ -506,7 +511,7 @@ Layer_TextGroup::sync_glyphs()
         param_weight.get(int()),  
         get_canvas() ? get_canvas()->get_file_path() : synfig::filesystem::Path()  
     );  
-  
+
     Canvas::Handle canvas = get_sub_canvas();  
     if (!canvas) return;  
   
@@ -519,7 +524,7 @@ Layer_TextGroup::sync_glyphs()
     }  
   
       
-    const bool    use_kerning = param_use_kerning.get(bool());  
+      
     const bool    grid_fit    = param_grid_fit.get(bool());  
     const Vector  orient      = param_orient.get(Vector());  
     const Real    compress    = param_compress.get(Real());  
@@ -534,20 +539,30 @@ Layer_TextGroup::sync_glyphs()
     const int load_flags = grid_fit  
         ? FT_LOAD_NO_SCALE  
         : (FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING);  
-    const FT_UInt kern_mode = grid_fit  
-        ? FT_KERNING_DEFAULT  
-        : FT_KERNING_UNFITTED;  
+    
+    auto lines =  synfig::text_processing::fetch_text_lines(  
+        text, param_direction.get(int())); 
+    #if HAVE_HARFBUZZ
+hb_font_t* font =
+    Layer_Freetype::get_cached_hb_font(face);
 
-  	// TODO:
-    // Replace codepoint iteration with HarfBuzz-shaped
-    // glyph iteration so TextGroup uses the same shaping
-    // pipeline as Layer_Freetype.
-    auto lines = Layer_Freetype::fetch_text_lines(  
-        text, param_direction.get(int()));  
-  
+    hb_font_set_scale(
+    	font,
+    	face->units_per_EM,
+    	face->units_per_EM
+	);
+
+auto shaped_lines =
+    synfig::text_processing::shape_text(lines, font);
+#else
+auto shaped_lines =
+    synfig::text_processing::shape_text(lines);
+#endif
+     
     struct GlyphData {  
-        rendering::Contour::ChunkList outline;  
-        uint32_t charcode;  
+        rendering::Contour::ChunkList outline; 
+        uint32_t glyph_index;
+        uint32_t cluster;  
         Vector pen_offset;
     };  
   
@@ -557,60 +572,54 @@ Layer_TextGroup::sync_glyphs()
   
     Vector line_start(0, 0);           
   
-    for (const auto& line : lines)  
+    for (const auto& shaped_line : shaped_lines)  
     {  
         std::vector<GlyphData> cur_line;  
-        uint32_t prev_glyph_index = 0;  
-        Vector offset(0, line_start[1]);  
-  
-        for (const auto& span : line)  
-        {  
-            for (uint32_t charcode : span.codepoints)  
-            {  
-                FT_UInt glyph_index = FT_Get_Char_Index(face, charcode);  
-                if (!glyph_index) continue;  
-  
-                // Kerning  
-                if (use_kerning && prev_glyph_index && FT_HAS_KERNING(face))  
-                {  
-                    FT_Vector delta;  
-                    if (!FT_Get_Kerning(face, prev_glyph_index, glyph_index,  
-                                        kern_mode, &delta))  
-                    {  
-                        offset[0] += delta.x * compress;  
-                        offset[1] += delta.y * compress;  
-                    }  
-                }  
-  
-                if (FT_Load_Glyph(face, glyph_index, load_flags)) continue;  
-  
-                FT_Glyph ftglyph;  
-                if (FT_Get_Glyph(face->glyph, &ftglyph)) continue;  
-  
-                rendering::Contour::ChunkList outline;  
-  
-                if (ftglyph->format == FT_GLYPH_FORMAT_OUTLINE)  
-                {  
-                    FT_OutlineGlyph og =  
-                        reinterpret_cast<FT_OutlineGlyph>(ftglyph);  
-                    Layer_Freetype::convert_outline_to_contours(og, outline);  
-                      
-                    if (!outline.empty())  
-                        cur_line.push_back({outline, charcode, offset});  
-                }  
-  
-                offset[0] += (ftglyph->advance.x >> 10) * compress;  
-                offset[1] += (ftglyph->advance.y >> 10);  
-  
-                FT_Done_Glyph(ftglyph);  
-                prev_glyph_index = glyph_index;  
-            }  
-        }  
-  
-        line_widths.push_back(offset[0]);     
-        line_glyphs.push_back(cur_line);  
-        line_start[1] -= face->height * vcompress;   
-    }
+        
+        Vector offset(0, line_start[1]);
+
+		for (const auto& sg : shaped_line)
+		{
+    		FT_UInt glyph_index = sg.glyph_index;
+
+    		if (FT_Load_Glyph(face,glyph_index,load_flags))
+        		continue;
+
+    		FT_Glyph ftglyph;
+    		if (FT_Get_Glyph(face->glyph, &ftglyph))
+        		continue;
+
+    		rendering::Contour::ChunkList outline;
+
+    		if (ftglyph->format ==FT_GLYPH_FORMAT_OUTLINE)
+    		{
+        		FT_OutlineGlyph og = reinterpret_cast<FT_OutlineGlyph>(ftglyph);
+
+        		synfig::text_processing::convert_outline_to_contours(og,outline);
+        		        		
+        		if (!outline.empty())
+        		{
+            		cur_line.push_back({
+                	outline,
+                	sg.glyph_index,
+                	sg.cluster,
+                	offset
+            		});
+        		}
+    		}
+
+    		offset[0] += (ftglyph->advance.x >> 10) * compress;
+			offset[1] += (ftglyph->advance.y >> 10);
+
+    		FT_Done_Glyph(ftglyph);
+		}
+		line_widths.push_back(offset[0]);
+		
+		line_glyphs.push_back(cur_line);
+		line_start[1] -= face->height * vcompress;
+
+	}
+
     const Real text_height_fu =  
         initial_y + (Real(line_glyphs.size()) - 1) * vcompress * face->height;  
   
@@ -626,7 +635,7 @@ Layer_TextGroup::sync_glyphs()
         {  
         	Vector world_pos;  
         	world_pos[0] = (glyph.pen_offset[0] + shift[0]) * scale_x;  
-        	world_pos[1] = (glyph.pen_offset[1] + shift[1]) * scale_y;    
+        	world_pos[1] = (glyph.pen_offset[1] + shift[1]) * scale_y;
 		    
             for (auto& chunk : glyph.outline)  
             {  
@@ -635,7 +644,7 @@ Layer_TextGroup::sync_glyphs()
                 chunk.pp1[0] *= scale_x;  chunk.pp1[1] *= scale_y;  
             }  
   
-	        glyphs.push_back({glyph.outline, glyph.charcode, world_pos});    
+	        glyphs.push_back({glyph.outline,glyph.glyph_index, glyph.cluster, world_pos});    
         }  
     }  
    
@@ -648,10 +657,14 @@ Layer_TextGroup::sync_glyphs()
   
 	std::vector<Layer::Handle> new_order;  
 	for (const auto& glyph : glyphs) {  
-    	std::string char_key = Glib::ustring(1, glyph.charcode);  
+    	  std::string glyph_key =
+    "cluster_" +
+    std::to_string(glyph.cluster) +
+    "_glyph_" +
+    std::to_string(glyph.glyph_index);
       
     	Layer::Handle matched;  
-    	auto it = available_layers.find(char_key);  
+    	auto it = available_layers.find(glyph_key);  
     	if (it != available_layers.end() && !it->second.empty()) {  
         	matched = it->second.front();  
         	it->second.erase(it->second.begin());  
@@ -668,12 +681,19 @@ Layer_TextGroup::sync_glyphs()
 	auto layer_iter = canvas->begin();  
 	for (const auto& glyph : glyphs) {  
     	Layer_GlyphShape* glyph_layer =  
-        	dynamic_cast<Layer_GlyphShape*>(layer_iter->get());  
+        	dynamic_cast<Layer_GlyphShape*>(layer_iter->get());
+        	std::string glyph_key =
+    "cluster_" +
+    std::to_string(glyph.cluster) +
+    "_glyph_" +
+    std::to_string(glyph.glyph_index);
+
+(*layer_iter)->set_description(glyph_key);
     	if (glyph_layer) { 
-			glyph_layer->set_glyph_chunks(glyph.outline);
+        	glyph_layer->set_glyph_chunks(glyph.outline);
 			glyph_layer->set_param("offset",ValueBase(glyph.pen_offset));
         	  
-        	(*layer_iter)->set_description(Glib::ustring(1, glyph.charcode));  
+        	(*layer_iter)->set_description(glyph_key);  
         	(*layer_iter)->set_param("color",  ValueBase(color));  
         	(*layer_iter)->set_param("invert", ValueBase(invert));
         	
@@ -682,17 +702,9 @@ Layer_TextGroup::sync_glyphs()
 	}  
 
     // TODO:
-    // Current synchronization preserves glyph layers
- 	//using glyph descriptions/characters.
-
- 	//This works for simple text edits but does not
- 	//provide stable identity for ligatures, glyph
- 	//substitutions, or complex-script shaping.
-    //
-    // Future implementation should use HarfBuzz
-    // cluster information to maintain stable glyph
-    // identity across insertions, deletions and
-    // ligature formation.
+	// Initial glyph layout is sometimes incorrect until the first
+	// playback/update cycle. Investigate synchronization order
+	// between sync_glyphs(), set_param("offset") and Layer_GlyphShape::sync_vfunc().
     signal_subcanvas_changed()();  
     changed();  
 }
