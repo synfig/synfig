@@ -248,19 +248,26 @@ convert_outline_to_contours(
 	FT_Outline_Funcs outline_funcs;  
   
 	outline_funcs.move_to = [](const FT_Vector* to, void* contour) -> int {  
-		((rendering::Contour*)contour)->move_to(Vector(to->x, to->y));  
+		static_cast<rendering::Contour*>(contour)->move_to(
+    	Vector(to->x, to->y));  
 		return 0;  
 	};  
 	outline_funcs.line_to = [](const FT_Vector* to, void* contour) -> int {  
-		((rendering::Contour*)contour)->line_to(Vector(to->x, to->y));  
+		static_cast<rendering::Contour*>(contour)->line_to(
+    	Vector(to->x, to->y));  
 		return 0;  
 	};  
 	outline_funcs.conic_to = [](const FT_Vector* control, const FT_Vector* to, void* contour) -> int {  
-		((rendering::Contour*)contour)->conic_to(Vector(to->x, to->y), Vector(control->x, control->y));  
+		static_cast<rendering::Contour*>(contour)->conic_to(
+    	Vector(to->x, to->y),
+    	Vector(control->x, control->y));  
 		return 0;  
 	};  
 	outline_funcs.cubic_to = [](const FT_Vector* control1, const FT_Vector* control2, const FT_Vector* to, void* contour) -> int {  
-		((rendering::Contour*)contour)->cubic_to(Vector(to->x, to->y), Vector(control1->x, control1->y), Vector(control2->x, control2->y));  
+		static_cast<rendering::Contour*>(contour)->cubic_to(
+    	Vector(to->x, to->y),
+    	Vector(control1->x, control1->y),
+    	Vector(control2->x, control2->y));  
 		return 0;  
 	};  
 	outline_funcs.delta = FT_Pos(0);  
