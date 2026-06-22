@@ -19,7 +19,7 @@ liblyr_freetype_la_SOURCES = \
 	main.cpp \
 	lyr_freetype.cpp \
     lyr_textgroup.cpp \
-	textprocessing.cpp \
+	text_processing.cpp \
 	lyr_freetype.h \
     lyr_textgroup.h \
 	text_processing.h
