@@ -1390,7 +1390,11 @@ StateFFD_Context::on_make_ffd_pressed()
 	if (selected) depth = selected->get_depth();
 
 	synfig::Layer::Handle layer;
-	synfig::Canvas::Handle target_canvas = get_canvas();
+	synfig::Canvas::Handle target_canvas;
+	if (selected && selected->get_canvas())
+		target_canvas = selected->get_canvas();
+	else
+		target_canvas = get_canvas();
 
 	synfig::Vector origin_offset(0,0);
 	synfig::Transformation layer_transform; // Automatically defaults to identity
