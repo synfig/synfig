@@ -88,7 +88,8 @@ void Layer_GlyphShape::sync_vfunc()
     clear();  
     if (stored_chunks.empty()) return;  
     rendering::Contour::ChunkList shifted = stored_chunks;
-	Vector off =param_offset.get(Vector())+ wave_offset_;   
+	Vector off =param_offset.get(Vector())+ wave_offset_;
+
 	if (off[0] != 0.0 || off[1] != 0.0) {  
         for (auto& chunk : shifted) {  
             chunk.p1  += off;  
@@ -502,6 +503,10 @@ Layer_GlyphShape::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid
 void  
 Layer_TextGroup::sync_glyphs()  
 {  
+    synfig::warning(
+    "TEXT=[%s]",
+    param_text.get(std::string()).c_str()
+);
     if (param_text.get(String()).empty()) return;
     std::string text = param_text.get(std::string());  
   
@@ -648,7 +653,10 @@ auto shaped_lines =
         }  
     }  
    
-	
+	synfig::warning(
+    "glyph count=%zu",
+    glyphs.size()
+);
 	std::vector<Layer::Handle> old_layers;  
 	std::vector<uint32_t>      old_indices;  
 	for (auto it = canvas->begin(); it != canvas->end(); ++it) {  
@@ -684,9 +692,9 @@ auto shaped_lines =
             	reuse_for_new[j-1] = old_layers[i-1]; // reuse -> keeps value nodes  
             	--i; --j;  
         	} else if (dp[i-1][j] >= dp[i][j-1]) {  
-            	--i;                                   // old glyph deleted  
+            	--i;                                     
         	} else {  
-            	--j;                                   // new glyph inserted  
+            	--j;                                     
         	}  
     	}  
 	}  
@@ -712,21 +720,21 @@ auto shaped_lines =
 
 		(*layer_iter)->set_description(glyph_key);
     	if (glyph_layer) { 
-        	glyph_layer->set_glyph_chunks(glyph.outline);
+        	
 			glyph_layer->set_param("offset",ValueBase(glyph.pen_offset));
-        	  
-        	// (*layer_iter)->set_description(glyph_key);  
-        	(*layer_iter)->set_param("color",  ValueBase(color));  
+			glyph_layer->set_glyph_chunks(glyph.outline);	
+	       	(*layer_iter)->set_param("color",  ValueBase(color));  
         	(*layer_iter)->set_param("invert", ValueBase(invert));
         	
     	}  
     	++layer_iter;  
 	}  
+	synfig::warning(
+    "canvas size=%zu new_order=%zu",
+    canvas->size(),
+    new_order.size()
+);
 
-    // TODO:
-	// Initial glyph layout is sometimes incorrect until the first
-	// playback/update cycle. Investigate synchronization order
-	// between sync_glyphs(), set_param("offset") and Layer_GlyphShape::sync_vfunc().
     signal_subcanvas_changed()();  
     changed();  
 }
