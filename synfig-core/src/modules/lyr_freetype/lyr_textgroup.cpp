@@ -648,32 +648,57 @@ auto shaped_lines =
         }  
     }  
    
-	std::map<std::string, std::vector<Layer::Handle>> available_layers;  
+	
+	std::vector<Layer::Handle> old_layers;  
+	std::vector<uint32_t>      old_indices;  
 	for (auto it = canvas->begin(); it != canvas->end(); ++it) {  
-    	std::string desc = (*it)->get_description();  
-    	available_layers[desc].push_back(*it);  
-	}  
-  
-  
-	std::vector<Layer::Handle> new_order;  
-	for (const auto& glyph : glyphs) {  
-    	  std::string glyph_key =
-    "cluster_" +
-    std::to_string(glyph.cluster) +
-    "_glyph_" +
-    std::to_string(glyph.glyph_index);
-      
-    	Layer::Handle matched;  
-    	auto it = available_layers.find(glyph_key);  
-    	if (it != available_layers.end() && !it->second.empty()) {  
-        	matched = it->second.front();  
-        	it->second.erase(it->second.begin());  
-    	} else {  
-           matched = Layer::Handle(new Layer_GlyphShape());  
+    	old_layers.push_back(*it);  
+    	uint32_t gi = 0;  
+    	const std::string desc = (*it)->get_description();  
+    	const auto pos = desc.rfind("_glyph_");  
+    	if (pos != std::string::npos) {  
+        	try { gi = static_cast<uint32_t>(std::stoul(desc.substr(pos + 7))); }  
+        	catch (...) { gi = 0; }  
     	}  
-    	new_order.push_back(matched);  
+    	old_indices.push_back(gi);  
 	}  
-  
+
+  	std::vector<uint32_t> new_indices;  
+	new_indices.reserve(glyphs.size());  
+	for (const auto& glyph : glyphs)  
+    	new_indices.push_back(glyph.glyph_index);  
+	const size_t n = old_indices.size();  
+	const size_t m = new_indices.size();  
+	std::vector<std::vector<int>> dp(n + 1, std::vector<int>(m + 1, 0));  
+	for (size_t i = 1; i <= n; ++i)  
+    	for (size_t j = 1; j <= m; ++j)  
+        	dp[i][j] = (old_indices[i-1] == new_indices[j-1])  
+                   ? dp[i-1][j-1] + 1  
+                   : std::max(dp[i-1][j], dp[i][j-1]);  
+
+ 	std::vector<Layer::Handle> reuse_for_new(m); // null -> create a new layer  
+	{  
+    	size_t i = n, j = m;  
+    	while (i > 0 && j > 0) {  
+        	if (old_indices[i-1] == new_indices[j-1]) {  
+            	reuse_for_new[j-1] = old_layers[i-1]; // reuse -> keeps value nodes  
+            	--i; --j;  
+        	} else if (dp[i-1][j] >= dp[i][j-1]) {  
+            	--i;                                   // old glyph deleted  
+        	} else {  
+            	--j;                                   // new glyph inserted  
+        	}  
+    	}  
+	}  
+
+	std::vector<Layer::Handle> new_order;  
+	new_order.reserve(m);  
+	for (size_t j = 0; j < m; ++j) {  
+    	Layer::Handle matched = reuse_for_new[j];  
+    	if (!matched)  
+        	matched = Layer::Handle(new Layer_GlyphShape());  
+    	new_order.push_back(matched);  
+	}
   	canvas->clear();  
 	for (auto& layer : new_order)  
    		canvas->push_back(layer);  
@@ -683,17 +708,14 @@ auto shaped_lines =
     	Layer_GlyphShape* glyph_layer =  
         	dynamic_cast<Layer_GlyphShape*>(layer_iter->get());
         	std::string glyph_key =
-    "cluster_" +
-    std::to_string(glyph.cluster) +
-    "_glyph_" +
-    std::to_string(glyph.glyph_index);
+    		"cluster_" + std::to_string(glyph.cluster) + "_glyph_" +std::to_string(glyph.glyph_index);
 
-(*layer_iter)->set_description(glyph_key);
+		(*layer_iter)->set_description(glyph_key);
     	if (glyph_layer) { 
         	glyph_layer->set_glyph_chunks(glyph.outline);
 			glyph_layer->set_param("offset",ValueBase(glyph.pen_offset));
         	  
-        	(*layer_iter)->set_description(glyph_key);  
+        	// (*layer_iter)->set_description(glyph_key);  
         	(*layer_iter)->set_param("color",  ValueBase(color));  
         	(*layer_iter)->set_param("invert", ValueBase(invert));
         	
