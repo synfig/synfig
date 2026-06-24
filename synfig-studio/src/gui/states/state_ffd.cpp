@@ -214,7 +214,7 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	grid_y_spin(grid_y_adj, 1, 0),
 	smoothness_adj(Gtk::Adjustment::create(1.0, 0.0, 1.0, 0.01, 0.1)),
 	smoothness_hscl(smoothness_adj, Gtk::ORIENTATION_HORIZONTAL),
-	cull_threshold_adj(Gtk::Adjustment::create(0.0, 0.0, 1000.0, 0.01, 1.0)),
+	cull_threshold_adj(Gtk::Adjustment::create(1.0, 0.0, 1000.0, 0.01, 1.0)),
 	cull_threshold_spin(cull_threshold_adj, 0.01, 2),
 	reset_button(_("Reset Grid")),
 	updating_from_layer_(false)
@@ -376,6 +376,8 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 
 	layer_param_changed_connection = get_canvas_interface()->signal_layer_param_changed().connect(
 		sigc::mem_fun(*this, &StateFFD_Context::on_layer_param_changed));
+	
+	refresh_ducks();
 }
 
 void

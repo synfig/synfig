@@ -43,7 +43,7 @@ Layer_FreeFormDeform::Layer_FreeFormDeform():
 	param_source_br(Point(2.0, -2.0)),
 	param_source_angle(Angle::deg(0.0)),
 	param_mesh_mode(0), // 0 = Grid, 1 = Custom Mesh
-	param_cull_threshold(0.0), // 0 = disabled
+	param_cull_threshold(1.0), // 0 = disabled
 	needs_reset_(true)
 {
 	std::vector<ValueBase> grid_points;
