@@ -1415,7 +1415,7 @@ StateFFD_Context::on_make_ffd_pressed()
 			action->set_param("canvas", target_canvas);
 			action->set_param("canvas_interface", get_canvas_interface());
 			action->set_param("layer", new_group);
-			action->set_param("new_description", synfig::String("FFD Group"));
+			action->set_param("new_description", synfig::String("FFD ") + switch_layer->get_non_empty_description());
 			get_canvas_interface()->get_instance()->perform_action(action);
 
 			synfig::Canvas::Handle child_canvas = new_group->get_param("canvas").get(synfig::Canvas::Handle());
