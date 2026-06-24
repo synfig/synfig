@@ -503,10 +503,6 @@ Layer_GlyphShape::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid
 void  
 Layer_TextGroup::sync_glyphs()  
 {  
-    synfig::warning(
-    "TEXT=[%s]",
-    param_text.get(std::string()).c_str()
-);
     if (param_text.get(String()).empty()) return;
     std::string text = param_text.get(std::string());  
   
@@ -653,10 +649,6 @@ auto shaped_lines =
         }  
     }  
    
-	synfig::warning(
-    "glyph count=%zu",
-    glyphs.size()
-);
 	std::vector<Layer::Handle> old_layers;  
 	std::vector<uint32_t>      old_indices;  
 	for (auto it = canvas->begin(); it != canvas->end(); ++it) {  
@@ -729,12 +721,7 @@ auto shaped_lines =
     	}  
     	++layer_iter;  
 	}  
-	synfig::warning(
-    "canvas size=%zu new_order=%zu",
-    canvas->size(),
-    new_order.size()
-);
-
+	
     signal_subcanvas_changed()();  
     changed();  
 }
