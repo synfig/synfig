@@ -1071,17 +1071,28 @@ StateFFD_Context::event_mouse_click_handler(const Smach::event& x)
 	switch(event.button)
 	{
 	case BUTTON_LEFT:
-		polygon_point_list.push_back(get_work_area()->snap_point_to_grid(event.pos));
+	{
+		synfig::Point p = get_work_area()->snap_point_to_grid(event.pos);
+		synfig::TransformStack t_stack;
+		if (get_work_area()) t_stack = get_work_area()->get_curr_transform_stack();
+		p = t_stack.unperform(p);
+		
+		polygon_point_list.push_back(p);
 		redo_point_list.clear();
 		refresh_ducks();
 		return Smach::RESULT_ACCEPT;
+	}
 
 	case BUTTON_RIGHT:
 		if (!polygon_point_list.empty()) {
+			synfig::TransformStack t_stack;
+			if (get_work_area()) t_stack = get_work_area()->get_curr_transform_stack();
+			
 			synfig::Real min_dist = 1e10;
 			auto closest_it = polygon_point_list.end();
 			for (auto it = polygon_point_list.begin(); it != polygon_point_list.end(); ++it) {
-				synfig::Real dist = (*it - event.pos).mag_squared();
+				synfig::Point world_p = t_stack.perform(*it);
+				synfig::Real dist = (world_p - event.pos).mag_squared();
 				if (dist < min_dist) {
 					min_dist = dist;
 					closest_it = it;
