@@ -78,7 +78,8 @@ StateFFD studio::state_ffd;
 
 #include "devicetracker.h"
 
-static bool switch_group_has_image(const synfig::Layer::Handle& switch_layer);
+static bool group_has_image(const synfig::Layer::Handle& layer);
+static bool is_valid_group_for_ffd(const synfig::Layer::Handle& layer);
 
 class studio::StateFFD_Context : public sigc::trackable
 {
@@ -447,7 +448,7 @@ StateFFD_Context::update_auto_fit_preview()
 	if (!selection.empty()) {
 		selected = selection.front();
 	}
-	if (!selected || selected->get_name() != "switch" || !switch_group_has_image(selected)) {
+	if (!is_valid_group_for_ffd(selected)) {
 		return;
 	}
 
@@ -700,18 +701,28 @@ StateFFD_Context::~StateFFD_Context()
 }
 
 static bool
-switch_group_has_image(const synfig::Layer::Handle& switch_layer)
+group_has_image(const synfig::Layer::Handle& layer)
 {
 	using namespace synfig;
-	Layer_PasteCanvas::Handle pc = Layer_PasteCanvas::Handle::cast_dynamic(switch_layer);
+	Layer_PasteCanvas::Handle pc = Layer_PasteCanvas::Handle::cast_dynamic(layer);
 	if (!pc) return false;
 	Canvas::Handle sub = pc->get_sub_canvas();
 	if (!sub) return false;
 	for (IndependentContext i = sub->get_independent_context(); *i; ++i) {
 		if (Layer_Bitmap::Handle::cast_dynamic(*i))
 			return true;
+		if (Layer_PasteCanvas::Handle::cast_dynamic(*i)) {
+			if (group_has_image(*i))
+				return true;
+		}
 	}
 	return false;
+}
+
+static bool
+is_valid_group_for_ffd(const synfig::Layer::Handle& layer)
+{
+	return layer && (layer->get_name() == "switch" || layer->get_name() == "group") && group_has_image(layer);
 }
 
 synfig::Layer::Handle
@@ -812,9 +823,9 @@ StateFFD_Context::update_controls_from_layer()
 	} else {
 		editing_existing_mesh_ = false;
 
-		// Check if the current selection is a switch group with an image
+		// Check if the current selection is a group with an image
 		synfig::Layer::Handle sel = get_canvas_interface()->get_selection_manager()->get_selected_layer();
-		bool valid_target = (sel && sel->get_name() == "switch" && switch_group_has_image(sel));
+		bool valid_target = is_valid_group_for_ffd(sel);
 
 		grid_x_label.hide();
 		grid_x_spin.hide();
@@ -827,7 +838,7 @@ StateFFD_Context::update_controls_from_layer()
 		update_ffd_button.hide();
 
 		if (valid_target) {
-			status_label.set_label(_("Switch Group with image selected"));
+			status_label.set_label(_("Group with image selected"));
 			mesh_mode_label.show();
 			mesh_mode_enum.show();
 			auto_fit_check.show();
@@ -1049,7 +1060,7 @@ StateFFD_Context::event_mouse_click_handler(const Smach::event& x)
 		if (!selection.empty()) {
 			selected = selection.front();
 		}
-		if (selected && selected->get_name() == "switch" && switch_group_has_image(selected)) {
+		if (is_valid_group_for_ffd(selected)) {
 			can_add_points = true;
 		}
 	}
@@ -1122,7 +1133,7 @@ StateFFD_Context::event_key_press_handler(const Smach::event& x)
 		if (!selection.empty()) {
 			selected = selection.front();
 		}
-		if (selected && selected->get_name() == "switch" && switch_group_has_image(selected)) {
+		if (is_valid_group_for_ffd(selected)) {
 			can_add_points = true;
 		}
 	}
@@ -1391,16 +1402,31 @@ StateFFD_Context::on_make_ffd_pressed()
 
 	synfig::Layer::Handle layer;
 	synfig::Canvas::Handle target_canvas;
-	if (selected && selected->get_canvas())
+	if (selected && selected->get_canvas()) {
 		target_canvas = selected->get_canvas();
-	else
+		if (target_canvas != get_canvas() && !target_canvas->is_inline()) {
+			group.cancel();
+			get_canvas_view()->get_ui_interface()->error(
+				_("Cannot apply FFD to a layer that is inside an imported file. Please double-click the imported file to open it in a new tab and apply FFD there."));
+			return;
+		}
+	} else {
 		target_canvas = get_canvas();
+	}
 
 	synfig::Vector origin_offset(0,0);
 	synfig::Transformation layer_transform; // Automatically defaults to identity
 
-	if (selected && selected->get_name() == "switch" && switch_group_has_image(selected)) {
+	if (is_valid_group_for_ffd(selected)) {
 		synfig::Layer::Handle switch_layer = selected;
+		
+		synfig::Canvas::Handle sub_canvas = switch_layer->get_param("canvas").get(synfig::Canvas::Handle());
+		if (sub_canvas && !sub_canvas->is_inline()) {
+			group.cancel();
+			get_canvas_view()->get_ui_interface()->error(
+				_("Cannot apply FFD directly to an imported file. Please double-click the imported file to open it in a new tab and apply FFD to its internal groups."));
+			return;
+		}
 		
 		if (switch_layer->get_param("origin").get_type() == synfig::type_vector) {
 			origin_offset = switch_layer->get_param("origin").get(synfig::Vector(0,0));
@@ -1489,10 +1515,10 @@ StateFFD_Context::on_make_ffd_pressed()
 			return;
 		}
 	} else {
-		// Not a switch group with an image — reject and inform the user
+		// Not a valid group with an image — reject and inform the user
 		group.cancel();
 		get_canvas_view()->get_ui_interface()->error(
-			_("FFD requires a Switch Group that contains an image layer."));
+			_("FFD requires a Group or Switch Group that contains an image layer."));
 		return;
 	}
 
