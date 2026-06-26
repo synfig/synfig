@@ -528,10 +528,10 @@ StateFFD_Context::update_auto_fit_preview()
 			sum_xy /= sum_w;
 			
 			double trace = sum_xx + sum_yy;
-			double det = sum_xx * sum_yy - sum_xy * sum_xy;
 			
 			double ev_x = 1.0, ev_y = 0.0;
 			if (sum_xy != 0.0) {
+				double det = sum_xx * sum_yy - sum_xy * sum_xy;
 				double L1 = trace / 2.0 + std::sqrt(std::max(0.0, trace * trace / 4.0 - det));
 				ev_x = L1 - sum_yy;
 				ev_y = sum_xy;
