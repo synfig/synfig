@@ -215,7 +215,7 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	grid_y_spin(grid_y_adj, 1, 0),
 	smoothness_adj(Gtk::Adjustment::create(1.0, 0.0, 1.0, 0.01, 0.1)),
 	smoothness_hscl(smoothness_adj, Gtk::ORIENTATION_HORIZONTAL),
-	cull_threshold_adj(Gtk::Adjustment::create(1.0, 0.0, 1000.0, 0.01, 1.0)),
+	cull_threshold_adj(Gtk::Adjustment::create(0.0, 0.0, 1000.0, 0.01, 1.0)),
 	cull_threshold_spin(cull_threshold_adj, 0.01, 2),
 	reset_button(_("Reset Grid")),
 	updating_from_layer_(false)
@@ -1265,8 +1265,41 @@ StateFFD_Context::refresh_ducks()
 	if (mesh_mode_enum.get_value() == 1 && duck_list.size() > 2) {
 		std::vector<rendering::Mesh::Triangle> tris = synfig::Layer_FreeFormDeform::triangulate(pts);
 
-		// Apply Cull Threshold to Preview Mesh
-		tris = synfig::Layer_FreeFormDeform::cull_triangles(tris, pts, cull_threshold_adj->get_value());
+		std::vector<synfig::Point> local_pts;
+		if (editing_existing_mesh_) {
+			local_pts = pts; // Already local
+		} else {
+			synfig::Vector origin_offset(0,0);
+			synfig::Transformation layer_transform;
+			synfig::Layer::Handle target_layer;
+			if (!get_canvas_view()->get_selection_manager()->get_selected_layers().empty()) {
+				target_layer = *get_canvas_view()->get_selection_manager()->get_selected_layers().begin();
+			}
+			if (target_layer) {
+				if (target_layer->get_param("origin").get_type() == synfig::type_vector)
+					origin_offset = target_layer->get_param("origin").get(synfig::Vector(0,0));
+				if (target_layer->get_param("transformation").get_type() == synfig::type_transformation)
+					layer_transform = target_layer->get_param("transformation").get(synfig::Transformation());
+			}
+
+			for (auto& p : pts) {
+				synfig::Point local_p = p - layer_transform.offset;
+				synfig::Real sn = synfig::Angle::sin(-layer_transform.angle).get();
+				synfig::Real cs = synfig::Angle::cos(-layer_transform.angle).get();
+				synfig::Point unrot;
+				unrot[0] = local_p[0] * cs - local_p[1] * sn;
+				unrot[1] = local_p[0] * sn + local_p[1] * cs;
+				local_p = unrot;
+				local_p[0] -= local_p[1] * synfig::Angle::tan(layer_transform.skew_angle).get();
+				if (layer_transform.scale[0] != 0.0) local_p[0] /= layer_transform.scale[0];
+				if (layer_transform.scale[1] != 0.0) local_p[1] /= layer_transform.scale[1];
+				local_p += origin_offset;
+				local_pts.push_back(local_p);
+			}
+		}
+
+		// Apply Cull Threshold to Preview Mesh using local points (matching actual FFD layer logic)
+		tris = synfig::Layer_FreeFormDeform::cull_triangles(tris, local_pts, cull_threshold_adj->get_value());
 
 		for (const auto& tri : tris) {
 			etl::handle<WorkArea::Bezier> b1(new WorkArea::Bezier());
