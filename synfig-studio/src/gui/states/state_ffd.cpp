@@ -461,6 +461,7 @@ StateFFD_Context::update_auto_fit_preview()
 	synfig::Vector origin = origin_val.get(synfig::Vector());
 
 	auto to_world = [&](synfig::Point local_p) {
+		local_p -= origin;
 		local_p[0] *= tr.scale[0];
 		local_p[1] *= tr.scale[1];
 		local_p[0] += local_p[1] * synfig::Angle::tan(tr.skew_angle).get();
@@ -471,7 +472,6 @@ StateFFD_Context::update_auto_fit_preview()
 		rot[1] = local_p[0] * sn + local_p[1] * cs;
 		local_p = rot;
 		local_p += tr.offset;
-		local_p += origin;
 		return local_p;
 	};
 
@@ -1405,10 +1405,19 @@ StateFFD_Context::on_reset_pressed()
 void
 StateFFD_Context::on_make_ffd_pressed()
 {
-	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(), _("Make FFD Layer"));
+	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Make FFD"));
+
+	synfig::Point saved_preview_tl = preview_tl;
+	synfig::Point saved_preview_br = preview_br;
+	synfig::Angle saved_preview_angle = preview_angle;
+	std::vector<synfig::Point> saved_polygon(polygon_point_list.begin(), polygon_point_list.end());
+
+	synfig::Layer::Handle selected;
+	if (!get_canvas_view()->get_selection_manager()->get_selected_layers().empty()) {
+		selected = *get_canvas_view()->get_selection_manager()->get_selected_layers().begin();
+	}
 	
 	int depth = 0;
-	synfig::Layer::Handle selected = get_canvas_interface()->get_selection_manager()->get_selected_layer();
 	if (selected) depth = selected->get_depth();
 
 	synfig::Layer::Handle layer;
@@ -1543,21 +1552,18 @@ StateFFD_Context::on_make_ffd_pressed()
 	layer->set_param("cull_threshold", synfig::ValueBase(cull_threshold_adj->get_value()));
 
 	if (mode == 1) { // Custom Mesh
-		if (polygon_point_list.size() < 3) {
+		if (saved_polygon.size() < 3) {
 			get_canvas_view()->get_ui_interface()->error(_("Need at least 3 points to create a Custom Mesh FFD."));
 			group.cancel();
 			return;
 		}
 
 		std::vector<synfig::ValueBase> pts_vb;
-		for (auto& p : polygon_point_list) {
-			// 1. Subtract the origin
-			synfig::Point local_p = p - origin_offset;
+		for (auto& p : saved_polygon) {
+			// 1. Subtract offset
+			synfig::Point local_p = p - layer_transform.offset;
 			
-			// 2. Apply Inverse Transformation (offset, angle, skew, scale)
-			local_p -= layer_transform.offset;
-			
-			// Un-rotate
+			// 2. Un-rotate
 			synfig::Real sn = synfig::Angle::sin(-layer_transform.angle).get();
 			synfig::Real cs = synfig::Angle::cos(-layer_transform.angle).get();
 			synfig::Point unrot;
@@ -1565,12 +1571,15 @@ StateFFD_Context::on_make_ffd_pressed()
 			unrot[1] = local_p[0] * sn + local_p[1] * cs;
 			local_p = unrot;
 			
-			// Un-skew
+			// 3. Un-skew
 			local_p[0] -= local_p[1] * synfig::Angle::tan(layer_transform.skew_angle).get();
 			
-			// Un-scale
+			// 4. Un-scale
 			if (layer_transform.scale[0] != 0.0) local_p[0] /= layer_transform.scale[0];
 			if (layer_transform.scale[1] != 0.0) local_p[1] /= layer_transform.scale[1];
+
+			// 5. Add origin back
+			local_p += origin_offset;
 
 			pts_vb.push_back(local_p);
 		}
@@ -1581,26 +1590,34 @@ StateFFD_Context::on_make_ffd_pressed()
 	} else {
 		int cols = (int)create_grid_x_spin.get_value();
 		int rows = (int)create_grid_y_spin.get_value();
-		layer->set_param("grid_size_x", synfig::ValueBase(cols));
-		layer->set_param("grid_size_y", synfig::ValueBase(rows));
+		layer->set_param("grid_size_x", synfig::ValueBase(cols + 1));
+		layer->set_param("grid_size_y", synfig::ValueBase(rows + 1));
 
-		if (auto_fit_check.get_active() && (preview_tl != synfig::Point(0,0) || preview_br != synfig::Point(0,0))) {
-			layer->set_param("source_tl", synfig::ValueBase(preview_tl));
-			layer->set_param("source_br", synfig::ValueBase(preview_br));
-			layer->set_param("source_angle", synfig::ValueBase(preview_angle));
+		if (auto_fit_check.get_active() && (saved_preview_tl != synfig::Point(0,0) || saved_preview_br != synfig::Point(0,0))) {
+			layer->set_param("source_tl", synfig::ValueBase(saved_preview_tl));
+			layer->set_param("source_br", synfig::ValueBase(saved_preview_br));
+			layer->set_param("source_angle", synfig::ValueBase(saved_preview_angle));
 		}
 
 		etl::handle<Layer_FreeFormDeform> ffd_typed = etl::handle<Layer_FreeFormDeform>::cast_dynamic(layer);
 		if (ffd_typed) ffd_typed->regenerate_grid_points();
 
 		synfig::ValueBase grid_points_vb = layer->get_param("grid_points");
+		layer->set_param("grid_points", grid_points_vb);
+		
 		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(grid_points_vb, get_canvas());
 		layer->connect_dynamic_param("grid_points", dyn_list);
 	}
 
-	synfigapp::SelectionManager::LayerList layer_selection;
-	layer_selection.push_back(layer);
-	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
+	auto canvas_interface = get_canvas_interface();
+	Glib::signal_idle().connect_once([canvas_interface, layer]() {
+		if (canvas_interface && canvas_interface->get_selection_manager()) {
+			canvas_interface->get_selection_manager()->clear_selected_layers();
+			synfigapp::SelectionManager::LayerList layer_selection;
+			layer_selection.push_back(layer);
+			canvas_interface->get_selection_manager()->set_selected_layers(layer_selection);
+		}
+	});
 	
 	reset();
 	
