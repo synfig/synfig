@@ -529,10 +529,10 @@ StateFFD_Context::update_auto_fit_preview()
 			
 			double trace = sum_xx + sum_yy;
 			double det = sum_xx * sum_yy - sum_xy * sum_xy;
-			double L1 = trace / 2.0 + std::sqrt(std::max(0.0, trace * trace / 4.0 - det));
 			
 			double ev_x = 1.0, ev_y = 0.0;
 			if (sum_xy != 0.0) {
+				double L1 = trace / 2.0 + std::sqrt(std::max(0.0, trace * trace / 4.0 - det));
 				ev_x = L1 - sum_yy;
 				ev_y = sum_xy;
 			} else {
@@ -571,13 +571,12 @@ StateFFD_Context::update_auto_fit_preview()
 			double w_fit = (max_u - min_u) * 1.05;
 			double h_fit = (max_v - min_v) * 1.05;
 			
-			double angle_rad = std::atan2(ev_y, ev_x);
-			
 			synfig::Point new_tl(final_cx - w_fit * 0.5, final_cy + h_fit * 0.5);
 			synfig::Point new_br(final_cx + w_fit * 0.5, final_cy - h_fit * 0.5);
 			
 			int mode = mesh_mode_enum.get_value();
 			if (mode == 0) { // Grid Mode Auto Fit
+				double angle_rad = std::atan2(ev_y, ev_x);
 				preview_tl = new_tl;
 				preview_br = new_br;
 				preview_angle = synfig::Angle::rad(angle_rad);
@@ -1072,9 +1071,9 @@ StateFFD_Context::event_mouse_click_handler(const Smach::event& x)
 	{
 	case BUTTON_LEFT:
 	{
+		if (!get_work_area()) return Smach::RESULT_OK;
 		synfig::Point p = get_work_area()->snap_point_to_grid(event.pos);
-		synfig::TransformStack t_stack;
-		if (get_work_area()) t_stack = get_work_area()->get_curr_transform_stack();
+		synfig::TransformStack t_stack = get_work_area()->get_curr_transform_stack();
 		p = t_stack.unperform(p);
 		
 		polygon_point_list.push_back(p);
@@ -1214,14 +1213,14 @@ StateFFD_Context::on_duck_right_click(std::list<synfig::Point>::iterator iter)
 void
 StateFFD_Context::refresh_ducks()
 {
+	if (!get_work_area()) return;
+
 	get_work_area()->clear_ducks();
 	get_work_area()->queue_draw();
 
 	if (polygon_point_list.empty()) return;
 
-	synfig::TransformStack transform_stack;
-	if (get_work_area())
-		transform_stack = get_work_area()->get_curr_transform_stack();
+	synfig::TransformStack transform_stack = get_work_area()->get_curr_transform_stack();
 
 	std::vector<synfig::Point> pts;
 	std::vector<etl::handle<WorkArea::Duck>> duck_list;
