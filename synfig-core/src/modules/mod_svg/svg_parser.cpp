@@ -1802,7 +1802,7 @@ Svg_parser::build_linearGradient(xmlpp::Element* root, const LinearGradient& dat
 
 	{
 		SVGMatrix mtx2;
-		mtx2.compose(mtx,data.transform);
+		mtx2.compose(mtx, data.gradient_transform);
 
 		//matrix transforms the gradient as a whole
 		//it does not preserve angles, so we can't simply transform both points
@@ -1857,7 +1857,7 @@ Svg_parser::build_radialGradient(xmlpp::Element* root, const RadialGradient& dat
 {
 	xmlpp::Element* gradient;
 
-	if (!mtx.is_identity() || !data.transform.is_identity()) {
+	if (!mtx.is_identity() || !data.gradient_transform.is_identity()) {
 		xmlpp::Element* layer=root->add_child("layer");
 
 		layer->set_attribute("type","group");
@@ -1876,7 +1876,7 @@ Svg_parser::build_radialGradient(xmlpp::Element* root, const RadialGradient& dat
 		gradient->set_attribute("desc",data.name);
 		build_param (gradient->add_child("param"),"blend_method","integer","0"); //composite
 		SVGMatrix mtx2;
-		mtx2.compose(mtx,data.transform);
+		mtx2.compose(mtx, data.gradient_transform);
 
 		build_transform(child_layer,mtx2);
 
@@ -2043,13 +2043,18 @@ Svg_parser::adjustGamma(float r, float g, float b, float a)
 LinearGradient::LinearGradient(const String& gradient_name, float x1, float y1, float x2, float y2, std::list<ColorStop> stops, SVGMatrix transform)
 	: name(gradient_name), x1(x1), x2(x2),
 	  y1(y1), y2(y2),
-	  stops(stops), transform(transform)
-{}
+	  stops(std::move(stops))
+{
+	gradient_transform = std::move(transform);
+}
 
 RadialGradient::RadialGradient(const String& gradient_name, float cx, float cy, float r, std::list<ColorStop> stops, SVGMatrix transform)
 	: name(gradient_name), cx(cx), cy(cy), r(r),
-	  stops(stops), transform(transform)
-{}
+	  stops(std::move(stops))
+{
+	gradient_transform = std::move(transform);
+}
+
 
 BLine::BLine(std::vector<Vertex> points, bool loop)
 	: points(points), loop(loop),

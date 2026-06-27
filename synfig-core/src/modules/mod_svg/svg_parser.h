@@ -78,6 +78,7 @@ struct ColorStop {
 
 struct SVGGradient
 {
+	SVGMatrix gradient_transform;
 	enum class SpreadMethod {
 		PAD = 1,
 		REFLECT = 2,
@@ -93,7 +94,6 @@ struct LinearGradient : public SVGGradient
 
 	float x1,x2,y1,y2;
 	std::list<ColorStop> stops;
-	SVGMatrix transform;
 
 	LinearGradient(const String &name, float x1, float y1, float x2, float y2, std::list<ColorStop> stops, SVGMatrix transform);
 };
@@ -105,7 +105,6 @@ struct RadialGradient: public SVGGradient
 	//float fx,fy; //not supported by Synfig
 	float r; //radius
 	std::list<ColorStop> stops;
-	SVGMatrix transform;
 
 	RadialGradient(const String& name, float cx, float cy, float r, std::list<ColorStop> stops, SVGMatrix transform);
 };
