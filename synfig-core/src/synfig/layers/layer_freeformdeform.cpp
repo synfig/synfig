@@ -665,7 +665,7 @@ void Layer_FreeFormDeform::prepare_mesh()
 		Point c_lm(min_x, (min_y + max_y) * 0.5);
 
 		// Save user point count before adding fence/outer anchors
-		const size_t original_pt_count = initial_pts.size();
+		const int original_pt_count = initial_pts.size();
 
 		// 5. Add fence and outer boundary anchors (they never move)
 		auto add_static_anchor = [&](const Point& p) {
