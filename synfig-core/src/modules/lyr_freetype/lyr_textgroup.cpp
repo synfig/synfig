@@ -54,7 +54,6 @@ SYNFIG_LAYER_SET_VERSION(Layer_GlyphShape,"0.1");
 Layer_GlyphShape::Layer_GlyphShape()
     : param_scale(ValueBase(Vector(1.0, 1.0)))
     , param_rotation(ValueBase(Angle::zero()))
-    , param_offset(ValueBase(Vector(0.0, 0.0)))
     , wave_offset_(0,0) 
 {
     SET_INTERPOLATION_DEFAULTS();
@@ -88,7 +87,7 @@ void Layer_GlyphShape::sync_vfunc()
     clear();  
     if (stored_chunks.empty()) return;  
     rendering::Contour::ChunkList shifted = stored_chunks;
-	Vector off =param_offset.get(Vector())+ wave_offset_;
+	Vector off = wave_offset_;
 
 	if (off[0] != 0.0 || off[1] != 0.0) {  
         for (auto& chunk : shifted) {  
@@ -222,11 +221,9 @@ bool
 
 bool Layer_GlyphShape::set_param(const String &param, const ValueBase &value)  
 {  
-    if (param == "origin")  //loadcanvas.cpp renames "offset" -> "origin" for all layers.
-        return true;        //which would store world_pos into param_origin and cause double-offset at render.
     IMPORT_VALUE(param_rotation);  
     IMPORT_VALUE(param_scale);  
-	IMPORT_VALUE(param_offset);    
+
     return Layer_Shape::set_param(param, value);  
 }  
   
@@ -259,7 +256,6 @@ ValueBase Layer_GlyphShape::get_param(const String &param) const
 {  
     EXPORT_VALUE(param_rotation);  
     EXPORT_VALUE(param_scale);
-    EXPORT_VALUE(param_offset); 
     EXPORT_NAME();  
     EXPORT_VERSION();  
     return Layer_Shape::get_param(param);  
@@ -400,11 +396,7 @@ Layer::Vocab Layer_GlyphShape::get_param_vocab() const
         .set_description(_("Per-glyph scale"))  
         .set_is_distance()  
     );  
-    ret.push_back(ParamDesc("offset")  
-    	.set_local_name(_("Offset"))  
-    	.set_description(_("Per-glyph position offset"))  
-    	.set_is_distance()
-	);
+ 
     return ret;  
 }
 
@@ -422,8 +414,7 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
   
     if (rotation != Angle::zero() || scale != Vector(1.0, 1.0) || has_wave)  
     {  
-        Vector pivot = param_offset.get(Vector())+ wave_offset_;    
-          
+        Vector pivot = wave_offset_;
         Matrix matrix = Matrix().set_translate(pivot)  
                       * Matrix().set_rotate(rotation)  
                       * Matrix().set_scale(scale)  
@@ -712,8 +703,7 @@ auto shaped_lines =
 
 		(*layer_iter)->set_description(glyph_key);
     	if (glyph_layer) { 
-        	
-			glyph_layer->set_param("offset",ValueBase(glyph.pen_offset));
+			glyph_layer->set_param("origin",ValueBase(glyph.pen_offset));
 			glyph_layer->set_glyph_chunks(glyph.outline);	
 	       	(*layer_iter)->set_param("color",  ValueBase(color));  
         	(*layer_iter)->set_param("invert", ValueBase(invert));
