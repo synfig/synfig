@@ -600,8 +600,8 @@ auto shaped_lines =
         		}
     		}
 
-    		offset[0] += (ftglyph->advance.x >> 10) * compress;
-			offset[1] += (ftglyph->advance.y >> 10);
+   			offset[0] += sg.x_advance * compress;
+			offset[1] += sg.y_advance;
 
     		FT_Done_Glyph(ftglyph);
 		}

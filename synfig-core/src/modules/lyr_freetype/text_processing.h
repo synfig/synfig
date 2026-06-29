@@ -78,7 +78,9 @@ using TextLine = std::vector<TextSpan>;
 struct ShapedGlyph  
 {  
 	uint32_t glyph_index;  
-	uint32_t cluster;  
+	uint32_t cluster;
+	int32_t  x_advance = 0, y_advance = 0;  
+    int32_t  x_offset  = 0, y_offset  = 0;  
 	  
 };  
   

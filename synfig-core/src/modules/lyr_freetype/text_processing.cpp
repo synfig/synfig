@@ -325,12 +325,16 @@ shape_text(const std::vector<TextLine>& lines, hb_font_t* font)
   
 			unsigned int glyph_count = 0;  
 			hb_glyph_info_t* glyph_info = hb_buffer_get_glyph_infos(buffer, &glyph_count);  
-  
+  			hb_glyph_position_t* glyph_pos  = hb_buffer_get_glyph_positions(buffer, &glyph_count);
 			for (unsigned int i = 0; i < glyph_count; ++i)  
 			{  
 				ShapedGlyph g;  
 				g.glyph_index = glyph_info[i].codepoint;  
-				g.cluster = glyph_info[i].cluster;  
+				g.cluster = glyph_info[i].cluster; 
+				g.x_advance   = glyph_pos[i].x_advance;  
+    			g.y_advance   = glyph_pos[i].y_advance;  
+    			g.x_offset    = glyph_pos[i].x_offset;  
+    			g.y_offset    = glyph_pos[i].y_offset;  
 				shaped_line.push_back(g);  
 
 			}  
