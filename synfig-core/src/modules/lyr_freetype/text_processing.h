@@ -69,7 +69,8 @@ struct TextSpan
 {  
 	std::vector<uint32_t> codepoints;  
 #if HAVE_HARFBUZZ  
-	hb_script_t script;  
+	hb_script_t script; 
+	hb_direction_t direction;
 #endif  
 };  
   

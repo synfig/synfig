@@ -78,7 +78,27 @@ utf8_to_utf32(const std::string& text)
   
 	return unicode;  
 }  
-  
+
+#if HAVE_HARFBUZZ
+static TextLine reorder_runs_visually(const TextLine& runs, FriBidiParType base_dir)
+{
+	// FriBiDi provides embedding levels and paragraph direction.
+	// We keep characters in logical order and only reorder the directional
+	// runs for visual layout. HarfBuzz then shapes each run using its own
+	// direction.
+	bool rtl_base = (base_dir == FRIBIDI_PAR_RTL || base_dir == FRIBIDI_TYPE_RTL);
+	if (!rtl_base)
+		return runs;
+	TextLine out(runs.rbegin(), runs.rend());
+	return out;
+	// TODO: Visual ordering currently assumes a single base-direction
+	// reversal of the run sequence. This is sufficient for common LTR/RTL
+	// mixed text, but not for arbitrary nested Unicode BiDi embeddings.
+	// Use the computed embedding levels to perform full visual run ordering
+	// if those cases need to be supported.
+}
+#endif
+
 std::vector<TextLine>  
 fetch_text_lines(const std::string& text, int direction)  
 {  
@@ -130,7 +150,11 @@ fetch_text_lines(const std::string& text, int direction)
 	}  
   
 	// 3. Handle BiDirectional text  
-#if HAVE_HARFBUZZ  
+#if HAVE_HARFBUZZ
+	std::vector<std::vector<FriBidiLevel>> all_levels;   // logical-order levels, per line
+	std::vector<FriBidiParType>            all_base_dirs; // resolved base dir, per line
+	all_levels.reserve(base_lines.size());
+	all_base_dirs.reserve(base_lines.size());
 	for (auto& line : base_lines) {  
 		FriBidiParType base_dir =  
 			direction == TEXT_DIRECTION_AUTO ? FRIBIDI_TYPE_ON :  
@@ -165,22 +189,9 @@ fetch_text_lines(const std::string& text, int direction)
 			              _("error running FriBiDi (getting embedding levels)"));  
 			return new_lines;  
 		}  
-  
-		fribidi_result = fribidi_reorder_line(  
-			FRIBIDI_FLAGS_DEFAULT | FRIBIDI_FLAGS_ARABIC,  
-			bidi_types.data(),  
-			line_size,  
-			0,  
-			base_dir,  
-			bidi_levels.data(),  
-			line.data(),  
-			nullptr);  
-  
-		if (fribidi_result == 0) {  
-			synfig::error("TextProcessing: %s",  
-			              _("error running FriBiDi (reordering line)"));  
-			return new_lines;  
-		}  
+		all_levels.push_back(std::move(bidi_levels));
+		all_base_dirs.push_back(base_dir);
+
 	}  
 #endif  
   
@@ -200,30 +211,38 @@ fetch_text_lines(const std::string& text, int direction)
 	}  
 #else  
 	hb_unicode_funcs_t* ufuncs = hb_unicode_funcs_get_default();  
+
+	for (size_t li = 0; li < base_lines.size(); ++li) {
+		const auto& line   = base_lines[li];
+		const auto& levels = all_levels[li];
+		TextLine current_line;
+		hb_script_t current_script = HB_SCRIPT_INVALID;
+		int current_parity = -1;
+
+		for (size_t ci = 0; ci < line.size(); ++ci) {
+			uint32_t codepoint = line[ci];
+			hb_script_t script = hb_unicode_script(ufuncs, codepoint);
+			int parity = levels[ci] & 1;   // 1 = RTL, 0 = LTR
+
+			bool same_run = !current_line.empty()
+			              && parity == current_parity
+			              && (script == current_script || script == HB_SCRIPT_INHERITED);
   
-	for (const auto& line : base_lines) {  
-		TextLine current_line;  
-		hb_script_t current_script = HB_SCRIPT_INVALID;  
-  
-		for (uint32_t codepoint : line) {  
-			hb_script_t script = hb_unicode_script(ufuncs, codepoint);  
-  
-			if (!current_line.empty() && (script == current_script || script == HB_SCRIPT_INHERITED)) {  
-				current_line.back().codepoints.push_back(codepoint);  
-			} else {  
-				current_line.push_back(TextSpan{  
-					{codepoint},  
-					script  
-				});  
-				current_script = script;  
-			}  
-		}  
-  
-		new_lines.push_back(current_line);  
-	}  
+			if (same_run) {
+				current_line.back().codepoints.push_back(codepoint);
+			} else {
+				hb_direction_t dir = parity ? HB_DIRECTION_RTL : HB_DIRECTION_LTR;
+				current_line.push_back(TextSpan{ {codepoint}, script, dir });
+				current_script  = script;
+				current_parity  = parity;
+			}
+		}
+
+		new_lines.push_back(reorder_runs_visually(current_line, all_base_dirs[li]));
+	}
 #endif  
-  
-	return new_lines;  
+
+	return new_lines;
 }  
   
 void  
@@ -308,17 +327,19 @@ shape_text(const std::vector<TextLine>& lines, hb_font_t* font)
   
 		for (const TextSpan& span : line)  
 		{  
-			hb_buffer_clear_contents(buffer);  
+			hb_buffer_clear_contents(buffer);
+			hb_buffer_set_script(buffer, span.script);
+			hb_direction_t dir = hb_script_get_horizontal_direction(span.script);
+			if (dir == HB_DIRECTION_INVALID)
+    			dir = HB_DIRECTION_LTR;  
+			hb_buffer_set_direction(buffer, dir);
   
-			hb_buffer_set_direction(buffer, HB_DIRECTION_LTR);  
-			hb_buffer_set_script(buffer, span.script);  
-  
-			hb_buffer_add_utf32(  
-				buffer,  
-				span.codepoints.data(),  
-				span.codepoints.size(),  
-				0,  
-				-1  
+			hb_buffer_add_utf32(
+				buffer,
+				span.codepoints.data(),
+				span.codepoints.size(),
+				0, 
+				-1
 			);  
   
 			hb_shape(font, buffer, nullptr, 0);  

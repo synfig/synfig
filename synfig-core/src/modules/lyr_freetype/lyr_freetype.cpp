@@ -1045,7 +1045,7 @@ Layer_Freetype::sync_vfunc()
 #if HAVE_HARFBUZZ
 			hb_buffer_clear_contents(span_buffer);
 
-			hb_direction_t direction = HB_DIRECTION_LTR; // character order already fixed by FriBiDi
+			hb_direction_t direction = span.direction;
 			hb_buffer_set_direction(span_buffer, direction);
 			hb_buffer_set_script(span_buffer, span.script);
 //			hb_buffer_set_language(span_buffer, hb_language_from_string(language.c_str(), -1));
