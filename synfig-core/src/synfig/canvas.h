@@ -358,8 +358,7 @@ public:
 
 	void invoke_signal_value_node_child_removed(ValueNode::Handle, ValueNode::Handle);
 
-	sigc::signal<void>& signal_force_refresh() { return signal_force_refresh_; }  
-
+	sigc::signal<void>& signal_force_refresh() { return signal_force_refresh_; }
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
 	*/
@@ -392,16 +391,7 @@ public:
 
 	//! Returns true if the Canvas is in line
 	bool is_inline()const { return is_inline_; }
-
-	//! Returns the root (non-inline) canvas of this canvas hierarchy.  
-	//! For a root canvas, returns itself.  
-	Handle get_root_canvas() {  
-   		Handle root(this);  
-    	while (root->parent())  
-        	root = root->parent();  
-    	return root;  
-	}
-
+	
 	//! Returns a handle to the RendDesc for this Canvas
 	RendDesc &rend_desc() { return desc_; }
 

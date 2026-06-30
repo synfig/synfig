@@ -45,7 +45,6 @@
 
 /* === M A C R O S ========================================================= */
 
-
 /* === T Y P E D E F S ===================================================== */
 
 /* === C L A S S E S & S T R U C T S ======================================= */
@@ -114,8 +113,6 @@ public:
 
 	bool set_version(const synfig::String &ver) override { if (ver=="0.1") old_version=true; return true; }
 	void reset_version() override {old_version=false;}
-	
-	static std::vector<std::string> get_possible_font_files(const std::string& newfont, const synfig::filesystem::Path& canvas_path);
 
 	static FT_Face load_font_static(const std::string& family,int style,int weight,const synfig::filesystem::Path &canvas_path);    
 
@@ -137,7 +134,8 @@ private:
 	bool new_font_(const synfig::String &family, int style=0, int weight=400);
 	bool new_face(const synfig::String &newfont);
 
-	static std::vector<std::string> get_possible_font_directories(const std::string& canvas_path);	
+	static std::vector<std::string> get_possible_font_directories(const std::string& canvas_path);
+	static std::vector<std::string> get_possible_font_files(const std::string& newfont, const synfig::filesystem::Path& canvas_path);
 
 	void on_param_text_changed();
 

@@ -143,57 +143,57 @@ bool
 {  
       
     IMPORT_VALUE_PLUS(param_text,{ 
-        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_family,{ 
-        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_style,{ 
-        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_weight,{ 
-        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
         sync_glyphs(); 
     }); 
     
     IMPORT_VALUE_PLUS(param_size,{ 
-        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_direction,{ 
-        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_color,{ 
-        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_compress,{
-        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
         sync_glyphs(); 
     }); 
     
     IMPORT_VALUE_PLUS(param_vcompress,{ 
-        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_orient,{ 
-        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
         sync_glyphs(); 
     });
     
     IMPORT_VALUE_PLUS(param_font, { 
-        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
         sync_glyphs(); 
     });  
   
@@ -205,15 +205,15 @@ bool
     // Wave animation params  
     IMPORT_VALUE_PLUS(param_stagger_delay,{ 
         update_wave_offsets(get_time_mark(), true); 
-        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
     });  
     IMPORT_VALUE_PLUS(param_wave_amplitude,{ 
         update_wave_offsets(get_time_mark(), true); 
-        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()();
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();
     });  
     IMPORT_VALUE_PLUS(param_wave_period,{ 
         update_wave_offsets(get_time_mark(), true); 
-        if (get_canvas()) get_canvas()->get_root_canvas()->signal_force_refresh()(); 
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
     });  
   
     return Layer_PasteCanvas::set_param(param, value);  
