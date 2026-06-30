@@ -329,10 +329,7 @@ shape_text(const std::vector<TextLine>& lines, hb_font_t* font)
 		{  
 			hb_buffer_clear_contents(buffer);
 			hb_buffer_set_script(buffer, span.script);
-			hb_direction_t dir = hb_script_get_horizontal_direction(span.script);
-			if (dir == HB_DIRECTION_INVALID)
-    			dir = HB_DIRECTION_LTR;  
-			hb_buffer_set_direction(buffer, dir);
+			hb_buffer_set_direction(buffer, span.direction);
   
 			hb_buffer_add_utf32(
 				buffer,

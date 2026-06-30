@@ -1,10 +1,5 @@
-#ifndef text_processing_h_INCLUDED
-#define text_processing_h_INCLUDED
-
-#endif // text_processing_h_INCLUDED
-
-#ifndef __SYNFIG_TEXT_PROCESSING_H  
-#define __SYNFIG_TEXT_PROCESSING_H  
+#ifndef SYNFIG_TEXT_PROCESSING_H
+#define SYNFIG_TEXT_PROCESSING_H
   
 #include <synfig/rendering/common/task/taskcontour.h>  
 #include <synfig/vector.h>  

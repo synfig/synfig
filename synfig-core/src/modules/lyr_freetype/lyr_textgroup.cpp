@@ -591,11 +591,14 @@ auto shaped_lines =
         		        		
         		if (!outline.empty())
         		{
+            		Vector glyph_pos = offset; 
+    				glyph_pos[0] += sg.x_offset * compress;
+    				glyph_pos[1] += sg.y_offset;
             		cur_line.push_back({
                 	outline,
                 	sg.glyph_index,
                 	sg.cluster,
-                	offset
+                	glyph_pos
             		});
         		}
     		}
