@@ -72,7 +72,7 @@ public:
 
 	/**
 	 * Store a file system path from a string in native encoding.
-	 * @param path the path in native encoding
+	 * @param native_path the path in native encoding
 	 */
 	static Path from_native(const string_type& native_path);
 
@@ -314,7 +314,7 @@ private:
 	static string_type utf8_to_native(const std::string& utf8);
 	/**
 	 * Converts a path to its normal form
-	 * @param utf8 the path in UTF-8 encoding
+	 * @param path the path in UTF-8 encoding
 	 * @return the normalized path in UTF-8 encoding
 	 */
 	static std::string normalize(std::string path);
