@@ -1367,6 +1367,8 @@ StateFFD_Context::refresh_ducks()
 			etl::handle<WorkArea::Bezier> b(new WorkArea::Bezier());
 			etl::handle<WorkArea::Duck> d1 = new WorkArea::Duck(p1);
 			etl::handle<WorkArea::Duck> d2 = new WorkArea::Duck(p2);
+			d1->set_transform_stack(transform_stack);
+			d2->set_transform_stack(transform_stack);
 			b->p1 = b->c1 = d1;
 			b->p2 = b->c2 = d2;
 			get_work_area()->add_bezier(b);
@@ -1380,6 +1382,8 @@ StateFFD_Context::refresh_ducks()
 			etl::handle<WorkArea::Bezier> b(new WorkArea::Bezier());
 			etl::handle<WorkArea::Duck> d1 = new WorkArea::Duck(p1);
 			etl::handle<WorkArea::Duck> d2 = new WorkArea::Duck(p2);
+			d1->set_transform_stack(transform_stack);
+			d2->set_transform_stack(transform_stack);
 			b->p1 = b->c1 = d1;
 			b->p2 = b->c2 = d2;
 			get_work_area()->add_bezier(b);
