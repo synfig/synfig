@@ -41,6 +41,7 @@
 #include <gui/docks/dock_toolbox.h>
 #include <gui/event_mouse.h>
 #include <gui/event_keyboard.h>
+#include <gui/event_layerclick.h>
 #include <gdk/gdkkeysyms.h>
 #include <gui/localization.h>
 #include <gui/workarea.h>
@@ -164,6 +165,7 @@ public:
 
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 	Smach::event_result event_layer_selection_changed_handler(const Smach::event& x);
+	Smach::event_result event_layer_click_handler(const Smach::event& x);
 	Smach::event_result event_stop_handler(const Smach::event& x);
 	Smach::event_result event_mouse_click_handler(const Smach::event& x);
 	Smach::event_result event_mouse_doubleclick_handler(const Smach::event& x);
@@ -188,6 +190,7 @@ StateFFD::StateFFD() :
 	Smach::state<StateFFD_Context>("ffd", N_("FFD Tool"))
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED, &StateFFD_Context::event_layer_selection_changed_handler));
+	insert(event_def(EVENT_WORKAREA_LAYER_CLICKED,  &StateFFD_Context::event_layer_click_handler));
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,    &StateFFD_Context::event_refresh_tool_options));
 	insert(event_def(EVENT_STOP,                    &StateFFD_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,                 &StateFFD_Context::event_refresh_handler));
@@ -368,8 +371,7 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	get_work_area()->clear_ducks();
 	get_work_area()->queue_draw();
 
-	// Disallow layer clicks so the user doesn't accidentally select the underlying image
-	get_work_area()->set_allow_layer_clicks(false);
+	get_work_area()->set_allow_layer_clicks(true);
 
 	get_work_area()->set_cursor(Gdk::CROSSHAIR);
 
@@ -1027,6 +1029,36 @@ StateFFD_Context::event_layer_selection_changed_handler(const Smach::event& /*x*
 	update_controls_from_layer();
 	get_work_area()->queue_draw();
 	get_canvas_view()->queue_rebuild_ducks();
+	
+	return Smach::RESULT_ACCEPT;
+}
+
+Smach::event_result
+StateFFD_Context::event_layer_click_handler(const Smach::event& x)
+{
+	const EventLayerClick& event(*reinterpret_cast<const EventLayerClick*>(&x));
+
+	if(event.layer && (event.layer->get_name() == "bone" || event.layer->get_name() == "skeleton"))
+	{
+		if (event.button == BUTTON_LEFT && (event.modifier&GDK_CONTROL_MASK))
+		{
+			std::list<Layer::Handle> layer_list(canvas_view_->get_selection_manager()->get_selected_layers());
+			std::set<Layer::Handle> layers(layer_list.begin(),layer_list.end());
+			
+			if(!layers.count(event.layer))
+			{
+				layer_list.push_back(event.layer);
+				canvas_view_->get_selection_manager()->set_selected_layers(layer_list);
+			}
+			else
+			{
+				layers.erase(event.layer);
+				layer_list=std::list<Layer::Handle>(layers.begin(),layers.end());
+				canvas_view_->get_selection_manager()->set_selected_layers(layer_list);
+			}
+			return Smach::RESULT_ACCEPT;
+		}
+	}
 	
 	return Smach::RESULT_ACCEPT;
 }
