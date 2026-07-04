@@ -805,6 +805,34 @@ void Layer_FreeFormDeform::prepare_mesh()
 
 	int sub_steps = 10;
 
+	// Helper: rotate a source-space point by source_angle around center
+	auto rotate_src = [&](const Point& pt) {
+		Real dx = pt[0] - center[0];
+		Real dy = pt[1] - center[1];
+		return Point(
+			center[0] + dx * angle_cos - dy * angle_sin,
+			center[1] + dx * angle_sin + dy * angle_cos
+		);
+	};
+
+	// =====================================================================
+	// PHASE 1: Build the dense grid cell meshes (same as before)
+	// =====================================================================
+
+	// We also need to track the grid edge vertex indices so we can connect
+	// boundary triangles to them. Store the vertex index of each edge point.
+	// edge_top[i], edge_bottom[i]: vertex indices along top/bottom edge
+	// edge_left[i], edge_right[i]: vertex indices along left/right edge
+	// These are indexed by sub_step position along the edge.
+
+	int edge_len_h = (cols - 1) * sub_steps + 1; // total vertices along horizontal edge
+	int edge_len_v = (rows - 1) * sub_steps + 1; // total vertices along vertical edge
+
+	std::vector<int> edge_top(edge_len_h, -1);
+	std::vector<int> edge_bottom(edge_len_h, -1);
+	std::vector<int> edge_left(edge_len_v, -1);
+	std::vector<int> edge_right(edge_len_v, -1);
+
 	// Calculate vertices for each cell
 	for (int y = 0; y < rows - 1; ++y) {
 		for (int x = 0; x < cols - 1; ++x) {
@@ -867,13 +895,23 @@ void Layer_FreeFormDeform::prepare_mesh()
 						P11_orig * (u*v);
 
 					// Rotate the source position to match the rotated grid
-					Real dx = initial_pos[0] - center[0];
-					Real dy = initial_pos[1] - center[1];
-					Real rx = center[0] + dx * angle_cos - dy * angle_sin;
-					Real ry = center[1] + dx * angle_sin + dy * angle_cos;
-					initial_pos = Point(rx, ry);
+					initial_pos = rotate_src(initial_pos);
 
+					int vtx_idx = mesh->vertices.size();
 					mesh->vertices.push_back(rendering::Mesh::Vertex(calculated_pos, initial_pos));
+
+					// Track edge vertices for boundary connection
+					int global_u = x * sub_steps + u_step;
+					int global_v = y * sub_steps + v_step;
+
+					if (y == 0 && v_step == 0)
+						edge_top[global_u] = vtx_idx;
+					if (y == rows - 2 && v_step == sub_steps)
+						edge_bottom[global_u] = vtx_idx;
+					if (x == 0 && u_step == 0)
+						edge_left[global_v] = vtx_idx;
+					if (x == cols - 2 && u_step == sub_steps)
+						edge_right[global_v] = vtx_idx;
 				}
 			}
 
@@ -893,23 +931,144 @@ void Layer_FreeFormDeform::prepare_mesh()
 		}
 	}
 
-	// Mask = source bounding rect (rotated to match the source_angle)
-	rendering::Contour::Handle mask(new rendering::Contour());
-	mask->antialias = true;
+	// =====================================================================
+	// PHASE 2: Add boundary identity triangles around the grid
+	// These cover the area outside the grid so the image doesn't clip.
+	// Identity mapping: position == tex_coords (no deformation).
+	// =====================================================================
 
-	auto rotate_pt = [&](const Point& pt) {
+	// Unrotate a point from world space to unrotated source space
+	auto unrotate_src = [&](const Point& pt) {
 		Real dx = pt[0] - center[0];
 		Real dy = pt[1] - center[1];
 		return Point(
-			center[0] + dx * angle_cos - dy * angle_sin,
-			center[1] + dx * angle_sin + dy * angle_cos
+			center[0] + dx * angle_cos + dy * angle_sin,
+			center[1] - dx * angle_sin + dy * angle_cos
 		);
 	};
 
-	mask->move_to(rotate_pt(tl));
-	mask->line_to(rotate_pt(Point(br[0], tl[1])));
-	mask->line_to(rotate_pt(br));
-	mask->line_to(rotate_pt(Point(tl[0], br[1])));
+	Real end_x = start_x + (cols - 1) * cell_w;
+	Real end_y = start_y + (rows - 1) * cell_h;
+
+	Real grid_min_x = std::min(start_x, end_x);
+	Real grid_max_x = std::max(start_x, end_x);
+	Real grid_min_y = std::min(start_y, end_y);
+	Real grid_max_y = std::max(start_y, end_y);
+
+	Real bound_min_x = grid_min_x;
+	Real bound_max_x = grid_max_x;
+	Real bound_min_y = grid_min_y;
+	Real bound_max_y = grid_max_y;
+
+	// Expand to cover all deformed vertices
+	for (const auto& vtx : mesh->vertices) {
+		Point u = unrotate_src(vtx.position);
+		bound_min_x = std::min(bound_min_x, u[0]);
+		bound_max_x = std::max(bound_max_x, u[0]);
+		bound_min_y = std::min(bound_min_y, u[1]);
+		bound_max_y = std::max(bound_max_y, u[1]);
+	}
+
+	Real pad_x = (bound_max_x - bound_min_x) * 0.5;
+	Real pad_y = (bound_max_y - bound_min_y) * 0.5;
+	if (pad_x < 1.0) pad_x = 1.0;
+	if (pad_y < 1.0) pad_y = 1.0;
+
+	bound_min_x -= pad_x;
+	bound_max_x += pad_x;
+	bound_min_y -= pad_y;
+	bound_max_y += pad_y;
+
+	// Determine which boundary corresponds to which grid edge
+	Real outer_top_y = (start_y == grid_min_y) ? bound_min_y : bound_max_y;
+	Real outer_bottom_y = (end_y == grid_max_y) ? bound_max_y : bound_min_y;
+	Real outer_left_x = (start_x == grid_min_x) ? bound_min_x : bound_max_x;
+	Real outer_right_x = (end_x == grid_max_x) ? bound_max_x : bound_min_x;
+
+	// Helper: add an identity vertex (takes unrotated point)
+	auto add_identity_vtx = [&](const Point& unrot_pt) -> int {
+		Point rotated = rotate_src(unrot_pt);
+		int idx = mesh->vertices.size();
+		mesh->vertices.push_back(rendering::Mesh::Vertex(rotated, rotated));
+		return idx;
+	};
+
+	int c_tl_idx = add_identity_vtx(Point(outer_left_x, outer_top_y));
+	int c_tr_idx = add_identity_vtx(Point(outer_right_x, outer_top_y));
+	int c_bl_idx = add_identity_vtx(Point(outer_left_x, outer_bottom_y));
+	int c_br_idx = add_identity_vtx(Point(outer_right_x, outer_bottom_y));
+
+	// TOP edge strip
+	std::vector<int> border_top;
+	for (int i = 0; i < edge_len_h; ++i) {
+		Point u_pt = unrotate_src(mesh->vertices[edge_top[i]].tex_coords);
+		border_top.push_back(add_identity_vtx(Point(u_pt[0], outer_top_y)));
+	}
+	for (int i = 0; i < edge_len_h - 1; ++i) {
+		mesh->triangles.push_back(rendering::Mesh::Triangle(border_top[i], edge_top[i], border_top[i+1]));
+		mesh->triangles.push_back(rendering::Mesh::Triangle(edge_top[i], edge_top[i+1], border_top[i+1]));
+	}
+
+	// BOTTOM edge strip
+	std::vector<int> border_bottom;
+	for (int i = 0; i < edge_len_h; ++i) {
+		Point u_pt = unrotate_src(mesh->vertices[edge_bottom[i]].tex_coords);
+		border_bottom.push_back(add_identity_vtx(Point(u_pt[0], outer_bottom_y)));
+	}
+	for (int i = 0; i < edge_len_h - 1; ++i) {
+		mesh->triangles.push_back(rendering::Mesh::Triangle(edge_bottom[i], border_bottom[i], border_bottom[i+1]));
+		mesh->triangles.push_back(rendering::Mesh::Triangle(edge_bottom[i], border_bottom[i+1], edge_bottom[i+1]));
+	}
+
+	// LEFT edge strip
+	std::vector<int> border_left;
+	for (int i = 0; i < edge_len_v; ++i) {
+		Point u_pt = unrotate_src(mesh->vertices[edge_left[i]].tex_coords);
+		border_left.push_back(add_identity_vtx(Point(outer_left_x, u_pt[1])));
+	}
+	for (int i = 0; i < edge_len_v - 1; ++i) {
+		mesh->triangles.push_back(rendering::Mesh::Triangle(edge_left[i], border_left[i], border_left[i+1]));
+		mesh->triangles.push_back(rendering::Mesh::Triangle(edge_left[i], border_left[i+1], edge_left[i+1]));
+	}
+
+	// RIGHT edge strip
+	std::vector<int> border_right;
+	for (int i = 0; i < edge_len_v; ++i) {
+		Point u_pt = unrotate_src(mesh->vertices[edge_right[i]].tex_coords);
+		border_right.push_back(add_identity_vtx(Point(outer_right_x, u_pt[1])));
+	}
+	for (int i = 0; i < edge_len_v - 1; ++i) {
+		mesh->triangles.push_back(rendering::Mesh::Triangle(border_right[i], edge_right[i], edge_right[i+1]));
+		mesh->triangles.push_back(rendering::Mesh::Triangle(border_right[i], edge_right[i+1], border_right[i+1]));
+	}
+
+	// CORNER RECTANGLES
+	// Top-left
+	mesh->triangles.push_back(rendering::Mesh::Triangle(c_tl_idx, border_top[0], border_left[0]));
+	mesh->triangles.push_back(rendering::Mesh::Triangle(border_top[0], edge_top[0], border_left[0]));
+	// Top-right
+	mesh->triangles.push_back(rendering::Mesh::Triangle(c_tr_idx, border_right[0], border_top[edge_len_h-1]));
+	mesh->triangles.push_back(rendering::Mesh::Triangle(border_top[edge_len_h-1], border_right[0], edge_top[edge_len_h-1]));
+	// Bottom-left
+	mesh->triangles.push_back(rendering::Mesh::Triangle(c_bl_idx, border_left[edge_len_v-1], border_bottom[0]));
+	mesh->triangles.push_back(rendering::Mesh::Triangle(border_left[edge_len_v-1], edge_left[edge_len_v-1], border_bottom[0]));
+	// Bottom-right
+	mesh->triangles.push_back(rendering::Mesh::Triangle(c_br_idx, border_bottom[edge_len_h-1], border_right[edge_len_v-1]));
+	mesh->triangles.push_back(rendering::Mesh::Triangle(border_bottom[edge_len_h-1], edge_bottom[edge_len_h-1], border_right[edge_len_v-1]));
+
+	// Mask
+	rendering::Contour::Handle mask(new rendering::Contour());
+	mask->antialias = false;
+
+	Point mask_tl(bound_min_x, bound_max_y);
+	Point mask_tr(bound_max_x, bound_max_y);
+	Point mask_br(bound_max_x, bound_min_y);
+	Point mask_bl(bound_min_x, bound_min_y);
+
+	mask->move_to(rotate_src(mask_tl));
+	mask->line_to(rotate_src(mask_tr));
+	mask->line_to(rotate_src(mask_br));
+	mask->line_to(rotate_src(mask_bl));
 	mask->close();
 	this->mask = mask;
 
