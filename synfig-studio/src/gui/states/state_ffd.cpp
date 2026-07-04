@@ -270,12 +270,12 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	);
 	mesh_mode_enum.set_value(1);
 
-	create_grid_x_label.set_label(_("Cols (Grid):"));
+	create_grid_x_label.set_label(_("Grid Size X:"));
 	create_grid_x_label.set_halign(Gtk::ALIGN_START);
 	create_grid_x_spin.set_adjustment(grid_x_adj); // reuse adjustment
 	create_grid_x_spin.set_hexpand(true);
 
-	create_grid_y_label.set_label(_("Rows (Grid):"));
+	create_grid_y_label.set_label(_("Grid Size Y:"));
 	create_grid_y_label.set_halign(Gtk::ALIGN_START);
 	create_grid_y_spin.set_adjustment(grid_y_adj);
 	create_grid_y_label.set_alignment(Gtk::ALIGN_START, Gtk::ALIGN_CENTER);
@@ -1349,10 +1349,13 @@ StateFFD_Context::refresh_ducks()
 			get_work_area()->add_bezier(b3);
 		}
 	} else if (mesh_mode_enum.get_value() == 0 && duck_list.size() == 4 && !editing_existing_mesh_) {
-		int cols = (int)create_grid_x_spin.get_value();
-		int rows = (int)create_grid_y_spin.get_value();
-		if (cols < 2) cols = 2;
-		if (rows < 2) rows = 2;
+		int pts_x = (int)create_grid_x_spin.get_value();
+		int pts_y = (int)create_grid_y_spin.get_value();
+		if (pts_x < 2) pts_x = 2;
+		if (pts_y < 2) pts_y = 2;
+		
+		int cols = pts_x - 1;
+		int rows = pts_y - 1;
 
 		synfig::Point tl = pts[0];
 		synfig::Point tr = pts[1];
@@ -1656,10 +1659,12 @@ StateFFD_Context::on_make_ffd_pressed()
 		layer->connect_dynamic_param("grid_points", dyn_list);
 		layer->set_param("source_points", synfig::ValueBase(pts_vb));
 	} else {
-		int cols = (int)create_grid_x_spin.get_value();
-		int rows = (int)create_grid_y_spin.get_value();
-		layer->set_param("grid_size_x", synfig::ValueBase(cols + 1));
-		layer->set_param("grid_size_y", synfig::ValueBase(rows + 1));
+		int pts_x = (int)create_grid_x_spin.get_value();
+		int pts_y = (int)create_grid_y_spin.get_value();
+		if (pts_x < 2) pts_x = 2;
+		if (pts_y < 2) pts_y = 2;
+		layer->set_param("grid_size_x", synfig::ValueBase(pts_x));
+		layer->set_param("grid_size_y", synfig::ValueBase(pts_y));
 
 		if (auto_fit_check.get_active() && (saved_preview_tl != synfig::Point(0,0) || saved_preview_br != synfig::Point(0,0))) {
 			layer->set_param("source_tl", synfig::ValueBase(saved_preview_tl));
