@@ -151,6 +151,14 @@ Duckmatic::clear_ducks()
 
 	if(show_persistent_strokes)
 		stroke_list_=persistent_stroke_list_;
+
+	signal_duck_selection_changed_();
+}
+
+void
+Duckmatic::clear_beziers()
+{
+	bezier_list_.clear();
 }
 
 
@@ -1167,7 +1175,8 @@ void
 Duckmatic::draw_ffd_overlay(
 	const std::vector<Duck::Handle>& ducks,
 	int ffd_mode, int cols, int rows,
-	synfig::Real cull_threshold)
+	synfig::Real cull_threshold,
+	const std::vector<synfig::Point>& source_pts)
 {
 	if (ffd_mode == 0 && (int)ducks.size() == cols * rows && cols >= 2 && rows >= 2)
 	{
@@ -1206,10 +1215,14 @@ Duckmatic::draw_ffd_overlay(
 		for (const auto& d : ducks)
 			if (d) pts.push_back(d->get_point());
 
-		std::vector<rendering::Mesh::Triangle> tris =
-			synfig::Layer_FreeFormDeform::triangulate(pts);
-
-		tris = synfig::Layer_FreeFormDeform::cull_triangles(tris, pts, cull_threshold);
+		std::vector<rendering::Mesh::Triangle> tris;
+		if (source_pts.size() == pts.size()) {
+			tris = synfig::Layer_FreeFormDeform::triangulate(source_pts);
+			tris = synfig::Layer_FreeFormDeform::cull_triangles(tris, source_pts, cull_threshold);
+		} else {
+			tris = synfig::Layer_FreeFormDeform::triangulate(pts);
+			tris = synfig::Layer_FreeFormDeform::cull_triangles(tris, pts, cull_threshold);
+		}
 
 		for (const auto& tri : tris) {
 			auto add_edge = [&](int i1, int i2) {
@@ -2644,6 +2657,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 				int ffd_mode = 0;
 				int cols = 0, rows = 0;
 				synfig::Real ffd_cull_threshold = 0.0;
+				std::vector<synfig::Point> source_pts;
 				if (value_desc.parent_is_layer()) {
 					Layer::Handle layer = value_desc.get_layer();
 					if (layer && layer->get_name() == "free_form_deform" && value_desc.get_param_name() == "grid_points") {
@@ -2652,6 +2666,15 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 						cols = layer->get_param("grid_size_x").get(int());
 						rows = layer->get_param("grid_size_y").get(int());
 						ffd_cull_threshold = layer->get_param("cull_threshold").get(synfig::Real());
+						if (ffd_mode == 1) {
+							synfig::ValueBase source_points_vb = layer->get_param("source_points");
+							if (source_points_vb.get_type() == synfig::type_list) {
+								const synfig::ValueBase::List &source_list = source_points_vb.get_list();
+								for(auto i = source_list.begin(); i != source_list.end(); ++i) {
+									if (i->can_get(synfig::Point())) source_pts.push_back(i->get(synfig::Point()));
+								}
+							}
+						}
 					}
 				}
 
@@ -2694,7 +2717,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 
 				if (is_ffd)
 				{
-					draw_ffd_overlay(ducks, ffd_mode, cols, rows, ffd_cull_threshold);
+					draw_ffd_overlay(ducks, ffd_mode, cols, rows, ffd_cull_threshold, source_pts);
 				}
 				else
 				{
@@ -2892,6 +2915,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 				int ffd_mode = 0;
 				int cols = 0, rows = 0;
 				synfig::Real ffd_cull_threshold = 0.0;
+				std::vector<synfig::Point> source_pts;
 				if (value_desc.parent_is_layer()) {
 					Layer::Handle layer = value_desc.get_layer();
 					if (layer && layer->get_name() == "free_form_deform" && value_desc.get_param_name() == "grid_points") {
@@ -2900,6 +2924,15 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 						cols = layer->get_param("grid_size_x").get(int());
 						rows = layer->get_param("grid_size_y").get(int());
 						ffd_cull_threshold = layer->get_param("cull_threshold").get(synfig::Real());
+						if (ffd_mode == 1) {
+							synfig::ValueBase source_points_vb = layer->get_param("source_points");
+							if (source_points_vb.get_type() == synfig::type_list) {
+								const synfig::ValueBase::List &source_list = source_points_vb.get_list();
+								for(auto i = source_list.begin(); i != source_list.end(); ++i) {
+									if (i->can_get(synfig::Point())) source_pts.push_back(i->get(synfig::Point()));
+								}
+							}
+						}
 					}
 				}
 
@@ -2954,7 +2987,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 				}
 				if (is_ffd)
 				{
-					draw_ffd_overlay(ducks, ffd_mode, cols, rows, ffd_cull_threshold);
+					draw_ffd_overlay(ducks, ffd_mode, cols, rows, ffd_cull_threshold, source_pts);
 				}
 				else
 				{

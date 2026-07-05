@@ -255,7 +255,8 @@ private:
 	void draw_ffd_overlay(
 		const std::vector<Duck::Handle>& ducks,
 		int ffd_mode, int cols, int rows,
-		synfig::Real cull_threshold);
+		synfig::Real cull_threshold,
+		const std::vector<synfig::Point>& source_pts);
 
 	double calculate_distance_from_guide(const Guide& guide, const synfig::Point& point)const;
 
@@ -525,6 +526,8 @@ public:
 	void unselect_all_ducks();
 
 	void clear_ducks();
+
+	void clear_beziers();
 
 	bool save_sketch(const synfig::filesystem::Path& filename) const;
 	bool load_sketch(const synfig::filesystem::Path& filename);

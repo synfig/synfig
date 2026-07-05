@@ -139,6 +139,7 @@ class studio::StateFFD_Context : public sigc::trackable
 	synfig::Point preview_br;
 	synfig::Angle preview_angle;
 	bool editing_existing_mesh_;
+	std::vector<etl::handle<WorkArea::Duck> > duck_list_;
 
 	void on_grid_x_changed();
 	void on_grid_y_changed();
@@ -156,6 +157,7 @@ class studio::StateFFD_Context : public sigc::trackable
 	bool on_polygon_duck_change(const studio::Duck &duck, std::list<synfig::Point>::iterator iter);
 	void on_duck_right_click(std::list<synfig::Point>::iterator iter);
 	void refresh_ducks();
+	void refresh_beziers();
 
 	synfig::Layer::Handle get_selected_ffd_layer() const;
 	void update_controls_from_layer();
@@ -1231,6 +1233,8 @@ bool
 StateFFD_Context::on_polygon_duck_change(const studio::Duck &duck, std::list<synfig::Point>::iterator iter)
 {
 	*iter = duck.get_point();
+	refresh_beziers();
+	get_work_area()->queue_draw();
 	return true;
 }
 
@@ -1255,7 +1259,7 @@ StateFFD_Context::refresh_ducks()
 	synfig::TransformStack transform_stack = get_work_area()->get_curr_transform_stack();
 
 	std::vector<synfig::Point> pts;
-	std::vector<etl::handle<WorkArea::Duck>> duck_list;
+	duck_list_.clear();
 
 	std::list<synfig::Point>::iterator iter = polygon_point_list.begin();
 
@@ -1271,7 +1275,7 @@ StateFFD_Context::refresh_ducks()
 		sigc::bind(sigc::mem_fun(*this, &studio::StateFFD_Context::on_duck_right_click), iter)
 	);
 	get_work_area()->add_duck(duck);
-	duck_list.push_back(duck);
+	duck_list_.push_back(duck);
 	pts.push_back(*iter);
 
 	for (++iter; iter != polygon_point_list.end(); ++iter)
@@ -1288,12 +1292,28 @@ StateFFD_Context::refresh_ducks()
 			sigc::bind(sigc::mem_fun(*this, &studio::StateFFD_Context::on_duck_right_click), iter)
 		);
 		get_work_area()->add_duck(duck);
-		duck_list.push_back(duck);
+		duck_list_.push_back(duck);
 		pts.push_back(*iter);
 	}
 
+	refresh_beziers();
+	get_work_area()->queue_draw();
+}
+
+void
+StateFFD_Context::refresh_beziers()
+{
+	if (!get_work_area()) return;
+
+	get_work_area()->clear_beziers();
+
+	std::vector<synfig::Point> pts;
+	for (const auto& d : duck_list_) {
+		pts.push_back(d->get_point());
+	}
+
 	// Draw triangulation if Custom Mesh mode
-	if (mesh_mode_enum.get_value() == 1 && duck_list.size() > 2) {
+	if (mesh_mode_enum.get_value() == 1 && duck_list_.size() > 2) {
 		std::vector<rendering::Mesh::Triangle> tris = synfig::Layer_FreeFormDeform::triangulate(pts);
 
 		std::vector<synfig::Point> local_pts;
@@ -1334,21 +1354,21 @@ StateFFD_Context::refresh_ducks()
 
 		for (const auto& tri : tris) {
 			etl::handle<WorkArea::Bezier> b1(new WorkArea::Bezier());
-			b1->p1 = b1->c1 = duck_list[tri.vertices[0]];
-			b1->p2 = b1->c2 = duck_list[tri.vertices[1]];
+			b1->p1 = b1->c1 = duck_list_[tri.vertices[0]];
+			b1->p2 = b1->c2 = duck_list_[tri.vertices[1]];
 			get_work_area()->add_bezier(b1);
 
 			etl::handle<WorkArea::Bezier> b2(new WorkArea::Bezier());
-			b2->p1 = b2->c1 = duck_list[tri.vertices[1]];
-			b2->p2 = b2->c2 = duck_list[tri.vertices[2]];
+			b2->p1 = b2->c1 = duck_list_[tri.vertices[1]];
+			b2->p2 = b2->c2 = duck_list_[tri.vertices[2]];
 			get_work_area()->add_bezier(b2);
 
 			etl::handle<WorkArea::Bezier> b3(new WorkArea::Bezier());
-			b3->p1 = b3->c1 = duck_list[tri.vertices[2]];
-			b3->p2 = b3->c2 = duck_list[tri.vertices[0]];
+			b3->p1 = b3->c1 = duck_list_[tri.vertices[2]];
+			b3->p2 = b3->c2 = duck_list_[tri.vertices[0]];
 			get_work_area()->add_bezier(b3);
 		}
-	} else if (mesh_mode_enum.get_value() == 0 && duck_list.size() == 4 && !editing_existing_mesh_) {
+	} else if (mesh_mode_enum.get_value() == 0 && duck_list_.size() == 4 && !editing_existing_mesh_) {
 		int pts_x = (int)create_grid_x_spin.get_value();
 		int pts_y = (int)create_grid_y_spin.get_value();
 		if (pts_x < 2) pts_x = 2;
@@ -1361,6 +1381,8 @@ StateFFD_Context::refresh_ducks()
 		synfig::Point tr = pts[1];
 		synfig::Point br = pts[2];
 		synfig::Point bl = pts[3];
+
+		synfig::TransformStack transform_stack = get_work_area()->get_curr_transform_stack();
 
 		for (int i = 0; i <= cols; ++i) {
 			double u = (double)i / cols;
@@ -1392,9 +1414,8 @@ StateFFD_Context::refresh_ducks()
 			get_work_area()->add_bezier(b);
 		}
 	}
-
-	get_work_area()->queue_draw();
 }
+
 
 void
 StateFFD_Context::on_reset_pressed()
