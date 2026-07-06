@@ -26,7 +26,7 @@ private:
 	ValueBase param_mesh_mode; // 0 = Grid, 1 = Custom Mesh
 	ValueBase param_cull_threshold;
 
-	//! Auto-mesh generation params (Moho-style edge contour tracing)
+	//! Auto-mesh generation params (edge contour tracing)
 	ValueBase param_auto_mesh_margin;     // dilation radius in pixels
 	ValueBase param_auto_mesh_edge_length; // spacing between edge points in canvas units
 	ValueBase param_auto_mesh_dpi;        // rasterization DPI for alpha mask
@@ -53,13 +53,28 @@ public:
 		const std::vector<Point>& pts,
 		Real threshold);
 
-	//! Moho-style auto-mesh: trace the alpha contour of an image, dilate by margin pixels,
+	//! auto-mesh: trace the alpha contour of an image, dilate by margin pixels,
 	//! and sample points every edge_length canvas units. Returns points in canvas coordinates.
 	static std::vector<Point> generate_edge_points(
 		const Surface &alpha_surface,
 		const Rect &bounds,
 		Real edge_length,
 		int margin);
+
+	//! Generate the full dense contour polygon (not sub-sampled) from the image alpha mask.
+	//! Returns ordered vertices in canvas coordinates. Used for centroid-in-polygon filtering.
+	static std::vector<Point> generate_contour_polygon(
+		const Surface &alpha_surface,
+		const Rect &bounds,
+		int margin);
+
+	//! Filter triangles whose centroid lies outside the given polygon.
+	//! Uses ray-casting point-in-polygon test. polygon must be in the same
+	//! coordinate space as pts (canvas units).
+	static std::vector<rendering::Mesh::Triangle> filter_triangles_by_polygon(
+		const std::vector<rendering::Mesh::Triangle> &tris,
+		const std::vector<Point> &pts,
+		const std::vector<Point> &polygon);
 
 	//! Render the context below this layer (the image, not the warped output) to a surface.
 	//! Fills out_bounds with the bounding rect of that context. Returns false on failure.

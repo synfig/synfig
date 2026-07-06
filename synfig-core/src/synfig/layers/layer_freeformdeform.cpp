@@ -404,13 +404,12 @@ Layer_FreeFormDeform::cull_triangles(
 	return result;
 }
 
-/* ---- Moho-style auto-mesh edge contour tracing ---- */
+/* ---- Contour polygon generation (mask → dilate → trace → canvas coords) ---- */
 
 std::vector<Point>
-Layer_FreeFormDeform::generate_edge_points(
+Layer_FreeFormDeform::generate_contour_polygon(
 	const Surface &alpha_surface,
 	const Rect &bounds,
-	Real edge_length,
 	int margin)
 {
 	std::vector<Point> result;
@@ -453,7 +452,6 @@ Layer_FreeFormDeform::generate_edge_points(
 	if (start_x == -1) return result;
 
 	// 4. Moore Neighborhood contour trace
-	// Directions: 0=R, 1=BR, 2=B, 3=BL, 4=L, 5=TL, 6=T, 7=TR
 	static const int dx[8] = {1, 1, 0, -1, -1, -1, 0, 1};
 	static const int dy[8] = {0, 1, 1, 1, 0, -1, -1, -1};
 	auto is_inside = [&](int cx, int cy) -> bool {
@@ -461,11 +459,11 @@ Layer_FreeFormDeform::generate_edge_points(
 		return (bool)dilated[cy * w + cx];
 	};
 
-	std::vector<Point> contour;
+	std::vector<Point> contour_px;
 	int x = start_x, y = start_y, dir = 7;
 	int iters = 0, max_iters = w * h * 4;
 	do {
-		contour.push_back(Point(x, y));
+		contour_px.push_back(Point(x, y));
 		int start_dir = (dir + 5) % 8;
 		int next_dir = -1;
 		for (int i = 0; i < 8; ++i) {
@@ -476,36 +474,101 @@ Layer_FreeFormDeform::generate_edge_points(
 		x += dx[next_dir]; y += dy[next_dir]; dir = next_dir;
 	} while ((x != start_x || y != start_y) && ++iters < max_iters);
 
-	if (contour.size() < 3) return result;
+	if (contour_px.size() < 3) return result;
 
-	// 5. Sample contour every edge_length canvas units
+	// 5. Convert pixel coords to canvas coords
 	double units_w = bounds.maxx - bounds.minx;
 	double units_h = bounds.maxy - bounds.miny;
+	double inv_w = 1.0 / w;
+	double inv_h = 1.0 / h;
+	result.reserve(contour_px.size());
+	for (auto& p : contour_px) {
+		double u = p[0] * inv_w;
+		double v = p[1] * inv_h;
+		result.push_back(Point(bounds.minx + u * units_w,
+		                       bounds.maxy + v * (bounds.miny - bounds.maxy)));
+	}
+	return result;
+}
+
+/* ---- auto-mesh edge contour tracing ---- */
+
+std::vector<Point>
+Layer_FreeFormDeform::generate_edge_points(
+	const Surface &alpha_surface,
+	const Rect &bounds,
+	Real edge_length,
+	int margin)
+{
+	// Get the dense contour polygon first
+	std::vector<Point> contour = generate_contour_polygon(alpha_surface, bounds, margin);
+	if (contour.size() < 3) return contour;
+
+	int w = alpha_surface.get_w();
+	double units_w = bounds.maxx - bounds.minx;
+
+	// Sub-sample contour every edge_length canvas units
 	double target_dist_px = edge_length * w / std::max(units_w, 1e-6);
 	if (target_dist_px < 2.0) target_dist_px = 2.0;
 
+	// Work in pixel space for distance calculation, convert result to canvas
+	// NOTE: contour is already in canvas coords from generate_contour_polygon.
+	// Re-compute target_dist in canvas units directly.
+	double target_dist = edge_length;
+	if (target_dist < 1e-6) target_dist = 1e-6;
+
+	std::vector<Point> result;
 	result.push_back(contour[0]);
 	double dist_accum = 0;
 	for (size_t i = 1; i < contour.size(); ++i) {
 		double d = (contour[i] - contour[i - 1]).mag();
 		dist_accum += d;
-		if (dist_accum >= target_dist_px) {
+		if (dist_accum >= target_dist) {
 			result.push_back(contour[i]);
 			dist_accum = 0;
 		}
 	}
+	return result;
+}
 
-	// 6. Convert pixel coords to canvas coords
-	double inv_w = 1.0 / w;
-	double inv_h = 1.0 / h;
-	for (auto& p : result) {
-		double u = p[0] * inv_w;
-		double v = p[1] * inv_h;
-		p = Point(bounds.minx + u * units_w,
-		          bounds.maxy + v * (bounds.miny - bounds.maxy));
+/* ---- Centroid-in-polygon filter ---- */
+
+static bool point_in_polygon(const Point &p, const std::vector<Point> &poly)
+{
+	bool inside = false;
+	size_t n = poly.size();
+	for (size_t i = 0, j = n - 1; i < n; j = i++) {
+		if (((poly[i][1] > p[1]) != (poly[j][1] > p[1])) &&
+		    (p[0] < (poly[j][0] - poly[i][0]) * (p[1] - poly[i][1])
+		            / (poly[j][1] - poly[i][1]) + poly[i][0]))
+			inside = !inside;
+	}
+	return inside;
+}
+
+std::vector<rendering::Mesh::Triangle>
+Layer_FreeFormDeform::filter_triangles_by_polygon(
+	const std::vector<rendering::Mesh::Triangle> &tris,
+	const std::vector<Point> &pts,
+	const std::vector<Point> &polygon)
+{
+	if (polygon.size() < 3)
+		return tris; // nothing to filter against
+
+	std::vector<rendering::Mesh::Triangle> result;
+	result.reserve(tris.size());
+	for (const auto &tri : tris) {
+		const Point &a = pts[tri.vertices[0]];
+		const Point &b = pts[tri.vertices[1]];
+		const Point &c = pts[tri.vertices[2]];
+		Point centroid((a[0] + b[0] + c[0]) / 3.0,
+		               (a[1] + b[1] + c[1]) / 3.0);
+		if (point_in_polygon(centroid, polygon))
+			result.push_back(tri);
 	}
 	return result;
 }
+
 
 bool
 Layer_FreeFormDeform::render_context_below(Surface &out_surface, Rect &out_bounds, int max_resolution) const

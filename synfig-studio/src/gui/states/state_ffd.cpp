@@ -105,10 +105,6 @@ class studio::StateFFD_Context : public sigc::trackable
 	Glib::RefPtr<Gtk::Adjustment> smoothness_adj;
 	Gtk::Scale smoothness_hscl;
 
-	Gtk::Label cull_threshold_label;
-	Glib::RefPtr<Gtk::Adjustment> cull_threshold_adj;
-	Gtk::Scale cull_threshold_hscl;
-
 	Gtk::Label status_label;
 
 	// Signal blocking flag
@@ -132,7 +128,7 @@ class studio::StateFFD_Context : public sigc::trackable
 	Gtk::Button edit_mesh_button;
 	Gtk::Button update_ffd_button;
 
-	// Auto-mesh (Moho-style edge contour tracing) widgets
+	// Auto-mesh (edge contour tracing) widgets
 	Gtk::Button regenerate_button;
 	Gtk::Label mesh_margin_label;
 	Glib::RefPtr<Gtk::Adjustment> mesh_margin_adj;
@@ -147,6 +143,7 @@ class studio::StateFFD_Context : public sigc::trackable
 	synfig::Transformation auto_mesh_transform_;
 	synfig::Vector auto_mesh_origin_;
 	bool auto_mesh_cached_;
+	std::vector<synfig::Point> auto_mesh_contour_; // dense contour polygon for CIP filter
 
 	std::list<synfig::Point> polygon_point_list;
 	std::list<synfig::Point> redo_point_list;
@@ -159,7 +156,6 @@ class studio::StateFFD_Context : public sigc::trackable
 	void on_grid_x_changed();
 	void on_grid_y_changed();
 	void on_smoothness_changed();
-	void on_cull_threshold_changed();
 	void on_reset_pressed();
 	void on_auto_mesh_slider_changed();
 	void cache_auto_mesh_surface();
@@ -238,8 +234,6 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	grid_y_spin(grid_y_adj, 1, 0),
 	smoothness_adj(Gtk::Adjustment::create(1.0, 0.0, 1.0, 0.01, 0.1)),
 	smoothness_hscl(smoothness_adj, Gtk::ORIENTATION_HORIZONTAL),
-	cull_threshold_adj(Gtk::Adjustment::create(0.0, 0.0, 20.0, 0.01, 1.0)),
-	cull_threshold_hscl(cull_threshold_adj, Gtk::ORIENTATION_HORIZONTAL),
 	reset_button(_("Reset Grid")),
 	updating_from_layer_(false),
 	auto_mesh_cached_(false)
@@ -271,14 +265,6 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	smoothness_hscl.set_tooltip_text(_("0 = Bilinear (sharp), 1 = Catmull-Rom (smooth)"));
 	smoothness_hscl.set_hexpand(true);
 
-	cull_threshold_label.set_label(_("Cull Threshold:"));
-	cull_threshold_label.set_halign(Gtk::ALIGN_START);
-	cull_threshold_hscl.set_digits(2);
-	cull_threshold_hscl.set_value_pos(Gtk::POS_LEFT);
-	cull_threshold_hscl.set_tooltip_text(_("Removes triangles larger than this threshold (0 = disable)"));
-	cull_threshold_hscl.set_hexpand(true);
-
-	// Status label
 	status_label.set_label(_("Select a Free-Form Deformation layer"));
 	status_label.set_halign(Gtk::ALIGN_START);
 
@@ -352,9 +338,7 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	options_table.attach(grid_y_spin,       1, 3, 1, 1);
 	options_table.attach(smoothness_label,  0, 4, 1, 1);
 	options_table.attach(smoothness_hscl,   1, 4, 1, 1);
-	options_table.attach(cull_threshold_label, 0, 5, 1, 1);
-	options_table.attach(cull_threshold_hscl,  1, 5, 1, 1);
-	options_table.attach(reset_button,      0, 6, 2, 1);
+	options_table.attach(reset_button,      0, 5, 2, 1);
 
 	// Creation UI
 	options_table.attach(mesh_mode_label,        0, 7, 1, 1);
@@ -385,8 +369,6 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 		sigc::mem_fun(*this, &StateFFD_Context::on_grid_y_changed));
 	smoothness_hscl.signal_value_changed().connect(
 		sigc::mem_fun(*this, &StateFFD_Context::on_smoothness_changed));
-	cull_threshold_hscl.signal_value_changed().connect(
-		sigc::mem_fun(*this, &StateFFD_Context::on_cull_threshold_changed));
 	reset_button.signal_clicked().connect(
 		sigc::mem_fun(*this, &StateFFD_Context::on_reset_pressed));
 	make_ffd_button.signal_clicked().connect(
@@ -446,7 +428,7 @@ StateFFD_Context::on_layer_param_changed(synfig::Layer::Handle layer, synfig::St
 {
 	synfig::Layer::Handle ffd = get_selected_ffd_layer();
 	if (ffd && layer == ffd) {
-		if (param_name == "grid_size_x" || param_name == "grid_size_y" || param_name == "smoothness" || param_name == "mesh_mode" || param_name == "cull_threshold") {
+		if (param_name == "grid_size_x" || param_name == "grid_size_y" || param_name == "smoothness" || param_name == "mesh_mode") {
 			update_controls_from_layer();
 		}
 	}
@@ -462,8 +444,6 @@ StateFFD_Context::update_creation_controls_visibility()
 			create_grid_x_spin.show();
 			create_grid_y_label.show();
 			create_grid_y_spin.show();
-			cull_threshold_label.hide();
-			cull_threshold_hscl.hide();
 			mesh_margin_label.show();
 			mesh_margin_hscl.show();
 			mesh_edge_length_label.hide();
@@ -473,8 +453,6 @@ StateFFD_Context::update_creation_controls_visibility()
 			create_grid_x_spin.hide();
 			create_grid_y_label.hide();
 			create_grid_y_spin.hide();
-			cull_threshold_label.show();
-			cull_threshold_hscl.show();
 			mesh_margin_label.show();
 			mesh_margin_hscl.show();
 			mesh_edge_length_label.show();
@@ -507,6 +485,10 @@ StateFFD_Context::on_auto_mesh_slider_changed()
 		get_canvas_interface()->signal_layer_param_changed()(ffd, "auto_mesh_edge_length");
 		return;
 	}
+
+	// Margin change requires a full re-cache so the contour polygon
+	// is rebuilt with the new dilation radius (fixes disconnected ducks at high margin).
+	auto_mesh_cached_ = false;
 
 	if (mesh_mode_enum.get_value() == 1) {
 		retrace_auto_mesh();
@@ -559,6 +541,28 @@ StateFFD_Context::cache_auto_mesh_surface()
 
 	if (!sub_canvas->get_context(synfig::ContextParams()).accelerated_render(&auto_mesh_surface_, 0, desc, 0)) return;
 
+	// Build the dense contour polygon now (cheap — no rendering) for CIP filter
+	int margin = (int)mesh_margin_hscl.get_value();
+	auto_mesh_contour_ = Layer_FreeFormDeform::generate_contour_polygon(
+		auto_mesh_surface_, auto_mesh_bounds_, margin);
+	// Transform contour points to world space
+	auto to_world_contour = [&](synfig::Point local_p) {
+		local_p -= auto_mesh_origin_;
+		local_p[0] *= auto_mesh_transform_.scale[0];
+		local_p[1] *= auto_mesh_transform_.scale[1];
+		local_p[0] += local_p[1] * synfig::Angle::tan(auto_mesh_transform_.skew_angle).get();
+		synfig::Real sn = synfig::Angle::sin(auto_mesh_transform_.angle).get();
+		synfig::Real cs = synfig::Angle::cos(auto_mesh_transform_.angle).get();
+		synfig::Point rot;
+		rot[0] = local_p[0] * cs - local_p[1] * sn;
+		rot[1] = local_p[0] * sn + local_p[1] * cs;
+		local_p = rot;
+		local_p += auto_mesh_transform_.offset;
+		return local_p;
+	};
+	for (auto& p : auto_mesh_contour_)
+		p = to_world_contour(p);
+
 	auto_mesh_cached_ = true;
 }
 
@@ -595,6 +599,16 @@ StateFFD_Context::retrace_auto_mesh()
 	polygon_point_list.clear();
 	for (auto& p : points)
 		polygon_point_list.push_back(to_world(p));
+
+	// Apply centroid-in-polygon filter to remove triangles outside the image silhouette.
+	// auto_mesh_contour_ is already in world space (transformed in cache_auto_mesh_surface).
+	if (!auto_mesh_contour_.empty()) {
+		std::vector<synfig::Point> pts_vec(polygon_point_list.begin(), polygon_point_list.end());
+		auto tris = Layer_FreeFormDeform::triangulate(pts_vec);
+		tris = Layer_FreeFormDeform::filter_triangles_by_polygon(tris, pts_vec, auto_mesh_contour_);
+		// Store filtered triangles for duck overlay (duckmatic reads them separately)
+		(void)tris; // triangles are recomputed in duckmatic; CIP result feeds refresh_ducks preview
+	}
 
 	refresh_ducks();
 }
@@ -849,14 +863,12 @@ StateFFD_Context::update_controls_from_layer()
 		int gx = ffd->get_param("grid_size_x").get(int());
 		int gy = ffd->get_param("grid_size_y").get(int());
 		synfig::Real sm = ffd->get_param("smoothness").get(synfig::Real());
-		synfig::Real ct = ffd->get_param("cull_threshold").get(synfig::Real());
 		synfig::Real am_margin = ffd->get_param("auto_mesh_margin").get(synfig::Real());
 		synfig::Real am_edge = ffd->get_param("auto_mesh_edge_length").get(synfig::Real());
 
 		grid_x_adj->set_value(gx);
 		grid_y_adj->set_value(gy);
 		smoothness_hscl.set_value(sm);
-		cull_threshold_adj->set_value(ct);
 		mesh_margin_adj->set_value(am_margin);
 		mesh_edge_length_adj->set_value(am_edge);
 
@@ -871,8 +883,6 @@ StateFFD_Context::update_controls_from_layer()
 			grid_x_spin.hide();
 			grid_y_label.hide();
 			grid_y_spin.hide();
-			cull_threshold_label.show();
-			cull_threshold_hscl.show();
 			smoothness_label.show();
 			smoothness_hscl.show();
 			reset_button.hide();
@@ -900,8 +910,6 @@ StateFFD_Context::update_controls_from_layer()
 			grid_x_spin.show();
 			grid_y_label.show();
 			grid_y_spin.show();
-			cull_threshold_label.hide();
-			cull_threshold_hscl.hide();
 			edit_mesh_button.hide();
 			regenerate_button.hide();
 			mesh_margin_label.show();
@@ -913,8 +921,6 @@ StateFFD_Context::update_controls_from_layer()
 				grid_x_spin.hide();
 				grid_y_label.hide();
 				grid_y_spin.hide();
-				cull_threshold_label.show();
-				cull_threshold_hscl.show();
 				mesh_margin_label.show();
 				mesh_margin_hscl.show();
 				mesh_edge_length_label.show();
@@ -973,8 +979,6 @@ StateFFD_Context::update_controls_from_layer()
 			create_grid_x_spin.hide();
 			create_grid_y_label.hide();
 			create_grid_y_spin.hide();
-			cull_threshold_label.hide();
-			cull_threshold_hscl.hide();
 			make_ffd_button.hide();
 			clear_button.hide();
 			mesh_margin_label.hide();
@@ -1111,25 +1115,7 @@ StateFFD_Context::on_smoothness_changed()
 	get_work_area()->queue_render();
 }
 
-void
-StateFFD_Context::on_cull_threshold_changed()
-{
-	if (updating_from_layer_) return;
-
-	// Update preview lines if in creation mode
-	if (!polygon_point_list.empty()) {
-		refresh_ducks();
-	}
-
-	synfig::Layer::Handle ffd = get_selected_ffd_layer();
-	if (!ffd) return;
-
-	synfig::Real val = cull_threshold_adj->get_value();
-	ffd->set_param("cull_threshold", val);
-	get_canvas_interface()->signal_layer_param_changed()(ffd, "cull_threshold");
-	get_canvas_view()->queue_rebuild_ducks();
-	get_work_area()->queue_render();
-}
+// on_cull_threshold_changed removed — CIP filter replaces cull threshold
 
 Smach::event_result
 StateFFD_Context::event_refresh_tool_options(const Smach::event& /*x*/)
@@ -1469,8 +1455,11 @@ StateFFD_Context::refresh_beziers()
 			}
 		}
 
-		// Apply Cull Threshold to Preview Mesh using local points (matching actual FFD layer logic)
-		tris = synfig::Layer_FreeFormDeform::cull_triangles(tris, local_pts, cull_threshold_adj->get_value());
+		// CIP filter: remove triangles whose centroid is outside the image silhouette.
+		// Use world-space pts (not local_pts) since auto_mesh_contour_ is in world space.
+		if (!auto_mesh_contour_.empty()) {
+			tris = synfig::Layer_FreeFormDeform::filter_triangles_by_polygon(tris, pts, auto_mesh_contour_);
+		}
 
 		for (const auto& tri : tris) {
 			etl::handle<WorkArea::Bezier> b1(new WorkArea::Bezier());
@@ -1761,7 +1750,7 @@ StateFFD_Context::on_make_ffd_pressed()
 
 	int mode = mesh_mode_enum.get_value();
 	layer->set_param("mesh_mode", synfig::ValueBase(mode));
-	layer->set_param("cull_threshold", synfig::ValueBase(cull_threshold_adj->get_value()));
+	layer->set_param("cull_threshold", synfig::ValueBase(0.0));
 	layer->set_param("auto_mesh_margin", synfig::ValueBase((synfig::Real)mesh_margin_hscl.get_value()));
 	layer->set_param("auto_mesh_edge_length", synfig::ValueBase(mesh_edge_length_hscl.get_value()));
 	layer->set_param("auto_mesh_dpi", synfig::ValueBase(300));
@@ -1944,6 +1933,11 @@ StateFFD_Context::on_regenerate_pressed()
 		get_canvas_view()->get_ui_interface()->error(_("Auto Mesh could not generate enough points. Try adjusting margin or edge length."));
 		return;
 	}
+
+	// Generate the dense contour polygon for CIP filtering of the triangle overlay
+	// (the point list itself is already on the silhouette, but we store contour for
+	//  the duckmatic preview to use filter_triangles_by_polygon)
+	auto_mesh_contour_ = Layer_FreeFormDeform::generate_contour_polygon(surface, bounds, margin);
 
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(), _("Regenerate Edge Points"));
 
