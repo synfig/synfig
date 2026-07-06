@@ -312,7 +312,7 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 
 	mesh_margin_label.set_label(_("Mesh Margin (px):"));
 	mesh_margin_label.set_halign(Gtk::ALIGN_START);
-	mesh_margin_adj = Gtk::Adjustment::create(5, 0, 100, 1, 5);
+	mesh_margin_adj = Gtk::Adjustment::create(5, 0, 30, 1, 5);
 	mesh_margin_hscl.set_adjustment(mesh_margin_adj);
 	mesh_margin_hscl.set_digits(0);
 	mesh_margin_hscl.set_value_pos(Gtk::POS_LEFT);
