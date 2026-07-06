@@ -22,6 +22,8 @@
 
 #include <vector>
 #include <synfig/general.h>
+#include <synfig/surface.h>
+#include <synfig/renddesc.h>
 #include "layer_pastecanvas.h"
 
 #endif
@@ -44,6 +46,9 @@ Layer_FreeFormDeform::Layer_FreeFormDeform():
 	param_source_angle(Angle::deg(0.0)),
 	param_mesh_mode(0), // 0 = Grid, 1 = Custom Mesh
 	param_cull_threshold(1.0), // 0 = disabled
+	param_auto_mesh_margin(5),     // pixels
+	param_auto_mesh_edge_length(Real(0.5)), // canvas units
+	param_auto_mesh_dpi(300),
 	needs_reset_(true)
 {
 	std::vector<ValueBase> grid_points;
@@ -101,6 +106,9 @@ Layer_FreeFormDeform::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE_PLUS(param_source_points, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_mesh_mode, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_cull_threshold, prepare_mesh());
+	IMPORT_VALUE(param_auto_mesh_margin);
+	IMPORT_VALUE(param_auto_mesh_edge_length);
+	IMPORT_VALUE(param_auto_mesh_dpi);
 	return Layer_MeshTransform::set_param(param,value);
 }
 
@@ -117,6 +125,9 @@ Layer_FreeFormDeform::get_param(const String& param)const
 	EXPORT_VALUE(param_source_points);
 	EXPORT_VALUE(param_mesh_mode);
 	EXPORT_VALUE(param_cull_threshold);
+	EXPORT_VALUE(param_auto_mesh_margin);
+	EXPORT_VALUE(param_auto_mesh_edge_length);
+	EXPORT_VALUE(param_auto_mesh_dpi);
 	
 	EXPORT_NAME();
 	EXPORT_VERSION();
@@ -182,6 +193,21 @@ Layer_FreeFormDeform::get_param_vocab()const
 	ret.push_back(ParamDesc("cull_threshold")
 		.set_local_name(_("Cull Threshold"))
 		.set_description(_("Threshold for removing long triangles (Alpha Shape)"))
+	);
+
+	ret.push_back(ParamDesc("auto_mesh_margin")
+		.set_local_name(_("Auto Mesh Margin"))
+		.set_description(_("Dilation radius in pixels for auto-mesh edge contour"))
+	);
+
+	ret.push_back(ParamDesc("auto_mesh_edge_length")
+		.set_local_name(_("Auto Mesh Edge Length"))
+		.set_description(_("Spacing between auto-mesh edge points in canvas units"))
+	);
+
+	ret.push_back(ParamDesc("auto_mesh_dpi")
+		.set_local_name(_("Auto Mesh DPI"))
+		.set_description(_("Rasterization DPI for auto-mesh alpha mask"))
 	);
 
 	return ret;
@@ -376,6 +402,167 @@ Layer_FreeFormDeform::cull_triangles(
 		result.push_back(tri);
 	}
 	return result;
+}
+
+/* ---- Moho-style auto-mesh edge contour tracing ---- */
+
+std::vector<Point>
+Layer_FreeFormDeform::generate_edge_points(
+	const Surface &alpha_surface,
+	const Rect &bounds,
+	Real edge_length,
+	int margin)
+{
+	std::vector<Point> result;
+	int w = alpha_surface.get_w();
+	int h = alpha_surface.get_h();
+	if (!w || !h || !bounds.is_valid()) return result;
+
+	// 1. Build alpha mask
+	std::vector<bool> mask(w * h, false);
+	for (int y = 0; y < h; ++y)
+		for (int x = 0; x < w; ++x)
+			if (alpha_surface[y][x].get_a() > 0.05f)
+				mask[y * w + x] = true;
+
+	// 2. Dilate by margin (circular kernel)
+	std::vector<bool> dilated = mask;
+	if (margin > 0) {
+		std::fill(dilated.begin(), dilated.end(), false);
+		int m2 = margin * margin;
+		for (int y = 0; y < h; ++y) {
+			for (int x = 0; x < w; ++x) {
+				if (!mask[y * w + x]) continue;
+				int my0 = std::max(0, y - margin);
+				int my1 = std::min(h - 1, y + margin);
+				int mx0 = std::max(0, x - margin);
+				int mx1 = std::min(w - 1, x + margin);
+				for (int my = my0; my <= my1; ++my)
+					for (int mx = mx0; mx <= mx1; ++mx)
+						if ((mx - x) * (mx - x) + (my - y) * (my - y) <= m2)
+							dilated[my * w + mx] = true;
+			}
+		}
+	}
+
+	// 3. Find start pixel for contour trace
+	int start_x = -1, start_y = -1;
+	for (int y = 0; y < h && start_y == -1; ++y)
+		for (int x = 0; x < w; ++x)
+			if (dilated[y * w + x]) { start_x = x; start_y = y; break; }
+	if (start_x == -1) return result;
+
+	// 4. Moore Neighborhood contour trace
+	// Directions: 0=R, 1=BR, 2=B, 3=BL, 4=L, 5=TL, 6=T, 7=TR
+	static const int dx[8] = {1, 1, 0, -1, -1, -1, 0, 1};
+	static const int dy[8] = {0, 1, 1, 1, 0, -1, -1, -1};
+	auto is_inside = [&](int cx, int cy) -> bool {
+		if (cx < 0 || cx >= w || cy < 0 || cy >= h) return false;
+		return (bool)dilated[cy * w + cx];
+	};
+
+	std::vector<Point> contour;
+	int x = start_x, y = start_y, dir = 7;
+	int iters = 0, max_iters = w * h * 4;
+	do {
+		contour.push_back(Point(x, y));
+		int start_dir = (dir + 5) % 8;
+		int next_dir = -1;
+		for (int i = 0; i < 8; ++i) {
+			int test_dir = (start_dir + i) % 8;
+			if (is_inside(x + dx[test_dir], y + dy[test_dir])) { next_dir = test_dir; break; }
+		}
+		if (next_dir == -1) break;
+		x += dx[next_dir]; y += dy[next_dir]; dir = next_dir;
+	} while ((x != start_x || y != start_y) && ++iters < max_iters);
+
+	if (contour.size() < 3) return result;
+
+	// 5. Sample contour every edge_length canvas units
+	double units_w = bounds.maxx - bounds.minx;
+	double units_h = bounds.maxy - bounds.miny;
+	double target_dist_px = edge_length * w / std::max(units_w, 1e-6);
+	if (target_dist_px < 2.0) target_dist_px = 2.0;
+
+	result.push_back(contour[0]);
+	double dist_accum = 0;
+	for (size_t i = 1; i < contour.size(); ++i) {
+		double d = (contour[i] - contour[i - 1]).mag();
+		dist_accum += d;
+		if (dist_accum >= target_dist_px) {
+			result.push_back(contour[i]);
+			dist_accum = 0;
+		}
+	}
+
+	// 6. Convert pixel coords to canvas coords
+	double inv_w = 1.0 / w;
+	double inv_h = 1.0 / h;
+	for (auto& p : result) {
+		double u = p[0] * inv_w;
+		double v = p[1] * inv_h;
+		p = Point(bounds.minx + u * units_w,
+		          bounds.maxy + v * (bounds.miny - bounds.maxy));
+	}
+	return result;
+}
+
+bool
+Layer_FreeFormDeform::render_context_below(Surface &out_surface, Rect &out_bounds, int max_resolution) const
+{
+	if (!get_canvas()) return false;
+
+	// Find context below this layer (same logic as get_context_bounds)
+	Context context = get_canvas()->get_context(ContextParams());
+	Context context_iter = context;
+	while (!context_iter->empty() && (*context_iter).get() != this)
+		context_iter++;
+	if (!context_iter->empty())
+		context_iter++; // move past ourselves
+
+	if (context_iter->empty()) return false;
+
+	// Compute bounding box of the context below
+	out_bounds = Rect::zero();
+	bool first = true;
+	Context bounds_iter = context_iter;
+	while (!bounds_iter->empty()) {
+		Rect layer_bounds;
+		if (Layer_PasteCanvas::Handle pc = Layer_PasteCanvas::Handle::cast_dynamic(*bounds_iter))
+			layer_bounds = pc->get_bounding_rect_context_dependent(ContextParams());
+		else
+			layer_bounds = (*bounds_iter)->get_bounding_rect();
+		if (layer_bounds.is_valid() && !layer_bounds.is_full_infinite() && layer_bounds.area() < 1e10) {
+			if (first) { out_bounds = layer_bounds; first = false; }
+			else out_bounds |= layer_bounds;
+		}
+		bounds_iter++;
+	}
+	if (first) return false;
+
+	// Expand bounds slightly to avoid clipping
+	Vector size(out_bounds.maxx - out_bounds.minx, out_bounds.maxy - out_bounds.miny);
+	out_bounds.minx -= size[0] * 0.1; out_bounds.maxx += size[0] * 0.1;
+	out_bounds.miny -= size[1] * 0.1; out_bounds.maxy += size[1] * 0.1;
+
+	// Set up render at target resolution
+	double aspect = (double)std::max(out_bounds.maxx - out_bounds.minx, 1e-6) /
+	                std::max(out_bounds.maxy - out_bounds.miny, 1e-6);
+	int res_w, res_h;
+	if (aspect >= 1.0) { res_w = max_resolution; res_h = std::max(10, (int)(max_resolution / aspect)); }
+	else { res_h = max_resolution; res_w = std::max(10, (int)(max_resolution * aspect)); }
+
+	RendDesc desc;
+	desc.set_tl(Point(out_bounds.minx, out_bounds.maxy));
+	desc.set_br(Point(out_bounds.maxx, out_bounds.miny));
+	desc.set_w(res_w);
+	desc.set_h(res_h);
+	desc.set_antialias(1);
+
+	out_surface.set_wh(res_w, res_h);
+	out_surface.clear();
+
+	return context_iter.accelerated_render(&out_surface, 0, desc, 0);
 }
 
 void

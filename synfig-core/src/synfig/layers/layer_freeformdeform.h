@@ -26,6 +26,11 @@ private:
 	ValueBase param_mesh_mode; // 0 = Grid, 1 = Custom Mesh
 	ValueBase param_cull_threshold;
 
+	//! Auto-mesh generation params (Moho-style edge contour tracing)
+	ValueBase param_auto_mesh_margin;     // dilation radius in pixels
+	ValueBase param_auto_mesh_edge_length; // spacing between edge points in canvas units
+	ValueBase param_auto_mesh_dpi;        // rasterization DPI for alpha mask
+
 	bool needs_reset_;
 
 	//! Get a control point with boundary clamping for edge/corner cells
@@ -47,6 +52,18 @@ public:
 		const std::vector<rendering::Mesh::Triangle>& tris,
 		const std::vector<Point>& pts,
 		Real threshold);
+
+	//! Moho-style auto-mesh: trace the alpha contour of an image, dilate by margin pixels,
+	//! and sample points every edge_length canvas units. Returns points in canvas coordinates.
+	static std::vector<Point> generate_edge_points(
+		const Surface &alpha_surface,
+		const Rect &bounds,
+		Real edge_length,
+		int margin);
+
+	//! Render the context below this layer (the image, not the warped output) to a surface.
+	//! Fills out_bounds with the bounding rect of that context. Returns false on failure.
+	bool render_context_below(Surface &out_surface, Rect &out_bounds, int max_resolution = 512) const;
 
 	virtual String get_local_name() const;
 	virtual bool set_param(const String & param, const ValueBase & value);
