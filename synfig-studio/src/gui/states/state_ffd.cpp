@@ -164,6 +164,7 @@ class studio::StateFFD_Context : public sigc::trackable
 	void on_auto_mesh_slider_changed();
 	void cache_auto_mesh_surface();
 	void retrace_auto_mesh();
+	void update_grid_preview();
 	void update_creation_controls_visibility();
 
 	void on_make_ffd_pressed();
@@ -405,6 +406,10 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 		sigc::mem_fun(*this, &StateFFD_Context::on_auto_mesh_slider_changed));
 	mesh_edge_length_hscl.signal_value_changed().connect(
 		sigc::mem_fun(*this, &StateFFD_Context::on_auto_mesh_slider_changed));
+	create_grid_x_spin.signal_value_changed().connect(
+		sigc::mem_fun(*this, &StateFFD_Context::update_grid_preview));
+	create_grid_y_spin.signal_value_changed().connect(
+		sigc::mem_fun(*this, &StateFFD_Context::update_grid_preview));
 	
 	update_controls_from_layer();
 
@@ -459,8 +464,8 @@ StateFFD_Context::update_creation_controls_visibility()
 			create_grid_y_spin.show();
 			cull_threshold_label.hide();
 			cull_threshold_hscl.hide();
-			mesh_margin_label.hide();
-			mesh_margin_hscl.hide();
+			mesh_margin_label.show();
+			mesh_margin_hscl.show();
 			mesh_edge_length_label.hide();
 			mesh_edge_length_hscl.hide();
 		} else {
@@ -485,8 +490,7 @@ StateFFD_Context::on_mesh_mode_changed()
 		auto_mesh_cached_ = false;
 		retrace_auto_mesh();
 	} else {
-		polygon_point_list.clear();
-		refresh_ducks();
+		update_grid_preview();
 	}
 }
 
@@ -504,8 +508,11 @@ StateFFD_Context::on_auto_mesh_slider_changed()
 		return;
 	}
 
-	if (mesh_mode_enum.get_value() != 1) return;
-	retrace_auto_mesh();
+	if (mesh_mode_enum.get_value() == 1) {
+		retrace_auto_mesh();
+	} else {
+		update_grid_preview();
+	}
 }
 
 void
@@ -588,6 +595,189 @@ StateFFD_Context::retrace_auto_mesh()
 	polygon_point_list.clear();
 	for (auto& p : points)
 		polygon_point_list.push_back(to_world(p));
+
+	refresh_ducks();
+}
+
+void
+StateFFD_Context::update_grid_preview()
+{
+	synfig::Layer::Handle selected;
+	auto selection = get_canvas_interface()->get_selection_manager()->get_selected_layers();
+	if (!selection.empty()) {
+		selected = selection.front();
+	}
+	if (!is_valid_group_for_ffd(selected)) {
+		polygon_point_list.clear();
+		refresh_ducks();
+		return;
+	}
+
+	synfig::Canvas::Handle switch_canvas = selected->get_param("canvas").get(synfig::Canvas::Handle());
+	if (!switch_canvas) {
+		polygon_point_list.clear();
+		refresh_ducks();
+		return;
+	}
+
+	synfig::ValueBase tr_val = selected->get_param("transformation");
+	synfig::Transformation tr = tr_val.get(synfig::Transformation());
+	synfig::ValueBase origin_val = selected->get_param("origin");
+	synfig::Vector origin = origin_val.get(synfig::Vector());
+
+	auto to_world = [&](synfig::Point local_p) {
+		local_p -= origin;
+		local_p[0] *= tr.scale[0];
+		local_p[1] *= tr.scale[1];
+		local_p[0] += local_p[1] * synfig::Angle::tan(tr.skew_angle).get();
+		synfig::Real sn = synfig::Angle::sin(tr.angle).get();
+		synfig::Real cs = synfig::Angle::cos(tr.angle).get();
+		synfig::Point rot;
+		rot[0] = local_p[0] * cs - local_p[1] * sn;
+		rot[1] = local_p[0] * sn + local_p[1] * cs;
+		local_p = rot;
+		local_p += tr.offset;
+		return local_p;
+	};
+
+	synfig::Rect bounds = switch_canvas->get_context(synfig::ContextParams()).get_full_bounding_rect();
+	synfig::Point tl(bounds.get_min()[0], bounds.get_max()[1]);
+	synfig::Point br(bounds.get_max()[0], bounds.get_min()[1]);
+
+	synfig::RendDesc desc;
+	desc.set_tl(tl);
+	desc.set_br(br);
+	desc.set_w(128);
+	desc.set_h(128);
+
+	synfig::Surface surface;
+	surface.set_wh(128, 128);
+
+	if (!switch_canvas->get_context(synfig::ContextParams()).accelerated_render(&surface, 0, desc, 0)) {
+		polygon_point_list.clear();
+		refresh_ducks();
+		return;
+	}
+
+	double sum_x = 0, sum_y = 0, sum_w = 0;
+	for (int y = 0; y < 128; ++y) {
+		double cy_pos = tl[1] - (y / 127.0) * (tl[1] - br[1]);
+		for (int x = 0; x < 128; ++x) {
+			double a = surface[y][x].get_a();
+			if (a > 0.05) {
+				double cx_pos = tl[0] + (x / 127.0) * (br[0] - tl[0]);
+				sum_x += cx_pos * a;
+				sum_y += cy_pos * a;
+				sum_w += a;
+			}
+		}
+	}
+
+	if (sum_w <= 0) {
+		polygon_point_list.clear();
+		refresh_ducks();
+		return;
+	}
+
+	double cx = sum_x / sum_w;
+	double cy = sum_y / sum_w;
+
+	double sum_xx = 0, sum_yy = 0, sum_xy = 0;
+	for (int y = 0; y < 128; ++y) {
+		double cy_pos = tl[1] - (y / 127.0) * (tl[1] - br[1]);
+		for (int x = 0; x < 128; ++x) {
+			double a = surface[y][x].get_a();
+			if (a > 0.05) {
+				double cx_pos = tl[0] + (x / 127.0) * (br[0] - tl[0]);
+				double dx = cx_pos - cx;
+				double dy = cy_pos - cy;
+				sum_xx += dx * dx * a;
+				sum_yy += dy * dy * a;
+				sum_xy += dx * dy * a;
+			}
+		}
+	}
+
+	sum_xx /= sum_w;
+	sum_yy /= sum_w;
+	sum_xy /= sum_w;
+
+	double trace = sum_xx + sum_yy;
+	double ev_x = 1.0, ev_y = 0.0;
+	if (sum_xy != 0.0) {
+		double det = sum_xx * sum_yy - sum_xy * sum_xy;
+		double L1 = trace / 2.0 + std::sqrt(std::max(0.0, trace * trace / 4.0 - det));
+		ev_x = L1 - sum_yy;
+		ev_y = sum_xy;
+	} else {
+		ev_x = (sum_xx > sum_yy) ? 1.0 : 0.0;
+		ev_y = (sum_xx > sum_yy) ? 0.0 : 1.0;
+	}
+
+	double len = std::sqrt(ev_x*ev_x + ev_y*ev_y);
+	if (len > 0) { ev_x /= len; ev_y /= len; }
+
+	double min_u = 1e10, max_u = -1e10;
+	double min_v = 1e10, max_v = -1e10;
+	for (int y = 0; y < 128; ++y) {
+		double cy_pos = tl[1] - (y / 127.0) * (tl[1] - br[1]);
+		for (int x = 0; x < 128; ++x) {
+			if (surface[y][x].get_a() > 0.05) {
+				double cx_pos = tl[0] + (x / 127.0) * (br[0] - tl[0]);
+				double dx = cx_pos - cx;
+				double cy_dy = cy_pos - cy;
+				double u = dx * ev_x + cy_dy * ev_y;
+				double v = -dx * ev_y + cy_dy * ev_x;
+				min_u = std::min(min_u, u);
+				max_u = std::max(max_u, u);
+				min_v = std::min(min_v, v);
+				max_v = std::max(max_v, v);
+			}
+		}
+	}
+
+	double center_u = (min_u + max_u) * 0.5;
+	double center_v = (min_v + max_v) * 0.5;
+	double final_cx = cx + center_u * ev_x - center_v * ev_y;
+	double final_cy = cy + center_u * ev_y + center_v * ev_x;
+
+	double w_fit = (max_u - min_u) * 1.05;
+	double h_fit = (max_v - min_v) * 1.05;
+
+	// Apply margin expansion (convert pixel margin to canvas units)
+	double margin_units = (mesh_margin_hscl.get_value() / 100.0) * std::max(w_fit, h_fit);
+	w_fit += margin_units * 2.0;
+	h_fit += margin_units * 2.0;
+
+	synfig::Point new_tl(final_cx - w_fit * 0.5, final_cy + h_fit * 0.5);
+	synfig::Point new_br(final_cx + w_fit * 0.5, final_cy - h_fit * 0.5);
+
+	double angle_rad = std::atan2(ev_y, ev_x);
+	preview_tl = new_tl;
+	preview_br = new_br;
+	preview_angle = synfig::Angle::rad(angle_rad);
+
+	polygon_point_list.clear();
+	synfig::Vector v1 = synfig::Vector(new_br[0] - new_tl[0], 0);
+	synfig::Vector v2 = synfig::Vector(0, new_br[1] - new_tl[1]);
+
+	synfig::Real sn = synfig::Angle::sin(synfig::Angle::rad(angle_rad)).get();
+	synfig::Real cs = synfig::Angle::cos(synfig::Angle::rad(angle_rad)).get();
+	auto rotate = [&](synfig::Vector v) {
+		return synfig::Vector(v[0] * cs - v[1] * sn, v[0] * sn + v[1] * cs);
+	};
+
+	synfig::Point p1 = new_tl;
+	synfig::Point p2 = new_tl + v1;
+	synfig::Point p3 = new_br;
+	synfig::Point p4 = new_tl + v2;
+
+	synfig::Point final_c(final_cx, final_cy);
+
+	polygon_point_list.push_back(to_world(final_c + rotate(p1 - final_c)));
+	polygon_point_list.push_back(to_world(final_c + rotate(p2 - final_c)));
+	polygon_point_list.push_back(to_world(final_c + rotate(p3 - final_c)));
+	polygon_point_list.push_back(to_world(final_c + rotate(p4 - final_c)));
 
 	refresh_ducks();
 }
@@ -705,20 +895,20 @@ StateFFD_Context::update_controls_from_layer()
 			regenerate_button.show();
 			get_work_area()->set_cursor(Gdk::CROSSHAIR);
 		} else {
-			if (mesh_mode == 0) { // Grid
-				grid_x_label.show();
-				grid_x_spin.show();
-				grid_y_label.show();
-				grid_y_spin.show();
-				cull_threshold_label.hide();
-				cull_threshold_hscl.hide();
-				edit_mesh_button.hide();
-				regenerate_button.hide();
-				mesh_margin_label.hide();
-				mesh_margin_hscl.hide();
-				mesh_edge_length_label.hide();
-				mesh_edge_length_hscl.hide();
-			} else { // Custom Mesh
+		if (mesh_mode == 0) { // Grid
+			grid_x_label.show();
+			grid_x_spin.show();
+			grid_y_label.show();
+			grid_y_spin.show();
+			cull_threshold_label.hide();
+			cull_threshold_hscl.hide();
+			edit_mesh_button.hide();
+			regenerate_button.hide();
+			mesh_margin_label.show();
+			mesh_margin_hscl.show();
+			mesh_edge_length_label.hide();
+			mesh_edge_length_hscl.hide();
+		} else { // Custom Mesh
 				grid_x_label.hide();
 				grid_x_spin.hide();
 				grid_y_label.hide();
@@ -1429,6 +1619,9 @@ StateFFD_Context::on_make_ffd_pressed()
 {
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Make FFD"));
 
+	synfig::Point saved_preview_tl = preview_tl;
+	synfig::Point saved_preview_br = preview_br;
+	synfig::Angle saved_preview_angle = preview_angle;
 	std::vector<synfig::Point> saved_polygon(polygon_point_list.begin(), polygon_point_list.end());
 
 	synfig::Layer::Handle selected;
@@ -1616,6 +1809,12 @@ StateFFD_Context::on_make_ffd_pressed()
 		if (pts_y < 2) pts_y = 2;
 		layer->set_param("grid_size_x", synfig::ValueBase(pts_x));
 		layer->set_param("grid_size_y", synfig::ValueBase(pts_y));
+
+		if (saved_preview_tl != synfig::Point(0,0) || saved_preview_br != synfig::Point(0,0)) {
+			layer->set_param("source_tl", synfig::ValueBase(saved_preview_tl));
+			layer->set_param("source_br", synfig::ValueBase(saved_preview_br));
+			layer->set_param("source_angle", synfig::ValueBase(saved_preview_angle));
+		}
 
 		etl::handle<Layer_FreeFormDeform> ffd_typed = etl::handle<Layer_FreeFormDeform>::cast_dynamic(layer);
 		if (ffd_typed) ffd_typed->regenerate_grid_points();

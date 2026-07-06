@@ -45,8 +45,8 @@ Layer_FreeFormDeform::Layer_FreeFormDeform():
 	param_source_br(Point(2.0, -2.0)),
 	param_source_angle(Angle::deg(0.0)),
 	param_mesh_mode(0), // 0 = Grid, 1 = Custom Mesh
-	param_cull_threshold(1.0), // 0 = disabled
-	param_auto_mesh_margin(5),     // pixels
+	param_cull_threshold(Real(1.0)), // 0 = disabled
+	param_auto_mesh_margin(Real(5)),     // pixels
 	param_auto_mesh_edge_length(Real(0.5)), // canvas units
 	param_auto_mesh_dpi(300),
 	needs_reset_(true)
