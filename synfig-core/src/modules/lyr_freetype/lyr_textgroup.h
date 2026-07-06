@@ -36,6 +36,7 @@ private:
     synfig::ValueBase param_invert;
 	synfig::ValueBase param_wave_amplitude;
 	synfig::ValueBase param_wave_period;
+	synfig::ValueBase param_broadcast;
 
 public:  
     Layer_TextGroup();  
@@ -49,7 +50,14 @@ public:
 private:  
     void sync_glyphs();
 	void update_wave_offsets(synfig::Time time, bool force_sync_after = false) const;    
-    // void new_font(const synfig::String &family, int style, int weight);
+	std::map<synfig::String, synfig::ValueNode::Handle> shared_anim_nodes;
+	void attach_shared_nodes();
+	bool in_attach_shared_ = false;
+	void detach_shared_param(const synfig::String& param);
+	size_t master_glyph_index_ = 0;
+
+	void broadcast_dynamic_param(const synfig::String& param);   
+	
 protected:
     void on_canvas_set() override;     
     virtual void set_time_vfunc(synfig::IndependentContext context,
@@ -66,7 +74,8 @@ private:
     synfig::ValueBase param_scale;
     synfig::ValueBase param_rotation;
     synfig::ValueBase param_offset;
-	mutable synfig::Vector wave_offset_;  
+    synfig::ValueBase param_anim_offset;
+    mutable synfig::Vector wave_offset_;  
 
 public:  
     Layer_GlyphShape();  

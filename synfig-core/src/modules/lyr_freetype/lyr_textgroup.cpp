@@ -54,6 +54,7 @@ SYNFIG_LAYER_SET_VERSION(Layer_GlyphShape,"0.1");
 Layer_GlyphShape::Layer_GlyphShape()
     : param_scale(ValueBase(Vector(1.0, 1.0)))
     , param_rotation(ValueBase(Angle::zero()))
+    , param_anim_offset(ValueBase(Vector(0.0, 0.0)))
     , wave_offset_(0,0) 
 {
     SET_INTERPOLATION_DEFAULTS();
@@ -124,7 +125,8 @@ Layer_TextGroup::Layer_TextGroup()
     , param_color(ValueBase(Color::black()))        
     , param_invert(ValueBase(false))
     , param_wave_amplitude(ValueBase(Real(0.05)))
-    , param_wave_period(ValueBase(Time(1.0))) 
+    , param_wave_period(ValueBase(Time(1.0)))
+    , param_broadcast(ValueBase(false))
 {  
     SET_INTERPOLATION_DEFAULTS();  
     SET_STATIC_DEFAULTS();  
@@ -214,7 +216,13 @@ bool
     IMPORT_VALUE_PLUS(param_wave_period,{ 
         update_wave_offsets(get_time_mark(), true); 
         if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
-    });  
+    });
+    IMPORT_VALUE_PLUS(param_broadcast,{  
+		broadcast_dynamic_param("anim_offset");
+    	// immediately snap it back to false so it can't be silently replayed
+    	param_broadcast = ValueBase(false);
+    	  
+	});
   
     return Layer_PasteCanvas::set_param(param, value);  
 }
@@ -222,8 +230,9 @@ bool
 bool Layer_GlyphShape::set_param(const String &param, const ValueBase &value)  
 {  
     IMPORT_VALUE(param_rotation);  
-    IMPORT_VALUE(param_scale);  
-
+    IMPORT_VALUE(param_scale);
+    IMPORT_VALUE(param_anim_offset);
+       
     return Layer_Shape::set_param(param, value);  
 }  
   
@@ -246,7 +255,8 @@ Layer_TextGroup::get_param(const String& param) const
 	EXPORT_VALUE(param_font);
 	EXPORT_VALUE(param_stagger_delay);
 	EXPORT_VALUE(param_wave_amplitude);
-	EXPORT_VALUE(param_wave_period); 
+	EXPORT_VALUE(param_wave_period);
+	EXPORT_VALUE(param_broadcast);
     EXPORT_NAME();  
     EXPORT_VERSION();  
     return Layer_PasteCanvas::get_param(param);  
@@ -256,6 +266,7 @@ ValueBase Layer_GlyphShape::get_param(const String &param) const
 {  
     EXPORT_VALUE(param_rotation);  
     EXPORT_VALUE(param_scale);
+    EXPORT_VALUE(param_anim_offset);
     EXPORT_NAME();  
     EXPORT_VERSION();  
     return Layer_Shape::get_param(param);  
@@ -381,6 +392,10 @@ Layer_TextGroup::get_param_vocab() const
     	.set_local_name(_("Wave Period"))  
     	.set_description(_("Duration of one full wave cycle"))  
 	);
+	ret.push_back(ParamDesc("broadcast")
+    	.set_local_name(_("Share Animation"))
+   		.set_description(_("Connect all glyphs to the shared animation graph"))
+	);
 	return ret;  
 }
 
@@ -395,7 +410,13 @@ Layer::Vocab Layer_GlyphShape::get_param_vocab() const
         .set_local_name(_("Scale"))  
         .set_description(_("Per-glyph scale"))  
         .set_is_distance()  
-    );  
+    );
+    ret.push_back(ParamDesc("anim_offset") 
+    	.set_local_name(_("Animation Offset"))
+    	.set_origin("origin")
+    	.set_description(_("Per-glyph animated position offset"))
+    	.set_is_distance()
+	);
  
     return ret;  
 }
@@ -411,7 +432,21 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
     wave_offset_[0] != 0.0 ||
     wave_offset_[1] != 0.0;
 
-  
+  	Vector anim_offset = param_anim_offset.get(Vector());
+	
+	if (anim_offset != Vector())
+	{
+    	auto translate =
+        	new rendering::TaskTransformationAffine();
+
+    	translate->transformation->matrix =
+        	Matrix().set_translate(anim_offset);
+
+    	translate->sub_task() = task;
+
+    	task = translate;
+	}
+
     if (rotation != Angle::zero() || scale != Vector(1.0, 1.0) || has_wave)  
     {  
         Vector pivot = wave_offset_;
@@ -425,10 +460,77 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
         task_transform->transformation->matrix = matrix;  
         task_transform->sub_task() = task;  
         task = task_transform;  
-    }  
+    }
     return task;  
 }
 
+void  
+Layer_TextGroup::attach_shared_nodes()
+{  
+    if (in_attach_shared_) return;
+    in_attach_shared_ = true;
+    
+    Canvas::Handle canvas = get_sub_canvas();
+    
+    if (canvas) {
+        for (auto& kv : shared_anim_nodes) {
+            const String& param = kv.first;
+            ValueNode::Handle node = kv.second;
+            if (!node) continue;
+            for (auto iter = canvas->begin(); iter != canvas->end(); ++iter) {
+                Layer_GlyphShape::Handle g = Layer_GlyphShape::Handle::cast_dynamic(*iter);
+                if (!g) continue;
+                g->connect_dynamic_param(param, node);
+            }
+        }
+    }
+
+    in_attach_shared_ = false;
+}
+
+void
+Layer_TextGroup::detach_shared_param(const String& param)
+{
+    // Currently unused.
+	// Will be used when shared animations become removable.
+	Canvas::Handle canvas = get_sub_canvas();
+    if (canvas) {
+        for (auto iter = canvas->begin(); iter != canvas->end(); ++iter) {
+            Layer_GlyphShape::Handle g = Layer_GlyphShape::Handle::cast_dynamic(*iter);
+            if (g) g->disconnect_dynamic_param(param);
+        }
+    }
+    shared_anim_nodes.erase(param);
+    changed();
+}
+
+void
+Layer_TextGroup::broadcast_dynamic_param(const String& param)
+{
+    Canvas::Handle canvas = get_sub_canvas();
+    if (!canvas) return;
+
+    Layer_GlyphShape::Handle source_glyph;
+    size_t i = 0;
+    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter, ++i) {
+        Layer_GlyphShape::Handle g = Layer_GlyphShape::Handle::cast_dynamic(*iter);
+        if (!g) continue;
+        if (i == master_glyph_index_) { source_glyph = g; break; }
+        if (!source_glyph) source_glyph = g;   // fallback: first glyph seen
+    }
+    if (!source_glyph) { synfig::error("broadcast: no glyph layers found"); return; }
+
+    auto& dpl = source_glyph->dynamic_param_list();
+    auto it = dpl.find(param);
+    if (it == dpl.end()) {
+        synfig::error("broadcast: '%s' isn't animated on the source glyph", param.c_str());
+        return;
+    }
+
+    shared_anim_nodes[param] = it->second;   // map owns the reference, no layer handle stored
+    attach_shared_nodes();
+    changed();
+}
 
 void Layer_TextGroup::update_wave_offsets(Time time, bool force_sync_after) const  
 {  
@@ -471,13 +573,13 @@ void Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) cons
     Real dilation = get_time_dilation();
     Time toffset  = get_time_offset(); 
 
-    int i = 0;  
+    int i = 0;
     for (auto iter = canvas->begin(); iter != canvas->end(); ++iter, ++i) {  
         Time glyph_time = time * dilation + toffset + Time(i * (double)stagger);  
 
 		(*iter)->set_time(IndependentContext(canvas->end()), glyph_time);  		
-           
-	}  
+          
+    }  
 }
 
 Layer::Handle  
@@ -643,7 +745,7 @@ auto shaped_lines =
         }  
     }  
    
-	std::vector<Layer::Handle> old_layers;  
+ 	std::vector<Layer::Handle> old_layers;
 	std::vector<uint32_t>      old_indices;  
 	for (auto it = canvas->begin(); it != canvas->end(); ++it) {  
     	old_layers.push_back(*it);  
@@ -656,7 +758,8 @@ auto shaped_lines =
     	}  
     	old_indices.push_back(gi);  
 	}  
-
+	// TODO: keys only on glyph_index, can misattribute repeated glyphs across edits
+	// may require matching on richer glyph identity
   	std::vector<uint32_t> new_indices;  
 	new_indices.reserve(glyphs.size());  
 	for (const auto& glyph : glyphs)  
@@ -669,7 +772,6 @@ auto shaped_lines =
         	dp[i][j] = (old_indices[i-1] == new_indices[j-1])  
                    ? dp[i-1][j-1] + 1  
                    : std::max(dp[i-1][j], dp[i][j-1]);  
-
  	std::vector<Layer::Handle> reuse_for_new(m); // null -> create a new layer  
 	{  
     	size_t i = n, j = m;  
@@ -714,7 +816,7 @@ auto shaped_lines =
     	}  
     	++layer_iter;  
 	}  
-	
+	attach_shared_nodes();
     signal_subcanvas_changed()();  
     changed();  
 }
