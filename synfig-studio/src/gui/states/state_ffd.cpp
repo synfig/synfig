@@ -452,6 +452,7 @@ void
 StateFFD_Context::update_creation_controls_visibility()
 	{
 		bool is_grid = (mesh_mode_enum.get_value() == 0);
+		mesh_margin_label.set_label(is_grid ? _("Grid Margin:") : _("Mesh Margin:"));
 
 		if (is_grid) {
 			create_grid_x_label.show();
@@ -493,13 +494,13 @@ StateFFD_Context::on_auto_mesh_slider_changed()
 
 	synfig::Layer::Handle ffd = get_selected_ffd_layer();
 	if (ffd) {
-		on_regenerate_pressed();
+		int mesh_mode = ffd->get_param("mesh_mode").get(int());
+		if (mesh_mode == 1) {
+			on_regenerate_pressed();
+		}
 		return;
 	}
 
-
-	// Margin change requires a full re-cache so the contour polygon
-	// is rebuilt with the new dilation radius (fixes disconnected ducks at high margin).
 	auto_mesh_cached_ = false;
 
 	if (mesh_mode_enum.get_value() == 1) {
@@ -589,19 +590,11 @@ StateFFD_Context::retrace_auto_mesh()
 	int margin = (int)mesh_margin_hscl.get_value();
 	synfig::Real edge_length = mesh_edge_length_hscl.get_value();
 
-	// --- Boundary edge ducks (fixed density, does NOT change with edge_length slider) ---
-	// generate_edge_points internally uses edge_length/3 as the boundary step, so the
-	// boundary ducks stay at a comfortable density regardless of the slider value.
 	std::vector<synfig::Point> boundary_points = Layer_FreeFormDeform::generate_edge_points(
 		auto_mesh_surface_, auto_mesh_bounds_, edge_length, margin);
 
 	if (boundary_points.size() < 3) return;
 
-	// --- Interior ducks (density scales with edge_length slider) ---
-	// auto_mesh_contour_ is already in world-space (transformed in cache_auto_mesh_surface).
-	// generate_interior_points works in whatever coordinate space you give it, so pass
-	// world-space contour. We need to transform boundary_points first so the contour
-	// and the interior points share the same coordinate space.
 	auto to_world = [&](synfig::Point local_p) {
 		local_p -= auto_mesh_origin_;
 		local_p[0] *= auto_mesh_transform_.scale[0];
@@ -903,62 +896,81 @@ StateFFD_Context::update_controls_from_layer()
 		
 		int mesh_mode = ffd->get_param("mesh_mode").get(int());
 		reset_button.set_label(mesh_mode == 1 ? _("Reset Mesh") : _("Reset Grid"));
+		edit_mesh_button.set_label(mesh_mode == 1 ? _("Edit Custom Mesh") : _("Edit Grid"));
+		update_ffd_button.set_label(mesh_mode == 1 ? _("Update FFD Mesh") : _("Update Grid"));
+		mesh_margin_label.set_label(mesh_mode == 0 ? _("Grid Margin:") : _("Mesh Margin:"));
 
 		if (editing_existing_mesh_) {
 			grid_x_label.hide();
 			grid_x_spin.hide();
 			grid_y_label.hide();
 			grid_y_spin.hide();
-			smoothness_label.show();
-			smoothness_hscl.show();
 			reset_button.hide();
 			edit_mesh_button.hide();
-
 			mesh_mode_label.hide();
 			mesh_mode_enum.hide();
-			create_grid_x_label.hide();
-			create_grid_x_spin.hide();
-			create_grid_y_label.hide();
-			create_grid_y_spin.hide();
 			make_ffd_button.hide();
-			mesh_margin_label.show();
-			mesh_margin_hscl.show();
-			mesh_edge_length_label.show();
-			mesh_edge_length_hscl.show();
-
-			update_ffd_button.show();
-			clear_button.show();
-			regenerate_button.hide();
-			get_work_area()->set_cursor(Gdk::CROSSHAIR);
-		} else {
-
-		if (mesh_mode == 0) { // Grid
-			grid_x_label.show();
-			grid_x_spin.show();
-			grid_y_label.show();
-			grid_y_spin.show();
-			edit_mesh_button.hide();
-			regenerate_button.hide();
-			mesh_margin_label.show();
-			mesh_margin_hscl.show();
 			mesh_edge_length_label.hide();
 			mesh_edge_length_hscl.hide();
-		} else { // Custom Mesh
+			regenerate_button.hide();
+
+			if (mesh_mode == 0) { // Edit Grid Mode
+				create_grid_x_label.show();
+				create_grid_x_spin.show();
+				create_grid_y_label.show();
+				create_grid_y_spin.show();
+				smoothness_label.hide();
+				smoothness_hscl.hide();
+				mesh_margin_label.hide();
+				mesh_margin_hscl.hide();
+				clear_button.hide();
+				update_ffd_button.show();
+				get_work_area()->set_cursor(Gdk::ARROW);
+			} else { // Edit Custom Mesh Mode
+				create_grid_x_label.hide();
+				create_grid_x_spin.hide();
+				create_grid_y_label.hide();
+				create_grid_y_spin.hide();
+				smoothness_label.show();
+				smoothness_hscl.show();
+				mesh_margin_label.show();
+				mesh_margin_hscl.show();
+				mesh_edge_length_label.show();
+				mesh_edge_length_hscl.show();
+				clear_button.show();
+				update_ffd_button.show();
+				get_work_area()->set_cursor(Gdk::CROSSHAIR);
+			}
+		} else {
+			if (mesh_mode == 0) { // Grid (Normal state, not editing)
+				grid_x_label.hide();
+				grid_x_spin.hide();
+				grid_y_label.hide();
+				grid_y_spin.hide();
+				smoothness_label.hide();
+				smoothness_hscl.hide();
+				mesh_margin_label.hide();
+				mesh_margin_hscl.hide();
+				regenerate_button.hide();
+				mesh_edge_length_label.hide();
+				mesh_edge_length_hscl.hide();
+				edit_mesh_button.show(); // Re-used for "Edit Grid"
+			} else { // Custom Mesh (Normal state, not editing)
 				grid_x_label.hide();
 				grid_x_spin.hide();
 				grid_y_label.hide();
 				grid_y_spin.hide();
 				mesh_margin_label.hide();
 				mesh_margin_hscl.hide();
+				regenerate_button.hide();
+				smoothness_label.hide();
+				smoothness_hscl.hide();
 				mesh_edge_length_label.hide();
 				mesh_edge_length_hscl.hide();
 				edit_mesh_button.show();
-				regenerate_button.hide();
 			}
 
 			reset_button.show();
-			smoothness_label.show();
-			smoothness_hscl.show();
 
 			mesh_mode_label.hide();
 			mesh_mode_enum.hide();
@@ -1426,10 +1438,10 @@ StateFFD_Context::recompute_edit_triangles()
 	if (points.size() < 3)
 		return;
 
+	// When manually editing a mesh, we want to see the full Delaunay triangulation
+	// of the points we've added. Do NOT filter by the image polygon contour here,
+	// otherwise manually added outer boundary points will cause their triangles to disappear.
 	edit_triangles_ = synfig::Layer_FreeFormDeform::triangulate(points);
-	if (!auto_mesh_contour_.empty())
-		edit_triangles_ = synfig::Layer_FreeFormDeform::filter_triangles_by_polygon(
-			edit_triangles_, points, auto_mesh_contour_);
 }
 
 void
@@ -2006,6 +2018,15 @@ StateFFD_Context::on_edit_mesh_pressed()
 	if (!ffd) return;
 
 	editing_existing_mesh_ = true;
+
+	int mesh_mode = ffd->get_param("mesh_mode").get(int());
+	if (mesh_mode == 0) {
+		create_grid_x_spin.set_value(ffd->get_param("grid_size_x").get(int()));
+		create_grid_y_spin.set_value(ffd->get_param("grid_size_y").get(int()));
+		update_controls_from_layer();
+		return;
+	}
+
 	edit_triangles_.clear();
 
 	// Extract existing source points
@@ -2047,6 +2068,54 @@ StateFFD_Context::on_update_ffd_pressed()
 {
 	synfig::Layer::Handle ffd = get_selected_ffd_layer();
 	if (!ffd || !editing_existing_mesh_) return;
+
+	int mesh_mode = ffd->get_param("mesh_mode").get(int());
+	if (mesh_mode == 0) {
+		int new_cols = (int)create_grid_x_spin.get_value();
+		int new_rows = (int)create_grid_y_spin.get_value();
+		int old_cols = ffd->get_param("grid_size_x").get(int());
+		int old_rows = ffd->get_param("grid_size_y").get(int());
+		
+		if (new_cols != old_cols || new_rows != old_rows) {
+			etl::handle<Layer_FreeFormDeform> ffd_typed = etl::handle<Layer_FreeFormDeform>::cast_dynamic(ffd);
+			if (ffd_typed) {
+				synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(), _("Update FFD Grid Size"));
+				std::vector<synfig::Point> new_points = ffd_typed->get_interpolated_grid(new_cols, new_rows);
+				std::vector<synfig::ValueBase> grid_points;
+				for (auto& p : new_points) grid_points.push_back(p);
+				
+				synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(grid_points), get_canvas());
+				synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
+				action_connect->set_param("canvas", get_canvas());
+				action_connect->set_param("canvas_interface", get_canvas_interface());
+				action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "grid_points"));
+				action_connect->set_param("src", dyn_list);
+				if(action_connect->is_ready()) get_canvas_interface()->get_instance()->perform_action(action_connect);
+
+				synfigapp::Action::Handle action_x = synfigapp::Action::create("ValueDescSet");
+				action_x->set_param("canvas", get_canvas());
+				action_x->set_param("canvas_interface", get_canvas_interface());
+				action_x->set_param("value_desc", synfigapp::ValueDesc(ffd, "grid_size_x"));
+				action_x->set_param("new_value", synfig::ValueBase(new_cols));
+				action_x->set_param("time", get_canvas_interface()->get_time());
+				if(action_x->is_ready()) get_canvas_interface()->get_instance()->perform_action(action_x);
+
+				synfigapp::Action::Handle action_y = synfigapp::Action::create("ValueDescSet");
+				action_y->set_param("canvas", get_canvas());
+				action_y->set_param("canvas_interface", get_canvas_interface());
+				action_y->set_param("value_desc", synfigapp::ValueDesc(ffd, "grid_size_y"));
+				action_y->set_param("new_value", synfig::ValueBase(new_rows));
+				action_y->set_param("time", get_canvas_interface()->get_time());
+				if(action_y->is_ready()) get_canvas_interface()->get_instance()->perform_action(action_y);
+			}
+		}
+		
+		editing_existing_mesh_ = false;
+		update_controls_from_layer();
+		get_canvas_view()->queue_rebuild_ducks();
+		get_work_area()->queue_render();
+		return;
+	}
 
 	if (polygon_point_list.size() < 3) {
 		get_canvas_view()->get_ui_interface()->error(_("Need at least 3 points to update Custom Mesh FFD."));
@@ -2146,9 +2215,6 @@ StateFFD_Context::on_regenerate_pressed()
 	// Generate the dense contour polygon for CIP filtering of the triangle overlay
 	auto_mesh_contour_ = Layer_FreeFormDeform::generate_contour_polygon(surface, bounds, margin);
 
-	// Add interior Steiner points inside the contour at edge_length spacing
-	// auto_mesh_contour_ here is in local canvas coords (not yet world-transformed),
-	// which matches the space of boundary_pts from generate_edge_points.
 	std::vector<synfig::Point> interior_pts;
 	if (!auto_mesh_contour_.empty()) {
 		interior_pts = Layer_FreeFormDeform::generate_interior_points(auto_mesh_contour_, edge_length);

@@ -518,16 +518,11 @@ Layer_FreeFormDeform::generate_edge_points(
 	std::vector<Point> contour = generate_contour_polygon(alpha_surface, bounds, margin);
 	if (contour.size() < 3) return contour;
 
-	// Boundary step is INVERSELY proportional to mesh_strength (edge_length param),
-	// so both boundary AND interior ducks increase when the slider is raised:
-	//   increase slider  →  smaller step  →  MORE boundary ducks (same direction as interior)
-	//   decrease slider  →  larger step   →  FEWER boundary ducks
 	double bbox_size = std::max(
 		(double)(bounds.maxx - bounds.minx),
 		(double)(bounds.maxy - bounds.miny));
 	if (bbox_size < 1e-6) bbox_size = 1.0;
 
-	// step = bbox / (strength * 8). Cap: no more than 300 boundary points.
 	double target_dist = bbox_size / (edge_length * 8.0);
 	double step_min = bbox_size / 300.0;
 	if (target_dist < step_min) target_dist = step_min;
@@ -569,20 +564,14 @@ Layer_FreeFormDeform::generate_interior_points(
 		miny = std::min(miny, p[1]); maxy = std::max(maxy, p[1]);
 	}
 
-	// Interior grid step is INVERSELY proportional to edge_length:
-	//   increase slider  →  smaller step  →  MORE interior ducks
-	//   decrease slider  →  larger step   →  FEWER interior ducks
-	// This matches the intuition "bigger value = richer mesh".
 	double bbox_size = std::max((double)(maxx - minx), (double)(maxy - miny));
 	if (bbox_size < 1e-6) return result;
 
-	// step = bbox / (edge_length * 2).  Cap so we never exceed 25 points per axis.
 	double step = bbox_size / (edge_length * 2.0);
 	double step_min = bbox_size / 25.0; // max 25 divisions per axis
 	if (step < step_min) step = step_min;
 	if (step < 1e-6) step = 1e-6;
 
-	// Walk grid with hexagonal row offset for more isotropic triangulation
 	int row = 0;
 	for (double y = miny + step * 0.5; y < maxy - step * 0.1; y += step, ++row) {
 		double x_offset = (row % 2 == 0) ? 0.0 : step * 0.5;
@@ -1140,20 +1129,9 @@ void Layer_FreeFormDeform::prepare_mesh()
 			center[1] + dx * angle_sin + dy * angle_cos
 		);
 	};
-
-	// =====================================================================
-	// PHASE 1: Build the dense grid cell meshes (same as before)
-	// =====================================================================
-
-	// We also need to track the grid edge vertex indices so we can connect
-	// boundary triangles to them. Store the vertex index of each edge point.
-	// edge_top[i], edge_bottom[i]: vertex indices along top/bottom edge
-	// edge_left[i], edge_right[i]: vertex indices along left/right edge
-	// These are indexed by sub_step position along the edge.
-
-	int edge_len_h = (cols - 1) * sub_steps + 1; // total vertices along horizontal edge
-	int edge_len_v = (rows - 1) * sub_steps + 1; // total vertices along vertical edge
-
+	
+	int edge_len_h = (cols - 1) * sub_steps + 1; 
+	int edge_len_v = (rows - 1) * sub_steps + 1;
 	std::vector<int> edge_top(edge_len_h, -1);
 	std::vector<int> edge_bottom(edge_len_h, -1);
 	std::vector<int> edge_left(edge_len_v, -1);
@@ -1257,13 +1235,6 @@ void Layer_FreeFormDeform::prepare_mesh()
 		}
 	}
 
-	// =====================================================================
-	// PHASE 2: Add boundary identity triangles around the grid
-	// These cover the area outside the grid so the image doesn't clip.
-	// Identity mapping: position == tex_coords (no deformation).
-	// =====================================================================
-
-	// Unrotate a point from world space to unrotated source space
 	auto unrotate_src = [&](const Point& pt) {
 		Real dx = pt[0] - center[0];
 		Real dy = pt[1] - center[1];
