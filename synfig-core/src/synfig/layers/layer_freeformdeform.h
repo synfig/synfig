@@ -55,12 +55,21 @@ public:
 		Real threshold);
 
 	//! auto-mesh: trace the alpha contour of an image, dilate by margin pixels,
-	//! and sample points every edge_length canvas units. Returns points in canvas coordinates.
+	//! and sample boundary points at a fixed dense spacing. Returns points in canvas coordinates.
+	//! The boundary point count does NOT change with edge_length; use generate_interior_points
+	//! for the interior points that scale with edge_length.
 	static std::vector<Point> generate_edge_points(
 		const Surface &alpha_surface,
 		const Rect &bounds,
 		Real edge_length,
 		int margin);
+
+	//! Generate interior Steiner points on a regular grid at edge_length spacing,
+	//! keeping only those that fall strictly inside the given contour polygon.
+	//! Combine with generate_edge_points to get boundary + interior duck layout.
+	static std::vector<Point> generate_interior_points(
+		const std::vector<Point> &contour_polygon,
+		Real edge_length);
 
 	//! Generate the full dense contour polygon (not sub-sampled) from the image alpha mask.
 	//! Returns ordered vertices in canvas coordinates. Used for centroid-in-polygon filtering.

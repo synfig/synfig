@@ -518,17 +518,19 @@ Layer_FreeFormDeform::generate_edge_points(
 	std::vector<Point> contour = generate_contour_polygon(alpha_surface, bounds, margin);
 	if (contour.size() < 3) return contour;
 
-	int w = alpha_surface.get_w();
-	double units_w = bounds.maxx - bounds.minx;
+	// Boundary step is INVERSELY proportional to mesh_strength (edge_length param),
+	// so both boundary AND interior ducks increase when the slider is raised:
+	//   increase slider  →  smaller step  →  MORE boundary ducks (same direction as interior)
+	//   decrease slider  →  larger step   →  FEWER boundary ducks
+	double bbox_size = std::max(
+		(double)(bounds.maxx - bounds.minx),
+		(double)(bounds.maxy - bounds.miny));
+	if (bbox_size < 1e-6) bbox_size = 1.0;
 
-	// Sub-sample contour every edge_length canvas units
-	double target_dist_px = edge_length * w / std::max(units_w, 1e-6);
-	if (target_dist_px < 2.0) target_dist_px = 2.0;
-
-	// Work in pixel space for distance calculation, convert result to canvas
-	// NOTE: contour is already in canvas coords from generate_contour_polygon.
-	// Re-compute target_dist in canvas units directly.
-	double target_dist = edge_length;
+	// step = bbox / (strength * 8). Cap: no more than 300 boundary points.
+	double target_dist = bbox_size / (edge_length * 8.0);
+	double step_min = bbox_size / 300.0;
+	if (target_dist < step_min) target_dist = step_min;
 	if (target_dist < 1e-6) target_dist = 1e-6;
 
 	std::vector<Point> result;
@@ -540,6 +542,54 @@ Layer_FreeFormDeform::generate_edge_points(
 		if (dist_accum >= target_dist) {
 			result.push_back(contour[i]);
 			dist_accum = 0;
+		}
+	}
+	return result;
+}
+
+/* ---- interior Steiner point generation ---- */
+
+// Forward declaration (defined below in "Centroid-in-polygon filter" section)
+static bool point_in_polygon(const synfig::Point &p, const std::vector<synfig::Point> &poly);
+
+std::vector<Point>
+Layer_FreeFormDeform::generate_interior_points(
+	const std::vector<Point> &contour_polygon,
+	Real edge_length)
+{
+	std::vector<Point> result;
+	if (contour_polygon.size() < 3 || edge_length < 1e-6)
+		return result;
+
+	// Compute bounding box of the contour
+	Real minx = contour_polygon[0][0], maxx = contour_polygon[0][0];
+	Real miny = contour_polygon[0][1], maxy = contour_polygon[0][1];
+	for (const auto &p : contour_polygon) {
+		minx = std::min(minx, p[0]); maxx = std::max(maxx, p[0]);
+		miny = std::min(miny, p[1]); maxy = std::max(maxy, p[1]);
+	}
+
+	// Interior grid step is INVERSELY proportional to edge_length:
+	//   increase slider  →  smaller step  →  MORE interior ducks
+	//   decrease slider  →  larger step   →  FEWER interior ducks
+	// This matches the intuition "bigger value = richer mesh".
+	double bbox_size = std::max((double)(maxx - minx), (double)(maxy - miny));
+	if (bbox_size < 1e-6) return result;
+
+	// step = bbox / (edge_length * 2).  Cap so we never exceed 25 points per axis.
+	double step = bbox_size / (edge_length * 2.0);
+	double step_min = bbox_size / 25.0; // max 25 divisions per axis
+	if (step < step_min) step = step_min;
+	if (step < 1e-6) step = 1e-6;
+
+	// Walk grid with hexagonal row offset for more isotropic triangulation
+	int row = 0;
+	for (double y = miny + step * 0.5; y < maxy - step * 0.1; y += step, ++row) {
+		double x_offset = (row % 2 == 0) ? 0.0 : step * 0.5;
+		for (double x = minx + step * 0.5 + x_offset; x < maxx - step * 0.1; x += step) {
+			Point p(x, y);
+			if (point_in_polygon(p, contour_polygon))
+				result.push_back(p);
 		}
 	}
 	return result;

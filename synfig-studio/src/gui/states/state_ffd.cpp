@@ -332,7 +332,7 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	mesh_margin_hscl.set_value_pos(Gtk::POS_LEFT);
 	mesh_margin_hscl.set_hexpand(true);
 
-	mesh_edge_length_label.set_label(_("Edge Length (units):"));
+	mesh_edge_length_label.set_label(_("Mesh Strength:"));
 	mesh_edge_length_label.set_halign(Gtk::ALIGN_START);
 	mesh_edge_length_adj = Gtk::Adjustment::create(0.5, 0.05, 100.0, 0.05, 1.0);
 	mesh_edge_length_hscl.set_adjustment(mesh_edge_length_adj);
@@ -588,11 +588,20 @@ StateFFD_Context::retrace_auto_mesh()
 
 	int margin = (int)mesh_margin_hscl.get_value();
 	synfig::Real edge_length = mesh_edge_length_hscl.get_value();
-	std::vector<synfig::Point> points = Layer_FreeFormDeform::generate_edge_points(
+
+	// --- Boundary edge ducks (fixed density, does NOT change with edge_length slider) ---
+	// generate_edge_points internally uses edge_length/3 as the boundary step, so the
+	// boundary ducks stay at a comfortable density regardless of the slider value.
+	std::vector<synfig::Point> boundary_points = Layer_FreeFormDeform::generate_edge_points(
 		auto_mesh_surface_, auto_mesh_bounds_, edge_length, margin);
 
-	if (points.size() < 3) return;
+	if (boundary_points.size() < 3) return;
 
+	// --- Interior ducks (density scales with edge_length slider) ---
+	// auto_mesh_contour_ is already in world-space (transformed in cache_auto_mesh_surface).
+	// generate_interior_points works in whatever coordinate space you give it, so pass
+	// world-space contour. We need to transform boundary_points first so the contour
+	// and the interior points share the same coordinate space.
 	auto to_world = [&](synfig::Point local_p) {
 		local_p -= auto_mesh_origin_;
 		local_p[0] *= auto_mesh_transform_.scale[0];
@@ -609,21 +618,22 @@ StateFFD_Context::retrace_auto_mesh()
 	};
 
 	polygon_point_list.clear();
-	for (auto& p : points)
+
+	// Add boundary points (world-space)
+	for (auto& p : boundary_points)
 		polygon_point_list.push_back(to_world(p));
 
-	// Apply centroid-in-polygon filter to remove triangles outside the image silhouette.
-	// auto_mesh_contour_ is already in world space (transformed in cache_auto_mesh_surface).
+	// Generate interior points inside the world-space contour polygon at edge_length spacing
 	if (!auto_mesh_contour_.empty()) {
-		std::vector<synfig::Point> pts_vec(polygon_point_list.begin(), polygon_point_list.end());
-		auto tris = Layer_FreeFormDeform::triangulate(pts_vec);
-		tris = Layer_FreeFormDeform::filter_triangles_by_polygon(tris, pts_vec, auto_mesh_contour_);
-		// Store filtered triangles for duck overlay (duckmatic reads them separately)
-		(void)tris; // triangles are recomputed in duckmatic; CIP result feeds refresh_ducks preview
+		std::vector<synfig::Point> interior = Layer_FreeFormDeform::generate_interior_points(
+			auto_mesh_contour_, edge_length);
+		for (auto& p : interior)
+			polygon_point_list.push_back(p);
 	}
 
 	refresh_ducks();
 }
+
 
 void
 StateFFD_Context::update_grid_preview()
@@ -1151,10 +1161,10 @@ StateFFD_Context::event_layer_selection_changed_handler(const Smach::event& /*x*
 			reset();
 		}
 	}
+	auto_mesh_cached_ = false;
 	update_controls_from_layer();
 	get_work_area()->queue_draw();
-	get_canvas_view()->queue_rebuild_ducks();
-	
+
 	return Smach::RESULT_ACCEPT;
 }
 
@@ -1198,12 +1208,8 @@ StateFFD_Context::event_stop_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateFFD_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
-	if (editing_existing_mesh_ || !polygon_point_list.empty()) {
-		refresh_ducks();
-		return Smach::RESULT_ACCEPT;
-	} else {
-		return Smach::RESULT_OK;
-	}
+	refresh_ducks();
+	return Smach::RESULT_ACCEPT;
 }
 
 Smach::event_result
@@ -2129,17 +2135,28 @@ StateFFD_Context::on_regenerate_pressed()
 		return;
 	}
 
-	std::vector<synfig::Point> points = Layer_FreeFormDeform::generate_edge_points(surface, bounds, edge_length, margin);
+	// Generate boundary edge points (fixed density) + interior Steiner points (scales with slider)
+	std::vector<synfig::Point> boundary_pts = Layer_FreeFormDeform::generate_edge_points(surface, bounds, edge_length, margin);
 
-	if (points.size() < 3) {
-		get_canvas_view()->get_ui_interface()->error(_("Auto Mesh could not generate enough points. Try adjusting margin or edge length."));
+	if (boundary_pts.size() < 3) {
+		get_canvas_view()->get_ui_interface()->error(_("Auto Mesh could not generate enough points. Try adjusting margin or mesh strength."));
 		return;
 	}
 
 	// Generate the dense contour polygon for CIP filtering of the triangle overlay
-	// (the point list itself is already on the silhouette, but we store contour for
-	//  the duckmatic preview to use filter_triangles_by_polygon)
 	auto_mesh_contour_ = Layer_FreeFormDeform::generate_contour_polygon(surface, bounds, margin);
+
+	// Add interior Steiner points inside the contour at edge_length spacing
+	// auto_mesh_contour_ here is in local canvas coords (not yet world-transformed),
+	// which matches the space of boundary_pts from generate_edge_points.
+	std::vector<synfig::Point> interior_pts;
+	if (!auto_mesh_contour_.empty()) {
+		interior_pts = Layer_FreeFormDeform::generate_interior_points(auto_mesh_contour_, edge_length);
+	}
+
+	std::vector<synfig::Point> points;
+	points.insert(points.end(), boundary_pts.begin(), boundary_pts.end());
+	points.insert(points.end(), interior_pts.begin(), interior_pts.end());
 
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(), _("Regenerate Edge Points"));
 
@@ -2147,6 +2164,7 @@ StateFFD_Context::on_regenerate_pressed()
 	for (auto& p : points) pts_vb.push_back(p);
 
 	synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(pts_vb), ffd->get_canvas());
+
 
 	synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
 	action_connect->set_param("canvas", ffd->get_canvas());
