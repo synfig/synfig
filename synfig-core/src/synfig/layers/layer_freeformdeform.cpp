@@ -64,6 +64,9 @@ Layer_FreeFormDeform::Layer_FreeFormDeform():
 	std::vector<ValueBase> empty_points;
 	param_source_points.set_list_of(empty_points);
 	
+	std::vector<ValueBase> empty_triangles;
+	param_triangles.set_list_of(empty_triangles);
+	
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
 	
@@ -106,6 +109,7 @@ Layer_FreeFormDeform::set_param(const String & param, const ValueBase &value)
 	IMPORT_VALUE_PLUS(param_source_points, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_mesh_mode, prepare_mesh());
 	IMPORT_VALUE_PLUS(param_cull_threshold, prepare_mesh());
+	IMPORT_VALUE_PLUS(param_triangles, prepare_mesh());
 	IMPORT_VALUE(param_auto_mesh_margin);
 	IMPORT_VALUE(param_auto_mesh_edge_length);
 	IMPORT_VALUE(param_auto_mesh_dpi);
@@ -125,6 +129,7 @@ Layer_FreeFormDeform::get_param(const String& param)const
 	EXPORT_VALUE(param_source_points);
 	EXPORT_VALUE(param_mesh_mode);
 	EXPORT_VALUE(param_cull_threshold);
+	EXPORT_VALUE(param_triangles);
 	EXPORT_VALUE(param_auto_mesh_margin);
 	EXPORT_VALUE(param_auto_mesh_edge_length);
 	EXPORT_VALUE(param_auto_mesh_dpi);
@@ -181,6 +186,12 @@ Layer_FreeFormDeform::get_param_vocab()const
 	ret.push_back(ParamDesc("source_points")
 		.set_local_name(_("Source Points"))
 		.set_description(_("Original points of the custom mesh polygon"))
+		.hidden()
+	);
+
+	ret.push_back(ParamDesc("triangles")
+		.set_local_name(_("Triangles"))
+		.set_description(_("Explicit triangle list for custom mesh topology"))
 		.hidden()
 	);
 
@@ -939,8 +950,20 @@ void Layer_FreeFormDeform::prepare_mesh()
 		add_static_anchor(c_bl);
 		add_static_anchor(c_lm);
 
-		// Triangulate
-		std::vector<rendering::Mesh::Triangle> triangles = triangulate(initial_pts);
+		// Use explicit triangles if provided, else triangulate
+		std::vector<rendering::Mesh::Triangle> triangles;
+		const std::vector<ValueBase>& param_tris = param_triangles.get_list();
+		if (!param_tris.empty() && param_tris.size() % 3 == 0) {
+			for (size_t i = 0; i < param_tris.size(); i += 3) {
+				rendering::Mesh::Triangle tri;
+				tri.vertices[0] = param_tris[i].get(int());
+				tri.vertices[1] = param_tris[i+1].get(int());
+				tri.vertices[2] = param_tris[i+2].get(int());
+				triangles.push_back(tri);
+			}
+		} else {
+			triangles = triangulate(initial_pts);
+		}
 
 		// Apply Cull Threshold (Alpha Shape)
 		Real cull_threshold = param_cull_threshold.get(Real());

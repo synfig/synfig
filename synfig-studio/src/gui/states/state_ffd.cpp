@@ -1420,12 +1420,33 @@ StateFFD_Context::refresh_beziers()
 
 	// Draw triangulation if Custom Mesh mode
 	if (mesh_mode_enum.get_value() == 1 && duck_list_.size() > 2) {
-		std::vector<rendering::Mesh::Triangle> tris = synfig::Layer_FreeFormDeform::triangulate(pts);
+		std::vector<synfig::rendering::Mesh::Triangle> tris;
 
-		std::vector<synfig::Point> local_pts;
 		if (editing_existing_mesh_) {
-			local_pts = pts; // Already local
+			synfig::Layer::Handle ffd_layer = get_selected_ffd_layer();
+			if (ffd_layer) {
+				synfig::ValueBase tris_vb = ffd_layer->get_param("triangles");
+				if (tris_vb.get_type() == synfig::type_list) {
+					const auto& tris_list = tris_vb.get_list();
+					if (!tris_list.empty() && tris_list.size() % 3 == 0) {
+						for (size_t k = 0; k < tris_list.size(); k += 3) {
+							synfig::rendering::Mesh::Triangle tri;
+							tri.vertices[0] = tris_list[k].get(int());
+							tri.vertices[1] = tris_list[k+1].get(int());
+							tri.vertices[2] = tris_list[k+2].get(int());
+							tris.push_back(tri);
+						}
+					}
+				}
+			}
+			if (tris.empty()) {
+				// Fallback if no triangles parameter exists for some reason
+				tris = synfig::Layer_FreeFormDeform::triangulate(pts);
+			}
 		} else {
+			tris = synfig::Layer_FreeFormDeform::triangulate(pts);
+
+			std::vector<synfig::Point> local_pts;
 			synfig::Vector origin_offset(0,0);
 			synfig::Transformation layer_transform;
 			synfig::Layer::Handle target_layer;
@@ -1453,13 +1474,14 @@ StateFFD_Context::refresh_beziers()
 				local_p += origin_offset;
 				local_pts.push_back(local_p);
 			}
+
+			// CIP filter: remove triangles whose centroid is outside the image silhouette.
+			// Use world-space pts (not local_pts) since auto_mesh_contour_ is in world space.
+			if (!auto_mesh_contour_.empty()) {
+				tris = synfig::Layer_FreeFormDeform::filter_triangles_by_polygon(tris, pts, auto_mesh_contour_);
+			}
 		}
 
-		// CIP filter: remove triangles whose centroid is outside the image silhouette.
-		// Use world-space pts (not local_pts) since auto_mesh_contour_ is in world space.
-		if (!auto_mesh_contour_.empty()) {
-			tris = synfig::Layer_FreeFormDeform::filter_triangles_by_polygon(tris, pts, auto_mesh_contour_);
-		}
 
 		for (const auto& tri : tris) {
 			etl::handle<WorkArea::Bezier> b1(new WorkArea::Bezier());
@@ -1788,9 +1810,21 @@ StateFFD_Context::on_make_ffd_pressed()
 			pts_vb.push_back(local_p);
 		}
 
+		std::vector<synfig::ValueBase> tris_vb;
+		if (!auto_mesh_contour_.empty()) {
+			auto tris = synfig::Layer_FreeFormDeform::triangulate(saved_polygon);
+			tris = synfig::Layer_FreeFormDeform::filter_triangles_by_polygon(tris, saved_polygon, auto_mesh_contour_);
+			for (const auto& tri : tris) {
+				tris_vb.push_back(synfig::ValueBase((int)tri.vertices[0]));
+				tris_vb.push_back(synfig::ValueBase((int)tri.vertices[1]));
+				tris_vb.push_back(synfig::ValueBase((int)tri.vertices[2]));
+			}
+		}
+
 		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(pts_vb), get_canvas());
 		layer->connect_dynamic_param("grid_points", dyn_list);
 		layer->set_param("source_points", synfig::ValueBase(pts_vb));
+		layer->set_param("triangles", synfig::ValueBase(tris_vb));
 	} else {
 		int pts_x = (int)create_grid_x_spin.get_value();
 		int pts_y = (int)create_grid_y_spin.get_value();
@@ -1966,6 +2000,25 @@ StateFFD_Context::on_regenerate_pressed()
 		group.cancel();
 		return;
 	}
+
+	std::vector<synfig::ValueBase> tris_vb;
+	if (!auto_mesh_contour_.empty()) {
+		auto tris = synfig::Layer_FreeFormDeform::triangulate(points);
+		tris = synfig::Layer_FreeFormDeform::filter_triangles_by_polygon(tris, points, auto_mesh_contour_);
+		for (const auto& tri : tris) {
+			tris_vb.push_back(synfig::ValueBase((int)tri.vertices[0]));
+			tris_vb.push_back(synfig::ValueBase((int)tri.vertices[1]));
+			tris_vb.push_back(synfig::ValueBase((int)tri.vertices[2]));
+		}
+	}
+
+	synfigapp::Action::Handle action_tris = synfigapp::Action::create("LayerParamSet");
+	action_tris->set_param("canvas", ffd->get_canvas());
+	action_tris->set_param("canvas_interface", get_canvas_interface());
+	action_tris->set_param("layer", ffd_layer);
+	action_tris->set_param("param", synfig::String("triangles"));
+	action_tris->set_param("new_value", synfig::ValueBase(tris_vb));
+	get_canvas_interface()->get_instance()->perform_action(action_tris);
 
 	synfigapp::Action::Handle action_margin = synfigapp::Action::create("LayerParamSet");
 	action_margin->set_param("canvas", ffd->get_canvas());

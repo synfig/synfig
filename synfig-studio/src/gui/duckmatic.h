@@ -47,6 +47,7 @@
 #include <synfig/color.h>
 #include <synfig/guidset.h>
 #include <synfig/handle.h>
+#include <synfig/rendering/primitive/mesh.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -256,7 +257,8 @@ private:
 		const std::vector<Duck::Handle>& ducks,
 		int ffd_mode, int cols, int rows,
 		synfig::Real cull_threshold,
-		const std::vector<synfig::Point>& source_pts);
+		const std::vector<synfig::Point>& source_pts,
+		const std::vector<synfig::rendering::Mesh::Triangle>& explicit_tris = std::vector<synfig::rendering::Mesh::Triangle>());
 
 	double calculate_distance_from_guide(const Guide& guide, const synfig::Point& point)const;
 

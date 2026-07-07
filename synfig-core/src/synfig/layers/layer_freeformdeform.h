@@ -25,6 +25,7 @@ private:
 	ValueBase param_source_points;
 	ValueBase param_mesh_mode; // 0 = Grid, 1 = Custom Mesh
 	ValueBase param_cull_threshold;
+	ValueBase param_triangles;
 
 	//! Auto-mesh generation params (edge contour tracing)
 	ValueBase param_auto_mesh_margin;     // dilation radius in pixels

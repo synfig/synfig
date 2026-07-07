@@ -1176,7 +1176,10 @@ Duckmatic::draw_ffd_overlay(
 	const std::vector<Duck::Handle>& ducks,
 	int ffd_mode, int cols, int rows,
 	synfig::Real cull_threshold,
-	const std::vector<synfig::Point>& source_pts)
+	const std::vector<synfig::Point>& source_pts,
+	const std::vector<synfig::rendering::Mesh::Triangle>& explicit_tris)
+
+
 {
 	if (ffd_mode == 0 && (int)ducks.size() == cols * rows && cols >= 2 && rows >= 2)
 	{
@@ -1215,14 +1218,18 @@ Duckmatic::draw_ffd_overlay(
 		for (const auto& d : ducks)
 			if (d) pts.push_back(d->get_point());
 
-		std::vector<rendering::Mesh::Triangle> tris;
-		if (source_pts.size() == pts.size()) {
+		std::vector<synfig::rendering::Mesh::Triangle> tris;
+
+		if (!explicit_tris.empty()) {
+			tris = explicit_tris;
+		} else if (source_pts.size() == pts.size()) {
 			tris = synfig::Layer_FreeFormDeform::triangulate(source_pts);
 			tris = synfig::Layer_FreeFormDeform::cull_triangles(tris, source_pts, cull_threshold);
 		} else {
 			tris = synfig::Layer_FreeFormDeform::triangulate(pts);
 			tris = synfig::Layer_FreeFormDeform::cull_triangles(tris, pts, cull_threshold);
 		}
+
 
 		for (const auto& tri : tris) {
 			auto add_edge = [&](int i1, int i2) {
@@ -2678,6 +2685,23 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 					}
 				}
 
+				std::vector<synfig::rendering::Mesh::Triangle> explicit_tris;
+				if (is_ffd && ffd_mode == 1 && value_desc.parent_is_layer()) {
+					synfig::ValueBase tris_vb = value_desc.get_layer()->get_param("triangles");
+					if (tris_vb.get_type() == synfig::type_list) {
+						const auto& tris_list = tris_vb.get_list();
+						if (!tris_list.empty() && tris_list.size() % 3 == 0) {
+							for (size_t k = 0; k < tris_list.size(); k += 3) {
+								synfig::rendering::Mesh::Triangle tri;
+								tri.vertices[0] = tris_list[k].get(int());
+								tri.vertices[1] = tris_list[k+1].get(int());
+								tri.vertices[2] = tris_list[k+2].get(int());
+								explicit_tris.push_back(tri);
+							}
+						}
+					}
+				}
+
 				Bezier bezier;
 				Duck::Handle first_duck, duck;
 				int first = -1;
@@ -2717,8 +2741,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 
 				if (is_ffd)
 				{
-					draw_ffd_overlay(ducks, ffd_mode, cols, rows, ffd_cull_threshold, source_pts);
+					draw_ffd_overlay(ducks, ffd_mode, cols, rows, ffd_cull_threshold, source_pts, explicit_tris);
 				}
+
 				else
 				{
 					if (value_node->get_loop() && first != -1 && first_duck != duck)
@@ -2936,6 +2961,23 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 					}
 				}
 
+				std::vector<synfig::rendering::Mesh::Triangle> explicit_tris;
+				if (is_ffd && ffd_mode == 1 && value_desc.parent_is_layer()) {
+					synfig::ValueBase tris_vb = value_desc.get_layer()->get_param("triangles");
+					if (tris_vb.get_type() == synfig::type_list) {
+						const auto& tris_list = tris_vb.get_list();
+						if (!tris_list.empty() && tris_list.size() % 3 == 0) {
+							for (size_t k = 0; k < tris_list.size(); k += 3) {
+								synfig::rendering::Mesh::Triangle tri;
+								tri.vertices[0] = tris_list[k].get(int());
+								tri.vertices[1] = tris_list[k+1].get(int());
+								tri.vertices[2] = tris_list[k+2].get(int());
+								explicit_tris.push_back(tri);
+							}
+						}
+					}
+				}
+
 				Bezier bezier;
 				Duck::Handle first_duck, duck;
 				int first = -1;
@@ -2987,8 +3029,9 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 				}
 				if (is_ffd)
 				{
-					draw_ffd_overlay(ducks, ffd_mode, cols, rows, ffd_cull_threshold, source_pts);
+					draw_ffd_overlay(ducks, ffd_mode, cols, rows, ffd_cull_threshold, source_pts, explicit_tris);
 				}
+
 				else
 				{
 					if (value_node->get_loop() && first != -1 && first_duck != duck)
