@@ -64,6 +64,8 @@
 #include <gtkmm/menuitem.h>
 
 #include <set>
+#include <synfig/transform.h>
+#include <gui/ducktransform_matrix.h>
 
 #endif
 
@@ -158,6 +160,7 @@ class studio::StateFFD_Context : public sigc::trackable
 	bool editing_existing_mesh_;
 	std::vector<etl::handle<WorkArea::Duck> > duck_list_;
 	std::vector<synfig::rendering::Mesh::Triangle> edit_triangles_;
+	std::vector<synfig::rendering::Mesh::Triangle> last_preview_tris_;
 
 	void on_grid_x_changed();
 	void on_grid_y_changed();
@@ -510,6 +513,39 @@ StateFFD_Context::on_auto_mesh_slider_changed()
 	}
 }
 
+static bool
+find_transform_stack_to_layer(
+	const synfig::Canvas::Handle& canvas,
+	const synfig::Layer::Handle& selected,
+	synfig::TransformStack& out_stack)
+{
+	if (!canvas) return false;
+
+	for (auto iter = canvas->begin(); iter != canvas->end(); ++iter) {
+		synfig::Layer::Handle layer = *iter;
+		if (layer == selected) {
+			return true;
+		}
+		if (synfig::Layer_PasteCanvas::Handle pc = synfig::Layer_PasteCanvas::Handle::cast_dynamic(layer)) {
+			// Push this layer's transformation onto the stack
+			synfig::Transform::Handle trans(new studio::Transform_Matrix(
+				layer->get_guid(),
+				pc->get_summary_transformation().get_matrix()
+			));
+			out_stack.push(trans);
+			
+			// Recurse into the sub-canvas
+			if (find_transform_stack_to_layer(pc->get_sub_canvas(), selected, out_stack)) {
+				return true;
+			}
+			
+			// If not found in children, pop this layer's transform
+			out_stack.pop();
+		}
+	}
+	return false;
+}
+
 void
 StateFFD_Context::cache_auto_mesh_surface()
 {
@@ -525,10 +561,18 @@ StateFFD_Context::cache_auto_mesh_surface()
 	synfig::Canvas::Handle sub_canvas = selected->get_param("canvas").get(synfig::Canvas::Handle());
 	if (!sub_canvas) return;
 
+	synfig::TransformStack ancestor_stack;
+	find_transform_stack_to_layer(get_canvas(), selected, ancestor_stack);
+
 	auto_mesh_transform_ = selected->get_param("transformation").get(synfig::Transformation());
 	auto_mesh_origin_ = selected->get_param("origin").get(synfig::Vector(0,0));
 
-	auto_mesh_bounds_ = sub_canvas->get_context(synfig::ContextParams()).get_full_bounding_rect();
+	synfig::ContextParams ctx_params;
+	if (synfig::Layer_PasteCanvas::Handle pc = synfig::Layer_PasteCanvas::Handle::cast_dynamic(selected)) {
+		pc->apply_z_range_to_params(ctx_params);
+	}
+
+	auto_mesh_bounds_ = sub_canvas->get_context(ctx_params).get_full_bounding_rect();
 	if (!auto_mesh_bounds_.is_valid()) return;
 
 	synfig::Vector size(auto_mesh_bounds_.maxx - auto_mesh_bounds_.minx,
@@ -552,7 +596,7 @@ StateFFD_Context::cache_auto_mesh_surface()
 	auto_mesh_surface_.set_wh(res_w, res_h);
 	auto_mesh_surface_.clear();
 
-	if (!sub_canvas->get_context(synfig::ContextParams()).accelerated_render(&auto_mesh_surface_, 0, desc, 0)) return;
+	if (!sub_canvas->get_context(ctx_params).accelerated_render(&auto_mesh_surface_, 0, desc, 0)) return;
 
 	// Build the dense contour polygon now (cheap — no rendering) for CIP filter
 	int margin = (int)mesh_margin_hscl.get_value();
@@ -571,7 +615,7 @@ StateFFD_Context::cache_auto_mesh_surface()
 		rot[1] = local_p[0] * sn + local_p[1] * cs;
 		local_p = rot;
 		local_p += auto_mesh_transform_.offset;
-		return local_p;
+		return ancestor_stack.perform(local_p);
 	};
 	for (auto& p : auto_mesh_contour_)
 		p = to_world_contour(p);
@@ -587,13 +631,28 @@ StateFFD_Context::retrace_auto_mesh()
 		if (!auto_mesh_cached_) return;
 	}
 
+	synfig::Layer::Handle selected;
+	auto selection = get_canvas_interface()->get_selection_manager()->get_selected_layers();
+	if (!selection.empty()) {
+		selected = selection.front();
+	}
+	if (!selected) return;
+
+	synfig::TransformStack ancestor_stack;
+	find_transform_stack_to_layer(get_canvas(), selected, ancestor_stack);
+
 	int margin = (int)mesh_margin_hscl.get_value();
 	synfig::Real edge_length = mesh_edge_length_hscl.get_value();
 
 	std::vector<synfig::Point> boundary_points = Layer_FreeFormDeform::generate_edge_points(
 		auto_mesh_surface_, auto_mesh_bounds_, edge_length, margin);
 
-	if (boundary_points.size() < 3) return;
+	if (boundary_points.size() < 3) {
+		polygon_point_list.clear();
+		last_preview_tris_.clear();
+		refresh_ducks();
+		return;
+	}
 
 	auto to_world = [&](synfig::Point local_p) {
 		local_p -= auto_mesh_origin_;
@@ -607,7 +666,7 @@ StateFFD_Context::retrace_auto_mesh()
 		rot[1] = local_p[0] * sn + local_p[1] * cs;
 		local_p = rot;
 		local_p += auto_mesh_transform_.offset;
-		return local_p;
+		return ancestor_stack.perform(local_p);
 	};
 
 	polygon_point_list.clear();
@@ -649,6 +708,9 @@ StateFFD_Context::update_grid_preview()
 		return;
 	}
 
+	synfig::TransformStack ancestor_stack;
+	find_transform_stack_to_layer(get_canvas(), selected, ancestor_stack);
+
 	synfig::ValueBase tr_val = selected->get_param("transformation");
 	synfig::Transformation tr = tr_val.get(synfig::Transformation());
 	synfig::ValueBase origin_val = selected->get_param("origin");
@@ -666,10 +728,15 @@ StateFFD_Context::update_grid_preview()
 		rot[1] = local_p[0] * sn + local_p[1] * cs;
 		local_p = rot;
 		local_p += tr.offset;
-		return local_p;
+		return ancestor_stack.perform(local_p);
 	};
 
-	synfig::Rect bounds = switch_canvas->get_context(synfig::ContextParams()).get_full_bounding_rect();
+	synfig::ContextParams ctx_params;
+	if (synfig::Layer_PasteCanvas::Handle pc = synfig::Layer_PasteCanvas::Handle::cast_dynamic(selected)) {
+		pc->apply_z_range_to_params(ctx_params);
+	}
+
+	synfig::Rect bounds = switch_canvas->get_context(ctx_params).get_full_bounding_rect();
 	synfig::Point tl(bounds.get_min()[0], bounds.get_max()[1]);
 	synfig::Point br(bounds.get_max()[0], bounds.get_min()[1]);
 
@@ -682,7 +749,7 @@ StateFFD_Context::update_grid_preview()
 	synfig::Surface surface;
 	surface.set_wh(128, 128);
 
-	if (!switch_canvas->get_context(synfig::ContextParams()).accelerated_render(&surface, 0, desc, 0)) {
+	if (!switch_canvas->get_context(ctx_params).accelerated_render(&surface, 0, desc, 0)) {
 		polygon_point_list.clear();
 		refresh_ducks();
 		return;
@@ -1270,8 +1337,10 @@ StateFFD_Context::event_mouse_click_handler(const Smach::event& x)
 	{
 		if (!get_work_area()) return Smach::RESULT_OK;
 		synfig::Point p = get_work_area()->snap_point_to_grid(event.pos);
-		synfig::TransformStack t_stack = get_work_area()->get_curr_transform_stack();
-		p = t_stack.unperform(p);
+		if (editing_existing_mesh_) {
+			synfig::TransformStack t_stack = get_work_area()->get_curr_transform_stack();
+			p = t_stack.unperform(p);
+		}
 		
 		polygon_point_list.push_back(p);
 		redo_point_list.clear();
@@ -1284,7 +1353,7 @@ StateFFD_Context::event_mouse_click_handler(const Smach::event& x)
 	case BUTTON_RIGHT:
 		if (!polygon_point_list.empty()) {
 			synfig::TransformStack t_stack;
-			if (get_work_area()) t_stack = get_work_area()->get_curr_transform_stack();
+			if (editing_existing_mesh_ && get_work_area()) t_stack = get_work_area()->get_curr_transform_stack();
 			
 			synfig::Real min_dist = 1e10;
 			auto closest_it = polygon_point_list.end();
@@ -1396,6 +1465,7 @@ StateFFD_Context::reset()
 	polygon_point_list.clear();
 	redo_point_list.clear();
 	edit_triangles_.clear();
+	last_preview_tris_.clear();
 	refresh_ducks();
 }
 
@@ -1580,7 +1650,10 @@ StateFFD_Context::refresh_ducks()
 	get_work_area()->clear_ducks();
 	get_work_area()->queue_draw();
 
-	synfig::TransformStack transform_stack = get_work_area()->get_curr_transform_stack();
+	synfig::TransformStack transform_stack;
+	if (editing_existing_mesh_) {
+		transform_stack = get_work_area()->get_curr_transform_stack();
+	}
 
 	std::vector<synfig::Point> pts;
 	duck_list_.clear();
@@ -1647,40 +1720,11 @@ StateFFD_Context::refresh_beziers()
 		} else {
 			tris = synfig::Layer_FreeFormDeform::triangulate(pts);
 
-			std::vector<synfig::Point> local_pts;
-			synfig::Vector origin_offset(0,0);
-			synfig::Transformation layer_transform;
-			synfig::Layer::Handle target_layer;
-			if (!get_canvas_view()->get_selection_manager()->get_selected_layers().empty()) {
-				target_layer = *get_canvas_view()->get_selection_manager()->get_selected_layers().begin();
-			}
-			if (target_layer) {
-				if (target_layer->get_param("origin").get_type() == synfig::type_vector)
-					origin_offset = target_layer->get_param("origin").get(synfig::Vector(0,0));
-				if (target_layer->get_param("transformation").get_type() == synfig::type_transformation)
-					layer_transform = target_layer->get_param("transformation").get(synfig::Transformation());
-			}
-
-			for (auto& p : pts) {
-				synfig::Point local_p = p - layer_transform.offset;
-				synfig::Real sn = synfig::Angle::sin(-layer_transform.angle).get();
-				synfig::Real cs = synfig::Angle::cos(-layer_transform.angle).get();
-				synfig::Point unrot;
-				unrot[0] = local_p[0] * cs - local_p[1] * sn;
-				unrot[1] = local_p[0] * sn + local_p[1] * cs;
-				local_p = unrot;
-				local_p[0] -= local_p[1] * synfig::Angle::tan(layer_transform.skew_angle).get();
-				if (layer_transform.scale[0] != 0.0) local_p[0] /= layer_transform.scale[0];
-				if (layer_transform.scale[1] != 0.0) local_p[1] /= layer_transform.scale[1];
-				local_p += origin_offset;
-				local_pts.push_back(local_p);
-			}
-
 			// CIP filter: remove triangles whose centroid is outside the image silhouette.
-			// Use world-space pts (not local_pts) since auto_mesh_contour_ is in world space.
 			if (!auto_mesh_contour_.empty()) {
 				tris = synfig::Layer_FreeFormDeform::filter_triangles_by_polygon(tris, pts, auto_mesh_contour_);
 			}
+			last_preview_tris_ = tris;
 		}
 
 
@@ -1722,7 +1766,7 @@ StateFFD_Context::refresh_beziers()
 		synfig::Point br = pts[2];
 		synfig::Point bl = pts[3];
 
-		synfig::TransformStack transform_stack = get_work_area()->get_curr_transform_stack();
+		synfig::TransformStack transform_stack;
 
 		for (int i = 0; i <= cols; ++i) {
 			double u = (double)i / cols;
@@ -1810,14 +1854,24 @@ StateFFD_Context::on_make_ffd_pressed()
 {
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Make FFD"));
 
+	// Force duck_list_ / last_preview_tris_ to be rebuilt from the CURRENT
+	// polygon_point_list right now, so the snapshot below and the cached
+	// triangulation are guaranteed to come from the same state.
+	refresh_ducks();
+
 	synfig::Point saved_preview_tl = preview_tl;
 	synfig::Point saved_preview_br = preview_br;
 	synfig::Angle saved_preview_angle = preview_angle;
 	std::vector<synfig::Point> saved_polygon(polygon_point_list.begin(), polygon_point_list.end());
+	std::vector<synfig::rendering::Mesh::Triangle> saved_tris = last_preview_tris_;
 
 	synfig::Layer::Handle selected;
 	if (!get_canvas_view()->get_selection_manager()->get_selected_layers().empty()) {
 		selected = *get_canvas_view()->get_selection_manager()->get_selected_layers().begin();
+	}
+	synfig::TransformStack ancestor_stack;
+	if (selected) {
+		find_transform_stack_to_layer(get_canvas(), selected, ancestor_stack);
 	}
 	
 	int depth = 0;
@@ -1966,8 +2020,13 @@ StateFFD_Context::on_make_ffd_pressed()
 
 		std::vector<synfig::ValueBase> pts_vb;
 		for (auto& p : saved_polygon) {
+			synfig::Point local_p = p;
+			
+			// 0. Unperform ancestor stack to get back to selected layer's parent space
+			local_p = ancestor_stack.unperform(local_p);
+
 			// 1. Subtract offset
-			synfig::Point local_p = p - layer_transform.offset;
+			local_p -= layer_transform.offset;
 			
 			// 2. Un-rotate
 			synfig::Real sn = synfig::Angle::sin(-layer_transform.angle).get();
@@ -1991,14 +2050,16 @@ StateFFD_Context::on_make_ffd_pressed()
 		}
 
 		std::vector<synfig::ValueBase> tris_vb;
-		if (!auto_mesh_contour_.empty()) {
-			auto tris = synfig::Layer_FreeFormDeform::triangulate(saved_polygon);
-			tris = synfig::Layer_FreeFormDeform::filter_triangles_by_polygon(tris, saved_polygon, auto_mesh_contour_);
-			for (const auto& tri : tris) {
-				tris_vb.push_back(synfig::ValueBase((int)tri.vertices[0]));
-				tris_vb.push_back(synfig::ValueBase((int)tri.vertices[1]));
-				tris_vb.push_back(synfig::ValueBase((int)tri.vertices[2]));
-			}
+		if (saved_tris.empty()) {
+			saved_tris = synfig::Layer_FreeFormDeform::triangulate(saved_polygon);
+			if (!auto_mesh_contour_.empty())
+				saved_tris = synfig::Layer_FreeFormDeform::filter_triangles_by_polygon(saved_tris, saved_polygon, auto_mesh_contour_);
+		}
+
+		for (const auto& tri : saved_tris) {
+			tris_vb.push_back(synfig::ValueBase((int)tri.vertices[0]));
+			tris_vb.push_back(synfig::ValueBase((int)tri.vertices[1]));
+			tris_vb.push_back(synfig::ValueBase((int)tri.vertices[2]));
 		}
 
 		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(pts_vb), get_canvas());
