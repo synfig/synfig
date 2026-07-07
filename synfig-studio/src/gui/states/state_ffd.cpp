@@ -1173,9 +1173,14 @@ StateFFD_Context::event_layer_selection_changed_handler(const Smach::event& /*x*
 			reset();
 		}
 	}
+	
 	auto_mesh_cached_ = false;
 	update_controls_from_layer();
 	get_work_area()->queue_draw();
+	
+	if (!editing_existing_mesh_) {
+		get_canvas_view()->queue_rebuild_ducks();
+	}
 
 	return Smach::RESULT_ACCEPT;
 }
@@ -1220,8 +1225,19 @@ StateFFD_Context::event_stop_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateFFD_Context::event_refresh_handler(const Smach::event& /*x*/)
 {
-	refresh_ducks();
-	return Smach::RESULT_ACCEPT;
+	bool needs_our_ducks = false;
+	if (!editing_existing_mesh_ && mesh_mode_enum.get_value() != 1 && !polygon_point_list.empty()) {
+		needs_our_ducks = true;
+	} else if (editing_existing_mesh_ || (mesh_mode_enum.get_value() == 1 && is_valid_group_for_ffd(get_canvas_interface()->get_selection_manager()->get_selected_layer()))) {
+		if (mesh_mode_enum.get_value() == 1) needs_our_ducks = true;
+	}
+
+	if (needs_our_ducks) {
+		refresh_ducks();
+		return Smach::RESULT_ACCEPT;
+	}
+	
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result
@@ -1541,10 +1557,22 @@ StateFFD_Context::refresh_ducks()
 {
 	if (!get_work_area()) return;
 
+	bool needs_our_ducks = false;
+	if (!editing_existing_mesh_ && mesh_mode_enum.get_value() != 1 && !polygon_point_list.empty()) {
+		needs_our_ducks = true;
+	} else if (editing_existing_mesh_ || (mesh_mode_enum.get_value() == 1 && is_valid_group_for_ffd(get_canvas_interface()->get_selection_manager()->get_selected_layer()))) {
+		if (mesh_mode_enum.get_value() == 1) needs_our_ducks = true;
+	}
+
+	if (!needs_our_ducks || polygon_point_list.empty()) {
+		get_work_area()->clear_ducks();
+		get_work_area()->queue_draw();
+		get_canvas_view()->queue_rebuild_ducks();
+		return;
+	}
+
 	get_work_area()->clear_ducks();
 	get_work_area()->queue_draw();
-
-	if (polygon_point_list.empty()) return;
 
 	synfig::TransformStack transform_stack = get_work_area()->get_curr_transform_stack();
 
