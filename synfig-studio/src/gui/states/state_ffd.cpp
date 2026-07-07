@@ -479,12 +479,10 @@ StateFFD_Context::on_auto_mesh_slider_changed()
 
 	synfig::Layer::Handle ffd = get_selected_ffd_layer();
 	if (ffd) {
-		ffd->set_param("auto_mesh_margin", synfig::ValueBase((synfig::Real)mesh_margin_hscl.get_value()));
-		ffd->set_param("auto_mesh_edge_length", synfig::ValueBase(mesh_edge_length_hscl.get_value()));
-		get_canvas_interface()->signal_layer_param_changed()(ffd, "auto_mesh_margin");
-		get_canvas_interface()->signal_layer_param_changed()(ffd, "auto_mesh_edge_length");
+		on_regenerate_pressed();
 		return;
 	}
+
 
 	// Margin change requires a full re-cache so the contour polygon
 	// is rebuilt with the new dilation radius (fixes disconnected ducks at high margin).
@@ -902,9 +900,10 @@ StateFFD_Context::update_controls_from_layer()
 
 			update_ffd_button.show();
 			clear_button.show();
-			regenerate_button.show();
+			regenerate_button.hide();
 			get_work_area()->set_cursor(Gdk::CROSSHAIR);
 		} else {
+
 		if (mesh_mode == 0) { // Grid
 			grid_x_label.show();
 			grid_x_spin.show();
@@ -921,12 +920,12 @@ StateFFD_Context::update_controls_from_layer()
 				grid_x_spin.hide();
 				grid_y_label.hide();
 				grid_y_spin.hide();
-				mesh_margin_label.show();
-				mesh_margin_hscl.show();
-				mesh_edge_length_label.show();
-				mesh_edge_length_hscl.show();
+				mesh_margin_label.hide();
+				mesh_margin_hscl.hide();
+				mesh_edge_length_label.hide();
+				mesh_edge_length_hscl.hide();
 				edit_mesh_button.show();
-				regenerate_button.show();
+				regenerate_button.hide();
 			}
 
 			reset_button.show();

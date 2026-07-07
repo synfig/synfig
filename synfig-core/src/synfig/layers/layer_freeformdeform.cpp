@@ -209,16 +209,19 @@ Layer_FreeFormDeform::get_param_vocab()const
 	ret.push_back(ParamDesc("auto_mesh_margin")
 		.set_local_name(_("Auto Mesh Margin"))
 		.set_description(_("Dilation radius in pixels for auto-mesh edge contour"))
+		.hidden()
 	);
 
 	ret.push_back(ParamDesc("auto_mesh_edge_length")
 		.set_local_name(_("Auto Mesh Edge Length"))
 		.set_description(_("Spacing between auto-mesh edge points in canvas units"))
+		.hidden()
 	);
 
 	ret.push_back(ParamDesc("auto_mesh_dpi")
 		.set_local_name(_("Auto Mesh DPI"))
 		.set_description(_("Rasterization DPI for auto-mesh alpha mask"))
+		.hidden()
 	);
 
 	return ret;
