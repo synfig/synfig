@@ -60,6 +60,11 @@
 #include <synfig/surface.h>
 #include <gui/widgets/widget_enum.h>
 
+#include <gtkmm/menu.h>
+#include <gtkmm/menuitem.h>
+
+#include <set>
+
 #endif
 
 /* === U S I N G =========================================================== */
@@ -152,6 +157,7 @@ class studio::StateFFD_Context : public sigc::trackable
 	synfig::Angle preview_angle;
 	bool editing_existing_mesh_;
 	std::vector<etl::handle<WorkArea::Duck> > duck_list_;
+	std::vector<synfig::rendering::Mesh::Triangle> edit_triangles_;
 
 	void on_grid_x_changed();
 	void on_grid_y_changed();
@@ -172,6 +178,14 @@ class studio::StateFFD_Context : public sigc::trackable
 	void on_duck_right_click(std::list<synfig::Point>::iterator iter);
 	void refresh_ducks();
 	void refresh_beziers();
+	std::vector<synfig::Point> get_edit_points() const;
+	void set_edit_points(const std::vector<synfig::Point>& points);
+	void refresh_edit_contour();
+	void recompute_edit_triangles();
+	void popup_ffd_edge_menu(float location, int i1, int i2);
+	void on_split_edge(int i1, int i2);
+	void on_collapse_edge(int i1, int i2);
+	void on_swap_edge(int i1, int i2);
 
 	synfig::Layer::Handle get_selected_ffd_layer() const;
 	void update_controls_from_layer();
@@ -1217,6 +1231,8 @@ StateFFD_Context::event_mouse_click_handler(const Smach::event& x)
 		
 		polygon_point_list.push_back(p);
 		redo_point_list.clear();
+		if (editing_existing_mesh_)
+			recompute_edit_triangles();
 		refresh_ducks();
 		return Smach::RESULT_ACCEPT;
 	}
@@ -1303,6 +1319,8 @@ StateFFD_Context::event_key_press_handler(const Smach::event& x)
 		if (!polygon_point_list.empty()) {
 			redo_point_list.push_back(polygon_point_list.back());
 			polygon_point_list.pop_back();
+			if (editing_existing_mesh_)
+				recompute_edit_triangles();
 			refresh_ducks();
 			return Smach::RESULT_ACCEPT;
 		}
@@ -1316,6 +1334,8 @@ StateFFD_Context::event_key_press_handler(const Smach::event& x)
 		if (!redo_point_list.empty()) {
 			polygon_point_list.push_back(redo_point_list.back());
 			redo_point_list.pop_back();
+			if (editing_existing_mesh_)
+				recompute_edit_triangles();
 			refresh_ducks();
 			return Smach::RESULT_ACCEPT;
 		}
@@ -1331,6 +1351,7 @@ StateFFD_Context::reset()
 {
 	polygon_point_list.clear();
 	redo_point_list.clear();
+	edit_triangles_.clear();
 	refresh_ducks();
 }
 
@@ -1348,7 +1369,149 @@ StateFFD_Context::on_duck_right_click(std::list<synfig::Point>::iterator iter)
 {
 	redo_point_list.push_back(*iter);
 	polygon_point_list.erase(iter);
+	if (editing_existing_mesh_)
+		recompute_edit_triangles();
 	refresh_ducks();
+}
+
+std::vector<synfig::Point>
+StateFFD_Context::get_edit_points() const
+{
+	return std::vector<synfig::Point>(polygon_point_list.begin(), polygon_point_list.end());
+}
+
+void
+StateFFD_Context::set_edit_points(const std::vector<synfig::Point>& points)
+{
+	polygon_point_list.clear();
+	for (const auto& p : points)
+		polygon_point_list.push_back(p);
+}
+
+void
+StateFFD_Context::refresh_edit_contour()
+{
+	auto_mesh_contour_.clear();
+
+	synfig::Layer::Handle ffd_layer = get_selected_ffd_layer();
+	etl::handle<Layer_FreeFormDeform> ffd = etl::handle<Layer_FreeFormDeform>::cast_dynamic(ffd_layer);
+	if (!ffd)
+		return;
+
+	int margin = (int)mesh_margin_hscl.get_value();
+	int dpi = ffd->get_param("auto_mesh_dpi").get(int());
+	int max_res = std::max(64, std::min(dpi * 2, 1024));
+
+	synfig::Surface surface;
+	synfig::Rect bounds;
+	if (ffd->render_context_below(surface, bounds, max_res))
+		auto_mesh_contour_ = Layer_FreeFormDeform::generate_contour_polygon(surface, bounds, margin);
+}
+
+void
+StateFFD_Context::recompute_edit_triangles()
+{
+	std::vector<synfig::Point> points = get_edit_points();
+	edit_triangles_.clear();
+	if (points.size() < 3)
+		return;
+
+	edit_triangles_ = synfig::Layer_FreeFormDeform::triangulate(points);
+	if (!auto_mesh_contour_.empty())
+		edit_triangles_ = synfig::Layer_FreeFormDeform::filter_triangles_by_polygon(
+			edit_triangles_, points, auto_mesh_contour_);
+}
+
+void
+StateFFD_Context::popup_ffd_edge_menu(float /*location*/, int i1, int i2)
+{
+	Gtk::Menu *menu = manage(new Gtk::Menu());
+	menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
+
+	Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("_Swap Edge")));
+	item->set_use_underline(true);
+	item->signal_activate().connect(sigc::bind(sigc::mem_fun(*this, &StateFFD_Context::on_swap_edge), i1, i2));
+	item->show();
+	menu->append(*item);
+
+	item = manage(new Gtk::MenuItem(_("_Collapse Edge")));
+	item->set_use_underline(true);
+	item->signal_activate().connect(sigc::bind(sigc::mem_fun(*this, &StateFFD_Context::on_collapse_edge), i1, i2));
+	item->show();
+	menu->append(*item);
+
+	item = manage(new Gtk::MenuItem(_("S_plit Edge")));
+	item->set_use_underline(true);
+	item->signal_activate().connect(sigc::bind(sigc::mem_fun(*this, &StateFFD_Context::on_split_edge), i1, i2));
+	item->show();
+	menu->append(*item);
+
+	menu->popup(3, gtk_get_current_event_time());
+}
+
+void
+StateFFD_Context::on_split_edge(int i1, int i2)
+{
+	std::vector<synfig::Point> points = get_edit_points();
+	if (i1 < 0 || i2 < 0 || i1 >= (int)points.size() || i2 >= (int)points.size() || i1 == i2)
+		return;
+
+	points.push_back((points[i1] + points[i2]) * 0.5);
+	set_edit_points(points);
+	recompute_edit_triangles();
+	refresh_ducks();
+}
+
+void
+StateFFD_Context::on_collapse_edge(int i1, int i2)
+{
+	std::vector<synfig::Point> points = get_edit_points();
+	if (i1 < 0 || i2 < 0 || i1 >= (int)points.size() || i2 >= (int)points.size() || i1 == i2)
+		return;
+	if (i2 < i1)
+		std::swap(i1, i2);
+
+	points[i1] = (points[i1] + points[i2]) * 0.5;
+	points.erase(points.begin() + i2);
+	set_edit_points(points);
+	recompute_edit_triangles();
+	refresh_ducks();
+}
+
+void
+StateFFD_Context::on_swap_edge(int i1, int i2)
+{
+	if (i1 == i2)
+		return;
+
+	std::vector<int> shared;
+	for (size_t index = 0; index < edit_triangles_.size(); ++index) {
+		const auto& tri = edit_triangles_[index];
+		bool has_i1 = tri.vertices[0] == i1 || tri.vertices[1] == i1 || tri.vertices[2] == i1;
+		bool has_i2 = tri.vertices[0] == i2 || tri.vertices[1] == i2 || tri.vertices[2] == i2;
+		if (has_i1 && has_i2)
+			shared.push_back((int)index);
+	}
+
+	if (shared.size() != 2)
+		return;
+
+	auto opposite = [](const synfig::rendering::Mesh::Triangle& tri, int a, int b) {
+		for (int v : tri.vertices)
+			if (v != a && v != b)
+				return v;
+		return -1;
+	};
+
+	int a = opposite(edit_triangles_[shared[0]], i1, i2);
+	int b = opposite(edit_triangles_[shared[1]], i1, i2);
+	if (a < 0 || b < 0 || a == b)
+		return;
+
+	edit_triangles_[shared[0]] = synfig::rendering::Mesh::Triangle(a, b, i1);
+	edit_triangles_[shared[1]] = synfig::rendering::Mesh::Triangle(b, a, i2);
+	refresh_beziers();
+	get_work_area()->queue_draw();
 }
 
 void
@@ -1422,7 +1585,9 @@ StateFFD_Context::refresh_beziers()
 		std::vector<synfig::rendering::Mesh::Triangle> tris;
 
 		if (editing_existing_mesh_) {
-			tris = synfig::Layer_FreeFormDeform::triangulate(pts);
+			if (edit_triangles_.empty())
+				recompute_edit_triangles();
+			tris = edit_triangles_;
 		} else {
 			tris = synfig::Layer_FreeFormDeform::triangulate(pts);
 
@@ -1463,21 +1628,29 @@ StateFFD_Context::refresh_beziers()
 		}
 
 
+		std::set<std::pair<int, int>> edges;
+		auto add_edge = [&](int i1, int i2) {
+			if (i1 < 0 || i2 < 0 || i1 >= (int)duck_list_.size() || i2 >= (int)duck_list_.size() || i1 == i2)
+				return;
+			std::pair<int, int> edge(std::min(i1, i2), std::max(i1, i2));
+			if (!edges.insert(edge).second)
+				return;
+
+			etl::handle<WorkArea::Bezier> b(new WorkArea::Bezier());
+			b->p1 = b->c1 = duck_list_[i1];
+			b->p2 = b->c2 = duck_list_[i2];
+			b->hoverable = true;
+			if (editing_existing_mesh_) {
+				b->signal_user_click(2).connect(
+					sigc::bind(sigc::mem_fun(*this, &StateFFD_Context::popup_ffd_edge_menu), i1, i2));
+			}
+			get_work_area()->add_bezier(b);
+		};
+
 		for (const auto& tri : tris) {
-			etl::handle<WorkArea::Bezier> b1(new WorkArea::Bezier());
-			b1->p1 = b1->c1 = duck_list_[tri.vertices[0]];
-			b1->p2 = b1->c2 = duck_list_[tri.vertices[1]];
-			get_work_area()->add_bezier(b1);
-
-			etl::handle<WorkArea::Bezier> b2(new WorkArea::Bezier());
-			b2->p1 = b2->c1 = duck_list_[tri.vertices[1]];
-			b2->p2 = b2->c2 = duck_list_[tri.vertices[2]];
-			get_work_area()->add_bezier(b2);
-
-			etl::handle<WorkArea::Bezier> b3(new WorkArea::Bezier());
-			b3->p1 = b3->c1 = duck_list_[tri.vertices[2]];
-			b3->p2 = b3->c2 = duck_list_[tri.vertices[0]];
-			get_work_area()->add_bezier(b3);
+			add_edge(tri.vertices[0], tri.vertices[1]);
+			add_edge(tri.vertices[1], tri.vertices[2]);
+			add_edge(tri.vertices[2], tri.vertices[0]);
 		}
 	} else if (mesh_mode_enum.get_value() == 0 && duck_list_.size() == 4 && !editing_existing_mesh_) {
 		int pts_x = (int)create_grid_x_spin.get_value();
@@ -1852,6 +2025,7 @@ StateFFD_Context::on_edit_mesh_pressed()
 	if (!ffd) return;
 
 	editing_existing_mesh_ = true;
+	edit_triangles_.clear();
 
 	// Extract existing source points
 	polygon_point_list.clear();
@@ -1864,6 +2038,23 @@ StateFFD_Context::on_edit_mesh_pressed()
 			}
 		}
 	}
+
+	const synfig::ValueBase& tris_vb = ffd->get_param("triangles");
+	if (tris_vb.get_type() == synfig::type_list) {
+		const auto& tris_list = tris_vb.get_list();
+		if (!tris_list.empty() && tris_list.size() % 3 == 0) {
+			for (size_t k = 0; k < tris_list.size(); k += 3) {
+				synfig::rendering::Mesh::Triangle tri;
+				tri.vertices[0] = tris_list[k].get(int());
+				tri.vertices[1] = tris_list[k+1].get(int());
+				tri.vertices[2] = tris_list[k+2].get(int());
+				edit_triangles_.push_back(tri);
+			}
+		}
+	}
+	refresh_edit_contour();
+	if (edit_triangles_.empty())
+		recompute_edit_triangles();
 
 	update_controls_from_layer();
 	refresh_ducks();
@@ -1884,16 +2075,16 @@ StateFFD_Context::on_update_ffd_pressed()
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(), _("Update FFD Mesh"));
 
 	std::vector<synfig::ValueBase> pts_vb;
-	std::vector<synfig::Point> points;
 	for (auto& p : polygon_point_list) {
 		// Note: We assume points are in the same local space they were extracted from.
 		pts_vb.push_back(p);
-		points.push_back(p);
 	}
 
+	if (edit_triangles_.empty())
+		recompute_edit_triangles();
+
 	std::vector<synfig::ValueBase> tris_vb;
-	auto tris = synfig::Layer_FreeFormDeform::triangulate(points);
-	for (const auto& tri : tris) {
+	for (const auto& tri : edit_triangles_) {
 		tris_vb.push_back(synfig::ValueBase((int)tri.vertices[0]));
 		tris_vb.push_back(synfig::ValueBase((int)tri.vertices[1]));
 		tris_vb.push_back(synfig::ValueBase((int)tri.vertices[2]));
@@ -2041,6 +2232,11 @@ StateFFD_Context::on_regenerate_pressed()
 	if (editing_existing_mesh_) {
 		polygon_point_list.clear();
 		for (auto& p : points) polygon_point_list.push_back(p);
+		edit_triangles_.clear();
+		if (!auto_mesh_contour_.empty()) {
+			auto tris = synfig::Layer_FreeFormDeform::triangulate(points);
+			edit_triangles_ = synfig::Layer_FreeFormDeform::filter_triangles_by_polygon(tris, points, auto_mesh_contour_);
+		}
 		refresh_ducks();
 	}
 
