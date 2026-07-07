@@ -889,6 +889,7 @@ StateFFD_Context::update_controls_from_layer()
 		status_label.set_label(editing_existing_mesh_ ? _("Updating FFD Mesh") : _("FFD layer selected"));
 		
 		int mesh_mode = ffd->get_param("mesh_mode").get(int());
+		reset_button.set_label(mesh_mode == 1 ? _("Reset Mesh") : _("Reset Grid"));
 
 		if (editing_existing_mesh_) {
 			grid_x_label.hide();
@@ -1730,45 +1731,16 @@ StateFFD_Context::on_reset_pressed()
 		}
 	} else {
 		// Grid Mode
-		synfig::Rect bounds = ffd_typed->get_context_bounds();
-		if (!bounds.is_valid() || bounds.area() <= 0.0001) return;
+		ffd_typed->regenerate_grid_points();
+		synfig::ValueBase grid_points_vb = ffd_typed->get_param("grid_points");
 
-		int cols = ffd_typed->get_param("grid_size_x").get(int());
-		int rows = ffd_typed->get_param("grid_size_y").get(int());
-
-		std::vector<synfig::Point> grid_points = ffd_typed->compute_grid_for_bounds(bounds, cols, rows);
-		std::vector<synfig::ValueBase> grid_points_vb;
-		for (const auto& p : grid_points) grid_points_vb.push_back(synfig::ValueBase(p));
-
-		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(grid_points_vb), get_canvas());
+		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(grid_points_vb, get_canvas());
 		synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
 		action_connect->set_param("canvas", get_canvas());
 		action_connect->set_param("canvas_interface", get_canvas_interface());
 		action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "grid_points"));
 		action_connect->set_param("src", dyn_list);
 		if (!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
-			group.cancel();
-			return;
-		}
-
-		synfigapp::Action::Handle action_tl = synfigapp::Action::create("ValueDescSet");
-		action_tl->set_param("canvas", get_canvas());
-		action_tl->set_param("canvas_interface", get_canvas_interface());
-		action_tl->set_param("value_desc", synfigapp::ValueDesc(ffd, "source_tl"));
-		action_tl->set_param("new_value", synfig::ValueBase(synfig::Point(bounds.minx, bounds.maxy)));
-		action_tl->set_param("time", get_canvas_interface()->get_time());
-		if (!action_tl->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_tl)) {
-			group.cancel();
-			return;
-		}
-
-		synfigapp::Action::Handle action_br = synfigapp::Action::create("ValueDescSet");
-		action_br->set_param("canvas", get_canvas());
-		action_br->set_param("canvas_interface", get_canvas_interface());
-		action_br->set_param("value_desc", synfigapp::ValueDesc(ffd, "source_br"));
-		action_br->set_param("new_value", synfig::ValueBase(synfig::Point(bounds.maxx, bounds.miny)));
-		action_br->set_param("time", get_canvas_interface()->get_time());
-		if (!action_br->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_br)) {
 			group.cancel();
 			return;
 		}
