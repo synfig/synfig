@@ -173,6 +173,7 @@ private:
 
 	etl::handle<Duckmatic::Duck> clicked_duck;
 	etl::handle<Duckmatic::Duck> hover_duck;
+	etl::handle<Duckmatic::Bezier> hover_bezier;
 
 	//! When dragging the viewport, this is set to the origin of the drag
 	synfig::Point drag_point;
