@@ -1422,26 +1422,7 @@ StateFFD_Context::refresh_beziers()
 		std::vector<synfig::rendering::Mesh::Triangle> tris;
 
 		if (editing_existing_mesh_) {
-			synfig::Layer::Handle ffd_layer = get_selected_ffd_layer();
-			if (ffd_layer) {
-				synfig::ValueBase tris_vb = ffd_layer->get_param("triangles");
-				if (tris_vb.get_type() == synfig::type_list) {
-					const auto& tris_list = tris_vb.get_list();
-					if (!tris_list.empty() && tris_list.size() % 3 == 0) {
-						for (size_t k = 0; k < tris_list.size(); k += 3) {
-							synfig::rendering::Mesh::Triangle tri;
-							tri.vertices[0] = tris_list[k].get(int());
-							tri.vertices[1] = tris_list[k+1].get(int());
-							tri.vertices[2] = tris_list[k+2].get(int());
-							tris.push_back(tri);
-						}
-					}
-				}
-			}
-			if (tris.empty()) {
-				// Fallback if no triangles parameter exists for some reason
-				tris = synfig::Layer_FreeFormDeform::triangulate(pts);
-			}
+			tris = synfig::Layer_FreeFormDeform::triangulate(pts);
 		} else {
 			tris = synfig::Layer_FreeFormDeform::triangulate(pts);
 
@@ -1903,9 +1884,19 @@ StateFFD_Context::on_update_ffd_pressed()
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(), _("Update FFD Mesh"));
 
 	std::vector<synfig::ValueBase> pts_vb;
+	std::vector<synfig::Point> points;
 	for (auto& p : polygon_point_list) {
 		// Note: We assume points are in the same local space they were extracted from.
 		pts_vb.push_back(p);
+		points.push_back(p);
+	}
+
+	std::vector<synfig::ValueBase> tris_vb;
+	auto tris = synfig::Layer_FreeFormDeform::triangulate(points);
+	for (const auto& tri : tris) {
+		tris_vb.push_back(synfig::ValueBase((int)tri.vertices[0]));
+		tris_vb.push_back(synfig::ValueBase((int)tri.vertices[1]));
+		tris_vb.push_back(synfig::ValueBase((int)tri.vertices[2]));
 	}
 
 	synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(pts_vb), get_canvas());
@@ -1929,6 +1920,18 @@ StateFFD_Context::on_update_ffd_pressed()
 	action_src->set_param("new_value", synfig::ValueBase(pts_vb));
 
 	if(!action_src->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_src)) {
+		group.cancel();
+		return;
+	}
+
+	synfigapp::Action::Handle action_tris = synfigapp::Action::create("LayerParamSet");
+	action_tris->set_param("canvas", get_canvas());
+	action_tris->set_param("canvas_interface", get_canvas_interface());
+	action_tris->set_param("layer", ffd);
+	action_tris->set_param("param", synfig::String("triangles"));
+	action_tris->set_param("new_value", synfig::ValueBase(tris_vb));
+
+	if(!action_tris->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_tris)) {
 		group.cancel();
 		return;
 	}
