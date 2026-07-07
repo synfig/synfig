@@ -1530,10 +1530,34 @@ StateFFD_Context::recompute_edit_triangles()
 	if (points.size() < 3)
 		return;
 
-	// When manually editing a mesh, we want to see the full Delaunay triangulation
-	// of the points we've added. Do NOT filter by the image polygon contour here,
-	// otherwise manually added outer boundary points will cause their triangles to disappear.
-	edit_triangles_ = synfig::Layer_FreeFormDeform::triangulate(points);
+	std::vector<synfig::rendering::Mesh::Triangle> full_tris =
+		synfig::Layer_FreeFormDeform::triangulate(points);
+
+	if (auto_mesh_contour_.empty()) {
+		edit_triangles_ = full_tris;
+		return;
+	}
+
+	std::vector<synfig::rendering::Mesh::Triangle> filtered =
+		synfig::Layer_FreeFormDeform::filter_triangles_by_polygon(full_tris, points, auto_mesh_contour_);
+
+	std::vector<bool> touched(points.size(), false);
+	for (const auto& tri : filtered)
+		for (int v : tri.vertices)
+			touched[v] = true;
+
+	for (const auto& tri : full_tris) {
+		bool touches_orphan = false;
+		for (int v : tri.vertices)
+			if (!touched[v]) { touches_orphan = true; break; }
+		if (touches_orphan) {
+			filtered.push_back(tri);
+			for (int v : tri.vertices)
+				touched[v] = true;
+		}
+	}
+
+	edit_triangles_ = filtered;
 }
 
 void
