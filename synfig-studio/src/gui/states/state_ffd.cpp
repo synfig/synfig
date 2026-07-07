@@ -817,6 +817,9 @@ StateFFD_Context::~StateFFD_Context()
 	App::dialog_tool_options->clear();
 
 	get_work_area()->reset_cursor();
+	duck_list_.clear();
+	get_work_area()->clear_ducks();
+	get_work_area()->clear_beziers();
 
 	// Restore layer clicking
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
