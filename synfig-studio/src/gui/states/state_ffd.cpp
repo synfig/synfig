@@ -337,7 +337,7 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 
 	mesh_edge_length_label.set_label(_("Mesh Strength:"));
 	mesh_edge_length_label.set_halign(Gtk::ALIGN_START);
-	mesh_edge_length_adj = Gtk::Adjustment::create(0.5, 0.05, 100.0, 0.05, 1.0);
+	mesh_edge_length_adj = Gtk::Adjustment::create(0.5, 0.05, 20.0, 0.05, 1.0);
 	mesh_edge_length_hscl.set_adjustment(mesh_edge_length_adj);
 	mesh_edge_length_hscl.set_digits(2);
 	mesh_edge_length_hscl.set_value_pos(Gtk::POS_LEFT);

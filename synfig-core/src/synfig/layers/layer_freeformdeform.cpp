@@ -500,7 +500,7 @@ Layer_FreeFormDeform::generate_contour_polygon(
 		double u = p[0] * inv_w;
 		double v = p[1] * inv_h;
 		result.push_back(Point(bounds.minx + u * units_w,
-		                       bounds.maxy + v * (bounds.miny - bounds.maxy)));
+		                       bounds.maxy - v * units_h));
 	}
 	return result;
 }
