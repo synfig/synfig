@@ -1166,8 +1166,9 @@ StateFFD_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 Smach::event_result
 StateFFD_Context::event_layer_selection_changed_handler(const Smach::event& /*x*/)
 {
+	synfig::Layer::Handle ffd = get_selected_ffd_layer();
+
 	if (editing_existing_mesh_) {
-		synfig::Layer::Handle ffd = get_selected_ffd_layer();
 		if (!ffd) {
 			editing_existing_mesh_ = false;
 			reset();
@@ -1179,7 +1180,12 @@ StateFFD_Context::event_layer_selection_changed_handler(const Smach::event& /*x*
 	get_work_area()->queue_draw();
 	
 	if (!editing_existing_mesh_) {
-		get_canvas_view()->queue_rebuild_ducks();
+		if (ffd) {
+			get_canvas_view()->queue_rebuild_ducks();
+		} else if (!is_valid_group_for_ffd(get_canvas_interface()->get_selection_manager()->get_selected_layer())) {
+			polygon_point_list.clear();
+			get_canvas_view()->queue_rebuild_ducks();
+		}
 	}
 
 	return Smach::RESULT_ACCEPT;
