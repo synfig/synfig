@@ -1606,13 +1606,56 @@ StateFFD_Context::on_collapse_edge(int i1, int i2)
 	std::vector<synfig::Point> points = get_edit_points();
 	if (i1 < 0 || i2 < 0 || i1 >= (int)points.size() || i2 >= (int)points.size() || i1 == i2)
 		return;
-	if (i2 < i1)
-		std::swap(i1, i2);
 
-	points[i1] = (points[i1] + points[i2]) * 0.5;
-	points.erase(points.begin() + i2);
+	std::set<std::pair<int, int>> edges;
+	auto add_edge = [&](int a, int b) {
+		if (a == b)
+			return;
+		edges.insert(std::make_pair(std::min(a, b), std::max(a, b)));
+	};
+
+	std::vector<synfig::rendering::Mesh::Triangle> tris;
+	for (const auto& tri : edit_triangles_) {
+		bool has_i1 = false;
+		bool has_i2 = false;
+		for (int v : tri.vertices) {
+			has_i1 = has_i1 || v == i1;
+			has_i2 = has_i2 || v == i2;
+		}
+
+		if (has_i1 && has_i2)
+			continue;
+
+		tris.push_back(tri);
+		add_edge(tri.vertices[0], tri.vertices[1]);
+		add_edge(tri.vertices[1], tri.vertices[2]);
+		add_edge(tri.vertices[2], tri.vertices[0]);
+	}
+
+	bool keep_i1 = false;
+	bool keep_i2 = false;
+	for (const auto& edge : edges) {
+		keep_i1 = keep_i1 || edge.first == i1 || edge.second == i1;
+		keep_i2 = keep_i2 || edge.first == i2 || edge.second == i2;
+	}
+
+	if (keep_i1 && keep_i2) {
+		edit_triangles_ = tris;
+		refresh_beziers();
+		get_work_area()->queue_draw();
+		return;
+	}
+
+	int remove_index = keep_i1 ? i2 : i1;
+	points.erase(points.begin() + remove_index);
+
+	for (auto& tri : tris)
+		for (int& v : tri.vertices)
+			if (v > remove_index)
+				--v;
+
+	edit_triangles_ = tris;
 	set_edit_points(points);
-	recompute_edit_triangles();
 	refresh_ducks();
 }
 
