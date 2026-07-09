@@ -104,7 +104,8 @@ void Layer_GlyphShape::sync_vfunc()
 void
 Layer_TextGroup::on_canvas_set()
 {
-    Layer_PasteCanvas::on_canvas_set();   
+    Layer_PasteCanvas::on_canvas_set();
+    rebuild_shared_registry();
 }
  
   
@@ -505,6 +506,23 @@ Layer_TextGroup::detach_shared_param(const String& param)
 }
 
 void
+Layer_TextGroup::rebuild_shared_registry()
+{
+    shared_anim_nodes.clear();
+    Canvas::Handle canvas = get_sub_canvas();
+    if (!canvas) return;
+
+    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter) {
+        Layer_GlyphShape::Handle g = Layer_GlyphShape::Handle::cast_dynamic(*iter);
+        if (!g) continue;
+        for (auto& kv : g->dynamic_param_list()) {
+            if (!kv.second->get_id().empty())      // only exported nodes count as "shared"
+                shared_anim_nodes[kv.first] = kv.second;
+        }
+    }
+}
+
+void
 Layer_TextGroup::broadcast_dynamic_param(const String& param)
 {
     Canvas::Handle canvas = get_sub_canvas();
@@ -527,7 +545,20 @@ Layer_TextGroup::broadcast_dynamic_param(const String& param)
         return;
     }
 
-    shared_anim_nodes[param] = it->second;   // map owns the reference, no layer handle stored
+    ValueNode::Handle node = it->second;
+
+    if (node->get_id().empty()) {
+        String id = "textgroup_" + get_guid().get_string() + "_" + param;
+        canvas->add_value_node(node, id);
+        
+        if (node->get_id().empty())
+		{
+    		canvas->add_value_node(node, id);
+		}
+    }
+
+
+    shared_anim_nodes[param] = node;   
     attach_shared_nodes();
     changed();
 }

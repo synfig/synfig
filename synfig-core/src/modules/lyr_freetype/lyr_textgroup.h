@@ -55,7 +55,7 @@ private:
 	bool in_attach_shared_ = false;
 	void detach_shared_param(const synfig::String& param);
 	size_t master_glyph_index_ = 0;
-
+	void rebuild_shared_registry();
 	void broadcast_dynamic_param(const synfig::String& param);   
 	
 protected:
