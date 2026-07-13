@@ -689,6 +689,8 @@ auto shaped_lines =
         uint32_t glyph_index;
         uint32_t cluster;  
         Vector pen_offset;
+        size_t line_index; //which source line this glyph belongs to
+        Vector world_pos;  //final scaled+shifted position (second pass)
     };  
   
     std::vector<std::vector<GlyphData>> line_glyphs;  
@@ -721,19 +723,21 @@ auto shaped_lines =
             		Vector glyph_pos = offset; 
     				glyph_pos[0] += sg.x_offset * compress;
     				glyph_pos[1] += sg.y_offset;
+
             		cur_line.push_back({
-                	outline,
+                	std::move(outline),
                 	sg.glyph_index,
                 	sg.cluster,
-                	glyph_pos
+                	glyph_pos,
+                	0,
+                	Vector()
             		});
         		}
     		}
 
    			offset[0] += sg.x_advance * compress;
 			offset[1] += sg.y_advance;
-
-    		FT_Done_Glyph(ftglyph);
+    		
 		}
 		line_widths.push_back(offset[0]);
 		
@@ -753,22 +757,22 @@ auto shaped_lines =
         shift[0] = -orient[0] * line_widths[i];  
         shift[1] =  orient[1] * text_height_fu - initial_y; 
                     
-        for (auto& glyph : line_glyphs[i])  
-        {  
-        	Vector world_pos;  
-        	world_pos[0] = (glyph.pen_offset[0] + shift[0]) * scale_x;  
-        	world_pos[1] = (glyph.pen_offset[1] + shift[1]) * scale_y;
-		    
-            for (auto& chunk : glyph.outline)  
-            {  
-                chunk.p1[0]  *= scale_x;  chunk.p1[1]  *= scale_y;  
-                chunk.pp0[0] *= scale_x;  chunk.pp0[1] *= scale_y;  
-                chunk.pp1[0] *= scale_x;  chunk.pp1[1] *= scale_y;  
-            }  
-  
-	        glyphs.push_back({glyph.outline,glyph.glyph_index, glyph.cluster, world_pos});    
+        for (auto& glyph : line_glyphs[i])
+		{
+    		glyph.world_pos[0] = (glyph.pen_offset[0] + shift[0]) * scale_x;
+    		glyph.world_pos[1] = (glyph.pen_offset[1] + shift[1]) * scale_y;
+
+    		for (auto& chunk : glyph.outline)
+    		{
+        		chunk.p1[0]  *= scale_x;  chunk.p1[1]  *= scale_y;
+        		chunk.pp0[0] *= scale_x;  chunk.pp0[1] *= scale_y;
+        		chunk.pp1[0] *= scale_x;  chunk.pp1[1] *= scale_y;
+    		}
+
+    		glyphs.push_back(std::move(glyph));
+
         }  
-    }  
+    }    
    
  	std::vector<Layer::Handle> old_layers;
 	std::vector<uint32_t>      old_indices;  
@@ -833,8 +837,11 @@ auto shaped_lines =
 
 		(*layer_iter)->set_description(glyph_key);
     	if (glyph_layer) { 
-			glyph_layer->set_param("origin",ValueBase(glyph.pen_offset));
-			glyph_layer->set_glyph_chunks(glyph.outline);	
+			glyph_layer->set_param("origin", ValueBase(glyph.world_pos));
+        	glyph_layer->set_glyph_chunks(glyph.outline);
+        	glyph_layer->set_glyph_index(glyph.glyph_index);
+        	glyph_layer->set_line_index(glyph.line_index);
+        	glyph_layer->set_base_y(glyph.world_pos[1]);	
 	       	(*layer_iter)->set_param("color",  ValueBase(color));  
         	(*layer_iter)->set_param("invert", ValueBase(invert));
         	
