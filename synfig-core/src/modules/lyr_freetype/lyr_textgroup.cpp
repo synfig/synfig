@@ -87,16 +87,20 @@ void Layer_GlyphShape::sync_vfunc()
 {  
     clear();  
     if (stored_chunks.empty()) return;  
-    rendering::Contour::ChunkList shifted = stored_chunks;
-	Vector off = wave_offset_;
-
-	if (off[0] != 0.0 || off[1] != 0.0) {  
+    const Vector off = wave_offset_;
+	if (off == Vector())
+	{
+    	add(stored_chunks);
+    	return;
+	}
+	rendering::Contour::ChunkList shifted = stored_chunks;
+	 
         for (auto& chunk : shifted) {  
             chunk.p1  += off;  
             chunk.pp0 += off;  
             chunk.pp1 += off;  
         }  
-    }    
+        
     add(shifted);  
 
 }
@@ -740,8 +744,7 @@ auto shaped_lines =
     		
 		}
 		line_widths.push_back(offset[0]);
-		
-		line_glyphs.push_back(cur_line);
+		line_glyphs.push_back(std::move(cur_line));
 		line_start[1] -= face->height * vcompress;
 
 	}
