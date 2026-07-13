@@ -144,92 +144,74 @@ Layer_TextGroup::get_local_name() const
 {  
     return _("Text Group");  
 }  
-  
-bool  
- Layer_TextGroup::set_param(const String& param, const ValueBase& value)  
-{  
-      
-    IMPORT_VALUE_PLUS(param_text,{ 
-        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
-        sync_glyphs(); 
+
+void
+Layer_TextGroup::request_full_resync()
+{
+    if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();
+    sync_glyphs();
+}
+
+bool
+Layer_TextGroup::set_param(const String& param, const ValueBase& value)
+{
+    // Structural params: change glyph shapes, count, or layout — need full resync.
+    IMPORT_VALUE_PLUS(param_text,      request_full_resync());
+    IMPORT_VALUE_PLUS(param_family,    request_full_resync());
+    IMPORT_VALUE_PLUS(param_style,     request_full_resync());
+    IMPORT_VALUE_PLUS(param_weight,    request_full_resync());
+    IMPORT_VALUE_PLUS(param_size,      request_full_resync());
+    IMPORT_VALUE_PLUS(param_direction, request_full_resync());
+    IMPORT_VALUE_PLUS(param_compress,  request_full_resync());
+    IMPORT_VALUE_PLUS(param_vcompress, request_full_resync());
+    IMPORT_VALUE_PLUS(param_orient,    request_full_resync());
+    IMPORT_VALUE_PLUS(param_font,      request_full_resync());
+
+    // Glyph rebuild needed but no viewport force-refresh:
+    IMPORT_VALUE_PLUS(param_use_kerning, sync_glyphs());
+    IMPORT_VALUE_PLUS(param_grid_fit,    sync_glyphs());
+
+    // Cosmetic params:no rebuild, no force_refresh.
+    IMPORT_VALUE_PLUS(param_color, {
+        Canvas::Handle canvas = get_sub_canvas();
+        if (canvas) {
+            Color color = param_color.get(Color());
+            for (auto iter = canvas->begin(); iter != canvas->end(); ++iter)
+                (*iter)->set_param("color", ValueBase(color));
+        }
+        changed();
     });
-    
-    IMPORT_VALUE_PLUS(param_family,{ 
-        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
-        sync_glyphs(); 
+    IMPORT_VALUE_PLUS(param_invert, {
+        Canvas::Handle canvas = get_sub_canvas();
+        if (canvas) {
+            bool invert = param_invert.get(bool());
+            for (auto iter = canvas->begin(); iter != canvas->end(); ++iter)
+                (*iter)->set_param("invert", ValueBase(invert));
+        }
+        changed();
     });
-    
-    IMPORT_VALUE_PLUS(param_style,{ 
-        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
-        sync_glyphs(); 
-    });
-    
-    IMPORT_VALUE_PLUS(param_weight,{ 
-        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
-        sync_glyphs(); 
-    }); 
-    
-    IMPORT_VALUE_PLUS(param_size,{ 
-        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
-        sync_glyphs(); 
-    });
-    
-    IMPORT_VALUE_PLUS(param_direction,{ 
-        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
-        sync_glyphs(); 
-    });
-    
-    IMPORT_VALUE_PLUS(param_color,{ 
-        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
-        sync_glyphs(); 
-    });
-    
-    IMPORT_VALUE_PLUS(param_compress,{
-        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
-        sync_glyphs(); 
-    }); 
-    
-    IMPORT_VALUE_PLUS(param_vcompress,{ 
-        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
-        sync_glyphs(); 
-    });
-    
-    IMPORT_VALUE_PLUS(param_orient,{ 
-        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
-        sync_glyphs(); 
-    });
-    
-    IMPORT_VALUE_PLUS(param_font, { 
-        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
-        sync_glyphs(); 
-    });  
-  
-    // Params requiring glyph rebuild but no real-time refresh needed:  
-    IMPORT_VALUE_PLUS(param_use_kerning, sync_glyphs());  
-    IMPORT_VALUE_PLUS(param_grid_fit,    sync_glyphs());  
-    IMPORT_VALUE_PLUS(param_invert,      sync_glyphs());  
-  
-    // Wave animation params  
-    IMPORT_VALUE_PLUS(param_stagger_delay,{ 
-        update_wave_offsets(get_time_mark(), true); 
-        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
-    });  
-    IMPORT_VALUE_PLUS(param_wave_amplitude,{ 
-        update_wave_offsets(get_time_mark(), true); 
+
+    // Wave animation params
+    IMPORT_VALUE_PLUS(param_stagger_delay, {
+        update_wave_offsets(get_time_mark(), true);
         if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();
-    });  
-    IMPORT_VALUE_PLUS(param_wave_period,{ 
-        update_wave_offsets(get_time_mark(), true); 
-        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()(); 
     });
-    IMPORT_VALUE_PLUS(param_broadcast,{  
-		broadcast_dynamic_param("anim_offset");
-    	// immediately snap it back to false so it can't be silently replayed
-    	param_broadcast = ValueBase(false);
-    	  
-	});
-  
-    return Layer_PasteCanvas::set_param(param, value);  
+    IMPORT_VALUE_PLUS(param_wave_amplitude, {
+        update_wave_offsets(get_time_mark(), true);
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();
+    });
+    IMPORT_VALUE_PLUS(param_wave_period, {
+        update_wave_offsets(get_time_mark(), true);
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();
+    });
+
+    IMPORT_VALUE_PLUS(param_broadcast, {
+        broadcast_dynamic_param("anim_offset");
+        // immediately snap it back to false so it can't be silently replayed
+        param_broadcast = ValueBase(false);
+    });
+
+    return Layer_PasteCanvas::set_param(param, value);
 }
 
 bool Layer_GlyphShape::set_param(const String &param, const ValueBase &value)  

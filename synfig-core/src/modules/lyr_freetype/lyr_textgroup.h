@@ -57,6 +57,7 @@ private:
 	size_t master_glyph_index_ = 0;
 	void rebuild_shared_registry();
 	void broadcast_dynamic_param(const synfig::String& param);   
+	void request_full_resync();
 	
 protected:
     void on_canvas_set() override;     
