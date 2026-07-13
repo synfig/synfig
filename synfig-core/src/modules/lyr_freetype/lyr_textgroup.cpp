@@ -514,38 +514,70 @@ Layer_TextGroup::broadcast_dynamic_param(const String& param)
     Canvas::Handle canvas = get_sub_canvas();
     if (!canvas) return;
 
+    // Find the current master glyph
     Layer_GlyphShape::Handle source_glyph;
     size_t i = 0;
-    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter, ++i) {
+    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter, ++i)
+    {
         Layer_GlyphShape::Handle g = Layer_GlyphShape::Handle::cast_dynamic(*iter);
+
         if (!g) continue;
-        if (i == master_glyph_index_) { source_glyph = g; break; }
+
+        if (i == master_glyph_index_)
+        {
+            source_glyph = g;
+            break;
+        }
+
         if (!source_glyph) source_glyph = g;   // fallback: first glyph seen
     }
-    if (!source_glyph) { synfig::error("broadcast: no glyph layers found"); return; }
 
-    auto& dpl = source_glyph->dynamic_param_list();
+    if (!source_glyph)
+    {
+        synfig::error("broadcast: no glyph layers found");
+        return;
+    }
+
+    const DynamicParamList& dpl = source_glyph->dynamic_param_list();
     auto it = dpl.find(param);
-    if (it == dpl.end()) {
-        synfig::error("broadcast: '%s' isn't animated on the source glyph", param.c_str());
+
+    if (it == dpl.end() || !it->second)
+    {
+        synfig::error(
+            "broadcast: '%s' isn't animated on the source glyph",
+            param.c_str());
         return;
     }
 
     ValueNode::Handle node = it->second;
 
-    if (node->get_id().empty()) {
-        String id = "textgroup_" + get_guid().get_string() + "_" + param;
+    if (node->get_id().empty())
+    {
+    	String id =
+        	"textgroup_" +
+            get_guid().get_string() +
+            "_" +
+            param;
+
         canvas->add_value_node(node, id);
-        
-        if (node->get_id().empty())
-		{
-    		canvas->add_value_node(node, id);
-		}
+
+        // Sanity check.
+        ValueNode::Handle check =
+            canvas->find_value_node(id, false);
+
+        if (check != node)
+        {
+            synfig::error(
+                "broadcast: failed to export shared graph '%s'",
+                param.c_str());
+            return;
+        }
     }
 
+    shared_anim_nodes[param] = node;
 
-    shared_anim_nodes[param] = node;   
     attach_shared_nodes();
+
     changed();
 }
 
