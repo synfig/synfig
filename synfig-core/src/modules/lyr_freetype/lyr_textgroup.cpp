@@ -622,8 +622,13 @@ Layer_GlyphShape::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid
 {  
     Layer::Handle base = Layer_Shape::clone(canvas, deriv_guid);  
     Layer_GlyphShape* cloned = dynamic_cast<Layer_GlyphShape*>(base.get());  
-    if (cloned)  
-        cloned->stored_chunks = stored_chunks;  
+    if (cloned){
+        cloned->stored_chunks = stored_chunks;
+        cloned->glyph_index_  = glyph_index_;
+    	cloned->line_index_   = line_index_;
+    	cloned->base_y_       = base_y_;
+    	cloned->wave_offset_  = wave_offset_;
+    }
     return base;  
 }
 
@@ -762,6 +767,7 @@ auto shaped_lines =
                     
         for (auto& glyph : line_glyphs[i])
 		{
+    		glyph.line_index = i;
     		glyph.world_pos[0] = (glyph.pen_offset[0] + shift[0]) * scale_x;
     		glyph.world_pos[1] = (glyph.pen_offset[1] + shift[1]) * scale_y;
 
