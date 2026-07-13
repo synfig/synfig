@@ -95,7 +95,7 @@ shape_text(const std::vector<TextLine>& lines);
 #endif  
 
 void convert_outline_to_contours(  
-	const FT_OutlineGlyphRec* glyph,  
+	FT_Outline* outline,  
 	rendering::Contour::ChunkList& chunks);  
   
 void shift_contour_chunks(  

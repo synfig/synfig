@@ -1110,7 +1110,7 @@ Layer_Freetype::sync_vfunc()
 			FT_OutlineGlyph outline_glyph = nullptr;
 			if (ftglyph->format == FT_GLYPH_FORMAT_OUTLINE) {
 				outline_glyph = FT_OutlineGlyph(ftglyph);
-				text_processing::convert_outline_to_contours(outline_glyph, glyph.outline);
+				text_processing::convert_outline_to_contours(&outline_glyph->outline, glyph.outline);
 			}
 
 			glyph_map[glyph_index] = glyph;

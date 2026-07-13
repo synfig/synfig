@@ -710,17 +710,11 @@ auto shaped_lines =
     		if (FT_Load_Glyph(face,glyph_index,load_flags))
         		continue;
 
-    		FT_Glyph ftglyph;
-    		if (FT_Get_Glyph(face->glyph, &ftglyph))
-        		continue;
+       		rendering::Contour::ChunkList outline;
 
-    		rendering::Contour::ChunkList outline;
-
-    		if (ftglyph->format ==FT_GLYPH_FORMAT_OUTLINE)
+    		if (face->glyph->format == FT_GLYPH_FORMAT_OUTLINE)
     		{
-        		FT_OutlineGlyph og = reinterpret_cast<FT_OutlineGlyph>(ftglyph);
-
-        		synfig::text_processing::convert_outline_to_contours(og,outline);
+        		synfig::text_processing::convert_outline_to_contours(&face->glyph->outline,outline);
         		        		
         		if (!outline.empty())
         		{

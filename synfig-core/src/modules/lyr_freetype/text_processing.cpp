@@ -247,23 +247,22 @@ fetch_text_lines(const std::string& text, int direction)
   
 void  
 convert_outline_to_contours(  
-	const FT_OutlineGlyphRec* glyph,  
+	FT_Outline* outline,  
 	rendering::Contour::ChunkList& chunks)  
 {  
 	chunks.clear();  
   
-	if (!glyph) {  
-		synfig::error(strprintf("TextProcessing: %s", _("Outline Glyph is null!")));  
-		return;  
-	}  
-  
-	if (glyph->outline.n_contours == 0) {  
+	if (!outline) {
+    synfig::error(strprintf("TextProcessing: %s", _("Outline is null!")));
+    	return;
+	}    
+	if (outline->n_contours == 0) {  
 		// No contours? OK, it can be a whitespace  
 		return;  
 	}  
   
 	rendering::Contour contour;  
-	FT_Outline outline = glyph->outline;  
+	  
 	FT_Outline_Funcs outline_funcs;  
   
 	outline_funcs.move_to = [](const FT_Vector* to, void* contour) -> int {  
@@ -292,7 +291,7 @@ convert_outline_to_contours(
 	outline_funcs.delta = FT_Pos(0);  
 	outline_funcs.shift = 0;  
   
-	FT_Outline_Decompose(&outline, &outline_funcs, &contour);  
+	FT_Outline_Decompose(outline, &outline_funcs, &contour);  
 	contour.close();  
 	chunks = contour.get_chunks();  
 }  
