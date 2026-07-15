@@ -142,6 +142,7 @@ static const std::map<std::string, std::pair<const char*, const char*>> known_ic
 	{"encapsulate_switch", {"layer_other_switch_icon", N_("Group into Switch")}},
 	{"encapsulate_filter", {"layer_other_filtergroup_icon", N_("Group into Filter")}},
 	{"select_all_child_layers", {"select_all_child_layers_icon", N_("Select All Child Layers")}},
+	{"upgrade", {"action_layer_upgrade_icon", N_("Upgrade Layer")}},
 
 	{"clear_undo", {"clear_undo_icon", N_("Clear Undo Stack")}},
 	{"clear_redo", {"clear_redo_icon", N_("Clear Redo Stack")}},

@@ -86,6 +86,7 @@ EXTRA_DIST = \
 	action_rounded_interpolation_icon.sif \
 	action_innerrounded_interpolation_icon.sif \
 	action_squared_interpolation_icon.sif \
+	action_layer_upgrade_icon.sif \
 	\
 	action_doc_icons.sif \
 	\
@@ -292,6 +293,7 @@ ICONS = \
 	action_rounded_interpolation_icon.$(EXT) \
 	action_innerrounded_interpolation_icon.$(EXT) \
 	action_squared_interpolation_icon.$(EXT) \
+	action_layer_upgrade_icon.$(EXT) \
 	\
 	action_doc_new_icon.$(EXT) \
 	action_doc_open_icon.$(EXT) \

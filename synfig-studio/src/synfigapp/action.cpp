@@ -48,6 +48,7 @@
 #include "actions/layeractivate.h"
 #include "actions/layercopy.h"
 #include "actions/layerfit.h"
+#include "actions/layerupgrade.h"
 #include "actions/layermakebline.h"
 #include "actions/layerparamset.h"
 #include "actions/layerparamsetstatic.h"
@@ -201,6 +202,7 @@ Action::Main::Main()
 	ADD_ACTION(Action::LayerMakeOutline);
 	ADD_ACTION(Action::LayerMakeAdvancedOutline);
 	ADD_ACTION(Action::LayerMakeRegion);
+	ADD_ACTION(Action::LayerUpgrade);
 	auto layer_iter = synfig::Layer::book().find("curve_gradient");
 	if (layer_iter != synfig::Layer::book().end())
 		ADD_ACTION(Action::LayerMakeCurveGradient)
