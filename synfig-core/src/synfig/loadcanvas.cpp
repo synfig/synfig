@@ -2767,9 +2767,24 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 		error(element,_("Missing \"type\" attribute to \"layer\" element"));
 		return Layer::Handle();
 	}
-	if(element->get_attribute("type")->get_value() == "filled_rectangle")
-	layer=Layer::create("rectangle");
-	else layer=Layer::create(element->get_attribute("type")->get_value());
+	String layer_type = element->get_attribute("type")->get_value();
+
+	// load-time layer-type normalization before instantiation.
+	if (layer_type == "filled_rectangle")
+		layer_type = "rectangle"; // legacy alias
+	else if (layer_type == "bevel") {
+		// Old bevel (v0.2-0.3) -> bevel_deprecated to preserve its legacy render
+		// result on canvas v1.1+.
+		String lyr_ver;
+		if (element->get_attribute("version"))
+			lyr_ver = element->get_attribute("version")->get_value();
+		if (lyr_ver >= "0.2" && lyr_ver < "0.4" && canvas->get_version() >= "1.1") {
+			layer_type = "bevel_deprecated";
+			warning(element, strprintf(_("Bevel layer (version %s) converted to \"bevel_deprecated\""), lyr_ver.c_str()));
+		}
+	}
+
+	layer = Layer::create(layer_type);
 	layer->set_canvas(canvas);
 
 	if(element->get_attribute("group"))
