@@ -62,6 +62,36 @@ SYNFIG_LAYER_SET_VERSION(Layer_Bevel,"0.3");
 
 /* === P R O C E D U R E S ================================================= */
 
+// Half-size of the border added around the render region to accommodate the blur.
+// Used both to size the work surface (set_coords_sub_tasks) and to index it (run),
+// so the two never drift.
+static void
+bevel_calc_halfsize(Real size_x, Real size_y, int type, Real pw, Real ph,
+                    int& halfsizex, int& halfsizey)
+{
+	const Real GAUSSIAN_ADJUSTMENT = 0.05;
+
+	halfsizex = (int)(std::fabs(size_x*.5/pw) + 3);
+	halfsizey = (int)(std::fabs(size_y*.5/ph) + 3);
+
+	switch(type)
+	{
+		case Blur::DISC:
+		case Blur::BOX:
+		case Blur::CROSS:
+		case Blur::FASTGAUSSIAN:
+			halfsizex = std::max(1, halfsizex);
+			halfsizey = std::max(1, halfsizey);
+			break;
+		case Blur::GAUSSIAN:
+			halfsizex = (int)(size_x*GAUSSIAN_ADJUSTMENT/std::fabs(pw*pw) + 0.5);
+			halfsizey = (int)(size_y*GAUSSIAN_ADJUSTMENT/std::fabs(ph*ph) + 0.5);
+			halfsizex = (halfsizex + 1)/2;
+			halfsizey = (halfsizey + 1)/2;
+			break;
+	}
+}
+
 /* === M E T H O D S ======================================================= */
 
 Layer_Bevel::Layer_Bevel():
@@ -187,43 +217,13 @@ TaskBevel::set_coords_sub_tasks()
 	const Vector size(softness,softness);
 
 	//expand the working surface to accommodate the blur
-
-	//the expanded size = 1/2 the size in each direction rounded up
-	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 3),
-		halfsizey = (int) (std::fabs(size[1]*.5/(ph)) + 3);
+	int halfsizex, halfsizey;
+	bevel_calc_halfsize(size[0], size[1], type, pw, ph, halfsizex, halfsizey);
 
 	const int offset_u(round_to_int(offset[0]/pw));
 	const int offset_v(round_to_int(offset[1]/(ph)));
 	const int offset_w(w+std::abs(offset_u)*2);
 	const int offset_h(h+std::abs(offset_v)*2);
-
-	//expand by 1/2 size in each direction on either side
-	switch(type)
-	{
-		case Blur::DISC:
-		case Blur::BOX:
-		case Blur::CROSS:
-		case Blur::FASTGAUSSIAN:
-		{
-			halfsizex = std::max(1, halfsizex);
-			halfsizey = std::max(1, halfsizey);
-			break;
-		}
-		case Blur::GAUSSIAN:
-		{
-		#define GAUSSIAN_ADJUSTMENT		(0.05)
-
-			Real pw2 = pw * pw;
-			Real ph2 = ph * ph;
-
-			halfsizex = (int)(size[0]*GAUSSIAN_ADJUSTMENT/std::fabs(pw2) + 0.5);
-			halfsizey = (int)(size[1]*GAUSSIAN_ADJUSTMENT/std::fabs(ph2) + 0.5);
-
-			halfsizex = (halfsizex + 1)/2;
-			halfsizey = (halfsizey + 1)/2;
-			break;
-		}
-	}
 
 	Real delta_x = -std::abs(offset_u) - halfsizex;
 	Real delta_y = -std::abs(offset_v) - halfsizey;
@@ -293,8 +293,8 @@ public:
 		const Vector ppu = get_pixels_per_unit();
 		const Real pw = 1/ppu[0];
 		const Real ph = 1/ppu[1];
-		const int halfsizex = (int) (std::fabs(size[0]*.5/pw) + 3);
-		const int halfsizey = (int) (std::fabs(size[1]*.5/ph) + 3);
+		int halfsizex, halfsizey;
+		bevel_calc_halfsize(size[0], size[1], type, pw, ph, halfsizex, halfsizey);
 
 		const int offset_u(round_to_int(offset[0]/pw)),offset_v(round_to_int(offset[1]/ph));
 
