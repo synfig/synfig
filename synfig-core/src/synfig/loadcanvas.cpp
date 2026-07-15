@@ -2780,7 +2780,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 			lyr_ver = element->get_attribute("version")->get_value();
 		if (lyr_ver >= "0.2" && lyr_ver < "0.4" && canvas->get_version() >= "1.1") {
 			layer_type = "bevel_deprecated";
-			warning(element, strprintf(_("Bevel layer (version %s) converted to \"bevel_deprecated\""), lyr_ver.c_str()));
+			warning(element, strprintf(_("Bevel layer (version %s) converted to \"bevel_deprecated\" to preserve its render result. Use \"Upgrade Layer\" in the layer context menu to update it."), lyr_ver.c_str()));
 		}
 	}
 
