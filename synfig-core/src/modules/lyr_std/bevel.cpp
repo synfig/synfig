@@ -323,9 +323,9 @@ public:
 				alpha += -blurred.linear_sample(u+u0, v+v0);
 				alpha -= -blurred.linear_sample(u-u0, v-v0);
 				alpha += -blurred.linear_sample(u+u1, v+v1)*0.5f;
-				alpha += -blurred.linear_sample(u+v1, v-u1)*0.5f;
+				alpha -= -blurred.linear_sample(u+v1, v-u1)*0.5f;
 				alpha -= -blurred.linear_sample(u-u1, v-v1)*0.5f;
-				alpha -= -blurred.linear_sample(u-v1, v+u1)*0.5f;
+				alpha += -blurred.linear_sample(u-v1, v+u1)*0.5f;
 
 				if(solid)
 				{
