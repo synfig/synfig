@@ -237,6 +237,8 @@ public:
 	static Glib::RefPtr<Gio::Menu> menu_recent_files;
 	static Gtk::MenuItem* menuitem_layer;
 	static Gtk::MenuItem* menuitem_layer2;
+	static Gtk::MenuItem* menuitem_tools;
+	static Gtk::MenuItem* menuitem_tools2;
 	static Glib::RefPtr<Gio::Menu> menu_add_layer;
 	static Glib::RefPtr<Gio::Menu> menu_selected_layers;
 	static Glib::RefPtr<Gio::Menu> menu_keyframe;
@@ -244,6 +246,7 @@ public:
 	static Glib::RefPtr<Gio::Menu> menu_window_custom_workspaces;
 	static Glib::RefPtr<Gio::Menu> menu_window_docks;
 	static Glib::RefPtr<Gio::Menu> menu_window_canvases;
+	static Glib::RefPtr<Gio::Menu> menu_tools;
 	static bool enable_mainwin_menubar;
 	static bool enable_mainwin_toolbar;
 	static synfig::String ui_language;

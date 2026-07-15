@@ -533,6 +533,7 @@ public:
 
 	Smach& get_smach() { return smach_; }
 	const Smach& get_smach()const { return smach_; }
+	void change_state(const Smach::state_base* state);
 
 	Smach::event_result process_event_key(EventKey x);
 

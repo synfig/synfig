@@ -35,6 +35,7 @@
 #include <gui/mainwindow.h>
 
 #include <gtkmm/box.h>
+#include <gtkmm/icontheme.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
@@ -49,6 +50,7 @@
 #include <gui/docks/dockmanager.h>
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
+#include <gui/statemanager.h>
 #include <gui/widgets/widget_link.h>
 #include <gui/widgets/widget_time.h>
 #include <gui/widgets/widget_vector.h>
@@ -108,6 +110,15 @@ on_set_workspace_actionated(const Glib::VariantBase& v)
 		App::main_window->set_workspace_from_name(workspace_name_vrt.get());
 	else
 		synfig::warning(_("Action show-panel: panel name should be a string"));
+}
+
+static void
+on_tool_registered(const Smach::state_base* state)
+{
+	const String name(state->get_name());
+	auto menu_item = Gio::MenuItem::create(state->get_local_name(), "tool.set-tool-" + name);
+	menu_item->set_icon(Gtk::IconTheme::get_default()->load_icon(state_icon_name(name), 32));
+	App::menu_tools->append_item(menu_item);
 }
 
 /* === M E T H O D S ======================================================= */
@@ -175,6 +186,11 @@ MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
 
 	App::dock_manager->signal_dockable_unregistered().connect(
 		sigc::mem_fun(*this,&MainWindow::on_dockable_unregistered) );
+
+	App::get_state_manager()->signal_state_registered().connect(
+		sigc::ptr_fun(on_tool_registered) );
+
+	insert_action_group("tool", App::get_state_manager()->get_action_group());
 
 	set_type_hint(Gdk::WindowTypeHint(synfigapp::Main::settings().get_value("pref.mainwindow_hints", Gdk::WindowTypeHint())));
 }
@@ -283,6 +299,10 @@ MainWindow::init_menus()
 	menu_layer->append_section(menu_edit_layers);
 	App::menuitem_layer->set_submenu(*Gtk::manage(new Gtk::Menu(menu_layer)));
 	App::menuitem_layer2->set_submenu(*Gtk::manage(new Gtk::Menu(menu_layer)));
+
+	// Tools menu
+	App::menuitem_tools->set_submenu(*Gtk::manage(new Gtk::Menu(App::menu_tools)));
+	App::menuitem_tools2->set_submenu(*Gtk::manage(new Gtk::Menu(App::menu_tools)));
 
 	// Windows (and workspaces) menu
 	auto menu_window = Gio::Menu::create();

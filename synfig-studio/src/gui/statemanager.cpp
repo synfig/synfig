@@ -35,13 +35,9 @@
 
 #include "statemanager.h"
 
-#include <gtkmm/action.h>
-#include <gtkmm/actiongroup.h>
-#include <gtkmm/radioaction.h>
-#include <gtkmm/stock.h>
-
 #include <synfig/general.h>
 
+#include <gui/actiondatabase.h>
 #include <gui/app.h>
 
 #endif
@@ -55,41 +51,82 @@ using namespace studio;
 
 /* === G L O B A L S ======================================================= */
 
+const char* action_group_name = "tool";
+
+std::map<std::string, const char*> default_tool_accels = {
+	{"normal", "s"},
+	{"smooth_move", "m"},
+	{"scale", "l"},
+	{"rotate", "a"},
+	{"mirror", "i"},
+	{"circle", "e"},
+	{"rectangle", "r"},
+	{"star", "asterisk"},
+	{"polygon", "o"},
+	{"gradient", "g"},
+	{"bline", "b"},
+	{"draw", "p"},
+	{"lasso", "c"},
+	{"width", "w"},
+	{"fill", "u"},
+	{"eyedrop", "d"},
+	{"bone", "n"},
+	{"text", "t"},
+	{"sketch", "k"},
+	{"zoom", "z"},
+};
+
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
-StateManager::StateManager():
-	state_group(Gtk::ActionGroup::create("action_group_state_manager")),
-	merge_id(App::ui_manager()->new_merge_id())
+StateManager::StateManager()
+	: state_group_(Gio::SimpleActionGroup::create())
 {
-	App::ui_manager()->insert_action_group(get_action_group());
+	if (App::main_window)
+		App::main_window->insert_action_group(action_group_name, state_group_);
+
+	action_set_tool_ = Gio::SimpleAction::create_radio_string("set-tool", "normal");
+	action_set_tool_->signal_change_state().connect(sigc::mem_fun(*this, &StateManager::on_change_state_));
+	state_group_->add_action(action_set_tool_);
 }
 
 StateManager::~StateManager()
 {
-	App::ui_manager()->remove_ui(merge_id);
-
-	for(;!merge_id_list.empty();merge_id_list.pop_back())
-		App::ui_manager()->remove_ui(merge_id_list.back());
+	App::main_window->remove_action_group(action_group_name);
 }
 
 void
-StateManager::change_state_(const Glib::RefPtr<Gtk::RadioAction>& current, const Smach::state_base* state)
+StateManager::on_change_state_(const Glib::VariantBase& vb_state_name)
 {
-	auto state_action = Glib::RefPtr<Gtk::RadioAction>::cast_static(state_group->get_action(String("state-") + state->get_name()));
-	if (state_action) {
-		if (state_action == current) {
-			signal_state_selected_.emit(state);
-		}
+	const auto state_name = Glib::VariantBase::cast_dynamic<Glib::Variant<std::string>>(vb_state_name).get();
+	const auto it = state_book_.find(state_name);
+	if (it == state_book_.cend()) {
+		synfig::warning(_("Cannot change state: inexistent state '%s'"), state_name.c_str());
+		return;
 	}
+
+	Glib::ustring current_state;
+	state_group_->get_action_state("set-tool", current_state);
+	if (current_state == state_name) {
+		return;
+	}
+
+	action_set_tool_->set_state(vb_state_name);
+	signal_state_selected_.emit(it->second.state);
 }
 
 void
-StateManager::change_state(const Smach::state_base* state)
+StateManager::change_state(const std::string& state_name)
 {
-	if (state) {
-		signal_state_selected_.emit(state);
+	if (state_group_ && !state_name.empty()) {
+		auto it = state_book_.find(state_name);
+		if (it != state_book_.end()) {
+			Glib::ustring current_state;
+			state_group_->get_action_state("set-tool", current_state);
+			if (current_state != state_name)
+				state_group_->change_action_state("set-tool", Glib::Variant<Glib::ustring>::create(state_name));
+		}
 	}
 }
 
@@ -102,57 +139,53 @@ StateManager::register_state(const Smach::state_base* state)
 	}
 
 	const String name(state->get_name());
+	StateInfo state_info;
+	state_info.state = state;
 
-	Glib::RefPtr<Gtk::RadioAction> action(
-		Gtk::RadioAction::create_with_icon_name(radio_action_group,
-			"state-"+name,
-			state_icon_name(name),
-			state->get_local_name(),
-			""
-		)
-	);
-	/*action->set_sensitive(false);*/
-	state_group->add(action);
+	// This action is to be used in menus only.
+	// It is created as a regular action - instead of a stateful action -
+	// to not show the radio indicator in the menu item.
+	auto action = state_group_->add_action("set-tool-" + name,
+										sigc::bind(
+											sigc::mem_fun(*this, &StateManager::change_state),
+											name
+										));
+	state_info.action = action;
 
-	action->signal_changed().connect(
-		sigc::bind(
-			sigc::mem_fun(*this, &StateManager::change_state_),
-			state
-		)
-	);
+	state_book_.emplace(name, state_info);
 
-	// this action is to be used in menus only.
-	// Regular type to not show the radio indicator in the menu item
-	Glib::RefPtr<Gtk::Action> regular_action(
-		Gtk::Action::create_with_icon_name("set-state-"+name,
-											state_icon_name(name),
-											state->get_local_name(),
-											""
-		)
-	);
-	/*regular_action->set_sensitive(false);*/
-	state_group->add(regular_action);
+	const char* accel = "";
+	try {
+		accel = default_tool_accels.at(name);
+	} catch (...) {
+	}
 
-	regular_action->signal_activate().connect(
-		sigc::bind(
-			sigc::mem_fun(*this, &StateManager::change_state),
-			state
-		)
-	);
-
-	String uid_def;
-	uid_def = "<ui><popup action='menu-main'><menu action='menu-toolbox'><menuitem action='set-state-"+name+"' /></menu></popup></ui>";
-	merge_id_list.push_back(App::ui_manager()->add_ui_from_string(uid_def));
-	uid_def = "<ui><menubar action='menubar-main'><menu action='menu-toolbox'><menuitem action='set-state-"+name+"' /></menu></menubar></ui>";
-	merge_id_list.push_back(App::ui_manager()->add_ui_from_string(uid_def));
-
-	App::ui_manager()->ensure_update();
+	const std::string detailed_action_name = strprintf("%s.set-tool('%s')", action_group_name, name.c_str());
+	ActionDatabase::Entry entry {detailed_action_name, state->get_local_name(), accel, state_icon_name(name), state->get_local_name()};
+	App::get_action_database()->add(entry);
 
 	signal_state_registered_.emit(state);
+
+	// Apply default accelerators
+	ActionDatabase adb;
+	adb.add(entry);
+	UserAcceleratorList list;
+	list.restore_to_defaults(adb);
+	list.load_from_file(App::get_config_file("accelerators"), false);
+	list.apply(App::instance(), adb);
 }
 
-Glib::RefPtr<Gtk::ActionGroup>
-StateManager::get_action_group()
+Glib::RefPtr<Gio::SimpleActionGroup>
+StateManager::get_action_group() const
 {
-	return state_group;
+	return state_group_;
+}
+
+std::vector<std::string>
+StateManager::get_state_names() const
+{
+	std::vector<std::string> names;
+	for (const auto& pair : state_book_)
+		names.push_back(pair.first);
+	return names;
 }

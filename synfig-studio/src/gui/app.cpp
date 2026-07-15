@@ -302,6 +302,8 @@ Gtk::MenuItem* studio::App::menuitem_file_recent;
 Gtk::MenuItem* studio::App::menuitem_file_recent2;
 Gtk::MenuItem* studio::App::menuitem_layer;
 Gtk::MenuItem* studio::App::menuitem_layer2;
+Gtk::MenuItem* studio::App::menuitem_tools;
+Gtk::MenuItem* studio::App::menuitem_tools2;
 Glib::RefPtr<Gio::Menu> studio::App::menu_recent_files;
 Glib::RefPtr<Gio::Menu> studio::App::menu_add_layer;
 Glib::RefPtr<Gio::Menu> studio::App::menu_selected_layers;
@@ -310,6 +312,7 @@ Glib::RefPtr<Gio::Menu> studio::App::menu_plugins;
 Glib::RefPtr<Gio::Menu> studio::App::menu_window_custom_workspaces;
 Glib::RefPtr<Gio::Menu> studio::App::menu_window_docks;
 Glib::RefPtr<Gio::Menu> studio::App::menu_window_canvases;
+Glib::RefPtr<Gio::Menu> studio::App::menu_tools;
 
 bool   studio::App::enable_mainwin_menubar = true;
 bool   studio::App::enable_mainwin_toolbar = true;
@@ -1592,6 +1595,7 @@ void App::init(const synfig::String& rootpath)
 		menu_plugins = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-plugins"));
 		menu_add_layer = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-layer-new"));
 		menu_selected_layers = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("selected-layer-actions"));
+		menu_tools = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-tools"));
 		menu_window_custom_workspaces = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-custom-workspaces"));
 		menu_window_docks = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-docks"));
 		menu_window_canvases = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-canvases"));
@@ -1639,6 +1643,8 @@ void App::init(const synfig::String& rootpath)
 		App::menuitem_file_recent2->set_submenu(*Gtk::manage(new Gtk::Menu(App::menu_recent_files)));
 		menuitem_layer = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menubar-main/menu-layer"));
 		menuitem_layer2 = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menu-main/menu-layer"));
+		menuitem_tools = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menubar-main/menu-toolbox"));
+		menuitem_tools2 = dynamic_cast<Gtk::MenuItem*>(ui_manager_->get_widget("/menu-main/menu-toolbox"));
 
 		action_database = new ActionDatabase();
 		init_app_actions();

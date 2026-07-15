@@ -37,22 +37,22 @@
 
 #include <gui/docks/dock_toolbox.h>
 
-#include <gtkmm/accelmap.h>
 #include <gtkmm/paned.h>
-#include <gtkmm/stock.h>
 #include <gtkmm/toolpalette.h>
 
-#include <gui/statemanager.h>
+#include <synfig/general.h>
+
+#include <synfigapp/main.h>
+
+#include <gui/actiondatabase.h>
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/docks/dialog_tooloptions.h>
 #include <gui/instance.h>
 #include <gui/localization.h>
+#include <gui/statemanager.h>
 #include <gui/widgets/widget_defaults.h>
-
-#include <synfig/general.h>
-
-#include <synfigapp/main.h>
 
 #endif
 
@@ -77,7 +77,7 @@ Dock_Toolbox::Dock_Toolbox():
 	tool_item_group = manage(new class Gtk::ToolItemGroup());
 	gtk_tool_item_group_set_label(tool_item_group->gobj(), nullptr);
 
-	Gtk::ToolPalette *palette = manage(new Gtk::ToolPalette());
+	Gtk::ToolPalette* palette = manage(new Gtk::ToolPalette());
 	palette->add(*tool_item_group);
 	palette->set_expand(*tool_item_group);
 	palette->set_exclusive(*tool_item_group, true);
@@ -101,8 +101,7 @@ Dock_Toolbox::Dock_Toolbox():
 	add(*tool_box_paned);
 
 	App::signal_canvas_view_focus().connect(
-		sigc::hide(
-			sigc::mem_fun(*this,&studio::Dock_Toolbox::update_tools) ));
+			sigc::mem_fun(*this, &studio::Dock_Toolbox::on_canvas_view_focus_changed) );
 
 	std::vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back( Gtk::TargetEntry("text/plain") );
@@ -115,7 +114,10 @@ Dock_Toolbox::Dock_Toolbox():
 	App::signal_present_all().connect(sigc::mem_fun0(*this,&Dock_Toolbox::present));
 
 	App::get_state_manager()->signal_state_registered().connect(sigc::mem_fun(*this, &Dock_Toolbox::add_state));
-	App::get_state_manager()->signal_state_selected().connect(sigc::mem_fun(*this, &Dock_Toolbox::change_state_));
+	App::get_state_manager()->signal_state_selected().connect(sigc::mem_fun(*this, &Dock_Toolbox::on_state_changed));
+
+	const std::string action_group_name = "tool";
+	App::main_window->insert_action_group(action_group_name, App::get_state_manager()->get_action_group());
 }
 
 Dock_Toolbox::~Dock_Toolbox()
@@ -174,102 +176,120 @@ Dock_Toolbox::change_state(const synfig::String& statename, bool force)
 }
 
 void
-Dock_Toolbox::change_state_(const Smach::state_base *state)
+Dock_Toolbox::on_state_changed(const Smach::state_base* state)
 {
-
-	try
-	{
-		studio::CanvasView::Handle canvas_view(studio::App::get_selected_canvas_view());
-		if(canvas_view)
-				canvas_view->get_smach().enter(state);
-		else
-			refresh();
-	}
-	catch(...)
-	{
-		throw;
-	}
+	CanvasView::Handle canvas_view(App::get_selected_canvas_view());
+	if (canvas_view)
+		canvas_view->change_state(state);
+	set_active_state(state->get_name());
+	auto it = state_button_map.find(state->get_name());
+	if (it != state_button_map.end())
+		it->second->property_active() = true;
 }
 
-
-/*! \fn Dock_Toolbox::add_state(const Smach::state_base *state)
+/*! \fn Dock_Toolbox::add_state(const Smach::state_base* state)
  *  \brief Add and connect a toggle button to the toolbox defined by a state
  *  \param state a const pointer to Smach::state_base
 */
 void
-Dock_Toolbox::add_state(const Smach::state_base *state)
+Dock_Toolbox::add_state(const Smach::state_base* state)
 {
 	assert(state);
 
-	const String name = state->get_name();
+	const String tool_name = state->get_name();
 
-	Gtk::RadioToolButton *tool_button = manage(new Gtk::RadioToolButton());
-	tool_button->set_group(radio_tool_button_group);
-	Glib::RefPtr<Gtk::Action> related_action = App::get_state_manager()->get_action_group()->get_action("state-"+name);
-	tool_button->set_related_action(related_action);
-	related_action->property_tooltip() = "";
-
-	// Keeps updating the tooltip if user changes the shortcut at runtime
-	tool_button->property_has_tooltip() = true;
-	tool_button->signal_query_tooltip().connect([state](int,int,bool,const Glib::RefPtr<Gtk::Tooltip>& tooltip) -> bool
-	{
-		std::string tooltip_string = state->get_local_name();
-
-		Gtk::AccelKey key;
-		if (Gtk::AccelMap::lookup_entry(std::string("<Actions>/action_group_state_manager/set-state-") + state->get_name(), key)) {
-			tooltip_string += "  ";
-			gchar* accel_text = gtk_accelerator_get_label(key.get_key(), GdkModifierType(key.get_mod()));
-			tooltip_string += accel_text;
-			g_free(accel_text);
+	Gtk::RadioToolButton* radio_button = manage(new Gtk::RadioToolButton());
+	for (int i = 0; i < tool_item_group->get_n_items(); ++i) {
+		if (auto radio_tool_button = dynamic_cast<Gtk::RadioToolButton*>(tool_item_group->get_nth_item(i))) {
+			radio_button->join_group(*radio_tool_button);
+			break;
 		}
-		tooltip->set_text(tooltip_string);
-		return true;
-	});
-//	tool_button->set_tooltip_text(get_tooltip(name));
-	tool_button->show();
+	}
 
-	tool_item_group->insert(*tool_button);
-	tool_item_group->show_all();
+	const std::string action_group_name = "tool";
+	const std::string action_name = strprintf("set-tool('%s')", tool_name.c_str());
+	const std::string detailed_action_name = action_group_name + "." + action_name;
 
-	state_button_map[name] = tool_button;
+	try {
+		const ActionDatabase::Entry action_entry = App::get_action_database()->get(detailed_action_name);
+		if (!action_entry.icon_.empty() && action_entry.icon_ != "image-missing") {
+			const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
+			radio_button->set_icon_name(action_entry.icon_ + symbolic_suffix);
+		}
+		ActionWidgetHelper::set_widget_tooltip(*radio_button, detailed_action_name, action_entry.tooltip_);
+	} catch (...) {
+		synfig::error(_("Couldn't find action: %s"), action_name.c_str());
+	}
 
+	radio_button->signal_toggled().connect(sigc::track_obj([radio_button, tool_name]() {
+		if (!radio_button->get_active())
+			return;
+		auto action_group = App::get_state_manager()->get_action_group();
+		Glib::ustring current_state;
+		action_group->get_action_state("set-tool", current_state);
+		if (current_state != tool_name)
+			action_group->change_action_state("set-tool", Glib::Variant<Glib::ustring>::create(tool_name));
 
-	refresh();
+	}, App::get_state_manager()));
+
+	radio_button->show();
+	tool_item_group->insert(*radio_button);
+
+	state_button_map[tool_name] = radio_button;
 }
 
-
 void
-Dock_Toolbox::update_tools()
+Dock_Toolbox::on_canvas_view_focus_changed(etl::loose_handle<CanvasView> canvas_view)
 {
-	etl::handle<Instance> instance = App::get_selected_instance();
-	CanvasView::Handle canvas_view = App::get_selected_canvas_view();
 
-	Glib::RefPtr<Gtk::ActionGroup> state_action_group = App::get_state_manager()->get_action_group();
-	// avoid unnecessary events for radio_button->set_active(true);
-	// this method is called on switching doc tabs, it is not actually activating an action
-	state_action_group->set_sensitive(false);
+	// Disable buttons if there isn't any open document instance
+	const bool sensitive = canvas_view.get();
+	const std::string action_group_name = "tool";
+	Glib::RefPtr<Gio::ActionGroup> action_group;
+	// state_action_group->set_sensitive(sensitive);
+	if (!sensitive) {
+		App::main_window->remove_action_group(action_group_name);
+	} else {
+		if (!App::main_window->get_action_group(action_group_name)) {
+			App::main_window->insert_action_group(action_group_name, App::get_state_manager()->get_action_group());
+		}
+		action_group = App::get_state_manager()->get_action_group();
+	}
+
+	if (!action_group)
+		return;
 
 	const char* canvasview_state_name = canvas_view ? canvas_view->get_smach().get_state_name() : nullptr;
 	if (canvasview_state_name) {
-		set_active_state(canvasview_state_name);
-		auto radio_button = state_button_map[canvasview_state_name];
-		if (radio_button) {
-			if (!radio_button->get_active())
-				radio_button->set_active(true);
+		const auto state_it = state_button_map.find(canvasview_state_name);
+		if (state_it != state_button_map.cend()) {
+			// action_group->change_action_state("set-tool", Glib::Variant<Glib::ustring>::create(canvasview_state_name));
+			set_active_state(canvasview_state_name);
+			auto radio_button = state_it->second;
+			if (radio_button) {
+				if (!radio_button->get_active())
+					radio_button->set_active(true);
+			}
+		} else {
+			set_active_state("none");
 		}
-	} else
+	} else {
 		set_active_state("none");
+	}
+}
 
-	// Disable buttons if there isn't any open document instance
-	bool sensitive = instance && canvas_view;
-	state_action_group->set_sensitive(sensitive);
+void
+Dock_Toolbox::update_tools(etl::loose_handle<CanvasView> canvas_view)
+{
+
 }
 
 
 void
 Dock_Toolbox::refresh()
 {
-	update_tools();
+	CanvasView::Handle canvas_view = App::get_selected_canvas_view();
+	update_tools(canvas_view);
 }
 
 

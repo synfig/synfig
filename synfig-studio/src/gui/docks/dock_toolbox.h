@@ -39,6 +39,7 @@
 
 #include <map>
 
+#include <synfig/handle.h>
 #include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
@@ -57,8 +58,6 @@ class StateManager;
 
 class Dock_Toolbox : public Dockable
 {
-	friend class studio::StateManager;
-
 	Gtk::ToolItemGroup *tool_item_group;
 	Gtk::Paned *tool_box_paned;
 
@@ -68,9 +67,11 @@ class Dock_Toolbox : public Dockable
 
 	void on_drop_drag_data_received(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 
-	void change_state_(const Smach::state_base *state);
+	void on_state_changed(const Smach::state_base* state);
 
-	void update_tools();
+	void update_tools(etl::loose_handle<CanvasView> canvas_view);
+
+	void on_canvas_view_focus_changed(etl::loose_handle<CanvasView> canvas_view);
 
 	void set_active_state(const synfig::String& statename);
 
@@ -78,12 +79,12 @@ public:
 
 	void change_state(const synfig::String& statename, bool force = false);
 
-	void refresh();
-
 	void add_state(const Smach::state_base *state);
 
 	Dock_Toolbox();
 	virtual ~Dock_Toolbox();
+
+	void refresh();
 
 	virtual void write_layout_string(std::string &params) const;
 	virtual void read_layout_string(const std::string &params) const;

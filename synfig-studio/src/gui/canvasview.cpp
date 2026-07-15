@@ -71,6 +71,7 @@
 #include <gui/exception_guard.h>
 #include <gui/localization.h>
 #include <gui/preview.h>
+#include <gui/statemanager.h>
 #include <gui/states/state_normal.h>
 #include <gui/widgets/widget_canvastimeslider.h>
 #include <gui/widgets/widget_interpolation.h>
@@ -1711,6 +1712,12 @@ CanvasView::popup_main_menu()
 			menu->attach_to_widget(*this);
 		menu->popup(0,gtk_get_current_event_time());
 	}
+}
+
+void
+CanvasView::change_state(const Smach::state_base* state)
+{
+	get_smach().enter(state);
 }
 
 void
