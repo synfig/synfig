@@ -173,6 +173,7 @@ set(ICONS
 	layer_other_timeloop_icon
 	layer_other_xorpattern_icon
 	layer_stylize_bevel_icon
+	layer_stylize_bevel_deprecated_icon
 	layer_stylize_shade_icon
 	layer_transform_rotate_icon
 	layer_transform_scale_icon

@@ -142,6 +142,7 @@ EXTRA_DIST = \
 	layer_other_timeloop_icon.sif \
 	layer_other_xorpattern_icon.sif \
 	layer_stylize_bevel_icon.sif \
+	layer_stylize_bevel_deprecated_icon.sif \
 	layer_stylize_shade_icon.sif \
 	layer_transform_rotate_icon.sif \
 	layer_transform_scale_icon.sif \
@@ -359,6 +360,7 @@ ICONS = \
 	layer_other_timeloop_icon.$(EXT) \
 	layer_other_xorpattern_icon.$(EXT) \
 	layer_stylize_bevel_icon.$(EXT) \
+	layer_stylize_bevel_deprecated_icon.$(EXT) \
 	layer_stylize_shade_icon.$(EXT) \
 	layer_transform_rotate_icon.$(EXT) \
 	layer_transform_scale_icon.$(EXT) \

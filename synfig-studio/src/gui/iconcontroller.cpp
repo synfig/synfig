@@ -286,6 +286,7 @@ static const std::map<std::string, std::string> layer_icon_names = {
 	{"xor_pattern",  "layer_other_xorpattern_icon"},
 	// Stylize Layers
 	{"bevel",        "layer_stylize_bevel_icon"},
+	{"bevel_deprecated", "layer_stylize_bevel_deprecated_icon"},
 	{"shade",        "layer_stylize_shade_icon"},
 	// Transform Layers
 	{"rotate",       "layer_transform_rotate_icon"},
