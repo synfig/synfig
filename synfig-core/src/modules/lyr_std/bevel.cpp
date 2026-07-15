@@ -312,9 +312,9 @@ public:
 		const Point ftarget_max = transformation_matrix.get_transformed(source_rect.get_max());
 		const PointInt target_min = {round_to_int(ftarget_min[0]), round_to_int(ftarget_min[1])};
 		const PointInt target_max = {round_to_int(ftarget_max[0]), round_to_int(ftarget_max[1])};
-		int v = halfsizey+std::abs(offset_v) + target_min[1];
+		int v = halfsizey+std::abs(offset_v);
 		for (int iy = target_min[1]; iy < target_max[1]; ++iy, ++v) {
-			int u = halfsizex+std::abs(offset_u) + target_min[0];
+			int u = halfsizex+std::abs(offset_u);
 			for (int ix = target_min[0]; ix < target_max[0]; ++ix, ++u) {
 
 				Real alpha(0);
