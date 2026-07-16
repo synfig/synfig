@@ -37,7 +37,6 @@
 #include <gtkmm/box.h>
 #include <gtkmm/icontheme.h>
 #include <gtkmm/messagedialog.h>
-#include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
 
 #include <gui/actiondatabase.h>
@@ -150,22 +149,11 @@ MainWindow::MainWindow(const Glib::RefPtr<Gtk::Application>& application)
 	bin_->show();
 
 	auto visible_vbox = manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
-	auto hidden_box   = manage(new Gtk::Box());
-
-	auto visible_menubar = App::ui_manager()->get_widget("/menubar-main");
-	auto hidden_menubar  = App::ui_manager()->get_widget("/menubar-hidden");
-	if (visible_menubar)
-	{
-		hidden_box->add(*hidden_menubar);
-		hidden_box->hide();
-
-		visible_vbox->add(*hidden_box);
-		visible_vbox->pack_start(*visible_menubar, false, false, 0);
-	}
 
 	visible_vbox->pack_end(*bin_, true, true, 0);
 	visible_vbox->show();
-	if(!App::enable_mainwin_menubar && visible_menubar) visible_menubar->hide();
+	if (!App::enable_mainwin_menubar)
+		property_show_menubar() = false;
 
 	add(*visible_vbox);
 
@@ -207,89 +195,14 @@ MainWindow::show_dialog_input()
 void
 MainWindow::init_menus()
 {
-	Glib::RefPtr<Gtk::ActionGroup> action_group = Gtk::ActionGroup::create("mainwindow");
-
-	// file
-	action_group->add( Gtk::Action::create_with_icon_name("new", "action_doc_new_icon", _("New"), _("Create a new document")),
-		sigc::hide_return(sigc::ptr_fun(&studio::App::new_instance))
-	);
-	action_group->add( Gtk::Action::create_with_icon_name("open", "action_doc_open_icon", _("Open"), _("Open an existing document")),
-		sigc::hide_return(sigc::bind(sigc::ptr_fun(&studio::App::dialog_open), filesystem::Path{}))
-	);
-	action_group->add( Gtk::Action::create_with_icon_name("save-all", "action_doc_saveall_icon", _("Save All"), _("Save all opened documents")),
-		sigc::ptr_fun(&save_all)
-	);
-	action_group->add( Gtk::Action::create_with_icon_name("quit", "application-exit", _("_Quit"), _("Quit")),
-		sigc::hide_return(sigc::ptr_fun(&studio::App::quit))
-	);
-
-	// Edit menu
-	action_group->add( Gtk::Action::create("input-devices", _("Input Devices...")),
-		sigc::ptr_fun(&MainWindow::show_dialog_input)
-	);
-	action_group->add( Gtk::Action::create("preferences", _("Preferences...")),
-		sigc::ptr_fun(&studio::App::show_setup)
-	);
-
-	// View menu
-	Glib::RefPtr<Gtk::ToggleAction> toggle_menubar = Gtk::ToggleAction::create("toggle-mainwin-menubar", _("Show Menubar"));
-	toggle_menubar->set_active(App::enable_mainwin_menubar);
-	action_group->add(toggle_menubar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_menubar));
-
-	Glib::RefPtr<Gtk::ToggleAction> toggle_toolbar = Gtk::ToggleAction::create("toggle-mainwin-toolbar", _("Toolbar"));
-	toggle_toolbar->set_active(App::enable_mainwin_toolbar);
-	action_group->add(toggle_toolbar, sigc::mem_fun(*this, &studio::MainWindow::toggle_show_toolbar));
-	
 	// plugins
 	if (App::menu_plugins) {
 		for (const auto& plugin : studio::App::plugin_manager.plugins())
 			App::menu_plugins->append(plugin.name.get(), strprintf("doc.run-plugin('%s')", plugin.id.c_str()));
-
-		auto menuitem_plugins = dynamic_cast<Gtk::MenuItem*>(App::ui_manager()->get_widget("/menubar-main/menu-plugins"));
-		auto menuitem_plugins2 = dynamic_cast<Gtk::MenuItem*>(App::ui_manager()->get_widget("/menu-main/menu-plugins"));
-		auto menu = Gtk::manage(new Gtk::Menu(App::menu_plugins));
-		menuitem_plugins->set_submenu(*menu);
-		auto menu2 = Gtk::manage(new Gtk::Menu(App::menu_plugins));
-		menuitem_plugins2->set_submenu(*menu2);
 	}
-
-	// help
-	#define URL(action_name,title,url) \
-		action_group->add( Gtk::Action::create(action_name, title), \
-			sigc::bind(sigc::ptr_fun(&studio::App::open_uri),url))
-	#define WIKI(action_name,title,page) \
-		URL(action_name,title, "https://wiki.synfig.org/" + String(page))
-
-	action_group->add( Gtk::Action::create("help", Gtk::Stock::HELP),
-		sigc::ptr_fun(studio::App::dialog_help)
-	);
-
-#if GTK_CHECK_VERSION(3, 20, 0)
-	action_group->add( Gtk::Action::create(
-			"help-shortcuts", _("Keyboard Shortcuts")),
-		sigc::ptr_fun(studio::App::window_shortcuts)
-	);
-#endif
-
-	// TRANSLATORS:         | Help menu entry:              | A wiki page:          |
-	URL("help-tutorials",	_("Tutorials"),					_("https://synfig.readthedocs.io/en/latest/tutorials.html"));
-	WIKI("help-reference",	_("Reference"),					_("Category:Reference"));
-	URL("help-faq",		_("Frequently Asked Questions"),	_("https://wiki.synfig.org/FAQ")				);
-	URL("help-support",		_("Get Support"),				_("https://forums.synfig.org/")	);
-
-	action_group->add( Gtk::Action::create_with_icon_name(
-			"about", "about_icon", _("About Synfig Studio"), _("About Synfig Studio")),
-		sigc::ptr_fun(studio::App::dialog_about)
-	);
-
-	// TODO: open recent
-	//filemenu->items().push_back(Gtk::Menu_Helpers::MenuElem(_("Open Recent"),*recent_files_menu));
-
-	App::ui_manager()->insert_action_group(action_group);
 
 	// Layers menu
 	auto menu_layer = Gio::Menu::create();
-	// auto menu_add_layer = Gio::Menu::create();
 	menu_layer->append_submenu(_("New Layer"), App::menu_add_layer);
 	menu_layer->append_section(App::menu_selected_layers);
 	auto menu_edit_layers = Gio::Menu::create();
@@ -297,12 +210,8 @@ MainWindow::init_menus()
 	menu_edit_layers->append(_("Copy"), "layer.copy");
 	menu_edit_layers->append(_("Paste"), "layer.paste");
 	menu_layer->append_section(menu_edit_layers);
-	App::menuitem_layer->set_submenu(*Gtk::manage(new Gtk::Menu(menu_layer)));
-	App::menuitem_layer2->set_submenu(*Gtk::manage(new Gtk::Menu(menu_layer)));
 
 	// Tools menu
-	App::menuitem_tools->set_submenu(*Gtk::manage(new Gtk::Menu(App::menu_tools)));
-	App::menuitem_tools2->set_submenu(*Gtk::manage(new Gtk::Menu(App::menu_tools)));
 
 	// Windows (and workspaces) menu
 	auto menu_window = Gio::Menu::create();
@@ -320,10 +229,6 @@ MainWindow::init_menus()
 	menu_window->append_submenu(_("Workspace"), menu_window_workspaces);
 	menu_window->append_section(App::menu_window_docks);
 	menu_window->append_section(App::menu_window_canvases);
-	auto menuitem_window = dynamic_cast<Gtk::MenuItem*>(App::ui_manager()->get_widget("/menubar-main/menu-window"));
-	menuitem_window->set_submenu(*Gtk::manage(new Gtk::Menu(menu_window)));
-	auto menuitem_window2 = dynamic_cast<Gtk::MenuItem*>(App::ui_manager()->get_widget("/menu-main/menu-window"));
-	menuitem_window2->set_submenu(*Gtk::manage(new Gtk::Menu(menu_window)));
 }
 
 void
@@ -407,9 +312,6 @@ void
 MainWindow::toggle_show_menubar()
 {
 	App::enable_mainwin_menubar = !App::enable_mainwin_menubar;
-
-	Gtk::Widget* menubar = App::ui_manager()->get_widget("/menubar-main");
-	menubar->set_visible(App::enable_mainwin_menubar);
 
 	property_show_menubar() = App::enable_mainwin_menubar;
 	change_action_state("show-menubar", Glib::Variant<bool>::create(App::enable_mainwin_menubar));

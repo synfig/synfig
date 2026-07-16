@@ -34,7 +34,6 @@
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/box.h>
-#include <gtkmm/uimanager.h>
 
 #include <gui/iconcontroller.h>
 #include <gui/mainwindow.h>
@@ -82,8 +81,6 @@ namespace synfigapp
 class Preferences;
 
 namespace studio {
-
-typedef Gtk::UIManager UIManager;
 
 class About;
 class MainWindow;
@@ -173,8 +170,6 @@ private:
 	static etl::handle<Instance> selected_instance;
 	static etl::handle<CanvasView> selected_canvas_view;
 
-	static Glib::RefPtr<UIManager>	ui_manager_;
-
 	static int jack_locks_;
 
 //	static std::list< etl::handle< Module > > module_list_;
@@ -232,13 +227,7 @@ public:
 	static synfig::String navigator_renderer;
 	static synfig::String workarea_renderer;
 	static int number_of_threads;
-	static Gtk::MenuItem* menuitem_file_recent;
-	static Gtk::MenuItem* menuitem_file_recent2;
 	static Glib::RefPtr<Gio::Menu> menu_recent_files;
-	static Gtk::MenuItem* menuitem_layer;
-	static Gtk::MenuItem* menuitem_layer2;
-	static Gtk::MenuItem* menuitem_tools;
-	static Gtk::MenuItem* menuitem_tools2;
 	static Glib::RefPtr<Gio::Menu> menu_add_layer;
 	static Glib::RefPtr<Gio::Menu> menu_selected_layers;
 	static Glib::RefPtr<Gio::Menu> menu_keyframe;
@@ -350,7 +339,6 @@ public:
 
 	static StateManager* get_state_manager();
 
-	static Glib::RefPtr<UIManager>& ui_manager() { return ui_manager_; }
 	static ActionDatabase* get_action_database();
 
 	static void add_recent_file(const etl::handle<Instance> instance);
