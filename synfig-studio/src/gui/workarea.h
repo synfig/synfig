@@ -374,7 +374,7 @@ public:
 	//! Toggles the showing of the grid
 	void toggle_grid();
 	//! Returns the state of the show_grid flag
-	bool grid_status()const { return show_grid; }
+	bool get_show_grid() const { return show_grid; }
 	//! Toggles the snap of the grid
 	void toggle_grid_snap();
 	//! Sets the size of the grid

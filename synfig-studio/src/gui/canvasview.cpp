@@ -1407,7 +1407,7 @@ CanvasView::init_menus()
 
 	static const std::vector<BoolActionMetadata> bool_action_list = {
 		{"toggle-rulers-show",          &WorkArea::get_show_rulers,          &CanvasView::toggle_show_ruler },
-		{"toggle-grid-show",            &WorkArea::grid_status,              &CanvasView::toggle_show_grid },
+		{"toggle-grid-show",            &WorkArea::get_show_grid,            &CanvasView::toggle_show_grid },
 		{"toggle-grid-snap",            &WorkArea::get_grid_snap,            &CanvasView::toggle_snap_grid },
 		{"toggle-guide-show",           &WorkArea::get_show_guides,          &CanvasView::toggle_show_guides },
 		{"toggle-guide-snap",           &WorkArea::get_guide_snap,           &CanvasView::toggle_snap_guides },

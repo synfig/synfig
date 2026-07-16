@@ -61,7 +61,7 @@ Renderer_Grid::~Renderer_Grid()
 bool
 Renderer_Grid::get_enabled_vfunc()const
 {
-	return get_work_area()->grid_status();
+	return get_work_area()->get_show_grid();
 }
 
 synfig::Vector
