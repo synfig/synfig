@@ -58,7 +58,6 @@
 #include <gtkmm/toggletoolbutton.h>
 #include <gtkmm/toolbar.h>
 #include <gtkmm/toolbutton.h>
-#include <gtkmm/uimanager.h>
 
 #include <synfig/canvas.h>
 #include <synfig/clock.h>
@@ -226,13 +225,15 @@ public:
 
 	typedef synfigapp::CanvasInterface::Mode Mode;
 
-	void set_grid_snap_toggle(bool flag) { grid_snap_toggle->set_active(flag); }
-	void set_grid_show_toggle(bool flag) { grid_show_toggle->set_active(flag); }
-	void set_guides_snap_toggle(bool flag) { guides_snap_toggle->set_active(flag); }
-	void set_guides_show_toggle(bool flag) { guides_show_toggle->set_active(flag); }
-	void set_onion_skin_toggle(bool flag) { onion_skin_toggle->set_active(flag); }
-	void set_onion_skin_keyframes_toggle(bool flag) { onion_skin_keyframes_toggle->set_active(flag); }
-	void set_background_rendering_toggle(bool flag) { background_rendering_toggle->set_active(flag); }
+	void set_grid_snap_toggle(bool flag);
+	void set_grid_show_toggle(bool flag);
+	void set_guides_snap_toggle(bool flag);
+	void set_guides_show_toggle(bool flag);
+	void set_onion_skin_toggle(bool flag);
+	void set_onion_skin_keyframes_toggle(bool flag);
+	void set_background_rendering(bool flag);
+	void set_past_keyframe_lock_toggle(bool flag);
+	void set_future_keyframe_lock_toggle(bool flag);
 
 	void grab_focus();
 
@@ -331,21 +332,17 @@ private:
 	//! Menu members
 	Gtk::Menu parammenu;
 
-	Glib::RefPtr<Gtk::ToggleAction> grid_snap_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> grid_show_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> rulers_show_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> guides_snap_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> guides_show_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> onion_skin_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> onion_skin_keyframes_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> background_rendering_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> past_keyframes_toggle;
-	Glib::RefPtr<Gtk::ToggleAction> future_keyframes_toggle;
+	Glib::RefPtr<Gio::SimpleAction> rulers_show_toggle;
+	Glib::RefPtr<Gio::SimpleAction> grid_snap_toggle;
+	Glib::RefPtr<Gio::SimpleAction> grid_show_toggle;
+	Glib::RefPtr<Gio::SimpleAction> guides_snap_toggle;
+	Glib::RefPtr<Gio::SimpleAction> guides_show_toggle;
+	Glib::RefPtr<Gio::SimpleAction> onion_skin_toggle;
+	Glib::RefPtr<Gio::SimpleAction> onion_skin_keyframes_toggle;
+	Glib::RefPtr<Gio::SimpleAction> background_rendering_toggle;
+	Glib::RefPtr<Gio::SimpleAction> past_keyframe_lock_toggle;
+	Glib::RefPtr<Gio::SimpleAction> future_keyframe_lock_toggle;
 
-	Gtk::RadioButtonGroup low_res_pixel_size_group;
-
-	Glib::RefPtr<Gtk::ActionGroup> action_group;
-	bool _action_group_removed;
 	Glib::RefPtr<Gio::SimpleActionGroup> action_group_;
 
 	etl::handle<synfigapp::UIInterface> ui_interface_;
@@ -373,8 +370,6 @@ private:
 	synfig::Time jack_time;
 	bool toggling_jack;
 	#endif
-
-	Glib::RefPtr<Gtk::ToggleAction> action_mask_bone_setup_ducks, action_mask_bone_recursive_ducks;
 
 	int ducks_locks;
 	bool ducks_rebuild_requested;
@@ -470,7 +465,7 @@ private:
 	void toggle_background_rendering();
 
 	void toggle_animatebutton();
-	void toggle_timetrackbutton();
+	void on_show_timetrack_activated();
 	void on_animation_loop_toggled();
 	void on_animation_bounds_toggled();
 
