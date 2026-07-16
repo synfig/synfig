@@ -56,7 +56,6 @@
 #include <glibmm/shell.h>
 #include <glibmm/spawn.h>
 
-#include <gtkmm/accelmap.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/cssprovider.h>
 #include <gtkmm/dialog.h>
@@ -1335,107 +1334,10 @@ DEFINE_ACTION("keyframe-properties", _("Properties"))
 	add_ui_from_string(ui_info);
 	add_ui_from_string(hidden_ui_info);
 
-	auto default_accel_map = App::get_default_accel_map();
-	for (const auto& accel_item : default_accel_map) {
-		Gtk::AccelKey accel_key(accel_item.first, accel_item.second);
-		if (accel_key.get_key() == 0)
-			synfig::warning(_("Invalid accelerator: %s (for action: %s)"), accel_item.first, accel_item.second);
-		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());
-	}
 }
 
 /* === M E T H O D S ======================================================= */
 
-const std::map<const char*, const char*>&
-App::get_default_accel_map()
-{
-	// Add default keyboard accelerators
-	static const std::map<const char*, const char*> default_accel_map = {
-		// Toolbox
-		{"s",             "<Actions>/action_group_state_manager/set-state-normal"},
-		{"m",             "<Actions>/action_group_state_manager/set-state-smooth_move"},
-		{"l",             "<Actions>/action_group_state_manager/set-state-scale"},
-		{"a",             "<Actions>/action_group_state_manager/set-state-rotate"},
-		{"i",             "<Actions>/action_group_state_manager/set-state-mirror"},
-		{"e",             "<Actions>/action_group_state_manager/set-state-circle"},
-		{"r",             "<Actions>/action_group_state_manager/set-state-rectangle"},
-		{"asterisk",      "<Actions>/action_group_state_manager/set-state-star"},
-		{"g",             "<Actions>/action_group_state_manager/set-state-gradient"},
-		{"o",             "<Actions>/action_group_state_manager/set-state-polygon"},
-		{"b",             "<Actions>/action_group_state_manager/set-state-bline"},
-		{"n",             "<Actions>/action_group_state_manager/set-state-bone"},
-		{"t",             "<Actions>/action_group_state_manager/set-state-text"},
-		{"u",             "<Actions>/action_group_state_manager/set-state-fill"},
-		{"d",             "<Actions>/action_group_state_manager/set-state-eyedrop"},
-		{"c",             "<Actions>/action_group_state_manager/set-state-lasso"},
-		{"z",             "<Actions>/action_group_state_manager/set-state-zoom"},
-		{"p",             "<Actions>/action_group_state_manager/set-state-draw"},
-		{"k",             "<Actions>/action_group_state_manager/set-state-sketch"},
-		{"w",             "<Actions>/action_group_state_manager/set-state-width"},
-
-		// Classic edit
-		{"<Primary>x",              "<Actions>/action_group_layer_action_manager/cut"},
-		{"<Primary>c",              "<Actions>/action_group_layer_action_manager/copy"},
-		{"<Primary>v",              "<Actions>/action_group_layer_action_manager/paste"},
-
-		// Everything else
-		{"<Primary>q",              "<Actions>/mainwindow/quit"},
-		{"<Control>a",              "<Actions>/canvasview/select-all-ducks"},
-		{"<Control>d",              "<Actions>/canvasview/unselect-all-ducks"},
-		{"<Control><Shift>a",       "<Actions>/canvasview/select-all-layers"},
-		{"<Control><Shift>d",       "<Actions>/canvasview/unselect-all-layers"},
-		{"<Mod1>Page_Up",           "<Actions>/canvasview/select-parent-layer"},
-		{"F9",                      "<Actions>/canvasview/render"},
-		{"F11",                     "<Actions>/canvasview/preview"},
-		{"F8",                      "<Actions>/canvasview/properties"},
-		{"F12",                     "<Actions>/canvasview/show-canvas-options"},
-		{"<control>i",              "<Actions>/canvasview/import"},
-		{"numbersign",              "<Actions>/canvasview/toggle-grid-show"},
-		{"<Control>l",              "<Actions>/canvasview/toggle-grid-snap"},
-		{"<Control>n",              "<Actions>/mainwindow/new"},
-		{"<Control>o",              "<Actions>/mainwindow/open"},
-		{"<Control>e",              "<Actions>/mainwindow/save-all"},
-		{"<Control>s",              "<Actions>/canvasview/save"},
-		{"<Control><Shift>s",       "<Actions>/canvasview/save-as"},
-		{"<Control>grave",          "<Actions>/canvasview/toggle-low-res"},
-		{"<Mod1>0",                 "<Actions>/canvasview/mask-none-ducks"},
-		{"<Mod1>1",                 "<Actions>/canvasview/mask-position-ducks"},
-		{"<Mod1>2",                 "<Actions>/canvasview/mask-vertex-ducks"},
-		{"<Mod1>3",                 "<Actions>/canvasview/mask-tangent-ducks"},
-		{"<Mod1>4",                 "<Actions>/canvasview/mask-radius-ducks"},
-		{"<Mod1>5",                 "<Actions>/canvasview/mask-width-ducks"},
-		{"<Mod1>6",                 "<Actions>/canvasview/mask-angle-ducks"},
-		{"<Mod1>7",                 "<Actions>/canvasview/mask-bone-setup-ducks"},
-		{"<Mod1>8",                 "<Actions>/canvasview/mask-bone-recursive-ducks"},
-		{"<Mod1>9",                 "<Actions>/canvasview/mask-bone-ducks"},
-		{"<Mod1>5",                 "<Actions>/canvasview/mask-widthpoint-position-ducks"},
-		{"<Control>parenleft" ,     "<Actions>/canvasview/decrease-low-res-pixel-size"},
-		{"<Control>parenright" ,    "<Actions>/canvasview/increase-low-res-pixel-size"},
-		{"equal",                   "<Actions>/canvasview/canvas-zoom-in"},
-		{"minus",                   "<Actions>/canvasview/canvas-zoom-out"},
-		{"0",                       "<Actions>/canvasview/canvas-zoom-fit"},
-		{"<Control>plus",           "<Actions>/canvasview/time-zoom-in"},
-		{"<Control>underscore",     "<Actions>/canvasview/time-zoom-out"},
-		{"bracketleft",             "<Actions>/canvasview/jump-prev-keyframe"},
-		{"bracketright",            "<Actions>/canvasview/jump-next-keyframe"},
-		{"comma",                   "<Actions>/canvasview/seek-prev-frame"},
-		{"period",                  "<Actions>/canvasview/seek-next-frame"},
-		{"<Shift>less",             "<Actions>/canvasview/seek-prev-second"},
-		{"<Shift>greater",          "<Actions>/canvasview/seek-next-second"},
-		{"<Control><Shift>less",    "<Actions>/canvasview/seek-begin"},
-		{"<Control><Shift>greater", "<Actions>/canvasview/seek-end"},
-		{"<Mod1>o",                 "<Actions>/canvasview/toggle-onion-skin"},
-		{"<Control>equal",          "<Actions>/canvasview/canvas-zoom-in-2" },
-		{"<Control>minus",          "<Actions>/canvasview/canvas-zoom-out-2"},
-		{"<Control>0",              "<Actions>/canvasview/canvas-zoom-fit-2"},
-		{"space",                   "<Actions>/canvasview/play"},
-		{"<Shift>space",            "<Actions>/canvasview/pause"},
-		{"<Control>Left",           "<Actions>/canvasview/toggle-keyframe-lock-past"},
-		{"<Control>Right",          "<Actions>/canvasview/toggle-keyframe-lock-future"},
-	};
-
-	return default_accel_map;
-}
 Glib::RefPtr<App> App::instance() {
 	static Glib::RefPtr<studio::App> app_reference = Glib::RefPtr<App>(new App());
 	return app_reference;
@@ -2051,10 +1953,6 @@ App::save_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
-			filesystem::Path filename = get_config_file("accelrc");
-			Gtk::AccelMap::save(filename.u8string());
-		}
-		{
 			filesystem::Path filename = get_config_file("language");
 
 			std::ofstream file(filename.c_str());
@@ -2111,19 +2009,6 @@ App::load_settings(const synfig::String& key_filter)
 void
 App::load_accel_map()
 {
-	try
-	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		{
-			filesystem::Path filename = get_config_file("accelrc");
-			Gtk::AccelMap::load(filename.u8string());
-		}
-	}
-	catch(...)
-	{
-		synfig::warning("Caught exception when attempting to load accel map settings.");
-	}
-
 	UserAcceleratorList list;
 	list.restore_to_defaults(*App::get_action_database());
 	list.load_from_file(get_config_file(accelerators_filename), false);
@@ -2133,16 +2018,6 @@ App::load_accel_map()
 void
 App::save_accel_map()
 {
-	try
-	{
-		filesystem::Path filename = get_config_file("accelrc");
-		Gtk::AccelMap::save(filename.u8string());
-	}
-	catch(...)
-	{
-		synfig::warning("Caught exception when attempting to save accel map settings.");
-	}
-
 	// only save those accelerators customized by user, i.e., without default values
 	UserAcceleratorList list;
 	list.accels = UserAcceleratorList::get_custom_accels_only(App::instance(), *App::get_action_database());

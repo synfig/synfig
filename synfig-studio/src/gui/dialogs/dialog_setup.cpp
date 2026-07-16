@@ -82,13 +82,6 @@ enum ShortcutsColumns{
 
 /* === P R O C E D U R E S ================================================= */
 
-static bool
-is_new_action_path(const std::string& accel_path)
-{
-	const std::string accel_path_preffix = "<Actions>";
-	return accel_path.substr(0, accel_path_preffix.length()) != accel_path_preffix;
-}
-
 /* === M E T H O D S ======================================================= */
 
 Dialog_Setup::Dialog_Setup(Gtk::Window& parent):
@@ -540,47 +533,12 @@ Dialog_Setup::create_shortcuts_page(Dialog_Template::PageInfo pi)
 	treeview_accels->get_column(shortcut_col_idx)->add_attribute(renderer_accel, "accel-mods", action_mods_col);
 	treeview_accels->get_column(shortcut_col_idx)->add_attribute(renderer_accel, "visible", action_is_action_col);
 
-	auto old_accel_map = App::get_default_accel_map();
-
 	// sort by action path
 	std::map<std::string, std::string> action_map;
-	for (const auto& pair : old_accel_map)
-		action_map[pair.second] = pair.first;
 
 	std::string current_section_name = "-";
 	Gtk::TreeRow current_section_row;
-	for (const auto& pair : action_map) {
-		const std::string &action_full_path = pair.first;
 
-		const auto separator_pos = action_full_path.find_last_of('/');
-
-		// New section?
-		if (action_full_path.compare(0, current_section_name.size(), current_section_name) != 0) {
-			current_section_name = action_full_path.substr(0, separator_pos);
-			current_section_row = *model->append();
-
-			current_section_row.set_value(action_short_name_col, current_section_name);
-			current_section_row.set_value(action_key_col, guint(0));
-			current_section_row.set_value(action_mods_col, Gdk::ModifierType(0));
-			current_section_row.set_value(action_is_action_col, false);
-			current_section_row.set_value(action_is_action_col, true);
-		}
-
-		Gtk::TreeRow row = *model->append(current_section_row.children());
-
-		Gtk::AccelKey accel;
-		if (!Gtk::AccelMap::lookup_entry(action_full_path, accel))
-			accel = Gtk::AccelKey(pair.second, action_full_path);
-
-		row.set_value(action_name_col, action_full_path);
-		row.set_value(action_key_col, accel.get_key());
-		row.set_value(action_mods_col, accel.get_mod());
-		row.set_value(action_short_name_col, action_full_path.substr(separator_pos+1));
-		row.set_value(action_is_action_col, true);
-		row.set_value(action_is_old_action_col, true);
-	}
-
-	action_map.clear();
 	for (const auto& entry : App::get_action_database()->get_entries()) {
 		auto accels = App::instance()->get_accels_for_action(entry.name_);
 		action_map[entry.name_] = accels.empty() ? "" : accels.front();
@@ -686,7 +644,6 @@ Dialog_Setup::on_restore_default_accels_pressed()
 		return;
 
 	auto accel_rows = treeview_accels->get_model()->children();
-	auto default_accel_map = App::get_default_accel_map();
 	for (const auto& section_row : accel_rows) {
 		for (auto& row : section_row.children()) {
 			Gtk::AccelKey accel;
@@ -694,20 +651,9 @@ Dialog_Setup::on_restore_default_accels_pressed()
 			std::string accel_path;
 			row.get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, accel_path);
 
-			const bool new_action_class = is_new_action_path(accel_path);
-
-			if (new_action_class) {
-				auto entry = App::get_action_database()->get(accel_path);
-				auto accel_str = entry.accelerators_.empty() ? "" : entry.accelerators_.front();
-				accel = Gtk::AccelKey(accel_str);
-			} else {
-				for (auto it = default_accel_map.begin(); it != default_accel_map.end(); ++it) {
-					if (it->second == accel_path) {
-						accel = Gtk::AccelKey(it->first);
-						break;
-					}
-				}
-			}
+			auto entry = App::get_action_database()->get(accel_path);
+			auto accel_str = entry.accelerators_.empty() ? "" : entry.accelerators_.front();
+			accel = Gtk::AccelKey(accel_str);
 
 			row.set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, accel.get_key());
 			row.set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, accel.get_mod());
@@ -1048,7 +994,6 @@ Dialog_Setup::on_restore_pressed()
 
 		// Keyboard accels
 		auto accel_rows = treeview_accels->get_model()->children();
-		auto default_accel_map = App::get_default_accel_map();
 		for (const auto& section_row : accel_rows) {
 			for (auto& row : section_row.children()) {
 				Gtk::AccelKey accel;
@@ -1056,28 +1001,11 @@ Dialog_Setup::on_restore_pressed()
 				std::string action_path;
 				row.get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, action_path);
 
-				const bool new_action_class = is_new_action_path(action_path);
-
-				if (new_action_class) {
-					auto entry = App::get_action_database()->get(action_path);
-					if (entry.accelerators_.empty())
-						App::instance()->unset_accels_for_action(action_path);
-					else
-						App::instance()->set_accels_for_action(action_path, entry.accelerators_);
-				} else {
-					bool found = false;
-					for (auto it = default_accel_map.begin(); it != default_accel_map.end(); ++it) {
-						if (it->second == action_path) {
-							Gtk::AccelKey accel(it->first);
-							Gtk::AccelMap::change_entry(action_path, accel.get_key(), accel.get_mod(), true);
-							found = true;
-							break;
-						}
-					}
-
-					if (!found)
-						Gtk::AccelMap::change_entry(action_path, 0, Gdk::ModifierType(0), true);
-				}
+				auto entry = App::get_action_database()->get(action_path);
+				if (entry.accelerators_.empty())
+					App::instance()->unset_accels_for_action(action_path);
+				else
+					App::instance()->set_accels_for_action(action_path, entry.accelerators_);
 			}
 		}
 	}
@@ -1240,8 +1168,6 @@ Dialog_Setup::on_apply_pressed()
 	auto accel_rows = treeview_accels->get_model()->children();
 	for (const auto& section_row : accel_rows) {
 		for (auto& row : section_row.children()) {
-			Gtk::AccelKey accel;
-
 			std::string action_path;
 			row.get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, action_path);
 			guint accel_key;
@@ -1249,16 +1175,11 @@ Dialog_Setup::on_apply_pressed()
 			Gdk::ModifierType accel_mod;
 			row.get_value(SHORTCUT_COLUMN_ID_ACTION_MODS, accel_mod);
 
-			const bool new_action_class = is_new_action_path(action_path);
-			if (new_action_class) {
-				Gtk::AccelKey accel(accel_key, accel_mod);
-				if (accel.is_null())
-					App::instance()->unset_accels_for_action(action_path);
-				else
-					App::instance()->set_accel_for_action(action_path, accel.get_abbrev());
-			} else {
-				Gtk::AccelMap::change_entry(action_path, accel_key, accel_mod, true);
-			}
+			Gtk::AccelKey accel(accel_key, accel_mod);
+			if (accel.is_null())
+				App::instance()->unset_accels_for_action(action_path);
+			else
+				App::instance()->set_accel_for_action(action_path, accel.get_abbrev());
 		}
 	}
 
@@ -1580,12 +1501,9 @@ Dialog_Setup::refresh()
 			std::string action_path;
 			row.get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, action_path);
 
-			const bool new_action_class = is_new_action_path(action_path);
-			if (new_action_class) {
-				section_iter = model->erase(section_iter);
-				section_deleted = true;
-				break;
-			}
+			section_iter = model->erase(section_iter);
+			section_deleted = true;
+			break;
 		}
 		if (!section_deleted)
 			++section_iter;
@@ -1643,16 +1561,10 @@ Dialog_Setup::refresh()
 			std::string action_path;
 			row.get_value(SHORTCUT_COLUMN_ID_ACTION_NAME, action_path);
 
-			const bool new_action_class = is_new_action_path(action_path);
-			if (new_action_class) {
-				break; // skip section. Updated in previous loop
-			}
-			Gtk::AccelMap::lookup_entry(action_path, accel);
-			row.set_value(SHORTCUT_COLUMN_ID_ACTION_KEY, accel.get_key());
-			row.set_value(SHORTCUT_COLUMN_ID_ACTION_MODS, accel.get_mod());
+			break; // skip section. Updated in previous loop
 		}
 	}
-
+	treeview_accels->expand_all();
 	refreshing = false;
 }
 
