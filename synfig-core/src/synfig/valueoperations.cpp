@@ -79,9 +79,9 @@ ValueTransformation::transform(const Transformation &transformation, const Value
 	if (type == type_bline_point)
 	{
 		BLinePoint bp(value.get(BLinePoint()));
-		bp.set_vertex( transformation.transform(bp.get_vertex()) );
-		bp.set_tangent1( transformation.transform(bp.get_tangent1(), false) );
-		bp.set_tangent2( transformation.transform(bp.get_tangent2(), false) );
+		bp.set_vertex(transformation.transform(bp.get_vertex()) );
+		bp.set_tangent2(transformation.transform(bp.get_tangent2(), false));
+		bp.set_tangent1(transformation.transform(bp.get_tangent1(), false));
 		return bp;
 	}
 	else
