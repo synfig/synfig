@@ -298,7 +298,6 @@ private:
 	ToggleDucksDial toggleducksdial;
 	bool toggling_ducks_;
 	ResolutionDial* resolutiondial_;
-	bool changing_resolution_;
 	Glib::RefPtr<Gtk::Adjustment> future_onion_adjustment_;
 	Glib::RefPtr<Gtk::Adjustment> past_onion_adjustment_;
 	Gtk::SpinButton *past_onion_spin;

@@ -554,7 +554,6 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 	children_tree=0;
 	toggling_ducks_=false;
 	toggling_animate_mode_=false;
-	changing_resolution_=false;
 	toggling_show_grid=false;
 	toggling_snap_grid=false;
 	toggling_show_guides=false;
@@ -2233,16 +2232,12 @@ CanvasView::rebuild_ducks()
 void
 CanvasView::decrease_low_res_pixel_size()
 {
-	if(changing_resolution_)
-		return;
-	changing_resolution_=true;
 
 	const std::vector<int>& sizes = CanvasView::get_pixel_sizes();
 	const int current_pixel_size = work_area->get_low_res_pixel_size();
 	if (current_pixel_size == sizes.front()) {
 		if (work_area->get_low_resolution_flag())
 			action_group_->activate_action("toggle-low-res");
-		changing_resolution_=false;
 		return;
 	}
 
@@ -2252,20 +2247,15 @@ CanvasView::decrease_low_res_pixel_size()
 		action_group_->activate_action("toggle-low-res");
 	auto value = Glib::Variant<int>::create(new_size);
 	action_group_->activate_action("set-low-res-pixel-size", value);
-	changing_resolution_=false;
 }
 
 void
 CanvasView::increase_low_res_pixel_size()
 {
-	if(changing_resolution_)
-		return;
-	changing_resolution_=true;
 
 	if (!work_area->get_low_resolution_flag()) {
 		// We were using "hi res" so change it to low res.
 		action_group_->activate_action("toggle-low-res");
-		changing_resolution_=false;
 		return;
 	}
 
@@ -2283,14 +2273,17 @@ CanvasView::increase_low_res_pixel_size()
 			break;
 		}
 	}
-	changing_resolution_=false;
 }
 
 void
 CanvasView::toggle_low_res_pixel_flag()
 {
+	// if(changing_resolution_)
+	// 	return;
+	// changing_resolution_=true;
 	work_area->toggle_low_resolution_flag();
 	action_group_->lookup_action("toggle-low-res")->change_state(work_area->get_low_resolution_flag());
+	// changing_resolution_=false;
 }
 
 void
