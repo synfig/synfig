@@ -34,19 +34,19 @@
 
 #include "docks/dockable.h"
 
-#include <gtkmm/stock.h>
 #if GTK_CHECK_VERSION (3,20,0)
 #include <gdkmm/seat.h>
 #else
 #include <gdkmm/devicemanager.h>
 #endif
 
+#include <gtkmm/icontheme.h>
+#include <gtkmm/image.h>
+
 #include <gui/app.h>
 #include <gui/docks/dockmanager.h>
 #include <gui/docks/dockbook.h>
 #include <gui/docks/dockdialog.h>
-
-#include <gtkmm/icontheme.h>
 
 #endif
 
@@ -299,7 +299,7 @@ Dockable::create_tab_label()
 		Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon_16x16");
 
 #if GTK_CHECK_VERSION(3,24,0)
-		Gtk::Image* icon(manage(new Gtk::Image(icon_name, iconsize)));
+		Gtk::Image* icon(Gtk::manage(new Gtk::Image(icon_name, iconsize)));
 #else
 		Gtk::Image* icon(manage(new Gtk::Image()));
 		icon->set_from_icon_name(icon_name, iconsize);

@@ -36,7 +36,6 @@
 #include "zoomdial.h"
 
 #include <gtkmm/image.h>
-#include <gtkmm/stock.h>
 
 #include <gui/actiondatabase.h>
 #include <gui/actionwidgethelper.h>

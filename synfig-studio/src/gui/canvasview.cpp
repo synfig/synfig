@@ -53,7 +53,6 @@
 #include <gtkmm/radioaction.h>
 #include <gtkmm/scrollbar.h>
 #include <gtkmm/separatormenuitem.h>
-#include <gtkmm/stock.h>
 #include <gtkmm/stylecontext.h>
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/toolitem.h>

@@ -36,7 +36,6 @@
 #include "docks/dock_history.h"
 
 #include <gtkmm/scrolledwindow.h>
-#include <gtkmm/stock.h>
 #include <gtkmm/stylecontext.h>
 
 #include <gui/actiondatabase.h>

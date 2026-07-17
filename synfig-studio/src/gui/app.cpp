@@ -67,7 +67,6 @@
 #if GTK_CHECK_VERSION(3, 20, 0)
 #include <gtkmm/shortcutswindow.h>
 #endif
-#include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
 #include <gtkmm/scrolledwindow.h>
 
@@ -2590,8 +2589,8 @@ App::dialog_export_file(const std::string& title, synfig::filesystem::Path& file
 	}
 
 	dialog->set_current_folder(prev_path.u8string());
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	dialog->add_button(_("Save"),   Gtk::RESPONSE_ACCEPT);
 
 	if (filename.empty()) {
 		dialog->set_filename(prev_path.u8string());
@@ -2748,8 +2747,8 @@ App::dialog_select_list_item(const std::string &title, const std::string &messag
 	grid->attach(*tree, 0, 1, 1, 2);
 
 	dialog.get_content_area()->pack_start(*grid);
-	dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog.add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
+	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	dialog.add_button(_("Open"),   Gtk::RESPONSE_ACCEPT);
 	dialog.set_default_size(300, 450);
 	dialog.show_all();
 

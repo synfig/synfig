@@ -47,7 +47,6 @@
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/menuitem.h>
 #include <gtkmm/separatormenuitem.h>
-#include <gtkmm/stock.h>
 
 #include <gui/actionwidgethelper.h>
 #include <gui/app.h>
