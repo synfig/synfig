@@ -2237,25 +2237,21 @@ CanvasView::decrease_low_res_pixel_size()
 		return;
 	changing_resolution_=true;
 
-	const std::vector<int> sizes = CanvasView::get_pixel_sizes();
+	const std::vector<int>& sizes = CanvasView::get_pixel_sizes();
 	const int current_pixel_size = work_area->get_low_res_pixel_size();
-	for (auto iter = sizes.begin(); iter != sizes.end(); ++iter)
-		if (*iter == current_pixel_size) {
-			if (iter == sizes.begin()) {
-				// we already have the smallest low-res pixels possible - turn off low-res instead
-				work_area->set_low_resolution_flag(false);
-			} else {
-				--iter;
-				auto value = Glib::Variant<int>::create(*iter);
-				action_group_->change_action_state("set-low-res-pixel-size", value); // to make sure the radiobutton in the menu is updated too
-				work_area->set_low_resolution_flag(true);
-			}
-			break;
-		}
-	// Update the "toggle-low-res" action
-	set_action_pressed(action_group_, "toggle-low-res", work_area->get_low_resolution_flag());
-	// Update toggle low res button
-	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
+	if (current_pixel_size == sizes.front()) {
+		if (work_area->get_low_resolution_flag())
+			action_group_->activate_action("toggle-low-res");
+		changing_resolution_=false;
+		return;
+	}
+
+	const auto size_it = synfig::binary_find(sizes.begin(), sizes.end(), current_pixel_size - 1);
+	const int new_size = size_it == sizes.end() ? sizes.back() : *size_it;
+	if (!work_area->get_low_resolution_flag())
+		action_group_->activate_action("toggle-low-res");
+	auto value = Glib::Variant<int>::create(new_size);
+	action_group_->activate_action("set-low-res-pixel-size", value);
 	changing_resolution_=false;
 }
 
@@ -2266,45 +2262,35 @@ CanvasView::increase_low_res_pixel_size()
 		return;
 	changing_resolution_=true;
 
-	if (!work_area->get_low_resolution_flag())
-	{
+	if (!work_area->get_low_resolution_flag()) {
 		// We were using "hi res" so change it to low res.
-		work_area->set_low_resolution_flag(true);
-		// Update the "toggle-low-res" action
-		set_action_pressed(action_group_, "toggle-low-res", true);
-		// Update the toggle low res button
-		resolutiondial_->update_lowres(true);
+		action_group_->activate_action("toggle-low-res");
 		changing_resolution_=false;
 		return;
 	}
 
-	const std::vector<int> sizes = CanvasView::get_pixel_sizes();
+	const std::vector<int>& sizes = CanvasView::get_pixel_sizes();
 	const int current_pixel_size = work_area->get_low_res_pixel_size();
-	for (auto iter = sizes.begin(); iter != sizes.end(); ++iter)
+
+	for (auto iter = sizes.begin(); iter != sizes.end(); ++iter) {
 		if (*iter == current_pixel_size) {
 			if (++iter != sizes.end()) {
 				auto value = Glib::Variant<int>::create(*iter);
-				action_group_->change_action_state("set-low-res-pixel-size", value); // to make sure the radiobutton in the menu is updated too
-				work_area->set_low_resolution_flag(true);
+				action_group_->activate_action("set-low-res-pixel-size", value);
+				if (!work_area->get_low_resolution_flag())
+					action_group_->activate_action("toggle-low-res");
 			}
 			break;
 		}
-	// Update the "toggle-low-res" action
-	set_action_pressed(action_group_, "toggle-low-res", work_area->get_low_resolution_flag());
-	// Update toggle low res button
-	resolutiondial_->update_lowres(work_area->get_low_resolution_flag());
+	}
 	changing_resolution_=false;
 }
 
 void
 CanvasView::toggle_low_res_pixel_flag()
 {
-	if(changing_resolution_)
-		return;
-	changing_resolution_=true;
 	work_area->toggle_low_resolution_flag();
 	action_group_->lookup_action("toggle-low-res")->change_state(work_area->get_low_resolution_flag());
-	changing_resolution_=false;
 }
 
 void
