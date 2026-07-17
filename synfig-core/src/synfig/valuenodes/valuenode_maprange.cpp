@@ -68,8 +68,12 @@ linear_map_range(const T& value, const T& from_min, const T& from_max, const T& 
 	}
 
 	T ret = to_min + (value - from_min) * Real(to_max - to_min) / Real(from_max - from_min);
-	if (clamp)
-		return synfig::clamp(ret, to_min, to_max);
+	if (clamp) {
+		if (to_min < to_max)
+			return synfig::clamp(ret, to_min, to_max);
+		else
+			return synfig::clamp(ret, to_max, to_min);
+	}
 	return ret;
 }
 
@@ -91,8 +95,12 @@ linear_map_range(const Angle& value, const Angle& from_min, const Angle& from_ma
 	}
 
 	Angle ret = to_min + (value - from_min) * Angle::deg(to_max - to_min).get() / Angle::deg(from_max - from_min).get();
-	if (clamp)
-		return synfig::clamp(ret, to_min, to_max);
+	if (clamp) {
+		if (to_min < to_max)
+			return synfig::clamp(ret, to_min, to_max);
+		else
+			return synfig::clamp(ret, to_max, to_min);
+	}
 	return ret;
 }
 
@@ -296,11 +304,18 @@ ValueNode_MapRange::get_inverse(const Time& t, const ValueBase& target_value) co
 		value = target_value;
 	} else {
 		if (type != type_vector) {
-			value = synfig::clamp(target_value, to_min, to_max);
+			if (to_min < to_max)
+				value = synfig::clamp(target_value, to_min, to_max);
+			else
+				value = synfig::clamp(target_value, to_max, to_min);
 		} else {
+			const auto minx = std::min(to_min.get(Vector())[0], to_max.get(Vector())[0]);
+			const auto maxx = std::max(to_min.get(Vector())[0], to_max.get(Vector())[0]);
+			const auto miny = std::min(to_min.get(Vector())[1], to_max.get(Vector())[1]);
+			const auto maxy = std::max(to_min.get(Vector())[1], to_max.get(Vector())[1]);
 			value = Vector(
-				synfig::clamp(target_value.get(Vector())[0], to_min.get(Vector())[0], to_max.get(Vector())[0]),
-				synfig::clamp(target_value.get(Vector())[1], to_min.get(Vector())[1], to_max.get(Vector())[1])
+				synfig::clamp(target_value.get(Vector())[0], minx, maxx),
+				synfig::clamp(target_value.get(Vector())[1], miny, maxy)
 			);
 		}
 	}
