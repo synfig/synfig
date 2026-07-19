@@ -567,23 +567,12 @@ void
 Dock_PalEdit::set_default_palette()
 {
 	synfig::filesystem::Path custom_path = App::get_config_file("default.spal");
-
-#if _WIN32
-	struct _stat s;
-	bool custom_exists = (_wstat(custom_path.c_str(), &s) == 0);
-#else
-	struct stat s;
-	bool custom_exists = (stat(custom_path.c_str(), &s) == 0);
-#endif
-
-	if (custom_exists) {
-		try {
-			palette_ = synfig::Palette::load_from_file(custom_path);
-			refresh();
-			return;
-		} catch (...) {
-			// si falla la carga, cae a la paleta hardcodeada de abajo
-		}
+	try {
+		palette_ = synfig::Palette::load_from_file(custom_path);
+		refresh();
+		return;
+	} catch (...) {
+		// If loading fails (e.g. file does not exist), fall back to the hardcoded palette below
 	}
 
 	int width=12;
