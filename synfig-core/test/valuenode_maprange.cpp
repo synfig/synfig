@@ -49,6 +49,19 @@ test_int_map_range_clamp_if_below_lower_bound()
 }
 
 static void
+test_int_map_range_clamp_if_below_lower_bound_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(int(-1));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(0));
+	map_range->set_link("from_max", ValueNode_Const::create(5));
+	map_range->set_link("to_min", ValueNode_Const::create(+10));
+	map_range->set_link("to_max", ValueNode_Const::create(-10));
+	ASSERT_EQUAL(+10, (*map_range)(0).get(int()));
+}
+
+static void
 test_int_map_range_does_not_clamp_to_lower_bound_if_clamp_is_off()
 {
 	auto map_range = ValueNode_MapRange::create(int(-1));
@@ -72,6 +85,19 @@ test_int_map_range_clamp_if_above_upper_bound()
 	map_range->set_link("to_min", ValueNode_Const::create(-10));
 	map_range->set_link("to_max", ValueNode_Const::create(+10));
 	ASSERT_EQUAL(10, (*map_range)(0).get(int()));
+}
+
+static void
+test_int_map_range_clamp_if_above_upper_bound_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(int(6));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(0));
+	map_range->set_link("from_max", ValueNode_Const::create(5));
+	map_range->set_link("to_min", ValueNode_Const::create(+10));
+	map_range->set_link("to_max", ValueNode_Const::create(-10));
+	ASSERT_EQUAL(-10, (*map_range)(0).get(int()));
 }
 
 static void
@@ -226,6 +252,19 @@ test_int_invert_map_range_works_when_below_target_lower_bound_even_if_clamped()
 }
 
 static void
+test_int_invert_map_range_works_when_below_target_lower_bound_even_if_clamped_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(int(0));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(0));
+	map_range->set_link("from_max", ValueNode_Const::create(5));
+	map_range->set_link("to_min", ValueNode_Const::create(+10));
+	map_range->set_link("to_max", ValueNode_Const::create(-10));
+	ASSERT_EQUAL(5, map_range->get_inverse(0, -14).get(int()));
+}
+
+static void
 test_int_invert_map_range_works_when_above_target_upper_bound()
 {
 	auto map_range = ValueNode_MapRange::create(int(0));
@@ -249,6 +288,19 @@ test_int_invert_map_range_works_when_above_target_upper_bound_even_if_clamped()
 	map_range->set_link("to_min", ValueNode_Const::create(-10));
 	map_range->set_link("to_max", ValueNode_Const::create(+10));
 	ASSERT_EQUAL(5, map_range->get_inverse(0, 14).get(int()));
+}
+
+static void
+test_int_invert_map_range_works_when_above_target_upper_bound_even_if_clamped_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(int(0));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(0));
+	map_range->set_link("from_max", ValueNode_Const::create(5));
+	map_range->set_link("to_min", ValueNode_Const::create(+10));
+	map_range->set_link("to_max", ValueNode_Const::create(-10));
+	ASSERT_EQUAL(0, map_range->get_inverse(0, 14).get(int()));
 }
 
 static void
@@ -400,6 +452,19 @@ test_angle_map_range_clamp_if_below_lower_bound()
 }
 
 static void
+test_angle_map_range_clamp_if_below_lower_bound_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Angle::deg(-1));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Angle::deg(0)));
+	map_range->set_link("from_max", ValueNode_Const::create(Angle::deg(5)));
+	map_range->set_link("to_min", ValueNode_Const::create(Angle::deg(+10)));
+	map_range->set_link("to_max", ValueNode_Const::create(Angle::deg(-10)));
+	ASSERT_EQUAL(Angle::deg(+10), (*map_range)(0).get(Angle()));
+}
+
+static void
 test_angle_map_range_does_not_clamp_to_lower_bound_if_clamp_is_off()
 {
 	auto map_range = ValueNode_MapRange::create(Angle::deg(-1));
@@ -423,6 +488,19 @@ test_angle_map_range_clamp_if_above_upper_bound()
 	map_range->set_link("to_min", ValueNode_Const::create(Angle::deg(-10)));
 	map_range->set_link("to_max", ValueNode_Const::create(Angle::deg(+10)));
 	ASSERT_EQUAL(Angle::deg(10), (*map_range)(0).get(Angle()));
+}
+
+static void
+test_angle_map_range_clamp_if_above_upper_bound_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Angle::deg(6));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Angle::deg(0)));
+	map_range->set_link("from_max", ValueNode_Const::create(Angle::deg(5)));
+	map_range->set_link("to_min", ValueNode_Const::create(Angle::deg(+10)));
+	map_range->set_link("to_max", ValueNode_Const::create(Angle::deg(-10)));
+	ASSERT_EQUAL(Angle::deg(-10), (*map_range)(0).get(Angle()));
 }
 
 static void
@@ -577,6 +655,19 @@ test_angle_invert_map_range_works_when_below_target_lower_bound_even_if_clamped(
 }
 
 static void
+test_angle_invert_map_range_works_when_below_target_lower_bound_even_if_clamped_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Angle::deg(0));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Angle::deg(0)));
+	map_range->set_link("from_max", ValueNode_Const::create(Angle::deg(5)));
+	map_range->set_link("to_min", ValueNode_Const::create(Angle::deg(+10)));
+	map_range->set_link("to_max", ValueNode_Const::create(Angle::deg(-10)));
+	ASSERT_EQUAL(Angle::deg(5), map_range->get_inverse(0, Angle::deg(-14)).get(Angle()));
+}
+
+static void
 test_angle_invert_map_range_works_when_above_target_upper_bound()
 {
 	auto map_range = ValueNode_MapRange::create(Angle::deg(0));
@@ -600,6 +691,19 @@ test_angle_invert_map_range_works_when_above_target_upper_bound_even_if_clamped(
 	map_range->set_link("to_min", ValueNode_Const::create(Angle::deg(-10)));
 	map_range->set_link("to_max", ValueNode_Const::create(Angle::deg(+10)));
 	ASSERT_EQUAL(Angle::deg(5), map_range->get_inverse(0, Angle::deg(14)).get(Angle()));
+}
+
+static void
+test_angle_invert_map_range_works_when_above_target_upper_bound_even_if_clamped_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Angle::deg(0));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Angle::deg(0)));
+	map_range->set_link("from_max", ValueNode_Const::create(Angle::deg(5)));
+	map_range->set_link("to_min", ValueNode_Const::create(Angle::deg(+10)));
+	map_range->set_link("to_max", ValueNode_Const::create(Angle::deg(-10)));
+	ASSERT_EQUAL(Angle::deg(0), map_range->get_inverse(0, Angle::deg(14)).get(Angle()));
 }
 
 static void
@@ -752,6 +856,19 @@ test_real_map_range_clamp_if_below_lower_bound()
 }
 
 static void
+test_real_map_range_clamp_if_below_lower_bound_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Real(-1));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Real(0)));
+	map_range->set_link("from_max", ValueNode_Const::create(Real(5)));
+	map_range->set_link("to_min", ValueNode_Const::create(Real(+10)));
+	map_range->set_link("to_max", ValueNode_Const::create(Real(-10)));
+	ASSERT_EQUAL(+10, (*map_range)(0).get(Real()));
+}
+
+static void
 test_real_map_range_does_not_clamp_to_lower_bound_if_clamp_is_off()
 {
 	auto map_range = ValueNode_MapRange::create(Real(-1));
@@ -762,6 +879,19 @@ test_real_map_range_does_not_clamp_to_lower_bound_if_clamp_is_off()
 	map_range->set_link("to_min", ValueNode_Const::create(Real(-10)));
 	map_range->set_link("to_max", ValueNode_Const::create(Real(+10)));
 	ASSERT_EQUAL(-14, (*map_range)(0).get(Real()));
+}
+
+static void
+test_real_map_range_clamp_if_above_upper_bound_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Real(6));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Real(0)));
+	map_range->set_link("from_max", ValueNode_Const::create(Real(5)));
+	map_range->set_link("to_min", ValueNode_Const::create(Real(+10)));
+	map_range->set_link("to_max", ValueNode_Const::create(Real(-10)));
+	ASSERT_EQUAL(-10, (*map_range)(0).get(Real()));
 }
 
 static void
@@ -929,6 +1059,19 @@ test_real_invert_map_range_works_when_below_target_lower_bound_even_if_clamped()
 }
 
 static void
+test_real_invert_map_range_works_when_below_target_lower_bound_even_if_clamped_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Real(0));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Real(0)));
+	map_range->set_link("from_max", ValueNode_Const::create(Real(5)));
+	map_range->set_link("to_min", ValueNode_Const::create(Real(+10)));
+	map_range->set_link("to_max", ValueNode_Const::create(Real(-10)));
+	ASSERT_EQUAL(5, map_range->get_inverse(0, -14.).get(Real()));
+}
+
+static void
 test_real_invert_map_range_works_when_above_target_upper_bound()
 {
 	auto map_range = ValueNode_MapRange::create(Real(0));
@@ -939,6 +1082,19 @@ test_real_invert_map_range_works_when_above_target_upper_bound()
 	map_range->set_link("to_min", ValueNode_Const::create(Real(-10)));
 	map_range->set_link("to_max", ValueNode_Const::create(Real(+10)));
 	ASSERT_EQUAL(6, map_range->get_inverse(0, 14.).get(Real()));
+}
+
+static void
+test_real_invert_map_range_works_when_above_target_upper_bound_even_if_clamped_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Real(0));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Real(0)));
+	map_range->set_link("from_max", ValueNode_Const::create(Real(5)));
+	map_range->set_link("to_min", ValueNode_Const::create(Real(+10)));
+	map_range->set_link("to_max", ValueNode_Const::create(Real(-10)));
+	ASSERT_EQUAL(0, map_range->get_inverse(0, 14.).get(Real()));
 }
 
 static void
@@ -1104,6 +1260,19 @@ test_time_map_range_clamp_if_below_lower_bound()
 }
 
 static void
+test_time_map_range_clamp_if_below_lower_bound_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Time(-1));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Time(0)));
+	map_range->set_link("from_max", ValueNode_Const::create(Time(5)));
+	map_range->set_link("to_min", ValueNode_Const::create(Time(+10)));
+	map_range->set_link("to_max", ValueNode_Const::create(Time(-10)));
+	ASSERT_EQUAL(Time(+10), (*map_range)(0).get(Time()));
+}
+
+static void
 test_time_map_range_does_not_clamp_to_lower_bound_if_clamp_is_off()
 {
 	auto map_range = ValueNode_MapRange::create(Time(-1));
@@ -1114,6 +1283,19 @@ test_time_map_range_does_not_clamp_to_lower_bound_if_clamp_is_off()
 	map_range->set_link("to_min", ValueNode_Const::create(Time(-10)));
 	map_range->set_link("to_max", ValueNode_Const::create(Time(+10)));
 	ASSERT_EQUAL(Time(-14), (*map_range)(0).get(Time()));
+}
+
+static void
+test_time_map_range_clamp_if_above_upper_bound_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Time(6));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Time(0)));
+	map_range->set_link("from_max", ValueNode_Const::create(Time(5)));
+	map_range->set_link("to_min", ValueNode_Const::create(Time(+10)));
+	map_range->set_link("to_max", ValueNode_Const::create(Time(-10)));
+	ASSERT_EQUAL(Time(-10), (*map_range)(0).get(Time()));
 }
 
 static void
@@ -1281,6 +1463,19 @@ test_time_invert_map_range_works_when_below_target_lower_bound_even_if_clamped()
 }
 
 static void
+test_time_invert_map_range_works_when_below_target_lower_bound_even_if_clamped_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Time(0));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Time(0)));
+	map_range->set_link("from_max", ValueNode_Const::create(Time(5)));
+	map_range->set_link("to_min", ValueNode_Const::create(Time(+10)));
+	map_range->set_link("to_max", ValueNode_Const::create(Time(-10)));
+	ASSERT_EQUAL(Time(5), map_range->get_inverse(0, Time(-14)).get(Time()));
+}
+
+static void
 test_time_invert_map_range_works_when_above_target_upper_bound()
 {
 	auto map_range = ValueNode_MapRange::create(Time(0));
@@ -1304,6 +1499,19 @@ test_time_invert_map_range_works_when_above_target_upper_bound_even_if_clamped()
 	map_range->set_link("to_min", ValueNode_Const::create(Time(-10)));
 	map_range->set_link("to_max", ValueNode_Const::create(Time(+10)));
 	ASSERT_EQUAL(Time(5), map_range->get_inverse(0, Time(14)).get(Time()));
+}
+
+static void
+test_time_invert_map_range_works_when_above_target_upper_bound_even_if_clamped_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Time(0));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Time(0)));
+	map_range->set_link("from_max", ValueNode_Const::create(Time(5)));
+	map_range->set_link("to_min", ValueNode_Const::create(Time(+10)));
+	map_range->set_link("to_max", ValueNode_Const::create(Time(-10)));
+	ASSERT_EQUAL(Time(0), map_range->get_inverse(0, Time(14)).get(Time()));
 }
 
 static void
@@ -1456,6 +1664,19 @@ test_vector_map_range_clamp_if_below_lower_bound()
 }
 
 static void
+test_vector_map_range_clamp_if_below_lower_bound_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Vector(-1, 0));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Vector(0, 1)));
+	map_range->set_link("from_max", ValueNode_Const::create(Vector(5, 6)));
+	map_range->set_link("to_min", ValueNode_Const::create(Vector(+10, +11)));
+	map_range->set_link("to_max", ValueNode_Const::create(Vector(-10, -9)));
+	ASSERT_EQUAL(Vector(+10, +11), (*map_range)(0).get(Vector()));
+}
+
+static void
 test_vector_map_range_does_not_clamp_to_lower_bound_if_clamp_is_off()
 {
 	auto map_range = ValueNode_MapRange::create(Vector(-1, 0));
@@ -1466,6 +1687,19 @@ test_vector_map_range_does_not_clamp_to_lower_bound_if_clamp_is_off()
 	map_range->set_link("to_min", ValueNode_Const::create(Vector(-10, -9)));
 	map_range->set_link("to_max", ValueNode_Const::create(Vector(+10, +11)));
 	ASSERT_EQUAL(Vector(-14, -13), (*map_range)(0).get(Vector()));
+}
+
+static void
+test_vector_map_range_clamp_if_above_upper_bound_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Vector(6, 7));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Vector(0, 1)));
+	map_range->set_link("from_max", ValueNode_Const::create(Vector(5, 6)));
+	map_range->set_link("to_min", ValueNode_Const::create(Vector(+10, +11)));
+	map_range->set_link("to_max", ValueNode_Const::create(Vector(-10, -9)));
+	ASSERT_EQUAL(Vector(-10, -9), (*map_range)(0).get(Vector()));
 }
 
 static void
@@ -1633,6 +1867,19 @@ test_vector_invert_map_range_works_when_below_target_lower_bound_even_if_clamped
 }
 
 static void
+test_vector_invert_map_range_works_when_below_target_lower_bound_even_if_clamped_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Vector(0, 0));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Vector(0, 1)));
+	map_range->set_link("from_max", ValueNode_Const::create(Vector(5, 6)));
+	map_range->set_link("to_min", ValueNode_Const::create(Vector(+10, +11)));
+	map_range->set_link("to_max", ValueNode_Const::create(Vector(-10, -9)));
+	ASSERT_EQUAL(Vector(5, 6), map_range->get_inverse(0, Vector(-14, -13)).get(Vector()));
+}
+
+static void
 test_vector_invert_map_range_works_when_above_target_upper_bound()
 {
 	auto map_range = ValueNode_MapRange::create(Vector(0, 0));
@@ -1656,6 +1903,19 @@ test_vector_invert_map_range_works_when_above_target_upper_bound_even_if_clamped
 	map_range->set_link("to_min", ValueNode_Const::create(Vector(-10, -9)));
 	map_range->set_link("to_max", ValueNode_Const::create(Vector(+10, +11)));
 	ASSERT_EQUAL(Vector(5, 6), map_range->get_inverse(0, Vector(14, 15)).get(Vector()));
+}
+
+static void
+test_vector_invert_map_range_works_when_above_target_upper_bound_even_if_clamped_with_inverted_target_range()
+{
+	auto map_range = ValueNode_MapRange::create(Vector(0, 0));
+	map_range->set_link("interpolation", ValueNode_Const::create(0));
+	map_range->set_link("clamp", ValueNode_Const::create(true));
+	map_range->set_link("from_min", ValueNode_Const::create(Vector(0, 1)));
+	map_range->set_link("from_max", ValueNode_Const::create(Vector(5, 6)));
+	map_range->set_link("to_min", ValueNode_Const::create(Vector(+10, +11)));
+	map_range->set_link("to_max", ValueNode_Const::create(Vector(-10, -9)));
+	ASSERT_EQUAL(Vector(0, 1), map_range->get_inverse(0, Vector(14, 15)).get(Vector()));
 }
 
 static void
@@ -1800,6 +2060,8 @@ int main() {
 	TEST_FUNCTION(test_int_map_range_does_not_clamp_to_lower_bound_if_clamp_is_off);
 	TEST_FUNCTION(test_int_map_range_clamp_if_above_upper_bound);
 	TEST_FUNCTION(test_int_map_range_does_not_clamp_to_upper_bound_if_clamp_is_off);
+	TEST_FUNCTION(test_int_map_range_clamp_if_below_lower_bound_with_inverted_target_range);
+	TEST_FUNCTION(test_int_map_range_clamp_if_above_upper_bound_with_inverted_target_range);
 
 	TEST_FUNCTION(test_int_map_range_matches_from_to_lower_bounds);
 	TEST_FUNCTION(test_int_map_range_matches_from_to_upper_bounds);
@@ -1816,6 +2078,8 @@ int main() {
 	TEST_FUNCTION(test_int_invert_map_range_works_when_below_target_lower_bound_even_if_clamped);
 	TEST_FUNCTION(test_int_invert_map_range_works_when_above_target_upper_bound);
 	TEST_FUNCTION(test_int_invert_map_range_works_when_above_target_upper_bound_even_if_clamped);
+	TEST_FUNCTION(test_int_invert_map_range_works_when_below_target_lower_bound_even_if_clamped_with_inverted_target_range);
+	TEST_FUNCTION(test_int_invert_map_range_works_when_above_target_upper_bound_even_if_clamped_with_inverted_target_range);
 
 	TEST_FUNCTION(test_int_invert_map_range_matches_lower_bounds);
 	TEST_FUNCTION(test_int_invert_map_range_matches_upper_bounds);
@@ -1834,6 +2098,8 @@ int main() {
 	TEST_FUNCTION(test_angle_map_range_does_not_clamp_to_lower_bound_if_clamp_is_off);
 	TEST_FUNCTION(test_angle_map_range_clamp_if_above_upper_bound);
 	TEST_FUNCTION(test_angle_map_range_does_not_clamp_to_upper_bound_if_clamp_is_off);
+	TEST_FUNCTION(test_angle_map_range_clamp_if_below_lower_bound_with_inverted_target_range);
+	TEST_FUNCTION(test_angle_map_range_clamp_if_above_upper_bound_with_inverted_target_range);
 
 	TEST_FUNCTION(test_angle_map_range_matches_from_to_lower_bounds);
 	TEST_FUNCTION(test_angle_map_range_matches_from_to_upper_bounds);
@@ -1850,6 +2116,8 @@ int main() {
 	TEST_FUNCTION(test_angle_invert_map_range_works_when_below_target_lower_bound_even_if_clamped);
 	TEST_FUNCTION(test_angle_invert_map_range_works_when_above_target_upper_bound);
 	TEST_FUNCTION(test_angle_invert_map_range_works_when_above_target_upper_bound_even_if_clamped);
+	TEST_FUNCTION(test_angle_invert_map_range_works_when_below_target_lower_bound_even_if_clamped_with_inverted_target_range);
+	TEST_FUNCTION(test_angle_invert_map_range_works_when_above_target_upper_bound_even_if_clamped_with_inverted_target_range);
 
 	TEST_FUNCTION(test_angle_invert_map_range_matches_lower_bounds);
 	TEST_FUNCTION(test_angle_invert_map_range_matches_upper_bounds);
@@ -1868,6 +2136,8 @@ int main() {
 	TEST_FUNCTION(test_real_map_range_does_not_clamp_to_lower_bound_if_clamp_is_off);
 	TEST_FUNCTION(test_real_map_range_clamp_if_above_upper_bound);
 	TEST_FUNCTION(test_real_map_range_does_not_clamp_to_upper_bound_if_clamp_is_off);
+	TEST_FUNCTION(test_real_map_range_clamp_if_below_lower_bound_with_inverted_target_range);
+	TEST_FUNCTION(test_real_map_range_clamp_if_above_upper_bound_with_inverted_target_range);
 
 	TEST_FUNCTION(test_real_map_range_matches_from_to_lower_bounds);
 	TEST_FUNCTION(test_real_map_range_matches_from_to_upper_bounds);
@@ -1884,6 +2154,8 @@ int main() {
 	TEST_FUNCTION(test_real_invert_map_range_works_when_below_target_lower_bound_even_if_clamped);
 	TEST_FUNCTION(test_real_invert_map_range_works_when_above_target_upper_bound);
 	TEST_FUNCTION(test_real_invert_map_range_works_when_above_target_upper_bound_even_if_clamped);
+	TEST_FUNCTION(test_real_invert_map_range_works_when_below_target_lower_bound_even_if_clamped_with_inverted_target_range);
+	TEST_FUNCTION(test_real_invert_map_range_works_when_above_target_upper_bound_even_if_clamped_with_inverted_target_range);
 
 	TEST_FUNCTION(test_real_invert_map_range_matches_lower_bounds);
 	TEST_FUNCTION(test_real_invert_map_range_matches_upper_bounds);
@@ -1902,6 +2174,8 @@ int main() {
 	TEST_FUNCTION(test_time_map_range_does_not_clamp_to_lower_bound_if_clamp_is_off);
 	TEST_FUNCTION(test_time_map_range_clamp_if_above_upper_bound);
 	TEST_FUNCTION(test_time_map_range_does_not_clamp_to_upper_bound_if_clamp_is_off);
+	TEST_FUNCTION(test_time_map_range_clamp_if_below_lower_bound_with_inverted_target_range);
+	TEST_FUNCTION(test_time_map_range_clamp_if_above_upper_bound_with_inverted_target_range);
 
 	TEST_FUNCTION(test_time_map_range_matches_from_to_lower_bounds);
 	TEST_FUNCTION(test_time_map_range_matches_from_to_upper_bounds);
@@ -1918,6 +2192,8 @@ int main() {
 	TEST_FUNCTION(test_time_invert_map_range_works_when_below_target_lower_bound_even_if_clamped);
 	TEST_FUNCTION(test_time_invert_map_range_works_when_above_target_upper_bound);
 	TEST_FUNCTION(test_time_invert_map_range_works_when_above_target_upper_bound_even_if_clamped);
+	TEST_FUNCTION(test_time_invert_map_range_works_when_below_target_lower_bound_even_if_clamped_with_inverted_target_range);
+	TEST_FUNCTION(test_time_invert_map_range_works_when_above_target_upper_bound_even_if_clamped_with_inverted_target_range);
 
 	TEST_FUNCTION(test_time_invert_map_range_matches_lower_bounds);
 	TEST_FUNCTION(test_time_invert_map_range_matches_upper_bounds);
@@ -1936,6 +2212,8 @@ int main() {
 	TEST_FUNCTION(test_vector_map_range_does_not_clamp_to_lower_bound_if_clamp_is_off);
 	TEST_FUNCTION(test_vector_map_range_clamp_if_above_upper_bound);
 	TEST_FUNCTION(test_vector_map_range_does_not_clamp_to_upper_bound_if_clamp_is_off);
+	TEST_FUNCTION(test_vector_map_range_clamp_if_below_lower_bound_with_inverted_target_range);
+	TEST_FUNCTION(test_vector_map_range_clamp_if_above_upper_bound_with_inverted_target_range);
 
 	TEST_FUNCTION(test_vector_map_range_matches_from_to_lower_bounds);
 	TEST_FUNCTION(test_vector_map_range_matches_from_to_upper_bounds);
@@ -1952,6 +2230,8 @@ int main() {
 	TEST_FUNCTION(test_vector_invert_map_range_works_when_below_target_lower_bound_even_if_clamped);
 	TEST_FUNCTION(test_vector_invert_map_range_works_when_above_target_upper_bound);
 	TEST_FUNCTION(test_vector_invert_map_range_works_when_above_target_upper_bound_even_if_clamped);
+	TEST_FUNCTION(test_vector_invert_map_range_works_when_below_target_lower_bound_even_if_clamped_with_inverted_target_range);
+	TEST_FUNCTION(test_vector_invert_map_range_works_when_above_target_upper_bound_even_if_clamped_with_inverted_target_range);
 
 	TEST_FUNCTION(test_vector_invert_map_range_matches_lower_bounds);
 	TEST_FUNCTION(test_vector_invert_map_range_matches_upper_bounds);
