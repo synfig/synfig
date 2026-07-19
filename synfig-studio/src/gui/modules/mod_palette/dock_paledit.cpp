@@ -387,7 +387,11 @@ Dock_PalEdit::show_menu(int i)
 			i ));
 	menu->append(*item);
 
-	menu->popup(3,gtk_get_current_event_time());
+#if GTK_CHECK_VERSION(3, 22, 0)
+	menu->popup_at_pointer(nullptr);
+#else
+	menu->popup(3, gtk_get_current_event_time());
+#endif
 }
 
 int
