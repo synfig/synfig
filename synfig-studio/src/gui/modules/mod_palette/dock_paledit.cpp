@@ -192,6 +192,17 @@ Dock_PalEdit::Dock_PalEdit():
 			&Dock_PalEdit::set_default_palette
 		)
 	);
+	action_group->add(Gtk::Action::create_with_icon_name(
+		"palette-save-as-default",
+		"document-save-as",
+		_("Set as default"),
+		_("Save current palette as the default palette")
+	),
+		sigc::mem_fun(
+			*this,
+			&Dock_PalEdit::on_set_default_pressed
+		)
+	);
 
 
 	App::ui_manager()->insert_action_group(action_group);
@@ -204,6 +215,7 @@ Dock_PalEdit::Dock_PalEdit():
 	"	<toolitem action='palette-save' />"
 	"	<toolitem action='palette-load' />"
 	"	<toolitem action='palette-set-default' />"
+	"	<toolitem action='palette-save-as-default' />"
 	"	</toolbar>"
 	"</ui>"
 	;
@@ -340,6 +352,18 @@ Dock_PalEdit::on_open_pressed()
 		break;
 	}
 	refresh();
+}
+
+void
+Dock_PalEdit::on_set_default_pressed()
+{
+	synfig::filesystem::Path filename = App::get_config_file("default.spal");
+	try {
+		palette_.save_to_file(filename);
+	} catch (const std::string& err) {
+		synfig::error(err);
+		App::dialog_message_1b("ERROR", err, "details", _("Close"));
+	}
 }
 
 static Gtk::MenuItem*
@@ -542,6 +566,26 @@ Dock_PalEdit::select_outline_color(int i)
 void
 Dock_PalEdit::set_default_palette()
 {
+	synfig::filesystem::Path custom_path = App::get_config_file("default.spal");
+
+#if _WIN32
+	struct _stat s;
+	bool custom_exists = (_wstat(custom_path.c_str(), &s) == 0);
+#else
+	struct stat s;
+	bool custom_exists = (stat(custom_path.c_str(), &s) == 0);
+#endif
+
+	if (custom_exists) {
+		try {
+			palette_ = synfig::Palette::load_from_file(custom_path);
+			refresh();
+			return;
+		} catch (...) {
+			// si falla la carga, cae a la paleta hardcodeada de abajo
+		}
+	}
+
 	int width=12;
 
 	palette_.clear();
