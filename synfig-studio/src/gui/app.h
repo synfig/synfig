@@ -244,6 +244,8 @@ public:
 	static int preview_fps;
 	static synfig::String preview_zoom_level;
 
+	static int brush_undo_mode;
+
 	//The sound effects that will be used
 	static synfig::SoundProcessor* sound_render_done;
 	static bool use_render_done_sound;
