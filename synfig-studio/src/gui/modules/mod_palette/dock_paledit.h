@@ -68,6 +68,8 @@ class Dock_PalEdit : public Dockable
 
 	void on_open_pressed();
 
+	void on_set_default_pressed();
+
 	void show_menu(int i);
 
 	sigc::signal<void> signal_changed_;
