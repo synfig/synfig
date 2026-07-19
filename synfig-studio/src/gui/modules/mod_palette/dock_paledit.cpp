@@ -33,7 +33,6 @@
 #ifdef HAVE_CONFIG_H
 #	include <config.h>
 #endif
-#include <canvasview.h>
 #include "dock_paledit.h"
 
 #include <errno.h>
@@ -45,6 +44,7 @@
 #include <gtkmm/stylecontext.h>
 
 #include <gui/app.h>
+#include <gui/canvasview.h>
 #include <gui/dialogs/dialog_color.h>
 #include <gui/localization.h>
 #include <gui/widgets/widget_color.h>
@@ -383,11 +383,11 @@ Dock_PalEdit::show_menu(int i)
 	item = image_menu_item("type_color_icon", _("Apply to selected layer"), true);
 	item->signal_activate().connect(
 		sigc::bind(
-			sigc::mem_fun(*this,&studio::Dock_PalEdit::apply_color_to_selected_layer),
+			sigc::mem_fun(*this, &studio::Dock_PalEdit::apply_color_to_selected_layer),
 			i ));
 	menu->append(*item);
 
-	menu->popup(4,gtk_get_current_event_time());
+	menu->popup(3,gtk_get_current_event_time());
 }
 
 int
@@ -547,47 +547,48 @@ Dock_PalEdit::select_outline_color(int i)
 }
 
 void
-Dock_PalEdit::apply_color_to_selected_layer(int i){
-	
+Dock_PalEdit::apply_color_to_selected_layer(int i) const
+{
 	Color color = get_color(i);
 
-    CanvasView::Handle canvas_view = App::get_selected_canvas_view();
-    if (!canvas_view) 
+	CanvasView::Handle canvas_view = App::get_selected_canvas_view();
+	if (!canvas_view)
+		return;
+	etl::handle<Instance> instance = canvas_view->get_instance();
+	if (!instance)
 		return;
 
-    // Get ALL selected layers 
-    synfigapp::SelectionManager::LayerList layers = canvas_view->canvas_interface()->get_selection_manager()->get_selected_layers();
-    if (layers.empty()) 
+	// Get ALL selected layers
+	synfigapp::SelectionManager::LayerList layers = canvas_view->get_selection_manager()->get_selected_layers();
+	if (layers.empty())
 		return;
 
-    synfigapp::Action::PassiveGrouper group(canvas_view->canvas_interface()->get_instance().get(), _("Apply palette color"));
+	synfigapp::Action::PassiveGrouper group(instance.get(), _("Apply palette color"));
 
-    for (synfig::Layer::Handle layer : layers)
-    {
-        if (!layer) 
+	for (const synfig::Layer::Handle& layer : layers) {
+		if (!layer)
 			continue;
 
 		synfig::ValueBase color_param = layer->get_param("color");
-		if (color_param.get_type() == synfig::type_nil)
-    		continue;
-
-        synfig::Canvas::Handle canvas = layer->get_canvas();
-        synfigapp::Action::Handle action = synfigapp::Action::create("LayerParamSet");
-        if (!action) 
+		if (color_param.get_type() == type_nil)
 			continue;
 
-        action->set_param("canvas", canvas);
-        action->set_param("canvas_interface", canvas_view->canvas_interface());
-        action->set_param("layer", layer);
-        action->set_param("param", std::string("color"));
-        action->set_param("new_value", synfig::ValueBase(color));
-
-        if (!action->is_ready()) 
+		synfig::Canvas::Handle canvas = layer->get_canvas();
+		synfigapp::Action::Handle action = synfigapp::Action::create("LayerParamSet");
+		if (!action)
 			continue;
 
-        canvas_view->canvas_interface()->get_instance()->perform_action(action);
-    }
+		action->set_param("canvas", canvas);
+		action->set_param("canvas_interface", canvas_view->canvas_interface());
+		action->set_param("layer", layer);
+		action->set_param("param", std::string("color"));
+		action->set_param("new_value", synfig::ValueBase(color));
 
+		if (!action->is_ready())
+			continue;
+
+		instance->perform_action(action);
+	}
 }
 
 void
