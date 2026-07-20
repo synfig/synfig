@@ -843,10 +843,26 @@ OS::get_current_working_directory()
 	return filesystem::Path::from_native(current_dir_str.data()).lexically_normal();
 #else
 
-	struct stat st;
+	// For AppImages: OWD  -  Path to working directory at the time the AppImage is called
+	// ( https://docs.appimage.org/packaging-guide/environment-variables.html )
+	if (char* owd = getenv("OWD")) {
+		struct stat st;
+		if (stat(owd, &st) == 0 && S_ISDIR(st.st_mode)) {
+			auto path = filesystem::Path::from_native(owd).lexically_normal();
+			if (path.is_absolute())
+				return path;
+		}
+	}
+
+	// For POSIX systems
+	// ( https://pubs.opengroup.org/onlinepubs/9799919799/utilities/cd.html
+	// and https://pubs.opengroup.org/onlinepubs/9799919799/utilities/pwd.html )
 	if (char* pwd = getenv("PWD")) {
+		struct stat st;
 		if (stat(pwd, &st) == 0 && S_ISDIR(st.st_mode)) {
-			return filesystem::Path::from_native(pwd).lexically_normal();
+			auto path = filesystem::Path::from_native(pwd).lexically_normal();
+			if (path.is_absolute())
+				return path;
 		}
 	}
 
