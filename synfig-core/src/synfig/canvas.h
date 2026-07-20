@@ -722,6 +722,14 @@ protected:
 
 public:
 	void fill_sound_processor(SoundProcessor &soundProcessor) const;
+
+	/** Check if @a id doesn't have invalid characters */
+	static bool is_valid_id(const String& id);
+	/** Replace each invalid character of @a id with @a replacer
+	 *  (or erase them if @a replacer is empty
+	 */
+	static String make_valid_id(const String& id, const String& replacer = {});
+
 }; // END of class Canvas
 
 }; // END of namespace synfig

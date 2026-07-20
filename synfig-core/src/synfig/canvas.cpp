@@ -398,29 +398,13 @@ Canvas::find_layer(const ContextParams &context_params, const Point &pos)
 	return get_context(context_params).hit_check(pos);
 }
 
-static bool
-valid_id(const String &x)
-{
-	static const char bad_chars[]=" :#@$^&()*";
-	unsigned int i;
-
-	if(!x.empty() && x[0]>='0' && x[0]<='9')
-		return false;
-
-	for(i=0;i<sizeof(bad_chars);i++)
-		if(x.find_first_of(bad_chars[i])!=std::string::npos)
-			return false;
-
-	return true;
-}
-
 void
 Canvas::set_id(const String &x)
 {
 	if(is_inline() && parent_)
 		throw std::runtime_error("Inline Canvas cannot have an ID");
 
-	if(!valid_id(x))
+	if (!is_valid_id(x))
 		throw std::runtime_error("Invalid ID");
 	id_=x;
 	signal_id_changed_();
@@ -1098,7 +1082,7 @@ Canvas::add_child_canvas(Canvas::Handle child_canvas, const synfig::String& id)
 	if(child_canvas->parent() && !child_canvas->is_inline())
 		throw std::runtime_error("Cannot add child canvas because it belongs to someone else!");
 
-	if(!valid_id(id))
+	if (!is_valid_id(id))
 		throw std::runtime_error("Invalid ID");
 	
 	try
@@ -1584,4 +1568,45 @@ Canvas::fill_sound_processor(SoundProcessor &soundProcessor) const
 	for(IndependentContext c = begin(); *c; ++c)
 		if ((*c)->active())
 			(*c)->fill_sound_processor(soundProcessor);
+}
+
+static const char bad_chars_for_id[] = " :#@$^&()*\t\n\r\v\f\x85\xa0";
+
+bool
+Canvas::is_valid_id(const String& id)
+{
+	if (!id.empty() && id[0] >= '0' && id[0] <= '9')
+		return false;
+
+	// FIXME: check for valid UTF-8 encoding?
+
+	for (size_t i = 0; i < sizeof(bad_chars_for_id); ++i)
+		if (id.find_first_of(bad_chars_for_id[i]) != std::string::npos)
+			return false;
+
+	return true;
+}
+
+String
+Canvas::make_valid_id(const String& id, const String& replacer)
+{
+	String new_id = id;
+
+	// FIXME: check for valid UTF-8 encoding?
+
+	size_t pos;
+	while ((pos = new_id.find_first_of(bad_chars_for_id)) != String::npos)
+		new_id.replace(pos, 1, replacer);
+
+	// avoid starting with digit
+	if (!new_id.empty()) {
+		if (new_id.front() >= '0' && new_id.front() <= '9') {
+			if (replacer.size() == 1) {
+				new_id.front() = replacer[0];
+			} else {
+				new_id = replacer + new_id.substr(1);
+			}
+		}
+	}
+	return new_id;
 }
