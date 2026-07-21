@@ -551,6 +551,9 @@ test_BAD_gradient_3_colors_fetches_the_LAST_color_for_the_exact_middle_position(
 	Gradient g1(Color::red(), Color::green(), Color::blue());
 
 	const Color bad_color = original_bad_implementation_for_1311_to_153(g1, 0.5);
+	ASSERT_APPROX_EQUAL(0.0f, bad_color.get_r());
+	ASSERT_APPROX_EQUAL(0.0f, bad_color.get_g());
+	ASSERT_APPROX_EQUAL(1.0f, bad_color.get_b());
 
 	g1 = Gradient::from_bad_version(g1);
 
