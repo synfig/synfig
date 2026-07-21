@@ -233,7 +233,7 @@ std::ostream& operator<<(std::ostream& os, std::nullptr_t)
 		error_msg += exc.c_str(); \
 	} catch (const char* exc) { \
 		error_msg = "<Unexpected const char* exception thrown>: "; \
-		error_msg += exc; \
+		error_msg += exc == nullptr ? ">null<" : exc; \
 	} catch (...) { \
 		error_msg = "<Unexpected and unknown exception thrown>"; \
 	} \

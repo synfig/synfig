@@ -73,7 +73,7 @@
 			_exception_guard_error_str = synfig::strprintf("%s Uncaught Exception:string: %s", __PRETTY_FUNCTION__, str.c_str()); \
 			_exception_guard_error_code = 1001; \
 		} catch(const char* str) { \
-			_exception_guard_error_str = synfig::strprintf("%s Uncaught Exception:const char*: %s", __PRETTY_FUNCTION__, str); \
+			_exception_guard_error_str = synfig::strprintf("%s Uncaught Exception:const char*: %s", __PRETTY_FUNCTION__, str == nullptr ? ">null<" : str); \
 			_exception_guard_error_code = 1006; \
 		} catch(synfig::Exception::Exception& x) { \
 			_exception_guard_error_str = synfig::strprintf("%s Synfig Exception: %s", __PRETTY_FUNCTION__, x.what()); \
