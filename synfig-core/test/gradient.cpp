@@ -544,7 +544,7 @@ test_BAD_gradient_3_colors_fetches_the_last_color_for_the_exact_last_position()
 	g1 = Gradient::from_bad_version(g1);
 	ASSERT(Color::blue() == g1(+1.0));
 }
-#include <algorithm>
+
 void
 test_BAD_gradient_3_colors_fetches_the_LAST_color_for_the_exact_middle_position()
 {
@@ -553,10 +553,6 @@ test_BAD_gradient_3_colors_fetches_the_LAST_color_for_the_exact_middle_position(
 	const Color bad_color = original_bad_implementation_for_1311_to_153(g1, 0.5);
 
 	g1 = Gradient::from_bad_version(g1);
-
-
-	fprintf(stderr, "COR ~: %s\n", bad_color.get_string().c_str());
-	fprintf(stderr, "COR #: %s\n", g1(0.5).get_string().c_str());
 
 	ASSERT_APPROX_EQUAL(0.0f, g1(0.5).get_r());
 	ASSERT_APPROX_EQUAL(0.0f, g1(0.5).get_g());
