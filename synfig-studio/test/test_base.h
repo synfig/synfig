@@ -222,8 +222,20 @@ std::ostream& operator<<(std::ostream& os, std::nullptr_t)
 	} catch (std::exception& exc) { \
 	    error_msg = "<Unexpected std::exception thrown>: "; \
 	    error_msg += exc.what(); \
+	} catch (synfigapp::Action::Error& exc) { \
+		error_msg = "<Unexpected synfigapp::Action::Error thrown>: "; \
+		error_msg += exc.get_desc().c_str(); \
+	} catch (int exc) { \
+		error_msg = "<Unexpected int exception thrown>: "; \
+		error_msg += std::to_string(exc); \
+	} catch (const std::string& exc) { \
+		error_msg = "<Unexpected std::string exception thrown>: "; \
+		error_msg += exc.c_str(); \
+	} catch (const char* exc) { \
+		error_msg = "<Unexpected const char* exception thrown>: "; \
+		error_msg += exc == nullptr ? ">null<" : exc; \
 	} catch (...) { \
-	    error_msg = "<Unexpected and unknown exception thrown>"; \
+		error_msg = "<Unexpected and unknown exception thrown>"; \
 	} \
 \
 	if (!error_msg.empty()) { \
