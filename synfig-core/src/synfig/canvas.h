@@ -728,7 +728,7 @@ public:
 	/** Replace each invalid character of @a id with @a replacer
 	 *  (or erase them if @a replacer is empty
 	 */
-	static String make_valid_id(const String& id, const String& replacer = {});
+	static String make_valid_id(String id, String replacer = {});
 
 }; // END of class Canvas
 

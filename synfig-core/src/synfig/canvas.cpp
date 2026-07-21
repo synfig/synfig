@@ -1580,33 +1580,46 @@ Canvas::is_valid_id(const String& id)
 
 	// FIXME: check for valid UTF-8 encoding?
 
-	for (size_t i = 0; i < sizeof(bad_chars_for_id); ++i)
-		if (id.find_first_of(bad_chars_for_id[i]) != std::string::npos)
-			return false;
+	if (id.find_first_of(bad_chars_for_id) != std::string::npos)
+		return false;
 
 	return true;
 }
 
 String
-Canvas::make_valid_id(const String& id, const String& replacer)
+Canvas::make_valid_id(String id, String replacer)
 {
-	String new_id = id;
+	const String default_replacer = "_"; // MUST be a valid char!
 
-	// FIXME: check for valid UTF-8 encoding?
+	if (!replacer.empty() && !is_valid_id(replacer)) {
+		synfig::error(_("Logic error: replacer contains invalid character for Canvas ID: %s."), replacer.c_str());
+		replacer = default_replacer;
+	}
 
-	size_t pos;
-	while ((pos = new_id.find_first_of(bad_chars_for_id)) != String::npos)
-		new_id.replace(pos, 1, replacer);
+	// FIXME: check for valid UTF-8 encoding for id and replacer?
+
+	size_t pos = 0;
+	while ((pos = id.find_first_of(bad_chars_for_id, pos)) != String::npos)
+		id.replace(pos, 1, replacer);
 
 	// avoid starting with digit
-	if (!new_id.empty()) {
-		if (new_id.front() >= '0' && new_id.front() <= '9') {
-			if (replacer.size() == 1) {
-				new_id.front() = replacer[0];
+	if (!id.empty()) {
+		if (id.front() >= '0' && id.front() <= '9') {
+			if (replacer.empty()) {
+				id = default_replacer + id; // force prepend a valid char
+			} else if (replacer.size() == 1) {
+				id.front() = replacer[0];
 			} else {
-				new_id = replacer + new_id.substr(1);
+				id = replacer + id.substr(1);
 			}
 		}
 	}
-	return new_id;
+
+	if (!is_valid_id(id)) {
+		synfig::error(_("Logic error: corrected Canvas ID is actually invalid!: %s."), id.c_str());
+	}
+
+	assert(is_valid_id(id));
+
+	return id;
 }
