@@ -163,7 +163,7 @@ Action::LayerEmbed::prepare()
 		Canvas::Handle sub_canvas = layer_pastecanvas->get_sub_canvas();
 
 		// generate name
-		std::string fname = sub_canvas->get_file_name().stem().u8string();
+		std::string fname = filesystem::Path::filename_sans_extension(filesystem::Path::basename(sub_canvas->get_file_name()));
 		fname = Canvas::make_valid_id(fname, "_");
 		if (fname.empty())
 			fname = "canvas";
