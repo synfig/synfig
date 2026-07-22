@@ -77,14 +77,10 @@ private:
 	bool allow_errors_;
 	//! File name to parse
 	String filename;
-	//! Path of the file name to parse
-	String path;
 	//! Error text when errors found
 	String errors_text;
 	//! Warning text when warnings found
 	String warnings_text;
-	//! Seems not to be used
-	GUID guid_;
 	//
 	bool in_bones_section;
 
@@ -122,12 +118,6 @@ public:
 
 	//! Returns the number of warnings in the last parse
 	int warning_count()const { return total_warnings_; }
-
-	//! Sets the path of the file to parse
-	void set_path(const synfig::String& x) { path=x; }
-
-	//! Gets the path of the file to parse
-	const synfig::String& get_path()const { return path; }
 
 	//! Gets error text string
 	const synfig::String& get_errors_text()const { return errors_text; }
