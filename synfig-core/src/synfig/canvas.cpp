@@ -87,7 +87,8 @@ Canvas::Canvas(const String &id):
 	cur_time_	(0),
 	is_inline_	(false),
 	is_dirty_	(true),
-	outline_grow(0.0)
+	outline_grow(0.0),
+	interpolation_mode_(INTERPOLATION_CLAMPED)
 {
 	identifier_.file_system = FileSystemNative::instance();
 	_CanvasCounter::counter++;
