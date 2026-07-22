@@ -9,7 +9,6 @@ set_target_properties(libsynfig PROPERTIES PREFIX "")
 
 add_definitions(-DVERSION="${STUDIO_VERSION_MAJOR}.${STUDIO_VERSION_MINOR}.${STUDIO_VERSION_PATCH}")
 
-message(STATUS "MLT DIR: ${MLT_INCLUDE_DIRS}")
 
 # By default, the libtool places its headers in the system directory (/usr/local/include), and
 # compiler automatically finds ltdl.h header. But on MacOS, CMake overrides the system directory
@@ -130,9 +129,16 @@ target_link_libraries(libsynfig PUBLIC
 	${Intl_LIBRARIES}
 )
 
-if (MLT_FOUND)
-	target_link_libraries(libsynfig PUBLIC PkgConfig::MLT)
-endif ()
+if(AUDIO_BACKEND STREQUAL "mlt")
+    target_link_libraries(libsynfig PUBLIC PkgConfig::MLT)
+    message(STATUS "MLT include dirs: ${MLT_INCLUDE_DIRS}")
+elseif(AUDIO_BACKEND STREQUAL "sdl2")
+    target_link_libraries(libsynfig PUBLIC PkgConfig::SDL2)
+    message(STATUS "SDL2 include dirs: ${SDL2_INCLUDE_DIRS}")
+elseif(AUDIO_BACKEND STREQUAL "sdl3")
+    target_link_libraries(libsynfig PUBLIC PkgConfig::SDL3)
+    message(STATUS "SDL3 include dirs: ${SDL3_INCLUDE_DIRS}")
+endif()
 
 ## Install headers
 ## TODO: find a better way to do that, maybe?
