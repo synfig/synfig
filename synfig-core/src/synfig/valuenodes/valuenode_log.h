@@ -40,6 +40,12 @@
 
 namespace synfig {
 
+/*! \class ValueNode_Logarithm
+**	\brief Computes the natural logarithm (ln) of the input.
+**
+**	Accepts input of type Real or Angle.
+**	If input is Angle, it is converted to radians before applying log().
+*/
 class ValueNode_Logarithm : public LinkableValueNode
 {
 	ValueNode::RHandle link_;
