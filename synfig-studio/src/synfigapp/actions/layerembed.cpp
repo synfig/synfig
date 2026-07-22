@@ -64,6 +64,26 @@ ACTION_SET_VERSION(Action::LayerEmbed,"0.0");
 
 /* === P R O C E D U R E S ================================================= */
 
+static bool
+is_external_canvas(Canvas::LooseHandle owner_canvas, Canvas::Handle sub_canvas)
+{
+	return sub_canvas
+		&& !sub_canvas->is_inline()
+		&& (!owner_canvas || sub_canvas->get_root() != owner_canvas->get_root());
+}
+
+static std::string
+get_canvas_export_name(Canvas::Handle canvas)
+{
+	std::string fname;
+	if (canvas && !canvas->is_root())
+		fname = canvas->get_id();
+	if (fname.empty() && canvas)
+		fname = filesystem::Path::filename_sans_extension(filesystem::Path::basename(canvas->get_file_name()));
+
+	return fname;
+}
+
 /* === M E T H O D S ======================================================= */
 
 Action::ParamVocab
@@ -92,7 +112,8 @@ Action::LayerEmbed::is_candidate(const ParamList &x)
 	if (layer_pastecanvas)
 	{
 		Canvas::Handle canvas = layer_pastecanvas->get_sub_canvas();
-		if (canvas && canvas->is_root())
+		Canvas::LooseHandle owner_canvas = x.find("canvas")->second.get_canvas();
+		if (is_external_canvas(owner_canvas, canvas))
 			return true;
 	}
 
@@ -120,7 +141,10 @@ Action::LayerEmbed::set_param(const synfig::String& name, const Action::Param &p
 		if (layer_pastecanvas)
 		{
 			Canvas::Handle canvas = layer_pastecanvas->get_sub_canvas();
-			if (canvas && canvas->is_root())
+			Canvas::LooseHandle owner_canvas = get_canvas();
+			if (!owner_canvas)
+				owner_canvas = layer->get_canvas();
+			if (is_external_canvas(owner_canvas, canvas))
 			{
 				this->layer_pastecanvas = layer_pastecanvas;
 				return true;
@@ -163,7 +187,7 @@ Action::LayerEmbed::prepare()
 		Canvas::Handle sub_canvas = layer_pastecanvas->get_sub_canvas();
 
 		// generate name
-		std::string fname = filesystem::Path::filename_sans_extension(filesystem::Path::basename(sub_canvas->get_file_name()));
+		std::string fname = get_canvas_export_name(sub_canvas);
 		static const char bad_chars[]=" :#@$^&()*";
 		for (std::string::iterator j = fname.begin(); j != fname.end(); ++j)
 			for (const char *k = bad_chars; *k != 0; ++k)
