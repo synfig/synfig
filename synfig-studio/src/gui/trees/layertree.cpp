@@ -437,6 +437,27 @@ LayerTree::select_layer(synfig::Layer::Handle layer)
 }
 
 void
+LayerTree::select_layer_row(synfig::Layer::Handle layer)
+{
+	Gtk::TreeModel::Children::iterator iter;
+	if(layer_tree_store_->find_layer_row(layer,iter))
+	{
+		if(sorted_layer_tree_store_)
+			iter=sorted_layer_tree_store_->convert_child_iter_to_iter(iter);
+
+		Gtk::TreePath path(iter);
+		// do not auto expand when selecting a group layer to avoid "opening" it on selection
+		if(!(layer->get_name() == "group"))
+			layer_tree_view().expand_to_path(path);
+
+		layer_tree_view().scroll_to_row(path);
+		// Deliberately no set_cursor() here -- see declaration comment
+		// in layertree.h for why.
+		layer_tree_view().get_selection()->select(iter);
+	}
+}
+
+void
 LayerTree::select_all_children(Gtk::TreeModel::Children::iterator iter)
 {
 	layer_tree_view().get_selection()->select(iter);
@@ -461,7 +482,7 @@ LayerTree::select_layers(const LayerList &layer_list)
 {
 	LayerList::const_iterator iter;
 	for(iter = layer_list.begin(); iter != layer_list.end(); ++iter)
-		select_layer(*iter);
+		select_layer_row(*iter);
 }
 
 static inline void __layer_grabber(const Gtk::TreeModel::iterator& iter, LayerTree::LayerList* ret)
