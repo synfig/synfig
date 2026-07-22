@@ -62,7 +62,7 @@ class TaskSpiralGradient: public rendering::Task, public rendering::TaskInterfac
 {
 public:
 	typedef etl::handle<TaskSpiralGradient> Handle;
-	SYNFIG_EXPORT static Token token;
+	static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
 	Point center;
@@ -86,7 +86,7 @@ class TaskSpiralGradientSW: public TaskSpiralGradient, public rendering::TaskPai
 {
 public:
 	typedef etl::handle<TaskSpiralGradientSW> Handle;
-	SYNFIG_EXPORT static Token token;
+	static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
 	mutable Real pw = 0;
@@ -123,9 +123,9 @@ public:
 	}
 };
 
-SYNFIG_EXPORT rendering::Task::Token TaskSpiralGradient::token(
+rendering::Task::Token TaskSpiralGradient::token(
 	DescAbstract<TaskSpiralGradient>("TaskSpiralGradient") );
-SYNFIG_EXPORT rendering::Task::Token TaskSpiralGradientSW::token(
+rendering::Task::Token TaskSpiralGradientSW::token(
 	DescReal<TaskSpiralGradientSW, TaskSpiralGradient>("TaskSpiralGradientSW") );
 
 

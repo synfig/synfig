@@ -65,7 +65,7 @@ class TaskHalfTone3: public rendering::TaskPixelProcessorBase, public rendering:
 {
 public:
 	typedef etl::handle<TaskHalfTone3> Handle;
-	SYNFIG_EXPORT static Token token;
+	static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
 	Halftone tone[3];
@@ -86,7 +86,7 @@ class TaskHalfTone3SW: public TaskHalfTone3, public rendering::TaskFilterPixelSW
 {
 public:
 	typedef etl::handle<TaskHalfTone3> Handle;
-	SYNFIG_EXPORT static Token token;
+	static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
 	void pre_run(const Matrix3& /*raster_to_world*/) const override
@@ -143,9 +143,9 @@ protected:
 	mutable rendering::Transformation::Handle inverted_transformation;
 };
 
-SYNFIG_EXPORT rendering::Task::Token TaskHalfTone3::token(
+rendering::Task::Token TaskHalfTone3::token(
 	DescAbstract<TaskHalfTone3>("HalfTone3") );
-SYNFIG_EXPORT rendering::Task::Token TaskHalfTone3SW::token(
+rendering::Task::Token TaskHalfTone3SW::token(
 	DescReal<TaskHalfTone3SW, TaskHalfTone3>("HalfTone3SW") );
 
 /* === M E T H O D S ======================================================= */
