@@ -137,6 +137,16 @@ private:
 	*/
 	void update_param_tree_header_height();
 
+	//! Selects a layer's row in the tree without moving the keyboard
+	//! cursor/focus to it.
+	/*! Unlike select_layer(), this does not call TreeView::set_cursor(),
+	**  which in GTK3 performs an implicit "clear and select" of the row
+	**  it targets. select_layers() calls this once per layer to build up
+	**  a multi-selection; using select_layer() there would clear each
+	**  previously selected row as soon as the next one was selected
+	**  (synfig/synfig#3775). */
+	void select_layer_row(synfig::Layer::Handle layer);
+
 	/*
  -- ** -- S I G N A L   T E R M I N A L S -------------------------------------
 	*/
