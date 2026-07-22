@@ -46,6 +46,8 @@
 #include <synfig/surface.h>
 #include <synfig/value.h>
 
+#include <synfig/rendering/opengl/api.h>
+
 #endif
 
 using namespace synfig;
@@ -68,6 +70,8 @@ rendering::Task::Token TaskLumaKey::token(
 	DescAbstract<TaskLumaKey>("LumaKey") );
 rendering::Task::Token TaskLumaKeySW::token(
 	DescReal<TaskLumaKeySW, TaskLumaKey>("LumaKeySW") );
+rendering::Task::Token TaskLumaKeyGL::token(
+	DescReal<TaskLumaKeyGL, TaskLumaKey>("LumaKeyGL") );
 
 TaskLumaKey::TaskLumaKey()
 {
@@ -138,6 +142,66 @@ TaskLumaKeySW::run(RunParams&) const
 	}
 
 	return true;
+}
+
+bool
+TaskLumaKeyGL::run(RunParams&) const
+{
+    if(!is_valid()) return true;
+
+    LockWrite ldst(this);
+    if(!ldst) return false;
+
+    rendering::gl::Context::Lock lock(env().get_or_create_context());
+
+    glEnable(GL_SCISSOR_TEST);
+
+    glViewport(0, 0, ldst->get_width(), ldst->get_height());
+    glScissor(target_rect.minx, target_rect.miny, target_rect.get_width(), target_rect.get_height());
+
+    rendering::gl::Framebuffer& framebuffer = ldst->get_framebuffer();
+
+    const Task::Handle& sub = sub_task();
+
+    RectInt r = target_rect;
+    if(sub && sub->is_valid())
+    {
+        VectorInt oa = rendering::TaskList::calc_target_offset(*this, *sub);
+        RectInt ra = sub->target_rect - oa;
+
+        if(ra.is_valid())
+        {
+            rect_set_intersect(ra, ra, r);
+
+            // blit sub_task_a in the intersection
+            LockRead lsrc(sub);
+            if(!lsrc) {
+                return false;
+            }
+
+            rendering::gl::Framebuffer& src = lsrc.cast_handle()->get_framebuffer();
+            src.use_read(0);
+
+            framebuffer.use_write();
+
+            glScissor(ra.minx, ra.miny, ra.get_width(), ra.get_height());
+
+            rendering::gl::Programs::Program shader = env().get_or_create_context().get_program("luma_key");
+            shader.use();
+            shader.set_1i("tex", 0);
+            shader.set_2i("offset", oa);
+            shader.set_mat5x5("mat", matrix);
+
+            rendering::gl::Plane plane;
+            plane.render();
+
+            src.unuse();
+            framebuffer.unuse();
+        }
+    }
+
+    glDisable(GL_SCISSOR_TEST);
+    return true;
 }
 
 LumaKey::LumaKey()
