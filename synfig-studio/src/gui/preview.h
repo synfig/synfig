@@ -196,9 +196,11 @@ class Widget_Preview : public Gtk::Table
 	Gtk::Scale		scr_time_scrub;
 	Gtk::ToggleButton*	b_loop;
 	Gtk::ScrolledWindow	preview_window;
+	Gtk::Label*	playback_label;
 	//Glib::RefPtr<Gdk::GC>		gc_area;
 	Glib::RefPtr<Gdk::Pixbuf>	currentbuf;
 	int					currentindex;
+	double 				playback_speed;
 	//double			timeupdate;
 	double				timedisp;
 	//double				audiotime;
@@ -230,6 +232,9 @@ class Widget_Preview : public Gtk::Table
 
 	//bool play_frameupdate();
 	void update();
+	bool on_playback_input_focus_out(GdkEventFocus* event);
+	
+	void update_playback();
 
 	void scrub_updated(double t);
 
@@ -306,6 +311,7 @@ private:
 	Gtk::Box *toolbar;
 	Gtk::Button *play_button;
 	Gtk::Button *pause_button;
+	Gtk::Entry *playback_input;
 	bool on_key_pressed(GdkEventKey*);
 	void on_zoom_entry_activated();
 
