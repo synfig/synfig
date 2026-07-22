@@ -209,7 +209,14 @@ public:
 
 	etl::handle<synfigapp::SelectionManager> get_selection_manager() { return layer_tree_store_->canvas_interface()->get_selection_manager(); }
 
-	void select_layer(synfig::Layer::Handle layer);
+	//! Selects a layer's row in the tree.
+	/*! When move_cursor is false, the keyboard cursor/focus is left
+	**  untouched: only the row's selection state is changed. This is
+	**  needed because TreeView::set_cursor() performs an implicit
+	**  "clear and select" of the row it targets in GTK3, which would
+	**  wipe out a multi-selection built up by calling this repeatedly
+	**  from select_layers() (synfig/synfig#3775). */
+	void select_layer(synfig::Layer::Handle layer, bool move_cursor = true);
 	void select_layers(const LayerList& layer_list);
 	void select_all_children_layers(synfig::Layer::Handle layer);
 	void select_all_children(Gtk::TreeModel::Children::iterator iter);
