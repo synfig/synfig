@@ -131,7 +131,7 @@ Layer_TextGroup::Layer_TextGroup()
     , param_invert(ValueBase(false))
     , param_wave_amplitude(ValueBase(Real(0.05)))
     , param_wave_period(ValueBase(Time(1.0)))
-    , param_broadcast(ValueBase(false))
+    , param_share_target(ValueBase(String()))
 {  
     SET_INTERPOLATION_DEFAULTS();  
     SET_STATIC_DEFAULTS();  
@@ -205,12 +205,14 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
         if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();
     });
 
-    IMPORT_VALUE_PLUS(param_broadcast, {
-        broadcast_dynamic_param("anim_offset");
-        // immediately snap it back to false so it can't be silently replayed
-        param_broadcast = ValueBase(false);
+    IMPORT_VALUE_PLUS(param_share_target, {
+        String target = param_share_target.get(String());
+        if (!target.empty())
+            share_param(target);
+        // immediately snap it back to empty so it can't be silently replayed
+        param_share_target = ValueBase(String());
     });
-
+    
     return Layer_PasteCanvas::set_param(param, value);
 }
 
@@ -243,7 +245,7 @@ Layer_TextGroup::get_param(const String& param) const
 	EXPORT_VALUE(param_stagger_delay);
 	EXPORT_VALUE(param_wave_amplitude);
 	EXPORT_VALUE(param_wave_period);
-	EXPORT_VALUE(param_broadcast);
+	EXPORT_VALUE(param_share_target);
     EXPORT_NAME();  
     EXPORT_VERSION();  
     return Layer_PasteCanvas::get_param(param);  
@@ -379,7 +381,7 @@ Layer_TextGroup::get_param_vocab() const
     	.set_local_name(_("Wave Period"))  
     	.set_description(_("Duration of one full wave cycle"))  
 	);
-	ret.push_back(ParamDesc("broadcast")
+	ret.push_back(ParamDesc("share_target")
     	.set_local_name(_("Share Animation"))
    		.set_description(_("Connect all glyphs to the shared animation graph"))
 	);
@@ -509,12 +511,12 @@ Layer_TextGroup::rebuild_shared_registry()
 }
 
 void
-Layer_TextGroup::broadcast_dynamic_param(const String& param)
+Layer_TextGroup::share_param(const String& param)
 {
     Canvas::Handle canvas = get_sub_canvas();
     if (!canvas) return;
 
-    // Find the current master glyph
+    // Find the current source glyph
     Layer_GlyphShape::Handle source_glyph;
     size_t i = 0;
     for (auto iter = canvas->begin(); iter != canvas->end(); ++iter, ++i)
@@ -523,7 +525,7 @@ Layer_TextGroup::broadcast_dynamic_param(const String& param)
 
         if (!g) continue;
 
-        if (i == master_glyph_index_)
+        if (i == source_glyph_index_)
         {
             source_glyph = g;
             break;

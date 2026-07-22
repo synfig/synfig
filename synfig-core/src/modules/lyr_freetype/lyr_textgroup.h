@@ -36,7 +36,7 @@ private:
     synfig::ValueBase param_invert;
 	synfig::ValueBase param_wave_amplitude;
 	synfig::ValueBase param_wave_period;
-	synfig::ValueBase param_broadcast;
+	synfig::ValueBase param_share_target;
 
 public:  
     Layer_TextGroup();  
@@ -54,9 +54,9 @@ private:
 	void attach_shared_nodes();
 	bool in_attach_shared_ = false;
 	void detach_shared_param(const synfig::String& param);
-	size_t master_glyph_index_ = 0;
+	size_t source_glyph_index_ = 0;
 	void rebuild_shared_registry();
-	void broadcast_dynamic_param(const synfig::String& param);   
+	void share_param(const synfig::String& param);   
 	void request_full_resync();
 	
 protected:
