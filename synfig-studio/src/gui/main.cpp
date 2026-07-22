@@ -57,6 +57,8 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
+void register_crash_report();
+
 /* === M E T H O D S ======================================================= */
 
 /* === E N T R Y P O I N T ================================================= */
@@ -77,6 +79,10 @@ int main(int argc, char **argv)
 	
 	std::cout << std::endl;
 	std::cout << "   " << _("synfig studio -- starting up application...") << std::endl << std::endl;
+
+#ifdef _WIN32
+	register_crash_report();
+#endif
 
 	SYNFIG_EXCEPTION_GUARD_BEGIN()
 	
