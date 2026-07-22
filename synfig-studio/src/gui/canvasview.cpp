@@ -1414,8 +1414,7 @@ CanvasView::init_menus()
 		{"seek-begin", "animate_seek_begin_icon", N_("Seek to Begin"), "", sigc::mem_fun(*this, &CanvasView::on_seek_begin_pressed) },
 
 		{"jump-next-keyframe", "animate_seek_next_keyframe_icon", N_("Seek to Next Keyframe"),      "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_next_keyframe) },
-		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", N_("Seek to Previous Keyframe") , "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_prev_keyframe) },
-
+		{"jump-prev-keyframe", "animate_seek_prev_keyframe_icon", N_("Seek to Previous Keyframe") , "", sigc::mem_fun(*canvas_interface(), &CanvasInterface::jump_to_prev_keyframe) }
 	};
 
 	action_group = Gtk::ActionGroup::create("canvasview");
@@ -1433,16 +1432,8 @@ CanvasView::init_menus()
 	// Prevent call to preview window before preview option has created the preview window
 	action_group->get_action("dialog-flipbook")->set_sensitive(false);
 
-	auto instance = get_instance().get();
-	for ( const auto& plugin : App::plugin_manager.plugins() )
-	{
-		std::string id = plugin.id;
-		action_group->add(
-			Gtk::Action::create(id, plugin.name.get()),
-			[instance, id](){instance->run_plugin(id, true);}
-		);
-	}
-
+	update_plugin_menu();
+	App::plugin_manager.signal_list_changed().connect(sigc::mem_fun(*this, &CanvasView::update_plugin_menu));
 	// Low-Res Quality Menu
 	for (int i : get_pixel_sizes()) {
 		Glib::RefPtr<Gtk::RadioAction> action = Gtk::RadioAction::create(
@@ -1544,6 +1535,22 @@ CanvasView::init_menus()
 						  sigc::mem_fun(*this,&CanvasView::mask_bone_ducks));
 	}
 
+}
+
+void
+CanvasView::update_plugin_menu()
+{
+	auto instance = get_instance().get();
+	if (instance) {
+		for (const auto& plugin : App::plugin_manager.plugins()) {
+			std::string id = plugin.id;
+			if (!action_group->get_action(id))
+				action_group->add(
+					Gtk::Action::create(id, plugin.name.get() + " - " + instance->get_file_name()),
+					sigc::bind(sigc::mem_fun(*instance, &studio::Instance::run_plugin), id, true, std::vector<std::string>{})
+				);
+		}
+	}
 }
 
 void

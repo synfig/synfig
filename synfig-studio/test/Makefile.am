@@ -6,9 +6,11 @@ AM_LDFLAGS = \
 
 check_PROGRAMS=$(TESTS)
 
-TESTS=app_layerduplicate smach
+TESTS=app_layerduplicate smach json
 
 app_layerduplicate_SOURCES=app_layerduplicate.cpp test_base.h
 
 smach_SOURCES=smach.cpp
+
+json_SOURCES=test_json.cpp test_base.h $(top_builddir)/src/gui/json.cpp
 
