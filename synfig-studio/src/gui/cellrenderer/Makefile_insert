@@ -1,11 +1,13 @@
 CELLRENDERER_HH = \
 	cellrenderer/cellrenderer_gradient.h \
+	cellrenderer/cellrenderer_icontoggle.h \
 	cellrenderer/cellrenderer_time.h \
 	cellrenderer/cellrenderer_timetrack.h \
 	cellrenderer/cellrenderer_value.h
 
 CELLRENDERER_CC = \
 	cellrenderer/cellrenderer_gradient.cpp \
+	cellrenderer/cellrenderer_icontoggle.cpp \
 	cellrenderer/cellrenderer_time.cpp \
 	cellrenderer/cellrenderer_timetrack.cpp \
 	cellrenderer/cellrenderer_value.cpp

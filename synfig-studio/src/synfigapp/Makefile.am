@@ -31,6 +31,7 @@ LAYER_ACTION_HH = \
 	actions/layerresetpose.h \
 	actions/layersetdesc.h \
 	actions/layersetexcludefromrendering.h \
+	actions/layersethitlocked.h \
 	actions/layerzdepthrangeset.h\
 	actions/vectorization.h
 	
@@ -61,6 +62,7 @@ LAYER_ACTION_CC = \
 	actions/layerresetpose.cpp \
 	actions/layersetdesc.cpp \
 	actions/layersetexcludefromrendering.cpp \
+	actions/layersethitlocked.cpp \
 	actions/layerzdepthrangeset.cpp \
 	actions/vectorization.cpp
 
