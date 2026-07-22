@@ -217,7 +217,7 @@ void Action::ValueDescExport::scan_linkable_value_node(synfig::Canvas::Handle pr
 		{
 			if (link->get_parent_canvas() == prev_canvas)
 			{
-				// create action
+				// create action to reconnect exported valuenode from prev_canvas to its cloned version in new_canvas
 				Action::Handle action(ValueDescConnect::create());
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
@@ -226,8 +226,10 @@ void Action::ValueDescExport::scan_linkable_value_node(synfig::Canvas::Handle pr
 				assert(action->is_ready());
 				add_action(action);
 			}
-			if (!link->get_parent_canvas())
+			else
 			{
+				// Recursively scan exported valuenodes from OTHER canvases (not prev_canvas and not null)
+				// for their own external links that may need reconnection
 				LinkableValueNode::Handle sub_linkable_value_node = LinkableValueNode::Handle::cast_dynamic(link);
 				if (sub_linkable_value_node)
 					scan_linkable_value_node(prev_canvas, new_canvas, sub_linkable_value_node);
