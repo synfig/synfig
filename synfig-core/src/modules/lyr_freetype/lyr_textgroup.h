@@ -58,6 +58,8 @@ private:
 	void rebuild_shared_registry();
 	void share_param(const synfig::String& param);   
 	void request_full_resync();
+	Layer_GlyphShape::Handle find_source_glyph() const;
+    std::vector<synfig::String> get_shareable_params() const;
 	
 protected:
     void on_canvas_set() override;     

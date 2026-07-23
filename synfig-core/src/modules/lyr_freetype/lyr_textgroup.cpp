@@ -517,11 +517,11 @@ Layer_TextGroup::rebuild_shared_registry()
     }
 }
 
-void
-Layer_TextGroup::share_param(const String& param)
+Layer_GlyphShape::Handle
+Layer_TextGroup::find_source_glyph() const
 {
     Canvas::Handle canvas = get_sub_canvas();
-    if (!canvas) return;
+    if (!canvas) return nullptr;
 
     // Find the current source glyph
     Layer_GlyphShape::Handle source_glyph;
@@ -531,15 +531,29 @@ Layer_TextGroup::share_param(const String& param)
         Layer_GlyphShape::Handle g = Layer_GlyphShape::Handle::cast_dynamic(*iter);
 
         if (!g) continue;
-
-        if (i == source_glyph_index_)
-        {
-            source_glyph = g;
-            break;
-        }
-
+        if (i == source_glyph_index_) return g;
         if (!source_glyph) source_glyph = g;   // fallback: first glyph seen
     }
+    return source_glyph;
+}
+
+std::vector<String>
+Layer_TextGroup::get_shareable_params() const
+{
+    std::vector<String> params;
+    if (auto g = find_source_glyph())
+        for (const auto& kv : g->dynamic_param_list())
+            if (kv.second) params.push_back(kv.first);
+    return params;
+}
+
+void
+Layer_TextGroup::share_param(const String& param)
+{
+    Canvas::Handle canvas = get_sub_canvas();
+    if (!canvas) return;
+
+    Layer_GlyphShape::Handle source_glyph = find_source_glyph();
 
     if (!source_glyph)
     {
