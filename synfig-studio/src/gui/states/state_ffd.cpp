@@ -1806,7 +1806,6 @@ StateFFD_Context::refresh_beziers()
 			etl::handle<WorkArea::Bezier> b(new WorkArea::Bezier());
 			b->p1 = b->c1 = duck_list_[i1];
 			b->p2 = b->c2 = duck_list_[i2];
-			b->hoverable = true;
 			if (editing_existing_mesh_) {
 				b->signal_user_click(2).connect(
 					sigc::bind(sigc::mem_fun(*this, &StateFFD_Context::popup_ffd_edge_menu), i1, i2));

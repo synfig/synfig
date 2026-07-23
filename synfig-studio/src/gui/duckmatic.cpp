@@ -1542,17 +1542,7 @@ Duckmatic::find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radiu
 	float	time = 0;
 	float	best_time = 0;
 
-	bool has_hoverable = false;
 	for (const auto& item : bezier_list()) {
-		if (item->hoverable) {
-			has_hoverable = true;
-			break;
-		}
-	}
-
-	for (const auto& item : bezier_list()) {
-		if (has_hoverable && !item->hoverable)
-			continue;
 		curve[0] = item->p1->get_trans_point();
 		curve[1] = item->c1->get_trans_point();
 		curve[2] = item->c2->get_trans_point();
