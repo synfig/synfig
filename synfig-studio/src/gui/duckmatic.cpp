@@ -2712,12 +2712,25 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 						return false;
 					duck = last_duck();
 
-					if (first == -1) { first = i; first_duck = duck; }
+					// remember the index of the first vertex we didn't skip
+					if (first == -1)
+					{
+						first = i;
+						first_duck = duck;
+					}
 
-					if(param_desc && !param_desc->get_origin().empty()) {
+					if(param_desc && !param_desc->get_origin().empty())
+					{
 						synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
 						add_to_ducks(value_desc_origin,canvas_view, transform_stack);
 						duck->set_origin(last_duck());
+/*
+						ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
+						if(value.same_type_as(synfig::Point()))
+							duck->set_origin(value.get(synfig::Point()));
+*/
+//						if(!param_desc->get_origin().empty())
+//							last_duck()->set_origin(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()).get(synfig::Point()));
 					}
 					duck->set_type(Duck::TYPE_VERTEX);
 					ducks.push_back(duck);
@@ -2993,12 +3006,25 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 						return false;
 					duck = last_duck();
 
-					if (first == -1) { first = i; first_duck = duck; }
+					// remember the index of the first vertex we didn't skip
+					if (first == -1)
+					{
+						first = i;
+						first_duck = duck;
+					}
 
-					if(param_desc && !param_desc->get_origin().empty()) {
+					if(param_desc && !param_desc->get_origin().empty())
+					{
 						synfigapp::ValueDesc value_desc_origin(value_desc.get_layer(),param_desc->get_origin());
 						add_to_ducks(value_desc_origin,canvas_view, transform_stack);
 						duck->set_origin(last_duck());
+/*
+						ValueBase value(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()));
+						if(value.same_type_as(synfig::Point()))
+							duck->set_origin(value.get(synfig::Point()));
+*/
+//						if(!param_desc->get_origin().empty())
+//							last_duck()->set_origin(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()).get(synfig::Point()));
 					}
 					duck->set_type(Duck::TYPE_VERTEX);
 					ducks.push_back(duck);
@@ -3038,16 +3064,15 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 					{
 						duck = first_duck;
 
-						bezier.p1 = bezier.p2;
-						bezier.c1 = bezier.c2;
-						bezier.p2 = duck;
-						bezier.c2 = duck;
+						bezier.p1=bezier.p2;
+						bezier.c1=bezier.c2;
+						bezier.p2=bezier.c2=duck;
 
 						Bezier::Handle bezier_(new Bezier());
-						bezier_->p1 = bezier.p1;
-						bezier_->c1 = bezier.c1;
-						bezier_->p2 = bezier.p2;
-						bezier_->c2 = bezier.c2;
+						bezier_->p1=bezier.p1;
+						bezier_->c1=bezier.c1;
+						bezier_->p2=bezier.p2;
+						bezier_->c2=bezier.c2;
 						add_bezier(bezier_);
 						last_bezier()->signal_user_click(2).connect(
 							sigc::bind(

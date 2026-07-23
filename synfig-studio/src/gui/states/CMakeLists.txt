@@ -2,13 +2,14 @@ target_sources(synfigstudio
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/state_bline.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_bone.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/state_brush.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_circle.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_draw.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/state_lasso.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_eyedrop.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/state_fill.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_ffd.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/state_fill.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_gradient.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/state_lasso.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_mirror.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_normal.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_polygon.cpp"
@@ -22,5 +23,4 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/state_text.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_width.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/state_zoom.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/state_brush.cpp"
 )

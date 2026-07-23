@@ -220,6 +220,7 @@ set(ICONS
 	tool_cutout_icon
 	tool_draw_icon
 	tool_eyedrop_icon
+	tool_ffd_icon
 	tool_fill_icon
 	tool_gradient_icon
 	tool_mirror_icon
@@ -232,7 +233,6 @@ set(ICONS
 	tool_smooth_move_icon
 	tool_spline_icon
 	tool_skeleton_icon
-	tool_ffd_icon
 	tool_star_icon
 	tool_text_icon
 	tool_width_icon

@@ -233,9 +233,6 @@ StateFFD::StateFFD() :
 	insert(event_def(EVENT_WORKAREA_MOUSE_2BUTTON_DOWN,  &StateFFD_Context::event_mouse_doubleclick_handler));
 }
 
-StateFFD::~StateFFD()
-= default;
-
 void* StateFFD::enter_state(studio::CanvasView* machine_context) const
 {
 	return new StateFFD_Context(machine_context);

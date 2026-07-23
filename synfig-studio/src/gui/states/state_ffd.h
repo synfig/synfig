@@ -40,7 +40,6 @@ class StateFFD : public Smach::state<StateFFD_Context>
 {
 public:
 	StateFFD();
-	~StateFFD();
 	virtual void* enter_state(studio::CanvasView* machine_context) const;
 }; // END of class StateFFD
 
