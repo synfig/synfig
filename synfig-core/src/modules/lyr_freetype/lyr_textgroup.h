@@ -15,6 +15,52 @@
 #include <hb.h>  
 #endif  
 
+class Layer_GlyphShape : public synfig::Layer_Shape  
+{  
+    SYNFIG_LAYER_MODULE_EXT  
+  
+private:  
+    synfig::rendering::Contour::ChunkList stored_chunks;  
+    synfig::ValueBase param_scale;
+    synfig::ValueBase param_rotation;
+    synfig::ValueBase param_offset;
+    synfig::ValueBase param_anim_offset;
+    mutable synfig::Vector wave_offset_;
+    uint32_t glyph_index_ = 0;
+    size_t line_index_ = 0;
+    synfig::Real base_y_ = 0.0;
+    uint32_t cluster_ = 0;
+
+public:  
+    Layer_GlyphShape();  
+    ~Layer_GlyphShape();  
+  
+    synfig::String get_local_name() const override; 
+        
+    void set_glyph_chunks(const synfig::rendering::Contour::ChunkList& chunks);
+    bool set_param(const synfig::String &param, const synfig::ValueBase &value) override;  
+    synfig::ValueBase get_param(const synfig::String &param) const override;  
+    Layer::Vocab get_param_vocab() const override;  
+    void set_wave_offset(const synfig::Vector& v);
+    void set_glyph_index(uint32_t gi) { glyph_index_ = gi; }
+    uint32_t get_glyph_index() const { return glyph_index_; }
+    void set_line_index(size_t i) { line_index_ = i; }
+    size_t get_line_index() const { return line_index_; }
+    void set_base_y(synfig::Real y) { base_y_ = y; }
+    synfig::Real get_base_y() const { return base_y_; }
+	void set_cluster(uint32_t c) { cluster_ = c; }
+    uint32_t get_cluster() const { return cluster_; }
+
+	virtual Layer::Handle clone(etl::loose_handle<synfig::Canvas> canvas,  
+                            const synfig::GUID& deriv_guid = synfig::GUID()) const override;  
+protected:  
+    void sync_vfunc() override;
+
+    synfig::rendering::Task::Handle build_composite_task_vfunc(  
+   	    synfig::ContextParams context_params) const override;  
+    
+};
+
 class Layer_TextGroup : public synfig::Layer_PasteCanvas  
 {  
     SYNFIG_LAYER_MODULE_EXT  
@@ -67,49 +113,5 @@ protected:
                             synfig::Time time) const override;
 
 };  
-
-class Layer_GlyphShape : public synfig::Layer_Shape  
-{  
-    SYNFIG_LAYER_MODULE_EXT  
-  
-private:  
-    synfig::rendering::Contour::ChunkList stored_chunks;  
-    synfig::ValueBase param_scale;
-    synfig::ValueBase param_rotation;
-    synfig::ValueBase param_offset;
-    synfig::ValueBase param_anim_offset;
-    mutable synfig::Vector wave_offset_;
-    uint32_t glyph_index_ = 0;
-    size_t line_index_ = 0;
-    synfig::Real   base_y_ = 0.0;
-
-public:  
-    Layer_GlyphShape();  
-    ~Layer_GlyphShape();  
-  
-    synfig::String get_local_name() const override; 
-        
-    void set_glyph_chunks(const synfig::rendering::Contour::ChunkList& chunks);
-    bool set_param(const synfig::String &param, const synfig::ValueBase &value) override;  
-    synfig::ValueBase get_param(const synfig::String &param) const override;  
-    Layer::Vocab get_param_vocab() const override;  
-    void set_wave_offset(const synfig::Vector& v);
-    void set_glyph_index(uint32_t gi) { glyph_index_ = gi; }
-    uint32_t get_glyph_index() const { return glyph_index_; }
-    void set_line_index(size_t i) { line_index_ = i; }
-    size_t get_line_index() const { return line_index_; }
-    void set_base_y(synfig::Real y) { base_y_ = y; }
-    synfig::Real get_base_y() const { return base_y_; }
-
-
-	virtual Layer::Handle clone(etl::loose_handle<synfig::Canvas> canvas,  
-                            const synfig::GUID& deriv_guid = synfig::GUID()) const override;  
-protected:  
-    void sync_vfunc() override;
-
-    synfig::rendering::Task::Handle build_composite_task_vfunc(  
-   	    synfig::ContextParams context_params) const override;  
-    
-}; 
-  
+ 
 #endif

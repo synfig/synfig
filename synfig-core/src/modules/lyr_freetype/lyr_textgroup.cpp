@@ -662,6 +662,7 @@ Layer_GlyphShape::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid
     if (cloned){
         cloned->stored_chunks = stored_chunks;
         cloned->glyph_index_  = glyph_index_;
+        cloned->cluster_ = cluster_;
     	cloned->line_index_   = line_index_;
     	cloned->base_y_       = base_y_;
     	cloned->wave_offset_  = wave_offset_;
@@ -737,7 +738,17 @@ auto shaped_lines =
         Vector pen_offset;
         size_t line_index; //which source line this glyph belongs to
         Vector world_pos;  //final scaled+shifted position (second pass)
-    };  
+    };
+    struct GlyphIdentity
+	{
+    	uint32_t cluster;
+    	uint32_t glyph_index;
+
+    	bool operator==(const GlyphIdentity& o) const
+    	{
+        	return cluster == o.cluster && glyph_index == o.glyph_index;
+    	}
+	};
   
     std::vector<std::vector<GlyphData>> line_glyphs;  
     std::vector<Real> line_widths;     
@@ -819,39 +830,37 @@ auto shaped_lines =
 
         }  
     }    
-   
- 	std::vector<Layer::Handle> old_layers;
-	std::vector<uint32_t>      old_indices;  
-	for (auto it = canvas->begin(); it != canvas->end(); ++it) {  
-    	old_layers.push_back(*it);  
-    	uint32_t gi = 0;  
-    	const std::string desc = (*it)->get_description();  
-    	const auto pos = desc.rfind("_glyph_");  
-    	if (pos != std::string::npos) {  
-        	try { gi = static_cast<uint32_t>(std::stoul(desc.substr(pos + 7))); }  
-        	catch (...) { gi = 0; }  
-    	}  
-    	old_indices.push_back(gi);  
-	}  
-	// TODO: keys only on glyph_index, can misattribute repeated glyphs across edits
-	// may require matching on richer glyph identity
-  	std::vector<uint32_t> new_indices;  
-	new_indices.reserve(glyphs.size());  
-	for (const auto& glyph : glyphs)  
-    	new_indices.push_back(glyph.glyph_index);  
-	const size_t n = old_indices.size();  
-	const size_t m = new_indices.size();  
+  
+	std::vector<Layer::Handle> old_layers;
+	std::vector<GlyphIdentity> old_identities;
+	for (auto it = canvas->begin(); it != canvas->end(); ++it) {
+    	old_layers.push_back(*it);
+    	GlyphIdentity id{0, 0};
+    	if (auto* gl = dynamic_cast<Layer_GlyphShape*>(it->get())) {
+        	id.cluster     = gl->get_cluster();
+        	id.glyph_index = gl->get_glyph_index();
+    	}
+    	old_identities.push_back(id);
+	}
+
+	std::vector<GlyphIdentity> new_identities;
+	new_identities.reserve(glyphs.size());
+	for (const auto& glyph : glyphs)
+    	new_identities.push_back(GlyphIdentity{glyph.cluster, glyph.glyph_index});
+
+	const size_t n = old_identities.size();  
+	const size_t m = new_identities.size();  
 	std::vector<std::vector<int>> dp(n + 1, std::vector<int>(m + 1, 0));  
 	for (size_t i = 1; i <= n; ++i)  
     	for (size_t j = 1; j <= m; ++j)  
-        	dp[i][j] = (old_indices[i-1] == new_indices[j-1])  
+        	dp[i][j] = (old_identities[i-1] == new_identities[j-1])  
                    ? dp[i-1][j-1] + 1  
                    : std::max(dp[i-1][j], dp[i][j-1]);  
  	std::vector<Layer::Handle> reuse_for_new(m); // null -> create a new layer  
 	{  
     	size_t i = n, j = m;  
     	while (i > 0 && j > 0) {  
-        	if (old_indices[i-1] == new_indices[j-1]) {  
+        	if (old_identities[i-1] == new_identities[j-1]) {  
             	reuse_for_new[j-1] = old_layers[i-1]; // reuse -> keeps value nodes  
             	--i; --j;  
         	} else if (dp[i-1][j] >= dp[i][j-1]) {  
@@ -886,6 +895,7 @@ auto shaped_lines =
 			glyph_layer->set_param("origin", ValueBase(glyph.world_pos));
         	glyph_layer->set_glyph_chunks(glyph.outline);
         	glyph_layer->set_glyph_index(glyph.glyph_index);
+        	glyph_layer->set_cluster( glyph.cluster);   
         	glyph_layer->set_line_index(glyph.line_index);
         	glyph_layer->set_base_y(glyph.world_pos[1]);	
 	       	(*layer_iter)->set_param("color",  ValueBase(color));  
