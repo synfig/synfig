@@ -192,12 +192,7 @@ Renderer_Ducks::render_vfunc(
 
 
 	// Render the beziers
-	float hover_bezier_pos = 0.0f;
-	Duckmatic::Bezier::Handle hover_bezier = get_work_area()->find_bezier(
-		get_work_area()->get_cursor_pos(), (std::fabs(pw)+std::fabs(ph))*8, &hover_bezier_pos);
 	for (auto iter = bezier_list.begin(); iter != bezier_list.end(); ++iter) {
-		bool selected = *iter == get_work_area()->get_selected_bezier();
-		bool hover = *iter == hover_bezier;
 		Point p1((*iter)->p1->get_trans_point()-window_start);
 		Point p2((*iter)->p2->get_trans_point()-window_start);
 		Point c1((*iter)->c1->get_trans_point()-window_start);
@@ -233,17 +228,12 @@ Renderer_Ducks::render_vfunc(
 */
 		{
 			//Solid line background
-			cr->set_line_width(selected || hover ? 3.0 : 1.0);
+			cr->set_line_width(1.0);
 			cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BEZIER_1)); // DUCK_COLOR_BEZIER_1
 			cr->stroke_preserve();
 
 			//Dashes
-			if (selected)
-				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_SELECTED));
-			else if (hover)
-				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_VERTEX));
-			else
-				cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BEZIER_2)); //DUCK_COLOR_BEZIER_2 : 175.0/255.0,175.0/255.0,175.0/255.0
+			cr->set_source_rgb(GDK_COLOR_TO_RGB(DUCK_COLOR_BEZIER_2)); //DUCK_COLOR_BEZIER_2 : 175.0/255.0,175.0/255.0,175.0/255.0
 			std::valarray<double> dashes(2);
 			dashes[0]=5.0;
 			dashes[1]=5.0;

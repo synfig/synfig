@@ -1424,13 +1424,6 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
                 hover_duck = duck;
                 drawing_area->queue_draw();
             }
-
-            float bezier_click_pos = 0;
-            Duckmatic::Bezier::Handle bezier = find_bezier(mouse_pos, radius, &bezier_click_pos);
-            if (bezier != hover_bezier) {
-                hover_bezier = bezier;
-                drawing_area->queue_draw();
-            }
     		break;
 		}
 		case DRAG_DUCK: {
