@@ -557,7 +557,7 @@ Layer_TextGroup::share_param(const String& param)
 
     if (!source_glyph)
     {
-        synfig::error("broadcast: no glyph layers found");
+        synfig::error("Share: no glyph layers found");
         return;
     }
 
@@ -566,9 +566,13 @@ Layer_TextGroup::share_param(const String& param)
 
     if (it == dpl.end() || !it->second)
     {
+        std::vector<String> valid = get_shareable_params();
+   		String joined;
+    	for (const String& p : valid)
+        	joined += (joined.empty() ? "" : ", ") + p;
         synfig::error(
-            "broadcast: '%s' isn't animated on the source glyph",
-            param.c_str());
+        	"Share: '%s' isn't animated on the source glyph (animated params available: %s)",
+       	 	param.c_str(), joined.empty() ? "none" : joined.c_str());        
         return;
     }
 
@@ -591,7 +595,7 @@ Layer_TextGroup::share_param(const String& param)
         if (check != node)
         {
             synfig::error(
-                "broadcast: failed to export shared graph '%s'",
+                "Share: failed to export shared graph '%s'",
                 param.c_str());
             return;
         }
@@ -627,11 +631,9 @@ void Layer_TextGroup::update_wave_offsets(Time time, bool force_sync_after) cons
                                               / (double)wave_period);  
 
         gl->set_wave_offset(wave_off);  
-        if (force_sync_after){  
-            gl->force_sync();
-            gl->changed();
-        }  
-    }  
+
+    }
+	
 }
 
 void Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) const  
