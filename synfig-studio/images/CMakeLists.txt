@@ -124,6 +124,7 @@ set(ICONS
 	layer_blur_motion_icon
 	layer_blur_radial_icon
 	layer_distortion_curvewarp_icon
+	layer_distortion_free_form_deform_icon
 	layer_distortion_insideout_icon
 	layer_distortion_noise_icon
 	layer_distortion_skeletondeformation_icon
@@ -219,6 +220,7 @@ set(ICONS
 	tool_cutout_icon
 	tool_draw_icon
 	tool_eyedrop_icon
+	tool_ffd_icon
 	tool_fill_icon
 	tool_gradient_icon
 	tool_mirror_icon

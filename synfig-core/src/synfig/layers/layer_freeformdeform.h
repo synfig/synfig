@@ -1,0 +1,106 @@
+#ifndef __SYNFIG_LAYER_FREEFORMDEFORM_H
+#define __SYNFIG_LAYER_FREEFORMDEFORM_H
+
+#include "layer_meshtransform.h"
+
+namespace synfig {
+
+class Layer_FreeFormDeform : public Layer_MeshTransform
+{
+	SYNFIG_LAYER_MODULE_EXT
+private:
+	//! Parameter : (list of Points) The control lattice
+	ValueBase param_grid_points;
+
+	//! Parameter : (Integer) e.g., 3 for a 3x3 grid
+	ValueBase param_grid_size_x;
+	ValueBase param_grid_size_y;
+
+	ValueBase param_smoothness;
+
+	ValueBase param_source_tl;
+	ValueBase param_source_br;
+	ValueBase param_source_angle;
+
+	ValueBase param_source_points;
+	ValueBase param_mesh_mode; // 0 = Grid, 1 = Custom Mesh
+	ValueBase param_cull_threshold;
+	ValueBase param_triangles;
+
+	//! Auto-mesh generation params (edge contour tracing)
+	ValueBase param_auto_mesh_margin;     // dilation radius in pixels
+	ValueBase param_auto_mesh_edge_length; // spacing between edge points in canvas units
+	ValueBase param_auto_mesh_dpi;        // rasterization DPI for alpha mask
+
+	bool needs_reset_;
+
+	//! Get a control point with boundary clamping for edge/corner cells
+	Point get_clamped_ctrl_point(const std::vector<Point>& ctrl_points, int gx, int gy, int cols, int rows) const;
+
+	//! Evaluate a 1D Catmull-Rom spline at parameter t given 4 values
+	static Real catmull_rom_1d(Real p0, Real p1, Real p2, Real p3, Real t);
+
+public:
+	Layer_FreeFormDeform();
+	virtual ~Layer_FreeFormDeform();
+
+	// Custom Mesh Triangulation Helpers
+	static std::vector<rendering::Mesh::Triangle> triangulate(const std::vector<Point>& pts);
+
+	//! Remove triangles whose circumradius exceeds the given threshold (Alpha Shape filter).
+	//! Used for both canvas overlay display (duckmatic) and preview (state_ffd).
+	static std::vector<rendering::Mesh::Triangle> cull_triangles(
+		const std::vector<rendering::Mesh::Triangle>& tris,
+		const std::vector<Point>& pts,
+		Real threshold);
+
+	//! auto-mesh: trace the alpha contour of an image, dilate by margin pixels,
+	//! and sample boundary points at a fixed dense spacing. Returns points in canvas coordinates.
+	//! The boundary point count does NOT change with edge_length; use generate_interior_points
+	//! for the interior points that scale with edge_length.
+	static std::vector<Point> generate_edge_points(
+		const Surface &alpha_surface,
+		const Rect &bounds,
+		Real edge_length,
+		int margin);
+
+	//! Generate interior Steiner points on a regular grid at edge_length spacing,
+	//! keeping only those that fall strictly inside the given contour polygon.
+	//! Combine with generate_edge_points to get boundary + interior duck layout.
+	static std::vector<Point> generate_interior_points(
+		const std::vector<Point> &contour_polygon,
+		Real edge_length);
+
+	//! Generate the full dense contour polygon (not sub-sampled) from the image alpha mask.
+	//! Returns ordered vertices in canvas coordinates. Used for centroid-in-polygon filtering.
+	static std::vector<Point> generate_contour_polygon(
+		const Surface &alpha_surface,
+		const Rect &bounds,
+		int margin);
+
+	//! Filter triangles whose centroid lies outside the given polygon.
+	//! Uses ray-casting point-in-polygon test. polygon must be in the same
+	//! coordinate space as pts (canvas units).
+	static std::vector<rendering::Mesh::Triangle> filter_triangles_by_polygon(
+		const std::vector<rendering::Mesh::Triangle> &tris,
+		const std::vector<Point> &pts,
+		const std::vector<Point> &polygon);
+
+	//! Render the context below this layer (the image, not the warped output) to a surface.
+	//! Fills out_bounds with the bounding rect of that context. Returns false on failure.
+	bool render_context_below(Surface &out_surface, Rect &out_bounds, int max_resolution = 512) const;
+
+	virtual String get_local_name() const;
+	virtual bool set_param(const String & param, const ValueBase & value);
+	virtual ValueBase get_param(const String & param) const;
+	virtual Vocab get_param_vocab() const;
+	virtual void on_canvas_set();
+
+	void prepare_mesh(); // The core math engine
+	void regenerate_grid_points(); // Rebuild uniform grid when size changes
+	std::vector<Point> get_interpolated_grid(int new_cols, int new_rows) const;
+	synfig::Rect get_context_bounds() const;
+	std::vector<synfig::Point> compute_grid_for_bounds(const synfig::Rect& bounds, int cols, int rows) const;
+};
+}
+#endif
