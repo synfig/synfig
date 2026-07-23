@@ -438,7 +438,7 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
 
     if (rotation != Angle::zero() || scale != Vector(1.0, 1.0) || has_wave)  
     {  
-        Vector pivot = wave_offset_;
+        Vector pivot;
         Matrix matrix = Matrix().set_translate(pivot)  
                       * Matrix().set_rotate(rotation)  
                       * Matrix().set_scale(scale)  
@@ -450,6 +450,13 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
         task_transform->sub_task() = task;  
         task = task_transform;  
     }
+    if (has_wave)   
+	{
+    	auto wave_translate = new rendering::TaskTransformationAffine();
+    	wave_translate->transformation->matrix = Matrix().set_translate(wave_offset_);
+    	wave_translate->sub_task() = task;
+    	task = wave_translate;
+	}
     return task;  
 }
 
