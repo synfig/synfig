@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file bevel.cpp
-**	\brief Implementation of the "Bevel" layer
+/*!	\file bevel_deprecated.cpp
+**	\brief Implementation of the "Bevel (Deprecated)" layer
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -33,7 +33,7 @@
 #	include <config.h>
 #endif
 
-#include "bevel.h"
+#include "bevel_deprecated.h"
 
 #include <synfig/localization.h>
 #include <synfig/general.h>
@@ -54,47 +54,17 @@ using namespace lyr_std;
 
 /* === G L O B A L S ======================================================= */
 
-SYNFIG_LAYER_INIT(Layer_Bevel);
-SYNFIG_LAYER_SET_NAME(Layer_Bevel,"bevel");
-SYNFIG_LAYER_SET_LOCAL_NAME(Layer_Bevel,N_("Bevel"));
-SYNFIG_LAYER_SET_CATEGORY(Layer_Bevel,N_("Stylize"));
-SYNFIG_LAYER_SET_VERSION(Layer_Bevel,"0.4");
+SYNFIG_LAYER_INIT(Layer_BevelDeprecated);
+SYNFIG_LAYER_SET_NAME(Layer_BevelDeprecated,"bevel_deprecated");
+SYNFIG_LAYER_SET_LOCAL_NAME(Layer_BevelDeprecated,N_("Bevel (Deprecated)"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_BevelDeprecated,N_("Stylize"));
+SYNFIG_LAYER_SET_VERSION(Layer_BevelDeprecated,"0.3");
 
 /* === P R O C E D U R E S ================================================= */
 
-// Half-size of the border added around the render region to accommodate the blur.
-// Used both to size the work surface (set_coords_sub_tasks) and to index it (run),
-// so the two never drift.
-static void
-bevel_calc_halfsize(Real size_x, Real size_y, int type, Real pw, Real ph,
-                    int& halfsizex, int& halfsizey)
-{
-	const Real GAUSSIAN_ADJUSTMENT = 0.05;
-
-	halfsizex = (int)(std::fabs(size_x*.5/pw) + 3);
-	halfsizey = (int)(std::fabs(size_y*.5/ph) + 3);
-
-	switch(type)
-	{
-		case Blur::DISC:
-		case Blur::BOX:
-		case Blur::CROSS:
-		case Blur::FASTGAUSSIAN:
-			halfsizex = std::max(1, halfsizex);
-			halfsizey = std::max(1, halfsizey);
-			break;
-		case Blur::GAUSSIAN:
-			halfsizex = (int)(size_x*GAUSSIAN_ADJUSTMENT/std::fabs(pw*pw) + 0.5);
-			halfsizey = (int)(size_y*GAUSSIAN_ADJUSTMENT/std::fabs(ph*ph) + 0.5);
-			halfsizex = (halfsizex + 1)/2;
-			halfsizey = (halfsizey + 1)/2;
-			break;
-	}
-}
-
 /* === M E T H O D S ======================================================= */
 
-Layer_Bevel::Layer_Bevel():
+Layer_BevelDeprecated::Layer_BevelDeprecated():
 	Layer_CompositeFork(0.75,Color::BLEND_ONTO),
 	param_type(ValueBase(int(Blur::FASTGAUSSIAN))),
 	param_softness (ValueBase(Real(0.1))),
@@ -112,7 +82,7 @@ Layer_Bevel::Layer_Bevel():
 }
 
 void
-Layer_Bevel::calc_offset()
+Layer_BevelDeprecated::calc_offset()
 {
 	Angle angle=param_angle.get(Angle());
 	Real depth=param_depth.get(Real());
@@ -125,7 +95,7 @@ Layer_Bevel::calc_offset()
 }
 
 bool
-Layer_Bevel::set_param(const String &param, const ValueBase &value)
+Layer_BevelDeprecated::set_param(const String &param, const ValueBase &value)
 {
 	IMPORT_VALUE_PLUS(param_softness,
 		{
@@ -148,7 +118,7 @@ Layer_Bevel::set_param(const String &param, const ValueBase &value)
 }
 
 ValueBase
-Layer_Bevel::get_param(const String &param)const
+Layer_BevelDeprecated::get_param(const String &param)const
 {
 	EXPORT_VALUE(param_type);
 	EXPORT_VALUE(param_softness);
@@ -170,7 +140,7 @@ Layer_Bevel::get_param(const String &param)const
 }
 
 Color
-Layer_Bevel::get_color(Context context, const Point &pos)const
+Layer_BevelDeprecated::get_color(Context context, const Point &pos)const
 {
 	Real softness=param_softness.get(Real());
 	int type=param_type.get(int());
@@ -198,7 +168,7 @@ Layer_Bevel::get_color(Context context, const Point &pos)const
 }
 
 void
-TaskBevel::set_coords_sub_tasks()
+TaskBevelDeprecated::set_coords_sub_tasks()
 {
 	if (!sub_task(0)) {
 		trunc_to_zero();
@@ -217,13 +187,43 @@ TaskBevel::set_coords_sub_tasks()
 	const Vector size(softness,softness);
 
 	//expand the working surface to accommodate the blur
-	int halfsizex, halfsizey;
-	bevel_calc_halfsize(size[0], size[1], type, pw, ph, halfsizex, halfsizey);
+
+	//the expanded size = 1/2 the size in each direction rounded up
+	int	halfsizex = (int) (std::fabs(size[0]*.5/pw) + 3),
+		halfsizey = (int) (std::fabs(size[1]*.5/(ph)) + 3);
 
 	const int offset_u(round_to_int(offset[0]/pw));
 	const int offset_v(round_to_int(offset[1]/(ph)));
 	const int offset_w(w+std::abs(offset_u)*2);
 	const int offset_h(h+std::abs(offset_v)*2);
+
+	//expand by 1/2 size in each direction on either side
+	switch(type)
+	{
+		case Blur::DISC:
+		case Blur::BOX:
+		case Blur::CROSS:
+		case Blur::FASTGAUSSIAN:
+		{
+			halfsizex = std::max(1, halfsizex);
+			halfsizey = std::max(1, halfsizey);
+			break;
+		}
+		case Blur::GAUSSIAN:
+		{
+		#define GAUSSIAN_ADJUSTMENT		(0.05)
+
+			Real pw2 = pw * pw;
+			Real ph2 = ph * ph;
+
+			halfsizex = (int)(size[0]*GAUSSIAN_ADJUSTMENT/std::fabs(pw2) + 0.5);
+			halfsizey = (int)(size[1]*GAUSSIAN_ADJUSTMENT/std::fabs(ph2) + 0.5);
+
+			halfsizex = (halfsizex + 1)/2;
+			halfsizey = (halfsizey + 1)/2;
+			break;
+		}
+	}
 
 	Real delta_x = -std::abs(offset_u) - halfsizex;
 	Real delta_y = -std::abs(offset_v) - halfsizey;
@@ -237,7 +237,7 @@ TaskBevel::set_coords_sub_tasks()
 }
 
 Rect
-TaskBevel::calc_bounds() const
+TaskBevelDeprecated::calc_bounds() const
 {
 	if (!sub_task(0))
 		return Rect::zero();
@@ -254,13 +254,13 @@ TaskBevel::calc_bounds() const
 	return bounds;
 }
 
-SYNFIG_EXPORT rendering::Task::Token TaskBevel::token(
-	DescAbstract<TaskBevel>("Bevel") );
+SYNFIG_EXPORT rendering::Task::Token TaskBevelDeprecated::token(
+	DescAbstract<TaskBevelDeprecated>("BevelDeprecated") );
 
-class TaskBevelSW : public TaskBevel, public synfig::rendering::TaskSW
+class TaskBevelDeprecatedSW : public TaskBevelDeprecated, public synfig::rendering::TaskSW
 {
 public:
-	typedef etl::handle<TaskBevel> Handle;
+	typedef etl::handle<TaskBevelDeprecated> Handle;
 	SYNFIG_EXPORT static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
@@ -293,8 +293,8 @@ public:
 		const Vector ppu = get_pixels_per_unit();
 		const Real pw = 1/ppu[0];
 		const Real ph = 1/ppu[1];
-		int halfsizex, halfsizey;
-		bevel_calc_halfsize(size[0], size[1], type, pw, ph, halfsizex, halfsizey);
+		const int halfsizex = (int) (std::fabs(size[0]*.5/pw) + 3);
+		const int halfsizey = (int) (std::fabs(size[1]*.5/ph) + 3);
 
 		const int offset_u(round_to_int(offset[0]/pw)),offset_v(round_to_int(offset[1]/ph));
 
@@ -312,9 +312,9 @@ public:
 		const Point ftarget_max = transformation_matrix.get_transformed(source_rect.get_max());
 		const PointInt target_min = {round_to_int(ftarget_min[0]), round_to_int(ftarget_min[1])};
 		const PointInt target_max = {round_to_int(ftarget_max[0]), round_to_int(ftarget_max[1])};
-		int v = halfsizey+std::abs(offset_v);
+		int v = halfsizey+std::abs(offset_v) + target_min[1];
 		for (int iy = target_min[1]; iy < target_max[1]; ++iy, ++v) {
-			int u = halfsizex+std::abs(offset_u);
+			int u = halfsizex+std::abs(offset_u) + target_min[0];
 			for (int ix = target_min[0]; ix < target_max[0]; ++ix, ++u) {
 
 				Real alpha(0);
@@ -323,9 +323,9 @@ public:
 				alpha += -blurred.linear_sample(u+u0, v+v0);
 				alpha -= -blurred.linear_sample(u-u0, v-v0);
 				alpha += -blurred.linear_sample(u+u1, v+v1)*0.5f;
-				alpha -= -blurred.linear_sample(u+v1, v-u1)*0.5f;
+				alpha += -blurred.linear_sample(u+v1, v-u1)*0.5f;
 				alpha -= -blurred.linear_sample(u-u1, v-v1)*0.5f;
-				alpha += -blurred.linear_sample(u-v1, v+u1)*0.5f;
+				alpha -= -blurred.linear_sample(u-v1, v+u1)*0.5f;
 
 				if(solid)
 				{
@@ -380,13 +380,13 @@ private:
 	}
 };
 
-SYNFIG_EXPORT rendering::Task::Token TaskBevelSW::token(
-	DescReal<TaskBevelSW, TaskBevel>("BevelSW") );
+SYNFIG_EXPORT rendering::Task::Token TaskBevelDeprecatedSW::token(
+	DescReal<TaskBevelDeprecatedSW, TaskBevelDeprecated>("BevelDeprecatedSW") );
 
 ////
 
 Layer::Vocab
-Layer_Bevel::get_param_vocab(void)const
+Layer_BevelDeprecated::get_param_vocab(void)const
 {
 	Layer::Vocab ret(Layer_Composite::get_param_vocab());
 
@@ -437,7 +437,7 @@ Layer_Bevel::get_param_vocab(void)const
 }
 
 Rect
-Layer_Bevel::get_full_bounding_rect(Context context)const
+Layer_BevelDeprecated::get_full_bounding_rect(Context context)const
 {
 	Real softness=param_softness.get(Real());
 	Real depth=param_depth.get(Real());
@@ -458,12 +458,12 @@ Layer_Bevel::get_full_bounding_rect(Context context)const
 }
 
 rendering::Task::Handle
-Layer_Bevel::build_composite_fork_task_vfunc(ContextParams /*context_params*/, rendering::Task::Handle sub_task) const
+Layer_BevelDeprecated::build_composite_fork_task_vfunc(ContextParams /*context_params*/, rendering::Task::Handle sub_task) const
 {
 	if (!sub_task)
 		return sub_task;
 
-	TaskBevel::Handle task_bevel(new TaskBevel());
+	TaskBevelDeprecated::Handle task_bevel(new TaskBevelDeprecated());
 	task_bevel->softness = param_softness.get(Real());
 	task_bevel->type = param_type.get(int());
 	task_bevel->color1 = param_color1.get(Color());

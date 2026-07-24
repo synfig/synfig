@@ -4,6 +4,8 @@ src/modules/lyr_freetype/lyr_freetype.h
 src/modules/lyr_freetype/main.cpp
 src/modules/lyr_std/bevel.cpp
 src/modules/lyr_std/bevel.h
+src/modules/lyr_std/bevel_deprecated.cpp
+src/modules/lyr_std/bevel_deprecated.h
 src/modules/lyr_std/booleancurve.cpp
 src/modules/lyr_std/booleancurve.h
 src/modules/lyr_std/clamp.cpp

@@ -21,6 +21,8 @@ liblyr_std_la_SOURCES = \
 	booleancurve.cpp \
 	bevel.cpp \
 	bevel.h \
+	bevel_deprecated.cpp \
+	bevel_deprecated.h \
 	shade.cpp \
 	shade.h \
 	twirl.cpp \
