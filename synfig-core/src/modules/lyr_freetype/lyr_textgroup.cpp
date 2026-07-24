@@ -57,7 +57,6 @@ Layer_GlyphShape::Layer_GlyphShape()
     : param_scale(ValueBase(Vector(1.0, 1.0)))
     , param_rotation(ValueBase(Angle::zero()))
     , param_anim_offset(ValueBase(Vector(0.0, 0.0)))
-    , wave_offset_(0,0) 
 {
     SET_INTERPOLATION_DEFAULTS();
     SET_STATIC_DEFAULTS();
@@ -78,33 +77,11 @@ void Layer_GlyphShape::set_glyph_chunks(const rendering::Contour::ChunkList& chu
         
 }  
 
-void Layer_GlyphShape::set_wave_offset(const Vector& v)
-{
-   if (wave_offset_ != v) {  
-        wave_offset_ = v;  
-	}  
-}
-  
 void Layer_GlyphShape::sync_vfunc()  
 {  
     clear();  
     if (stored_chunks.empty()) return;  
-    const Vector off = wave_offset_;
-	if (off == Vector())
-	{
-    	add(stored_chunks);
-    	return;
-	}
-	rendering::Contour::ChunkList shifted = stored_chunks;
-	 
-        for (auto& chunk : shifted) {  
-            chunk.p1  += off;  
-            chunk.pp0 += off;  
-            chunk.pp1 += off;  
-        }  
-        
-    add(shifted);  
-
+    add(stored_chunks);  
 }
 
 void
@@ -132,8 +109,6 @@ Layer_TextGroup::Layer_TextGroup()
     , param_font(ValueBase(std::string()))           
     , param_color(ValueBase(Color::black()))        
     , param_invert(ValueBase(false))
-    , param_wave_amplitude(ValueBase(Real(0.05)))
-    , param_wave_period(ValueBase(Time(1.0)))
     , param_share_target(ValueBase(String()))
 {  
     SET_INTERPOLATION_DEFAULTS();  
@@ -196,22 +171,12 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
 
     // Wave animation params
     IMPORT_VALUE_PLUS(param_stagger_delay, {
-        update_wave_offsets(get_time_mark(), true);
         if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();
     });
     IMPORT_VALUE_PLUS(param_stagger_order,{  
-        update_wave_offsets(get_time_mark(), true);  
         if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();  
     });
-    IMPORT_VALUE_PLUS(param_wave_amplitude, {
-        update_wave_offsets(get_time_mark(), true);
-        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();
-    });
-    IMPORT_VALUE_PLUS(param_wave_period, {
-        update_wave_offsets(get_time_mark(), true);
-        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();
-    });
-
+   
     IMPORT_VALUE_PLUS(param_share_target, {
         String target = param_share_target.get(String());
         if (!target.empty())
@@ -251,8 +216,6 @@ Layer_TextGroup::get_param(const String& param) const
 	EXPORT_VALUE(param_font);
 	EXPORT_VALUE(param_stagger_delay);
 	EXPORT_VALUE(param_stagger_order);
-	EXPORT_VALUE(param_wave_amplitude);
-	EXPORT_VALUE(param_wave_period);
 	EXPORT_VALUE(param_share_target);
     EXPORT_NAME();  
     EXPORT_VERSION();  
@@ -390,15 +353,6 @@ Layer_TextGroup::get_param_vocab() const
         .add_enum_value(STAGGER_ORDER_CENTER_OUT, "center_out", _("Center Out"))  
         .add_enum_value(STAGGER_ORDER_RANDOM,     "random",     _("Random"))  
     );
-	ret.push_back(ParamDesc("wave_amplitude")  
-    	.set_local_name(_("Wave Amplitude"))  
-    	.set_description(_("Vertical amplitude of the wave effect"))  
-    	.set_is_distance()  
-	);  
-	ret.push_back(ParamDesc("wave_period")  
-    	.set_local_name(_("Wave Period"))  
-    	.set_description(_("Duration of one full wave cycle"))  
-	);
 	ret.push_back(ParamDesc("share_target")
     	.set_local_name(_("Share Animation"))
    		.set_description(_("Connect all glyphs to the shared animation graph"))
@@ -435,10 +389,7 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
   
     Angle rotation = param_rotation.get(Angle());  
     Vector scale = param_scale.get(Vector());  
-    bool has_wave =
-    wave_offset_[0] != 0.0 ||
-    wave_offset_[1] != 0.0;
-
+    
   	Vector anim_offset = param_anim_offset.get(Vector());
 	
 	if (anim_offset != Vector())
@@ -454,7 +405,7 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
     	task = translate;
 	}
 
-    if (rotation != Angle::zero() || scale != Vector(1.0, 1.0) || has_wave)  
+    if (rotation != Angle::zero() || scale != Vector(1.0, 1.0))  
     {  
         Vector pivot;
         Matrix matrix = Matrix().set_translate(pivot)  
@@ -468,13 +419,6 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
         task_transform->sub_task() = task;  
         task = task_transform;  
     }
-    if (has_wave)   
-	{
-    	auto wave_translate = new rendering::TaskTransformationAffine();
-    	wave_translate->transformation->matrix = Matrix().set_translate(wave_offset_);
-    	wave_translate->sub_task() = task;
-    	task = wave_translate;
-	}
     return task;  
 }
 
@@ -652,45 +596,12 @@ Layer_TextGroup::glyph_ordinal(int index, int count) const
     }  
 }
 
-void Layer_TextGroup::update_wave_offsets(Time time, bool force_sync_after) const  
-{  
-    Canvas::Handle canvas = get_sub_canvas();  
-    if (!canvas) return;  
-  
-    Time stagger    = param_stagger_delay.get(Time());  
-    Real dilation   = get_time_dilation();  
-    Time toffset    = get_time_offset();  
-    Real wave_amp   = param_wave_amplitude.get(Real());  
-    Time wave_period = param_wave_period.get(Time());  
-
-  	int count = 0;  
-    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter)  
-        if (dynamic_cast<Layer_GlyphShape*>(iter->get())) ++count;  
-    int i = 0;  
-    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter) {  
-        Layer_GlyphShape* gl = dynamic_cast<Layer_GlyphShape*>(iter->get());  
-        if (!gl) continue;    
-
-        const int ord = glyph_ordinal(i, count);  
-        Time glyph_time = time * dilation + toffset + Time(ord * (double)stagger);    
-        Vector wave_off(0.0, 0.0);  
-        if (wave_amp != 0.0 && (double)wave_period != 0.0)  
-            wave_off[1] = wave_amp * std::sin(2.0 * M_PI * (double)glyph_time  
-                                              / (double)wave_period);  
-
-        gl->set_wave_offset(wave_off);  
-
-    }
-	
-}
-
 void Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) const  
 {  
     context.set_time(time);  
     Canvas::Handle canvas = get_sub_canvas();  
     if (!canvas) return;  
-    update_wave_offsets(time, false);
-        
+            
     Time stagger  = param_stagger_delay.get(Time());
     Real dilation = get_time_dilation();
     Time toffset  = get_time_offset(); 
@@ -719,7 +630,7 @@ Layer_GlyphShape::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid
         cloned->cluster_ = cluster_;
     	cloned->line_index_   = line_index_;
     	cloned->base_y_       = base_y_;
-    	cloned->wave_offset_  = wave_offset_;
+    	
     }
     return base;  
 }

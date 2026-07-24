@@ -32,7 +32,6 @@ private:
     synfig::ValueBase param_rotation;
     synfig::ValueBase param_offset;
     synfig::ValueBase param_anim_offset;
-    mutable synfig::Vector wave_offset_;
     uint32_t glyph_index_ = 0;
     size_t line_index_ = 0;
     synfig::Real base_y_ = 0.0;
@@ -48,7 +47,6 @@ public:
     bool set_param(const synfig::String &param, const synfig::ValueBase &value) override;  
     synfig::ValueBase get_param(const synfig::String &param) const override;  
     Layer::Vocab get_param_vocab() const override;  
-    void set_wave_offset(const synfig::Vector& v);
     void set_glyph_index(uint32_t gi) { glyph_index_ = gi; }
     uint32_t get_glyph_index() const { return glyph_index_; }
     void set_line_index(size_t i) { line_index_ = i; }
@@ -87,8 +85,6 @@ private:
     synfig::ValueBase param_font;
     synfig::ValueBase param_color;
     synfig::ValueBase param_invert;
-	synfig::ValueBase param_wave_amplitude;
-	synfig::ValueBase param_wave_period;
 	synfig::ValueBase param_stagger_order;
 	synfig::ValueBase param_share_target;
 
