@@ -27,6 +27,8 @@
 #include "lyr_freetype.h"  
 #include "text_processing.h"
 #include <synfig/rendering/common/task/tasktransformation.h>
+#include <random>
+#include <algorithm>
   
 #endif  
   
@@ -125,7 +127,8 @@ Layer_TextGroup::Layer_TextGroup()
     , param_use_kerning(ValueBase(true))  
     , param_grid_fit(ValueBase(false))  
     , param_direction(ValueBase(0))                 
-    , param_stagger_delay(ValueBase(Time(0.0)))      
+    , param_stagger_delay(ValueBase(Time(0.0)))
+    , param_stagger_order(ValueBase(int(STAGGER_ORDER_FORWARD)))
     , param_font(ValueBase(std::string()))           
     , param_color(ValueBase(Color::black()))        
     , param_invert(ValueBase(false))
@@ -196,6 +199,10 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
         update_wave_offsets(get_time_mark(), true);
         if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();
     });
+    IMPORT_VALUE_PLUS(param_stagger_order,{  
+        update_wave_offsets(get_time_mark(), true);  
+        if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();  
+    });
     IMPORT_VALUE_PLUS(param_wave_amplitude, {
         update_wave_offsets(get_time_mark(), true);
         if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();
@@ -243,6 +250,7 @@ Layer_TextGroup::get_param(const String& param) const
 	EXPORT_VALUE(param_invert);
 	EXPORT_VALUE(param_font);
 	EXPORT_VALUE(param_stagger_delay);
+	EXPORT_VALUE(param_stagger_order);
 	EXPORT_VALUE(param_wave_amplitude);
 	EXPORT_VALUE(param_wave_period);
 	EXPORT_VALUE(param_share_target);
@@ -372,6 +380,16 @@ Layer_TextGroup::get_param_vocab() const
     	.set_description(_("Time offset between consecutive glyph animations"))
     	.set_hint("time")
 	);
+	ret.push_back(ParamDesc("stagger_order")  
+        .set_local_name(_("Stagger Order"))  
+        .set_description(_("Order in which glyphs are staggered in time"))  
+        .set_hint("enum")  
+        .set_static(true)  
+        .add_enum_value(STAGGER_ORDER_FORWARD,    "forward",    _("Forward"))  
+        .add_enum_value(STAGGER_ORDER_REVERSE,    "reverse",    _("Reverse"))  
+        .add_enum_value(STAGGER_ORDER_CENTER_OUT, "center_out", _("Center Out"))  
+        .add_enum_value(STAGGER_ORDER_RANDOM,     "random",     _("Random"))  
+    );
 	ret.push_back(ParamDesc("wave_amplitude")  
     	.set_local_name(_("Wave Amplitude"))  
     	.set_description(_("Vertical amplitude of the wave effect"))  
@@ -463,8 +481,9 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
 void  
 Layer_TextGroup::attach_shared_nodes()
 {  
+    
     if (in_attach_shared_) return;
-    in_attach_shared_ = true;
+	in_attach_shared_ = true;
     
     Canvas::Handle canvas = get_sub_canvas();
     
@@ -550,7 +569,10 @@ Layer_TextGroup::get_shareable_params() const
 void
 Layer_TextGroup::share_param(const String& param)
 {
-    Canvas::Handle canvas = get_sub_canvas();
+    if (shared_anim_nodes.count(param))  
+   		return;  
+	
+	Canvas::Handle canvas = get_sub_canvas();
     if (!canvas) return;
 
     Layer_GlyphShape::Handle source_glyph = find_source_glyph();
@@ -605,7 +627,29 @@ Layer_TextGroup::share_param(const String& param)
 
     attach_shared_nodes();
 
-    changed();
+    // changed();
+}
+
+int  
+Layer_TextGroup::glyph_ordinal(int index, int count) const  
+{  
+    if (count <= 0) return index;  
+    switch (param_stagger_order.get(int())) {  
+        case STAGGER_ORDER_REVERSE:  
+            return (count - 1) - index;  
+        case STAGGER_ORDER_CENTER_OUT: {  
+            const double c = (count - 1) / 2.0;  
+            return static_cast<int>(std::floor(std::fabs(index - c)));  
+        }  
+        case STAGGER_ORDER_RANDOM:
+    	if (index >= 0 &&
+        	index < (int)stagger_perm_.size())
+        	return stagger_perm_[index];
+    	return index;  
+        case STAGGER_ORDER_FORWARD:  
+        default:  
+            return index;  
+    }  
 }
 
 void Layer_TextGroup::update_wave_offsets(Time time, bool force_sync_after) const  
@@ -618,13 +662,17 @@ void Layer_TextGroup::update_wave_offsets(Time time, bool force_sync_after) cons
     Time toffset    = get_time_offset();  
     Real wave_amp   = param_wave_amplitude.get(Real());  
     Time wave_period = param_wave_period.get(Time());  
-  
+
+  	int count = 0;  
+    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter)  
+        if (dynamic_cast<Layer_GlyphShape*>(iter->get())) ++count;  
     int i = 0;  
-    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter, ++i) {  
+    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter) {  
         Layer_GlyphShape* gl = dynamic_cast<Layer_GlyphShape*>(iter->get());  
-        if (!gl) continue;  
-  
-        Time glyph_time = time * dilation + toffset + Time(i * (double)stagger);  
+        if (!gl) continue;    
+
+        const int ord = glyph_ordinal(i, count);  
+        Time glyph_time = time * dilation + toffset + Time(ord * (double)stagger);    
         Vector wave_off(0.0, 0.0);  
         if (wave_amp != 0.0 && (double)wave_period != 0.0)  
             wave_off[1] = wave_amp * std::sin(2.0 * M_PI * (double)glyph_time  
@@ -646,14 +694,18 @@ void Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) cons
     Time stagger  = param_stagger_delay.get(Time());
     Real dilation = get_time_dilation();
     Time toffset  = get_time_offset(); 
-
+	int count = 0;  
+    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter)  
+        if (dynamic_cast<Layer_GlyphShape*>(iter->get())) ++count;  
     int i = 0;
-    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter, ++i) {  
-        Time glyph_time = time * dilation + toffset + Time(i * (double)stagger);  
-
-		(*iter)->set_time(IndependentContext(canvas->end()), glyph_time);  		
-          
-    }  
+    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter) {  
+        Layer_GlyphShape* gl = dynamic_cast<Layer_GlyphShape*>(iter->get());  
+        if (!gl) continue;  
+        const int ord = glyph_ordinal(i, count);  
+        Time glyph_time = time * dilation + toffset + Time(ord * (double)stagger);  
+        (*iter)->set_time(IndependentContext(canvas->end()), glyph_time);  
+        ++i;
+    }    
 }
 
 Layer::Handle  
@@ -672,6 +724,39 @@ Layer_GlyphShape::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid
     return base;  
 }
 
+void
+Layer_TextGroup::rebuild_stagger_permutation()
+{
+    stagger_perm_.clear();
+
+    if (param_stagger_order.get(int()) != STAGGER_ORDER_RANDOM)
+        return;
+
+    Canvas::Handle canvas = get_sub_canvas();
+    if (!canvas) return;
+
+    uint32_t layer_salt =
+        static_cast<uint32_t>(std::hash<std::string>{}(get_guid().get_string()));
+
+    std::vector<std::pair<uint64_t, size_t>> keyed;
+    size_t i = 0;
+    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter, ++i) {
+        auto* gl = dynamic_cast<Layer_GlyphShape*>(iter->get());
+        if (!gl) continue;
+        
+        uint64_t c = (uint64_t(gl->get_cluster()) << 32) | gl->get_glyph_index();
+        uint64_t h = c ^ (layer_salt + 0x9e3779b97f4a7c15ULL + (c << 6) + (c >> 2));
+        h ^= h >> 33; h *= 0xff51afd7ed558ccdULL;
+        h ^= h >> 33; h *= 0xc4ceb9fe1a85ec53ULL;
+        h ^= h >> 33;
+        keyed.push_back({h, i});
+    }
+    std::sort(keyed.begin(), keyed.end());
+
+    stagger_perm_.resize(keyed.size());
+    for (size_t rank = 0; rank < keyed.size(); ++rank)
+        stagger_perm_[keyed[rank].second] = (int)rank;
+}
 
 void  
 Layer_TextGroup::sync_glyphs()  
@@ -905,7 +990,8 @@ auto shaped_lines =
         	
     	}  
     	++layer_iter;  
-	}  
+	}
+	rebuild_stagger_permutation();   
 	attach_shared_nodes();
     signal_subcanvas_changed()();  
     changed();  

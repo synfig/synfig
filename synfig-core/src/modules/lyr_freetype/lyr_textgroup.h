@@ -15,6 +15,13 @@
 #include <hb.h>  
 #endif  
 
+enum StaggerOrder {  
+    STAGGER_ORDER_FORWARD   = 0,  
+    STAGGER_ORDER_REVERSE   = 1,  
+    STAGGER_ORDER_CENTER_OUT= 2,  
+    STAGGER_ORDER_RANDOM    = 3  
+};
+
 class Layer_GlyphShape : public synfig::Layer_Shape  
 {  
     SYNFIG_LAYER_MODULE_EXT  
@@ -82,6 +89,7 @@ private:
     synfig::ValueBase param_invert;
 	synfig::ValueBase param_wave_amplitude;
 	synfig::ValueBase param_wave_period;
+	synfig::ValueBase param_stagger_order;
 	synfig::ValueBase param_share_target;
 
 public:  
@@ -92,9 +100,11 @@ public:
     synfig::ValueBase get_param(const synfig::String &param) const override;  
     synfig::Layer::Vocab get_param_vocab() const override;  
     synfig::String get_local_name() const override;
+    std::vector<int>  stagger_perm_;
     
 private:  
     void sync_glyphs();
+    int glyph_ordinal(int index, int count) const;
 	void update_wave_offsets(synfig::Time time, bool force_sync_after = false) const;    
 	std::map<synfig::String, synfig::ValueNode::Handle> shared_anim_nodes;
 	void attach_shared_nodes();
@@ -102,7 +112,8 @@ private:
 	void detach_shared_param(const synfig::String& param);
 	size_t source_glyph_index_ = 0;
 	void rebuild_shared_registry();
-	void share_param(const synfig::String& param);   
+	void share_param(const synfig::String& param);
+	void rebuild_stagger_permutation();
 	void request_full_resync();
 	Layer_GlyphShape::Handle find_source_glyph() const;
     std::vector<synfig::String> get_shareable_params() const;
