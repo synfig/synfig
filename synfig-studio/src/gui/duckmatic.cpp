@@ -1871,7 +1871,10 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 		Layer_PasteCanvas::Handle layer;
 		if (value_desc.parent_is_layer())
 			layer = Layer_PasteCanvas::Handle::cast_dynamic(value_desc.get_layer());
-		if (!layer) {
+
+		bool is_size_duck = param_desc && param_desc != REAL_COOKIE  
+                 && param_desc->get_hint() == "size";  
+		if (!layer || is_size_duck) {
 			Duck::Handle duck = new Duck();
 			set_duck_value_desc(*duck, value_desc, transform_stack);
 			ValueNode_Composite::Handle blinepoint_value_node;

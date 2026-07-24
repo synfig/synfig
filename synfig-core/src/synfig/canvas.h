@@ -308,6 +308,7 @@ private:
 	//!	Child Value Node Removed. Used in Dynamic List Value Nodes
 	sigc::signal<void, ValueNode::Handle, ValueNode::Handle> signal_value_node_child_removed_;
 
+	sigc::signal<void> signal_force_refresh_;
 	/*
  -- ** -- S I G N A L   I N T E R F A C E -------------------------------------
 	*/
@@ -357,6 +358,7 @@ public:
 
 	void invoke_signal_value_node_child_removed(ValueNode::Handle, ValueNode::Handle);
 
+	sigc::signal<void>& signal_force_refresh() { return signal_force_refresh_; }
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
 	*/
@@ -389,7 +391,7 @@ public:
 
 	//! Returns true if the Canvas is in line
 	bool is_inline()const { return is_inline_; }
-
+	
 	//! Returns a handle to the RendDesc for this Canvas
 	RendDesc &rend_desc() { return desc_; }
 

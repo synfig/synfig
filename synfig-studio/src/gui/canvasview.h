@@ -653,6 +653,7 @@ protected:
 	bool on_button_press_event(GdkEventButton *event);
 	bool on_keyframe_tree_event(GdkEvent *event);
 	void on_dirty_preview();
+	void on_force_refresh();
 	bool on_children_user_click(int, Gtk::TreeRow, ChildrenTree::ColumnID);
 	bool on_layer_user_click(int, Gtk::TreeRow, LayerTree::ColumnID);
 	void on_mode_changed(synfigapp::CanvasInterface::Mode mode);
