@@ -49,9 +49,6 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-struct FaceCache;  
-struct FontMeta;  
-
 class Layer_Freetype : public synfig::Layer_Shape
 {
 	SYNFIG_LAYER_MODULE_EXT
