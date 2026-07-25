@@ -171,8 +171,8 @@ private:
 	/*! \see drag_point */
 	DragMode drag_mode;
 
-	etl::handle<Duckmatic::Duck> clicked_duck;
-	etl::handle<Duckmatic::Duck> hover_duck;
+	Duckmatic::Duck::Handle clicked_duck;
+	Duckmatic::Duck::Handle hover_duck;
 
 	//! When dragging the viewport, this is set to the origin of the drag
 	synfig::Point drag_point;
