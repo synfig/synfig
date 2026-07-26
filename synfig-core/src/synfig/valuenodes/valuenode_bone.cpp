@@ -256,7 +256,11 @@ ValueNode_Bone::ValueNode_Bone(const ValueBase &value, Canvas::LooseHandle canva
 
 		name = unique_name(name);
 
-		set_link("name",ValueNode_Const::create(name));
+		{
+			ValueBase vb_name(name);
+			vb_name.set_static(true);
+			set_link("name", ValueNode_Const::create(vb_name));
+		}
 #ifndef HIDE_BONE_FIELDS
 		set_link("origin",ValueNode_Const::create(bone.get_origin()));
 		set_link("angle",ValueNode_Const::create(bone.get_angle()));
@@ -587,6 +591,7 @@ ValueNode_Bone::get_children_vocab_vfunc() const
 	ret.push_back(ParamDesc("name")
 		.set_local_name(_("Name"))
 		.set_description(_("The name of the bone"))
+		.set_static(true)
 	);
 
 	ret.push_back(ParamDesc("parent")
