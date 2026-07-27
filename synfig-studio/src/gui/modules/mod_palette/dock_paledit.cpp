@@ -387,6 +387,14 @@ Dock_PalEdit::show_menu(int i)
 			i ));
 	menu->append(*item);
 
+	item = Gtk::manage(new Gtk::MenuItem(_("Rename"), true));
+	item->signal_activate().connect(
+		sigc::bind(
+			sigc::mem_fun(*this, &studio::Dock_PalEdit::rename_color),
+			i ));
+	item->show_all();
+	menu->append(*item);
+
 #if GTK_CHECK_VERSION(3, 22, 0)
 	menu->popup_at_pointer(nullptr);
 #else
@@ -509,6 +517,7 @@ Dock_PalEdit::refresh()
 		Widget_Color* widget_color(manage(new Widget_Color()));
 		widget_color->set_value(get_color(i));
 		widget_color->set_size_request(12,12);
+		widget_color->set_tooltip_text(strprintf(_("Color name: %s"), palette_[i].name.c_str()));
 		widget_color->signal_activate().connect(
 			sigc::bind(
 				sigc::mem_fun(*this,&studio::Dock_PalEdit::select_fill_color),
@@ -547,6 +556,34 @@ Dock_PalEdit::edit_color(int i)
 		)
 	);
 	App::dialog_color->present();
+}
+
+void
+Dock_PalEdit::rename_color(int i)
+{
+	String new_name = palette_[i].name;
+	while (App::dialog_entry(_("Set Palette Color Name"),
+						   _("Color name: "),
+						   new_name,
+						   _("Cancel"),
+						   _("Ok")))
+	{
+		new_name = trim(new_name);
+
+		// Check if name already exists:
+		if (new_name.empty() || !palette_.is_color_present(new_name)) {
+			palette_[i].name = new_name;
+			refresh();
+			return;
+		}
+
+		App::dialog_message_1b("ERROR",
+							   _("Color name already exists"),
+							   strprintf(_("The color name '%s' already exists in this palette.\n"
+										   "Please choose another name."),
+										 new_name.c_str()),
+							   _("OK"));
+	}
 }
 
 void
