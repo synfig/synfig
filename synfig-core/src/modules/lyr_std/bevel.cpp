@@ -71,23 +71,21 @@ bevel_calc_halfsize(Real size_x, Real size_y, int type, Real pw, Real ph,
 {
 	const Real GAUSSIAN_ADJUSTMENT = 0.05;
 
-	halfsizex = (int)(std::fabs(size_x*.5/pw) + 3);
-	halfsizey = (int)(std::fabs(size_y*.5/ph) + 3);
-
 	switch(type)
 	{
-		case Blur::DISC:
-		case Blur::BOX:
-		case Blur::CROSS:
-		case Blur::FASTGAUSSIAN:
-			halfsizex = std::max(1, halfsizex);
-			halfsizey = std::max(1, halfsizey);
-			break;
 		case Blur::GAUSSIAN:
 			halfsizex = (int)(size_x*GAUSSIAN_ADJUSTMENT/std::fabs(pw*pw) + 0.5);
 			halfsizey = (int)(size_y*GAUSSIAN_ADJUSTMENT/std::fabs(ph*ph) + 0.5);
 			halfsizex = (halfsizex + 1)/2;
 			halfsizey = (halfsizey + 1)/2;
+			break;
+		case Blur::DISC:
+		case Blur::BOX:
+		case Blur::CROSS:
+		case Blur::FASTGAUSSIAN:
+		default:
+			halfsizex = std::max(1, (int)(std::fabs(size_x*.5/pw) + 3));
+			halfsizey = std::max(1, (int)(std::fabs(size_y*.5/ph) + 3));
 			break;
 	}
 }
