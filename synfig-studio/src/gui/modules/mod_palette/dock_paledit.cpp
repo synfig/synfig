@@ -38,6 +38,7 @@
 #include <errno.h>
 #include <sys/stat.h>
 
+#include <gtkmm/messagedialog.h>
 #include <gtkmm/image.h>
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/menu.h>
@@ -563,15 +564,11 @@ void
 Dock_PalEdit::rename_color(int i)
 {
 	String new_name = palette_[i].name;
-	while (App::dialog_entry(_("Set Palette Color Name"),
-						   _("Color name: "),
-						   new_name,
-						   _("Cancel"),
-						   _("Ok")))
+	while (open_dialog_rename_color(i, new_name))
 	{
 		new_name = trim(new_name);
 
-		// Check if name already exists:
+		// Check if name already exists
 		if (new_name.empty() || !palette_.is_color_present(new_name)) {
 			palette_[i].name = new_name;
 			refresh();
@@ -737,4 +734,96 @@ Dock_PalEdit::confirm_duplicate_color_addition() const
 			_("Add"),
 			_("Cancel")
 		) == synfigapp::UIInterface::RESPONSE_OK;
+}
+
+bool
+Dock_PalEdit::open_dialog_rename_color(int i, String& new_name)
+{
+	const synfig::Color& color = palette_[i].color;
+	const synfig::String& current_name = palette_[i].name;
+
+	Gtk::MessageDialog dialog(
+		*App::main_window,
+		_("Set Palette Color Name"),
+		false,
+		Gtk::MESSAGE_QUESTION,
+		Gtk::BUTTONS_NONE,
+		true
+		);
+
+	Gtk::Grid* grid = manage (new Gtk::Grid());
+	dialog.get_content_area()->pack_start(*grid);
+	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	Gtk::Button* rename_button = dialog.add_button(_("Rename"), Gtk::RESPONSE_OK);
+
+	dialog.set_default_response(Gtk::RESPONSE_OK);
+
+
+	const int DIALOG_ENTRY_MARGIN = 18;
+	const int GRID_COL_SPACING = 6;
+
+	Gtk::Label* label = manage (new Gtk::Label(_("New color name")));
+	// label->set_margin_start(DIALOG_ENTRY_MARGIN);
+
+	Gtk::Label* error_label = manage (new Gtk::Label());
+	error_label->get_style_context()->add_class("error");
+	error_label->set_line_wrap_mode(Pango::WRAP_WORD);
+	error_label->set_line_wrap();
+
+	Gtk::Entry* entry = manage(new Gtk::Entry());
+	entry->set_text(current_name);
+	std::string tooltip;
+	if (current_name.empty())
+		tooltip = _("This color is currently unnamed");
+	else
+		tooltip = strprintf(_("Current color name: %s"), current_name.c_str());
+	entry->set_tooltip_text(tooltip);
+	entry->set_placeholder_text(current_name);
+	// entry->set_margin_end(DIALOG_ENTRY_MARGIN);
+	entry->set_activates_default(true);
+	entry->set_hexpand(TRUE);
+	entry->set_halign(Gtk::ALIGN_FILL);
+
+	Widget_Color* widget_color = Gtk::manage(new Widget_Color());
+	widget_color->set_value(color);
+	widget_color->set_size_request(18, -1);
+
+	grid->set_margin_start(DIALOG_ENTRY_MARGIN);
+	grid->set_margin_end(DIALOG_ENTRY_MARGIN);
+	grid->set_column_spacing(6);
+	grid->attach(*widget_color, 0, 0);
+	grid->attach(*label, 1, 0);
+	grid->attach(*entry, 2, 0);
+	grid->attach(*error_label, 0, 1, 3, 1);
+
+	grid->show_all();
+
+	std::function<void()> validate_entry = sigc::track_obj([&]() {
+		const String proposed_name = synfig::trim(entry->get_text());
+		bool enable_ok = true;
+		String error_text;
+
+		if (proposed_name == current_name) {
+			enable_ok = false;
+		} else if (!proposed_name.empty() && palette_.is_color_present(proposed_name)) {
+			enable_ok = false;
+			error_text = _("Color name already exists.");
+		}
+		rename_button->set_sensitive(enable_ok);
+		error_label->set_text(error_text);
+	}, dialog);
+
+	entry->signal_changed().connect(validate_entry);
+	entry->signal_activate().connect(sigc::bind(sigc::mem_fun(dialog, &Gtk::Dialog::response), Gtk::RESPONSE_OK));
+
+	validate_entry();
+
+	dialog.show();
+
+	if (dialog.run() != Gtk::RESPONSE_OK)
+		return false;
+
+	new_name = entry->get_text();
+
+	return true;
 }

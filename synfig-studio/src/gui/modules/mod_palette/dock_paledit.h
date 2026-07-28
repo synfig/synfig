@@ -90,6 +90,8 @@ private:
 	void apply_color_to_selected_layer(int i) const;
 	bool confirm_duplicate_color_addition() const;
 
+	bool open_dialog_rename_color(int i, synfig::String& new_name);
+
 public:
 	static Dock_PalEdit* get_instance() { return instance; }
 	void set_palette(const synfig::Palette& x);
