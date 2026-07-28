@@ -57,7 +57,7 @@ using namespace lyr_std;
 SYNFIG_LAYER_INIT(Layer_BevelDeprecated);
 SYNFIG_LAYER_SET_NAME(Layer_BevelDeprecated,"bevel_deprecated");
 SYNFIG_LAYER_SET_LOCAL_NAME(Layer_BevelDeprecated,N_("Bevel (Deprecated)"));
-SYNFIG_LAYER_SET_CATEGORY(Layer_BevelDeprecated,N_("Stylize"));
+SYNFIG_LAYER_SET_CATEGORY(Layer_BevelDeprecated,CATEGORY_DO_NOT_USE);//Hide this layer in the menu
 SYNFIG_LAYER_SET_VERSION(Layer_BevelDeprecated,"0.3");
 
 /* === P R O C E D U R E S ================================================= */
