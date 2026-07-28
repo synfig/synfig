@@ -68,12 +68,12 @@ ACTION_SET_VERSION(Action::LayerUpgrade,"0.0");
 // its upgrade; no other code in this file needs to change. Linear scan of a
 // tiny list is fine while pairs stay few -- switch to std::map if it grows.
 synfig::String
-Action::LayerUpgrade::get_target_layer_name(const synfig::String &source_layer_name)
+Action::LayerUpgrade::get_target_layer_name(const synfig::String& source_layer_name)
 {
 	static const std::pair<const char*, const char*> table[] = {
 		{ "bevel_deprecated", "bevel" }
 	};
-	for(const auto &entry : table)
+	for(const auto& entry : table)
 		if(source_layer_name == entry.first)
 			return synfig::String(entry.second);
 	return synfig::String();
@@ -94,7 +94,7 @@ Action::LayerUpgrade::get_param_vocab()
 }
 
 bool
-Action::LayerUpgrade::is_candidate(const ParamList &x)
+Action::LayerUpgrade::is_candidate(const ParamList& x)
 {
 	if(!candidate_check(get_param_vocab(),x))
 		return false;
@@ -115,7 +115,7 @@ Action::LayerUpgrade::is_candidate(const ParamList &x)
 }
 
 bool
-Action::LayerUpgrade::set_param(const synfig::String& name, const Action::Param &param)
+Action::LayerUpgrade::set_param(const synfig::String& name, const Action::Param& param)
 {
 	if(name=="layer" && param.get_type()==Param::TYPE_LAYER)
 	{
@@ -145,10 +145,10 @@ Action::LayerUpgrade::prepare()
 
 	// ponytail: process descending by depth so mutations at higher indices
 	// never shift the captured depth of lower layers (multi-select drift guard).
-	layers.sort([](const Layer::Handle &a, const Layer::Handle &b)
+	layers.sort([](const Layer::Handle& a, const Layer::Handle& b)
 		{ return a->get_depth() > b->get_depth(); });
 
-	for(const Layer::Handle &layer : layers)
+	for(const Layer::Handle& layer : layers)
 	{
 		const String target_name(get_target_layer_name(layer->get_name()));
 		if(target_name.empty())
@@ -158,7 +158,7 @@ Action::LayerUpgrade::prepare()
 }
 
 void
-Action::LayerUpgrade::prepare_upgrade_layer(const synfig::Layer::Handle &layer, const synfig::String &target_name)
+Action::LayerUpgrade::prepare_upgrade_layer(const synfig::Layer::Handle& layer, const synfig::String& target_name)
 {
 	if(!layer)
 		return;
@@ -193,7 +193,7 @@ Action::LayerUpgrade::prepare_upgrade_layer(const synfig::Layer::Handle &layer, 
 	// description: keep only user-set values; an empty description falls back
 	// to the new layer's local name. Drop text that equals the old layer's
 	// default display name too, so the upgrade is invisible.
-	const String &desc(layer->get_description());
+	const String& desc(layer->get_description());
 	if(!desc.empty() && desc != layer->get_local_name())
 		new_layer->set_description(desc);
 
@@ -207,7 +207,7 @@ Action::LayerUpgrade::prepare_upgrade_layer(const synfig::Layer::Handle &layer, 
 
 	// Reconnect animated (dynamic) parameters by SHARING the value nodes,
 	// not cloning them, so exported/animated links stay referenced.
-	for(const auto &dp : layer->dynamic_param_list())
+	for(const auto& dp : layer->dynamic_param_list())
 	{
 		Action::Handle action(Action::create("LayerParamConnect"));
 		action->set_param("canvas",subcanvas);

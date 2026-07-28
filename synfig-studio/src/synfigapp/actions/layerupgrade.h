@@ -54,17 +54,17 @@ class LayerUpgrade :
 private:
 	std::list<synfig::Layer::Handle> layers;
 
-	void prepare_upgrade_layer(const synfig::Layer::Handle &layer, const synfig::String &target_name);
+	void prepare_upgrade_layer(const synfig::Layer::Handle& layer, const synfig::String& target_name);
 
 	// Returns the current layer name for a deprecated one, or empty if unknown.
-	static synfig::String get_target_layer_name(const synfig::String &source_layer_name);
+	static synfig::String get_target_layer_name(const synfig::String& source_layer_name);
 
 public:
 
 	static ParamVocab get_param_vocab();
-	static bool is_candidate(const ParamList &x);
+	static bool is_candidate(const ParamList& x);
 
-	virtual bool set_param(const synfig::String& name, const Param &);
+	virtual bool set_param(const synfig::String& name, const Param&);
 	virtual bool is_ready()const;
 
 	virtual void prepare();
