@@ -791,9 +791,9 @@ Dock_PalEdit::open_dialog_rename_color(int i, String& new_name)
 	grid->set_margin_start(DIALOG_ENTRY_MARGIN);
 	grid->set_margin_end(DIALOG_ENTRY_MARGIN);
 	grid->set_column_spacing(6);
-	grid->attach(*widget_color, 0, 0);
-	grid->attach(*label, 1, 0);
-	grid->attach(*entry, 2, 0);
+	grid->attach(*widget_color, 0, 0, 1, 1);
+	grid->attach(*label, 1, 0, 1, 1);
+	grid->attach(*entry, 2, 0, 1, 1);
 	grid->attach(*error_label, 0, 1, 3, 1);
 
 	grid->show_all();
