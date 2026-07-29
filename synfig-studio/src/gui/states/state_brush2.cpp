@@ -447,7 +447,7 @@ StateBrush2_Context::BrushConfig::load(const String& filename)
 	clear();
 
 	char* buffer = nullptr;
-	{
+	try {
 		Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(filename);
 		goffset s = file->query_info()->get_size();
 		if (s < 0)
@@ -459,6 +459,11 @@ StateBrush2_Context::BrushConfig::load(const String& filename)
 		Glib::RefPtr<Gio::FileInputStream> stream = file->read();
 		stream->read(buffer, size);
 		stream->close();
+	} catch (...) {
+		synfig::error(_("Error on loading brush config file: %s"), filename.c_str());
+		delete[] buffer;
+		this->filename = {};
+		return;
 	}
 
 	const char *pos = buffer;
