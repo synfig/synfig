@@ -103,11 +103,11 @@ public:
 			Entry(): base(0.f) { }
 		};
 
-		String filename;
+		filesystem::Path filename;
 		Entry settings[BRUSH_SETTINGS_COUNT];
 
 		void clear();
-		void load(const String& filename);
+		void load(const filesystem::Path& filename);
 		void apply(brushlib::Brush& brush);
 
 	private:
@@ -441,14 +441,14 @@ StateBrush2_Context::BrushConfig::read_row(const char** pos)
 }
 
 void
-StateBrush2_Context::BrushConfig::load(const String& filename)
+StateBrush2_Context::BrushConfig::load(const filesystem::Path& filename)
 {
 	// Load brush configuration from file and parse settings
 	clear();
 
 	char* buffer = nullptr;
 	try {
-		Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(filename);
+		Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(filename.u8string());
 		goffset s = file->query_info()->get_size();
 		if (s < 0)
 			return;
@@ -544,9 +544,9 @@ StateBrush2_Context::save_settings()
 			}
 
 			if (!custom.empty())
-				custom_settings[selected_brush_config.filename] = custom;
+				custom_settings[selected_brush_config.filename.u8string()] = custom;
 			else
-				custom_settings.erase(selected_brush_config.filename);
+				custom_settings.erase(selected_brush_config.filename.u8string());
 		}
 	}
 	catch(...)
@@ -650,7 +650,7 @@ StateBrush2_Context::create_brushes_tab(Gtk::Notebook* notebook)
 
 	// connect eraser checkbox signal to update brush
 	eraser_checkbox.signal_toggled().connect([this]() {
-		if (selected_brush_button && selected_brush_config.filename.length() > 0) {
+		if (selected_brush_button && !selected_brush_config.filename.empty()) {
 			selected_brush_config.settings[BRUSH_ERASER].base = eraser_checkbox.get_active() ? 1.0 : 0.0;
 			if (action) {
 				selected_brush_config.apply(action->stroke.brush());
@@ -897,9 +897,9 @@ StateBrush2_Context::select_brush(Gtk::ToggleToolButton* button, const String& f
 				}
 			}
 			if (has_changes) {
-				custom_settings[selected_brush_config.filename] = custom;
+				custom_settings[selected_brush_config.filename.u8string()] = custom;
 			} else {
-				custom_settings.erase(selected_brush_config.filename);
+				custom_settings.erase(selected_brush_config.filename.u8string());
 			}
 		}
 
