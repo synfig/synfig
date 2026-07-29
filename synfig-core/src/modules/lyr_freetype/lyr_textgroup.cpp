@@ -108,7 +108,6 @@ Layer_TextGroup::Layer_TextGroup()
     , param_stagger_order(ValueBase(int(STAGGER_ORDER_FORWARD)))
     , param_font(ValueBase(std::string()))           
     , param_color(ValueBase(Color::black()))        
-    , param_invert(ValueBase(false))
     , param_share_target(ValueBase(String()))
 {  
     SET_INTERPOLATION_DEFAULTS();  
@@ -159,16 +158,7 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
         }
         changed();
     });
-    IMPORT_VALUE_PLUS(param_invert, {
-        Canvas::Handle canvas = get_sub_canvas();
-        if (canvas) {
-            bool invert = param_invert.get(bool());
-            for (auto iter = canvas->begin(); iter != canvas->end(); ++iter)
-                (*iter)->set_param("invert", ValueBase(invert));
-        }
-        changed();
-    });
-
+    
     // Wave animation params
     IMPORT_VALUE_PLUS(param_stagger_delay, {
         if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();
@@ -212,7 +202,6 @@ Layer_TextGroup::get_param(const String& param) const
 	EXPORT_VALUE(param_use_kerning);
 	EXPORT_VALUE(param_grid_fit);
 	EXPORT_VALUE(param_color);
-	EXPORT_VALUE(param_invert);
 	EXPORT_VALUE(param_font);
 	EXPORT_VALUE(param_stagger_delay);
 	EXPORT_VALUE(param_stagger_order);
@@ -326,13 +315,7 @@ Layer_TextGroup::get_param_vocab() const
 		.set_local_name(_("Color"))
 		.set_description(_("Color for the Text"))
 	);
-
-	ret.push_back(
-    ParamDesc("invert")
-        .set_local_name(_("Invert"))
-        .set_description(_("Invert fill"))
-	);
-
+	
 	ret.push_back(
     ParamDesc("grid_fit")
         .set_local_name(_("Grid Fit"))
@@ -700,8 +683,7 @@ Layer_TextGroup::sync_glyphs()
     const Real    compress    = param_compress.get(Real());  
     const Real    vcompress   = param_vcompress.get(Real());  
     const Color   color       = param_color.get(Color());  
-    const bool    invert      = param_invert.get(bool());  
-  
+      
     const Vector size    = param_size.get(Vector()) * 2;  
     const Real   scale_x = size[0] / face->units_per_EM;  
     const Real   scale_y = size[1] / face->units_per_EM;  
@@ -897,7 +879,6 @@ auto shaped_lines =
         	glyph_layer->set_line_index(glyph.line_index);
         	glyph_layer->set_base_y(glyph.world_pos[1]);	
 	       	(*layer_iter)->set_param("color",  ValueBase(color));  
-        	(*layer_iter)->set_param("invert", ValueBase(invert));
         	
     	}  
     	++layer_iter;  

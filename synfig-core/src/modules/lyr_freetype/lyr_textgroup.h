@@ -84,8 +84,7 @@ private:
     synfig::ValueBase param_stagger_delay;
     synfig::ValueBase param_font;
     synfig::ValueBase param_color;
-    synfig::ValueBase param_invert;
-	synfig::ValueBase param_stagger_order;
+   	synfig::ValueBase param_stagger_order;
 	synfig::ValueBase param_share_target;
 
 public:  
