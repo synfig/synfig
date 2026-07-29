@@ -1387,6 +1387,7 @@ App::get_default_accel_map()
 		{"p",             "<Actions>/action_group_state_manager/set-state-draw"},
 		{"k",             "<Actions>/action_group_state_manager/set-state-sketch"},
 		{"w",             "<Actions>/action_group_state_manager/set-state-width"},
+		{"h",             "<Actions>/action_group_state_manager/set-state-brush2"},
 
 		// Classic edit
 		{"<Primary>x",              "<Actions>/action_group_layer_action_manager/cut"},
