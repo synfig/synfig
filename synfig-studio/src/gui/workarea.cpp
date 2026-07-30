@@ -1353,8 +1353,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				return true;
 			}
 
-			if(guide_highlighted){
+			if (guide_highlighted) {
 				Gtk::Menu* guide_menu(manage(new Gtk::Menu()));
+				guide_menu->attach_to_widget(*this);
 				guide_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), guide_menu));
 				Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("_Edit Guide")));
 				item->set_use_underline(true);
@@ -1369,7 +1370,11 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					get_guide_list().erase(this->curr_guide);
 				}, *this));
 				guide_menu->append(*item);
+#if GTK_CHECK_VERSION(3,22,0)
+				guide_menu->popup_at_pointer(event);
+#else
 				guide_menu->popup(3, gtk_get_current_event_time());
+#endif
 				guide_dialog.set_current_guide(curr_guide);
 				return true;
 			}

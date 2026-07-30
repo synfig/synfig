@@ -297,12 +297,16 @@ KeyframeTree::on_event(GdkEvent *event)
 				{
 					keyframe_tree_store_->canvas_interface()->set_time(row[model.time]);
 				}
-			} else if (event->button.button == 3)
-			{
-				Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-keyframe"));
-				if(menu)
-				{
-					menu->popup(event->button.button,gtk_get_current_event_time());
+			} else if (event->button.button == 3) {
+				if (Gtk::Menu* menu = dynamic_cast<Gtk::Menu*>(App::ui_manager()->get_widget("/menu-keyframe"))) {
+					if (menu->get_attach_widget())
+						menu->detach();
+					menu->attach_to_widget(*this);
+#if GTK_CHECK_VERSION(3,22,0)
+					menu->popup_at_pointer(event);
+#else
+					menu->popup(event->button.button, gtk_get_current_event_time());
+#endif
 				}
 			}
 
