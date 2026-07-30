@@ -1231,8 +1231,14 @@ Duckmatic::draw_ffd_overlay(
 		}
 
 
+		std::set<std::pair<int, int>> drawn_edges;
 		for (const auto& tri : tris) {
 			auto add_edge = [&](int i1, int i2) {
+				if (i1 < 0 || i2 < 0 || i1 >= (int)ducks.size() || i2 >= (int)ducks.size() || i1 == i2)
+					return;
+				std::pair<int, int> edge(std::min(i1, i2), std::max(i1, i2));
+				if (!drawn_edges.insert(edge).second)
+					return;
 				Bezier::Handle b(new Bezier());
 				b->p1 = b->c1 = ducks[i1];
 				b->p2 = b->c2 = ducks[i2];

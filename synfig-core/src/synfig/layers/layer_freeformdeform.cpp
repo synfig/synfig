@@ -321,7 +321,7 @@ Layer_FreeFormDeform::triangulate(const std::vector<Point>& pts)
 				   
 		Point center(ux, uy);
 		Real r2 = (a - center).mag_squared();
-		return (p - center).mag_squared() <= r2 + 1e-5;
+		return (p - center).mag_squared() <= r2 * (1.0 + 1e-10);
 	};
 
 	for (size_t i = 0; i < pts.size(); ++i) {

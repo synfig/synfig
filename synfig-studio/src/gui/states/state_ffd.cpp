@@ -62,6 +62,7 @@
 
 #include <gtkmm/menu.h>
 #include <gtkmm/menuitem.h>
+#include <gtkmm/messagedialog.h>
 
 #include <set>
 #include <synfig/transform.h>
@@ -158,6 +159,7 @@ class studio::StateFFD_Context : public sigc::trackable
 	synfig::Point preview_br;
 	synfig::Angle preview_angle;
 	bool editing_existing_mesh_;
+	float last_edge_click_location_;
 	std::vector<etl::handle<WorkArea::Duck> > duck_list_;
 	std::vector<synfig::rendering::Mesh::Triangle> edit_triangles_;
 	std::vector<synfig::rendering::Mesh::Triangle> last_preview_tris_;
@@ -189,6 +191,8 @@ class studio::StateFFD_Context : public sigc::trackable
 	void on_split_edge(int i1, int i2);
 	void on_collapse_edge(int i1, int i2);
 	void on_swap_edge(int i1, int i2);
+	void on_subdivide_edge(int i1, int i2);
+	void insert_point_locally(int point_index);
 
 	synfig::Layer::Handle get_selected_ffd_layer() const;
 	void update_controls_from_layer();
@@ -250,7 +254,8 @@ StateFFD_Context::StateFFD_Context(CanvasView* canvas_view) :
 	smoothness_hscl(smoothness_adj, Gtk::ORIENTATION_HORIZONTAL),
 	reset_button(_("Reset Grid")),
 	updating_from_layer_(false),
-	auto_mesh_cached_(false)
+	auto_mesh_cached_(false),
+	last_edge_click_location_(0.5f)
 {
 	get_canvas_interface()->set_state("ffd");
 
@@ -1342,7 +1347,7 @@ StateFFD_Context::event_mouse_click_handler(const Smach::event& x)
 		polygon_point_list.push_back(p);
 		redo_point_list.clear();
 		if (editing_existing_mesh_)
-			recompute_edit_triangles();
+			insert_point_locally((int)polygon_point_list.size() - 1);
 		refresh_ducks();
 		return Smach::RESULT_ACCEPT;
 	}
@@ -1530,8 +1535,21 @@ StateFFD_Context::recompute_edit_triangles()
 	std::vector<synfig::rendering::Mesh::Triangle> full_tris =
 		synfig::Layer_FreeFormDeform::triangulate(points);
 
+	// Ensure we have a contour polygon for filtering (prevents slivers outside the object)
+	if (auto_mesh_contour_.empty())
+		refresh_edit_contour();
+
 	if (auto_mesh_contour_.empty()) {
-		edit_triangles_ = full_tris;
+		// Fallback: use alpha-shape culling to remove long sliver triangles
+		synfig::Real min_x = points[0][0], max_x = points[0][0];
+		synfig::Real min_y = points[0][1], max_y = points[0][1];
+		for (const auto& p : points) {
+			min_x = std::min(min_x, p[0]); max_x = std::max(max_x, p[0]);
+			min_y = std::min(min_y, p[1]); max_y = std::max(max_y, p[1]);
+		}
+		synfig::Real bbox_diag = std::sqrt((max_x-min_x)*(max_x-min_x) + (max_y-min_y)*(max_y-min_y));
+		synfig::Real auto_cull = bbox_diag * 0.5;
+		edit_triangles_ = synfig::Layer_FreeFormDeform::cull_triangles(full_tris, points, auto_cull);
 		return;
 	}
 
@@ -1558,12 +1576,20 @@ StateFFD_Context::recompute_edit_triangles()
 }
 
 void
-StateFFD_Context::popup_ffd_edge_menu(float /*location*/, int i1, int i2)
+StateFFD_Context::popup_ffd_edge_menu(float location, int i1, int i2)
 {
+	last_edge_click_location_ = location;
+
 	Gtk::Menu *menu = manage(new Gtk::Menu());
 	menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
 
-	Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("_Swap Edge")));
+	Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("S_plit Edge")));
+	item->set_use_underline(true);
+	item->signal_activate().connect(sigc::bind(sigc::mem_fun(*this, &StateFFD_Context::on_split_edge), i1, i2));
+	item->show();
+	menu->append(*item);
+
+	item = manage(new Gtk::MenuItem(_("_Swap Edge")));
 	item->set_use_underline(true);
 	item->signal_activate().connect(sigc::bind(sigc::mem_fun(*this, &StateFFD_Context::on_swap_edge), i1, i2));
 	item->show();
@@ -1575,9 +1601,9 @@ StateFFD_Context::popup_ffd_edge_menu(float /*location*/, int i1, int i2)
 	item->show();
 	menu->append(*item);
 
-	item = manage(new Gtk::MenuItem(_("S_plit Edge")));
+	item = manage(new Gtk::MenuItem(_("Sub_divide Adjacent Triangles")));
 	item->set_use_underline(true);
-	item->signal_activate().connect(sigc::bind(sigc::mem_fun(*this, &StateFFD_Context::on_split_edge), i1, i2));
+	item->signal_activate().connect(sigc::bind(sigc::mem_fun(*this, &StateFFD_Context::on_subdivide_edge), i1, i2));
 	item->show();
 	menu->append(*item);
 
@@ -1591,9 +1617,38 @@ StateFFD_Context::on_split_edge(int i1, int i2)
 	if (i1 < 0 || i2 < 0 || i1 >= (int)points.size() || i2 >= (int)points.size() || i1 == i2)
 		return;
 
-	points.push_back((points[i1] + points[i2]) * 0.5);
+	// Use cursor position along the edge (clamped to avoid degenerate placement)
+	float t = std::max(0.1f, std::min(0.9f, last_edge_click_location_));
+	synfig::Point new_point = points[i1] * (1.0 - t) + points[i2] * t;
+	int new_idx = (int)points.size();
+	points.push_back(new_point);
+
+	// Local topological split: find triangles sharing edge (i1, i2) and split each into 2
+	std::vector<synfig::rendering::Mesh::Triangle> new_triangles;
+	for (const auto& tri : edit_triangles_) {
+		bool has_i1 = false, has_i2 = false;
+		int pos_i1 = -1, pos_i2 = -1;
+		for (int k = 0; k < 3; ++k) {
+			if (tri.vertices[k] == i1) { has_i1 = true; pos_i1 = k; }
+			else if (tri.vertices[k] == i2) { has_i2 = true; pos_i2 = k; }
+		}
+
+		if (has_i1 && has_i2 && pos_i1 >= 0 && pos_i2 >= 0) {
+			// Split: replace each endpoint copy with the new midpoint
+			synfig::rendering::Mesh::Triangle t1 = tri;
+			t1.vertices[pos_i2] = new_idx;
+			new_triangles.push_back(t1);
+
+			synfig::rendering::Mesh::Triangle t2 = tri;
+			t2.vertices[pos_i1] = new_idx;
+			new_triangles.push_back(t2);
+		} else {
+			new_triangles.push_back(tri);
+		}
+	}
+
+	edit_triangles_ = new_triangles;
 	set_edit_points(points);
-	recompute_edit_triangles();
 	refresh_ducks();
 }
 
@@ -1604,54 +1659,35 @@ StateFFD_Context::on_collapse_edge(int i1, int i2)
 	if (i1 < 0 || i2 < 0 || i1 >= (int)points.size() || i2 >= (int)points.size() || i1 == i2)
 		return;
 
-	std::set<std::pair<int, int>> edges;
-	auto add_edge = [&](int a, int b) {
-		if (a == b)
-			return;
-		edges.insert(std::make_pair(std::min(a, b), std::max(a, b)));
-	};
+	// Always keep the lower index and remove the higher
+	int keep = std::min(i1, i2);
+	int remove = std::max(i1, i2);
 
-	std::vector<synfig::rendering::Mesh::Triangle> tris;
-	for (const auto& tri : edit_triangles_) {
-		bool has_i1 = false;
-		bool has_i2 = false;
-		for (int v : tri.vertices) {
-			has_i1 = has_i1 || v == i1;
-			has_i2 = has_i2 || v == i2;
-		}
+	// Move kept vertex to midpoint
+	points[keep] = (points[i1] + points[i2]) * 0.5;
 
-		if (has_i1 && has_i2)
-			continue;
-
-		tris.push_back(tri);
-		add_edge(tri.vertices[0], tri.vertices[1]);
-		add_edge(tri.vertices[1], tri.vertices[2]);
-		add_edge(tri.vertices[2], tri.vertices[0]);
-	}
-
-	bool keep_i1 = false;
-	bool keep_i2 = false;
-	for (const auto& edge : edges) {
-		keep_i1 = keep_i1 || edge.first == i1 || edge.second == i1;
-		keep_i2 = keep_i2 || edge.first == i2 || edge.second == i2;
-	}
-
-	if (keep_i1 && keep_i2) {
-		edit_triangles_ = tris;
-		refresh_beziers();
-		get_work_area()->queue_draw();
-		return;
-	}
-
-	int remove_index = keep_i1 ? i2 : i1;
-	points.erase(points.begin() + remove_index);
-
-	for (auto& tri : tris)
+	// Rewrite all references from 'remove' to 'keep'
+	for (auto& tri : edit_triangles_)
 		for (int& v : tri.vertices)
-			if (v > remove_index)
-				--v;
+			if (v == remove) v = keep;
 
-	edit_triangles_ = tris;
+	// Remove degenerate triangles (two or more vertices the same)
+	std::vector<synfig::rendering::Mesh::Triangle> clean_tris;
+	for (const auto& tri : edit_triangles_) {
+		if (tri.vertices[0] != tri.vertices[1] &&
+			tri.vertices[1] != tri.vertices[2] &&
+			tri.vertices[0] != tri.vertices[2]) {
+			clean_tris.push_back(tri);
+		}
+	}
+
+	// Remove the vertex and adjust all indices
+	points.erase(points.begin() + remove);
+	for (auto& tri : clean_tris)
+		for (int& v : tri.vertices)
+			if (v > remove) --v;
+
+	edit_triangles_ = clean_tris;
 	set_edit_points(points);
 	refresh_ducks();
 }
@@ -1690,6 +1726,143 @@ StateFFD_Context::on_swap_edge(int i1, int i2)
 	edit_triangles_[shared[1]] = synfig::rendering::Mesh::Triangle(b, a, i2);
 	refresh_beziers();
 	get_work_area()->queue_draw();
+}
+
+void
+StateFFD_Context::on_subdivide_edge(int i1, int i2)
+{
+	std::vector<synfig::Point> points = get_edit_points();
+	if (i1 < 0 || i2 < 0 || i1 >= (int)points.size() || i2 >= (int)points.size() || i1 == i2)
+		return;
+
+	// Find triangles sharing edge (i1, i2) and subdivide each by adding a centroid
+	std::vector<synfig::rendering::Mesh::Triangle> new_triangles;
+	for (const auto& tri : edit_triangles_) {
+		bool has_i1 = false, has_i2 = false;
+		for (int v : tri.vertices) {
+			if (v == i1) has_i1 = true;
+			if (v == i2) has_i2 = true;
+		}
+
+		if (has_i1 && has_i2) {
+			// Compute centroid and add as new point
+			const synfig::Point& a = points[tri.vertices[0]];
+			const synfig::Point& b = points[tri.vertices[1]];
+			const synfig::Point& c = points[tri.vertices[2]];
+			synfig::Point centroid((a[0]+b[0]+c[0])/3.0, (a[1]+b[1]+c[1])/3.0);
+			int cidx = (int)points.size();
+			points.push_back(centroid);
+
+			// Split triangle into 3 sub-triangles
+			new_triangles.push_back(synfig::rendering::Mesh::Triangle(tri.vertices[0], tri.vertices[1], cidx));
+			new_triangles.push_back(synfig::rendering::Mesh::Triangle(tri.vertices[1], tri.vertices[2], cidx));
+			new_triangles.push_back(synfig::rendering::Mesh::Triangle(tri.vertices[2], tri.vertices[0], cidx));
+		} else {
+			new_triangles.push_back(tri);
+		}
+	}
+
+	edit_triangles_ = new_triangles;
+	set_edit_points(points);
+	refresh_ducks();
+}
+
+void
+StateFFD_Context::insert_point_locally(int point_index)
+{
+	std::vector<synfig::Point> points = get_edit_points();
+	if (point_index < 0 || point_index >= (int)points.size())
+		return;
+
+	// If we have fewer than 3 points or no triangles, fall back to full re-triangulation
+	if (points.size() < 3 || edit_triangles_.empty()) {
+		recompute_edit_triangles();
+		return;
+	}
+
+	synfig::Point p = points[point_index];
+
+	// Find which existing triangle contains this point (barycentric sign test)
+	for (size_t i = 0; i < edit_triangles_.size(); ++i) {
+		const auto& tri = edit_triangles_[i];
+		// Skip triangles that reference the new point itself (shouldn't happen, but be safe)
+		if (tri.vertices[0] == point_index || tri.vertices[1] == point_index || tri.vertices[2] == point_index)
+			continue;
+
+		const synfig::Point& a = points[tri.vertices[0]];
+		const synfig::Point& b = points[tri.vertices[1]];
+		const synfig::Point& c = points[tri.vertices[2]];
+
+		double d1 = (p[0] - b[0]) * (a[1] - b[1]) - (a[0] - b[0]) * (p[1] - b[1]);
+		double d2 = (p[0] - c[0]) * (b[1] - c[1]) - (b[0] - c[0]) * (p[1] - c[1]);
+		double d3 = (p[0] - a[0]) * (c[1] - a[1]) - (c[0] - a[0]) * (p[1] - a[1]);
+
+		bool has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+		bool has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+		if (!(has_neg && has_pos)) {
+			// Point is inside this triangle — split into 3 sub-triangles
+			int v0 = tri.vertices[0], v1 = tri.vertices[1], v2 = tri.vertices[2];
+			edit_triangles_.erase(edit_triangles_.begin() + i);
+			edit_triangles_.push_back(synfig::rendering::Mesh::Triangle(v0, v1, point_index));
+			edit_triangles_.push_back(synfig::rendering::Mesh::Triangle(v1, v2, point_index));
+			edit_triangles_.push_back(synfig::rendering::Mesh::Triangle(v2, v0, point_index));
+			return;
+		}
+	}
+
+	// Point doesn't fall inside any existing triangle — it is outside the mesh.
+	// Find the closest visible boundary edge and connect to it.
+	std::map<std::pair<int, int>, int> edge_counts;
+	
+	auto make_edge = [](int u, int v) {
+		return std::make_pair(std::min(u, v), std::max(u, v));
+	};
+
+	for (const auto& tri : edit_triangles_) {
+		edge_counts[make_edge(tri.vertices[0], tri.vertices[1])]++;
+		edge_counts[make_edge(tri.vertices[1], tri.vertices[2])]++;
+		edge_counts[make_edge(tri.vertices[2], tri.vertices[0])]++;
+	}
+
+	double min_dist_sq = 1e20;
+	int best_u = -1, best_v = -1;
+
+	for (const auto& edge_pair : edge_counts) {
+		if (edge_pair.second == 1) { // Boundary edge
+			int u = edge_pair.first.first;
+			int v = edge_pair.first.second;
+			
+			const synfig::Point& pu = points[u];
+			const synfig::Point& pv = points[v];
+			
+			synfig::Vector edge_vec = pv - pu;
+			double edge_len_sq = edge_vec.mag_squared();
+			double dist_sq;
+			
+			if (edge_len_sq < 1e-6) {
+				dist_sq = (p - pu).mag_squared();
+			} else {
+				double t = ((p[0] - pu[0]) * edge_vec[0] + (p[1] - pu[1]) * edge_vec[1]) / edge_len_sq;
+				t = std::max(0.0, std::min(1.0, t));
+				synfig::Point proj = pu + edge_vec * t;
+				dist_sq = (p - proj).mag_squared();
+			}
+
+			if (dist_sq < min_dist_sq) {
+				min_dist_sq = dist_sq;
+				best_u = u;
+				best_v = v;
+			}
+		}
+	}
+
+	if (best_u >= 0 && best_v >= 0) {
+		edit_triangles_.push_back(synfig::rendering::Mesh::Triangle(best_u, best_v, point_index));
+	} else {
+		// If still couldn't add (e.g. completely disjoint or inside a weird hole), fall back
+		recompute_edit_triangles();
+	}
 }
 
 void
@@ -2447,6 +2620,14 @@ StateFFD_Context::on_regenerate_pressed()
 	get_canvas_interface()->get_instance()->perform_action(action_edge);
 
 	if (editing_existing_mesh_) {
+		Gtk::MessageDialog dialog(
+			*App::main_window,
+			_("This will replace all mesh points and edges with auto-generated ones. Continue?"),
+			false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_YES_NO, true);
+		dialog.set_title(_("Regenerate Mesh"));
+		if (dialog.run() != Gtk::RESPONSE_YES)
+			return;
+
 		polygon_point_list.clear();
 		for (auto& p : points) polygon_point_list.push_back(p);
 		edit_triangles_.clear();
