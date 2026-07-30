@@ -282,6 +282,17 @@ Palette::find_light()
 	return best_match;
 }
 
+bool
+Palette::is_color_present(const Color& color) const
+{
+	for (const_iterator iter = cbegin(); iter != cend(); ++iter) {
+		if (iter->color == color)
+			return true;
+	}
+
+	return false;
+}
+
 Palette
 Palette::grayscale(int steps, ColorReal gamma)
 {

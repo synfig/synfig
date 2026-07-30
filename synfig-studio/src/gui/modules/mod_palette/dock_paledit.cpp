@@ -397,6 +397,10 @@ Dock_PalEdit::show_menu(int i)
 int
 Dock_PalEdit::add_color(const synfig::Color& x)
 {
+	// Check for duplicate color addition to trigger confirmation dialog
+	if (palette_.is_color_present(x) && !confirm_duplicate_color_addition())
+		return -1;
+
 	palette_.push_back(x);
 	signal_changed()();
 	refresh();
@@ -439,8 +443,11 @@ Dock_PalEdit::add_from_clipboard()
 		col.set_hex(hexcolor);
 		col.set_a(1.0f);
 
-		palette_.push_back(col);
+		// Check for duplicate color addition to trigger confirmation dialog
+		if (palette_.is_color_present(col) && !confirm_duplicate_color_addition())
+			return;
 
+		palette_.push_back(col);
 		signal_changed()();
 		refresh();
 	}
@@ -461,6 +468,10 @@ Dock_PalEdit::copy_color(int i)
 void
 Dock_PalEdit::set_color(synfig::Color x, int i)
 {
+	// Check for duplicate color addition to trigger confirmation dialog
+	if (palette_.is_color_present(x) && !confirm_duplicate_color_addition())
+		return;
+
 	palette_[i].color=x;
 	signal_changed()();
 	refresh();
@@ -677,4 +688,15 @@ int
 Dock_PalEdit::size()const
 {
 	return palette_.size();
+}
+
+bool
+Dock_PalEdit::confirm_duplicate_color_addition() const
+{
+	return App::get_ui_interface()->confirmation(
+			_("The color already exists in the palette."),
+			_("Do you want to add the color again"),
+			_("Add"),
+			_("Cancel")
+		) == synfigapp::UIInterface::RESPONSE_OK;
 }

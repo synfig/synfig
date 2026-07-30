@@ -84,11 +84,14 @@ public:
 
 	iterator find_light();
 
+	bool is_color_present(const Color& color) const;
+
 	static Palette grayscale(int steps, ColorReal gamma);
 
 	void save_to_file(const synfig::filesystem::Path& filename)const;
 
 	static Palette load_from_file(const synfig::filesystem::Path& filename);
+        
 }; // END of class Palette
 
 }; // END of namespace synfig
