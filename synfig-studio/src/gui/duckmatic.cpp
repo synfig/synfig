@@ -1214,14 +1214,22 @@ Duckmatic::draw_ffd_overlay(
 	{
 		// --- CUSTOM MESH MODE: triangulate, cull, draw edges ---
 		std::vector<synfig::Point> pts;
+		std::vector<int> pts_to_ducks;
 		pts.reserve(ducks.size());
-		for (const auto& d : ducks)
-			if (d) pts.push_back(d->get_point());
+		pts_to_ducks.reserve(ducks.size());
+		for (size_t i = 0; i < ducks.size(); ++i) {
+			if (ducks[i]) {
+				pts.push_back(ducks[i]->get_point());
+				pts_to_ducks.push_back(i);
+			}
+		}
 
 		std::vector<synfig::rendering::Mesh::Triangle> tris;
+		bool mapped_to_ducks = false;
 
 		if (!explicit_tris.empty()) {
 			tris = explicit_tris;
+			mapped_to_ducks = true;
 		} else if (source_pts.size() == pts.size()) {
 			tris = synfig::Layer_FreeFormDeform::triangulate(source_pts);
 			tris = synfig::Layer_FreeFormDeform::cull_triangles(tris, source_pts, cull_threshold);
@@ -1234,7 +1242,15 @@ Duckmatic::draw_ffd_overlay(
 		std::set<std::pair<int, int>> drawn_edges;
 		for (const auto& tri : tris) {
 			auto add_edge = [&](int i1, int i2) {
+				if (!mapped_to_ducks) {
+					if (i1 < 0 || i2 < 0 || i1 >= (int)pts.size() || i2 >= (int)pts.size())
+						return;
+					i1 = pts_to_ducks[i1];
+					i2 = pts_to_ducks[i2];
+				}
 				if (i1 < 0 || i2 < 0 || i1 >= (int)ducks.size() || i2 >= (int)ducks.size() || i1 == i2)
+					return;
+				if (!ducks[i1] || !ducks[i2])
 					return;
 				std::pair<int, int> edge(std::min(i1, i2), std::max(i1, i2));
 				if (!drawn_edges.insert(edge).second)
@@ -1249,6 +1265,53 @@ Duckmatic::draw_ffd_overlay(
 			add_edge(tri.vertices[2], tri.vertices[0]);
 		}
 	}
+}
+
+bool
+Duckmatic::get_ffd_overlay_config(
+	const synfigapp::ValueDesc& value_desc,
+	int& ffd_mode, int& cols, int& rows,
+	synfig::Real& ffd_cull_threshold,
+	std::vector<synfig::Point>& source_pts,
+	std::vector<synfig::rendering::Mesh::Triangle>& explicit_tris) const
+{
+	bool is_ffd = false;
+	if (value_desc.parent_is_layer()) {
+		Layer::Handle layer = value_desc.get_layer();
+		if (layer && layer->get_name() == "free_form_deform" && value_desc.get_param_name() == "grid_points") {
+			is_ffd = true;
+			ffd_mode = layer->get_param("mesh_mode").get(int());
+			cols = layer->get_param("grid_size_x").get(int());
+			rows = layer->get_param("grid_size_y").get(int());
+			ffd_cull_threshold = layer->get_param("cull_threshold").get(synfig::Real());
+			if (ffd_mode == 1) {
+				synfig::ValueBase source_points_vb = layer->get_param("source_points");
+				if (source_points_vb.get_type() == synfig::type_list) {
+					const synfig::ValueBase::List &source_list = source_points_vb.get_list();
+					for(auto i = source_list.begin(); i != source_list.end(); ++i) {
+						if (i->can_get(synfig::Point())) source_pts.push_back(i->get(synfig::Point()));
+					}
+				}
+
+				synfig::ValueBase tris_vb = layer->get_param("triangles");
+				if (tris_vb.get_type() == synfig::type_list) {
+					const auto& tris_list = tris_vb.get_list();
+					if (!tris_list.empty() && tris_list.size() % 3 == 0) {
+						for (size_t k = 0; k < tris_list.size(); k += 3) {
+							if (tris_list[k].can_get(int()) && tris_list[k+1].can_get(int()) && tris_list[k+2].can_get(int())) {
+								synfig::rendering::Mesh::Triangle tri;
+								tri.vertices[0] = tris_list[k].get(int());
+								tri.vertices[1] = tris_list[k+1].get(int());
+								tri.vertices[2] = tris_list[k+2].get(int());
+								explicit_tris.push_back(tri);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return is_ffd;
 }
 
 void
@@ -2666,47 +2729,12 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 			synfig::Type &contained_type(value_node->get_contained_type());
 			if (contained_type == type_vector)
 			{
-				bool is_ffd = false;
 				int ffd_mode = 0;
 				int cols = 0, rows = 0;
 				synfig::Real ffd_cull_threshold = 0.0;
 				std::vector<synfig::Point> source_pts;
-				if (value_desc.parent_is_layer()) {
-					Layer::Handle layer = value_desc.get_layer();
-					if (layer && layer->get_name() == "free_form_deform" && value_desc.get_param_name() == "grid_points") {
-						is_ffd = true;
-						ffd_mode = layer->get_param("mesh_mode").get(int());
-						cols = layer->get_param("grid_size_x").get(int());
-						rows = layer->get_param("grid_size_y").get(int());
-						ffd_cull_threshold = layer->get_param("cull_threshold").get(synfig::Real());
-						if (ffd_mode == 1) {
-							synfig::ValueBase source_points_vb = layer->get_param("source_points");
-							if (source_points_vb.get_type() == synfig::type_list) {
-								const synfig::ValueBase::List &source_list = source_points_vb.get_list();
-								for(auto i = source_list.begin(); i != source_list.end(); ++i) {
-									if (i->can_get(synfig::Point())) source_pts.push_back(i->get(synfig::Point()));
-								}
-							}
-						}
-					}
-				}
-
 				std::vector<synfig::rendering::Mesh::Triangle> explicit_tris;
-				if (is_ffd && ffd_mode == 1 && value_desc.parent_is_layer()) {
-					synfig::ValueBase tris_vb = value_desc.get_layer()->get_param("triangles");
-					if (tris_vb.get_type() == synfig::type_list) {
-						const auto& tris_list = tris_vb.get_list();
-						if (!tris_list.empty() && tris_list.size() % 3 == 0) {
-							for (size_t k = 0; k < tris_list.size(); k += 3) {
-								synfig::rendering::Mesh::Triangle tri;
-								tri.vertices[0] = tris_list[k].get(int());
-								tri.vertices[1] = tris_list[k+1].get(int());
-								tri.vertices[2] = tris_list[k+2].get(int());
-								explicit_tris.push_back(tri);
-							}
-						}
-					}
-				}
+				bool is_ffd = get_ffd_overlay_config(value_desc, ffd_mode, cols, rows, ffd_cull_threshold, source_pts, explicit_tris);
 
 				Bezier bezier;
 				Duck::Handle first_duck, duck;
@@ -2955,47 +2983,12 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 
 			if(value_node->get_contained_type()==type_vector)
 			{
-				bool is_ffd = false;
 				int ffd_mode = 0;
 				int cols = 0, rows = 0;
 				synfig::Real ffd_cull_threshold = 0.0;
 				std::vector<synfig::Point> source_pts;
-				if (value_desc.parent_is_layer()) {
-					Layer::Handle layer = value_desc.get_layer();
-					if (layer && layer->get_name() == "free_form_deform" && value_desc.get_param_name() == "grid_points") {
-						is_ffd = true;
-						ffd_mode = layer->get_param("mesh_mode").get(int());
-						cols = layer->get_param("grid_size_x").get(int());
-						rows = layer->get_param("grid_size_y").get(int());
-						ffd_cull_threshold = layer->get_param("cull_threshold").get(synfig::Real());
-						if (ffd_mode == 1) {
-							synfig::ValueBase source_points_vb = layer->get_param("source_points");
-							if (source_points_vb.get_type() == synfig::type_list) {
-								const synfig::ValueBase::List &source_list = source_points_vb.get_list();
-								for(auto i = source_list.begin(); i != source_list.end(); ++i) {
-									if (i->can_get(synfig::Point())) source_pts.push_back(i->get(synfig::Point()));
-								}
-							}
-						}
-					}
-				}
-
 				std::vector<synfig::rendering::Mesh::Triangle> explicit_tris;
-				if (is_ffd && ffd_mode == 1 && value_desc.parent_is_layer()) {
-					synfig::ValueBase tris_vb = value_desc.get_layer()->get_param("triangles");
-					if (tris_vb.get_type() == synfig::type_list) {
-						const auto& tris_list = tris_vb.get_list();
-						if (!tris_list.empty() && tris_list.size() % 3 == 0) {
-							for (size_t k = 0; k < tris_list.size(); k += 3) {
-								synfig::rendering::Mesh::Triangle tri;
-								tri.vertices[0] = tris_list[k].get(int());
-								tri.vertices[1] = tris_list[k+1].get(int());
-								tri.vertices[2] = tris_list[k+2].get(int());
-								explicit_tris.push_back(tri);
-							}
-						}
-					}
-				}
+				bool is_ffd = get_ffd_overlay_config(value_desc, ffd_mode, cols, rows, ffd_cull_threshold, source_pts, explicit_tris);
 
 				Bezier bezier;
 				Duck::Handle first_duck, duck;

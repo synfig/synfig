@@ -260,6 +260,13 @@ private:
 		const std::vector<synfig::Point>& source_pts,
 		const std::vector<synfig::rendering::Mesh::Triangle>& explicit_tris = std::vector<synfig::rendering::Mesh::Triangle>());
 
+	bool get_ffd_overlay_config(
+		const synfigapp::ValueDesc& value_desc,
+		int& ffd_mode, int& cols, int& rows,
+		synfig::Real& ffd_cull_threshold,
+		std::vector<synfig::Point>& source_pts,
+		std::vector<synfig::rendering::Mesh::Triangle>& explicit_tris) const;
+
 	double calculate_distance_from_guide(const Guide& guide, const synfig::Point& point)const;
 
 	/*
