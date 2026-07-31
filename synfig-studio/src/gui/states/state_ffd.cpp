@@ -1485,8 +1485,10 @@ StateFFD_Context::on_duck_right_click(std::list<synfig::Point>::iterator iter)
 {
 	redo_point_list.push_back(*iter);
 	polygon_point_list.erase(iter);
-	if (editing_existing_mesh_)
+	if (editing_existing_mesh_) {
+		auto_mesh_contour_.clear();
 		recompute_edit_triangles();
+	}
 	refresh_ducks();
 }
 
@@ -1811,57 +1813,94 @@ StateFFD_Context::insert_point_locally(int point_index)
 		}
 	}
 
-	// Point doesn't fall inside any existing triangle — it is outside the mesh.
-	// Find the closest visible boundary edge and connect to it.
-	std::map<std::pair<int, int>, int> edge_counts;
+	// Point is outside the mesh. Find the closest facing boundary edge and expand
+	// contiguously to form a local "tent", limiting distance to avoid over-spanning.
+	std::map<std::pair<int,int>, std::vector<int>> edge_to_tris;
+	auto make_edge = [](int u, int v) { return std::make_pair(std::min(u,v), std::max(u,v)); };
 	
-	auto make_edge = [](int u, int v) {
-		return std::make_pair(std::min(u, v), std::max(u, v));
-	};
+	for (int ti = 0; ti < (int)edit_triangles_.size(); ++ti) {
+		const auto& tri = edit_triangles_[ti];
+		edge_to_tris[make_edge(tri.vertices[0], tri.vertices[1])].push_back(ti);
+		edge_to_tris[make_edge(tri.vertices[1], tri.vertices[2])].push_back(ti);
+		edge_to_tris[make_edge(tri.vertices[2], tri.vertices[0])].push_back(ti);
+	}
 
-	for (const auto& tri : edit_triangles_) {
-		edge_counts[make_edge(tri.vertices[0], tri.vertices[1])]++;
-		edge_counts[make_edge(tri.vertices[1], tri.vertices[2])]++;
-		edge_counts[make_edge(tri.vertices[2], tri.vertices[0])]++;
+	std::vector<std::pair<int,int>> boundary_edges;
+	std::map<int, std::vector<int>> b_adj;
+	for (const auto& kv : edge_to_tris) {
+		if (kv.second.size() == 1) {
+			int u = kv.first.first, v = kv.first.second;
+			boundary_edges.push_back({u, v});
+			b_adj[u].push_back(v);
+			b_adj[v].push_back(u);
+		}
 	}
 
 	double min_dist_sq = 1e20;
-	int best_u = -1, best_v = -1;
+	std::pair<int, int> best_edge = {-1, -1};
+	std::set<std::pair<int,int>> facing_edges;
+	std::map<std::pair<int,int>, double> edge_dist;
 
-	for (const auto& edge_pair : edge_counts) {
-		if (edge_pair.second == 1) { // Boundary edge
-			int u = edge_pair.first.first;
-			int v = edge_pair.first.second;
-			
-			const synfig::Point& pu = points[u];
-			const synfig::Point& pv = points[v];
-			
-			synfig::Vector edge_vec = pv - pu;
+	for (const auto& edge : boundary_edges) {
+		int u = edge.first, v = edge.second;
+		const synfig::Point& pu = points[u];
+		const synfig::Point& pv = points[v];
+
+		const auto& tri = edit_triangles_[edge_to_tris[edge][0]];
+		int opp = -1;
+		for (int v_idx : tri.vertices)
+			if (v_idx != u && v_idx != v) { opp = v_idx; break; }
+		if (opp < 0 || opp >= (int)points.size()) continue;
+
+		synfig::Vector edge_vec = pv - pu;
+		synfig::Vector edge_perp(-edge_vec[1], edge_vec[0]);
+		synfig::Vector to_opp = points[opp] - (pu + pv) * 0.5;
+		if ((edge_perp * to_opp) > 0) edge_perp = -edge_perp;
+
+		synfig::Vector to_p = p - (pu + pv) * 0.5;
+		if ((edge_perp * to_p) > 0) {
+			facing_edges.insert(edge);
+
 			double edge_len_sq = edge_vec.mag_squared();
 			double dist_sq;
-			
-			if (edge_len_sq < 1e-6) {
+			if (edge_len_sq < 1e-12) {
 				dist_sq = (p - pu).mag_squared();
 			} else {
-				double t = ((p[0] - pu[0]) * edge_vec[0] + (p[1] - pu[1]) * edge_vec[1]) / edge_len_sq;
+				double t = ((p[0]-pu[0])*edge_vec[0] + (p[1]-pu[1])*edge_vec[1]) / edge_len_sq;
 				t = std::max(0.0, std::min(1.0, t));
 				synfig::Point proj = pu + edge_vec * t;
 				dist_sq = (p - proj).mag_squared();
 			}
 
+			edge_dist[edge] = dist_sq;
 			if (dist_sq < min_dist_sq) {
 				min_dist_sq = dist_sq;
-				best_u = u;
-				best_v = v;
+				best_edge = edge;
 			}
 		}
 	}
 
-	if (best_u >= 0 && best_v >= 0) {
-		edit_triangles_.push_back(synfig::rendering::Mesh::Triangle(best_u, best_v, point_index));
-	} else {
-		// If still couldn't add (e.g. completely disjoint or inside a weird hole), fall back
-		recompute_edit_triangles();
+	if (best_edge.first >= 0) {
+		std::set<std::pair<int,int>> edges_to_add;
+		edges_to_add.insert(best_edge);
+		double max_allowed_dist_sq = min_dist_sq * 2.0;
+
+		auto expand = [&](int curr, int prev) {
+			while (b_adj[curr].size() == 2) {
+				int next = (b_adj[curr][0] == prev) ? b_adj[curr][1] : b_adj[curr][0];
+				std::pair<int,int> e = std::make_pair(std::min(curr, next), std::max(curr, next));
+				if (edges_to_add.count(e) || !facing_edges.count(e) || edge_dist[e] > max_allowed_dist_sq) break;
+				edges_to_add.insert(e);
+				prev = curr;
+				curr = next;
+			}
+		};
+
+		expand(best_edge.first, best_edge.second);
+		expand(best_edge.second, best_edge.first);
+
+		for (const auto& e : edges_to_add)
+			edit_triangles_.push_back(synfig::rendering::Mesh::Triangle(e.first, e.second, point_index));
 	}
 }
 
@@ -1968,6 +2007,9 @@ StateFFD_Context::refresh_beziers()
 		std::set<std::pair<int, int>> edges;
 		auto add_edge = [&](int i1, int i2) {
 			if (i1 < 0 || i2 < 0 || i1 >= (int)duck_list_.size() || i2 >= (int)duck_list_.size() || i1 == i2)
+				return;
+			// Guard against null ducks left by stale topology
+			if (!duck_list_[i1] || !duck_list_[i2])
 				return;
 			std::pair<int, int> edge(std::min(i1, i2), std::max(i1, i2));
 			if (!edges.insert(edge).second)
