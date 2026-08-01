@@ -121,7 +121,7 @@ Dialog_FixMissingFiles::set_broken_useids(synfig::CanvasBrokenUseIdMap& map)
 	for (const auto& row : rows)
 		missing_file_list_->remove(*row);
 
-	for (auto iter = map_->begin(); iter != map.end(); ++iter) {
+	for (auto iter = map_->cbegin(); iter != map.cend(); ++iter) {
 		replacer_map_[iter->first] = iter->second.replacement;
 
 		create_row(replacer_map_, iter);
@@ -136,13 +136,13 @@ Dialog_FixMissingFiles::on_response(int response_id)
 	if (response_id != Gtk::RESPONSE_OK)
 		return;
 
-	for (auto& item : *map_) {
-		item.second.replacement = replacer_map_.at(item.first);
+	for (auto it = map_->cbegin(); it != map_->cend(); ++it) {
+		map_->add_replacement(it->first, replacer_map_.at(it->first));
 	}
 }
 
 void
-Dialog_FixMissingFiles::create_row(Dialog_FixMissingFiles::FileReplacerMap& replacer_map, const synfig::CanvasBrokenUseIdMap::iterator& iter)
+Dialog_FixMissingFiles::create_row(Dialog_FixMissingFiles::FileReplacerMap& replacer_map, const synfig::CanvasBrokenUseIdMap::const_iterator& iter)
 {
 	synfig::filesystem::Path missing_path(iter->first.u8string());
 	const synfig::BrokenUseIdInfo& uses = iter->second;

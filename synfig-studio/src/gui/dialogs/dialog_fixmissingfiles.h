@@ -75,7 +75,7 @@ private:
 	typedef std::map<synfig::filesystem::Path, synfig::filesystem::Path> FileReplacerMap;
 	FileReplacerMap replacer_map_;
 
-	void create_row(FileReplacerMap& replacer_map_, const synfig::CanvasBrokenUseIdMap::iterator& iter);
+	void create_row(FileReplacerMap& replacer_map_, const synfig::CanvasBrokenUseIdMap::const_iterator& iter);
 
 	void on_replace_button_clicked(const synfig::filesystem::Path& missing_path, Gtk::Label* label);
 
