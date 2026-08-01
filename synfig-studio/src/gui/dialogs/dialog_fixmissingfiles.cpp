@@ -40,6 +40,8 @@
 # include <gtkmm/label.h>
 # include <gtkmm/listbox.h>
 
+# include <synfig/canvasfilenaming.h>
+# include <synfig/general.h>
 # include <synfig/string_helper.h>
 
 # include <gui/app.h>
@@ -68,6 +70,64 @@ create_image_from_icon(const std::string& icon_name, Gtk::IconSize icon_size)
 	image->set_from_icon_name(icon_name, icon_size);
 	return image;
 #endif
+}
+
+static synfig::Canvas::Handle
+load_canvas_file(const synfig::filesystem::Path& filename)
+{
+	// try open container
+	synfig::FileSystem::Handle container = synfig::CanvasFileNaming::make_filesystem_container(filename.u8string());
+	if (!container)
+		throw synfig::strprintf(_("Unable to open container \"%s\"\n\n"), filename.u8_str());
+
+	// make canvas file system
+	synfig::FileSystem::Handle canvas_file_system = synfig::CanvasFileNaming::make_filesystem(container);
+
+	// file to open inside canvas file-system
+	synfig::String canvas_filename = synfig::CanvasFileNaming::project_file(filename.u8string());
+
+	synfig::CanvasBrokenUseIdMap broken_links;
+	synfig::String errors;
+	synfig::String warnings;
+
+	auto canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename.u8string(), errors, warnings, &broken_links);
+
+	return canvas;
+}
+
+static std::vector<std::string>
+check_canvas_has_missing_items(synfig::Canvas::LooseHandle canvas, const synfig::CanvasMissingIdList& missing_items)
+{
+	std::vector<std::string> still_missing_items;
+
+	if (!canvas)
+		return still_missing_items;
+	if (missing_items.empty())
+		return still_missing_items;
+
+	for (const auto& item : missing_items) {
+		if (item.id.empty())
+			continue;
+
+		try {
+			if (auto vn = canvas->find_value_node(item.id, true, synfig::type_nil, nullptr)) {
+				synfig::warning("found %s : %s - %s", item.id.c_str(), item.type_name.c_str(), vn->get_type().description.name.c_str());
+				if (item.type_name.empty())
+					synfig::warning("The type of %s was still empty!", item.id.c_str());
+				if (item.type_name.empty() || item.type_name == vn->get_type().description.name)
+					continue;
+			}
+			synfig::String warnings;
+			if (auto subcanvas = canvas->find_canvas(item.id, warnings, nullptr)) {
+				continue;
+			}
+		} catch (...) {
+			;
+		}
+
+		still_missing_items.push_back(item.id);
+	}
+	return still_missing_items;
 }
 
 /* === M E T H O D S ======================================================= */
@@ -171,7 +231,7 @@ Dialog_FixMissingFiles::create_row(Dialog_FixMissingFiles::FileReplacerMap& repl
 		if (item.id.empty()) {
 			reasons += _("- Missing file");
 		} else {
-			reasons += synfig::strprintf(_("- Missing exported valuenode: %s (%s)"), item.id.c_str(), item.type_name.c_str());
+			reasons += synfig::strprintf(_("- Missing exported valuenode or canvas: %s (%s)"), item.id.c_str(), item.type_name.c_str());
 		}
 	}
 	label->set_tooltip_text(missing_path.u8string() + "\n\n" + reasons);
@@ -203,11 +263,50 @@ Dialog_FixMissingFiles::on_replace_button_clicked(const synfig::filesystem::Path
 {
 	synfig::filesystem::Path replacement(missing_path);
 	if (App::dialog_open_file(replacer_map_[missing_path].u8string(), replacement, "file")) {
-		if (label) {
-			label->set_markup(synfig::strprintf("(<small>%s</small>)", replacement.u8_str()));
-			label->set_tooltip_text(replacement.relative_to(canvas_filepath_).u8string());
+		synfig::Canvas::Handle replacement_canvas;
+		try {
+			replacement_canvas = load_canvas_file(replacement);
+		} catch (...) {
+
 		}
-		replacer_map_[missing_path] = replacement;
+
+		if (!replacement_canvas) {
+			const std::string error_message = synfig::strprintf(_("File cannot be loaded: %s"), missing_path.u8_str());
+			synfig::error(error_message);
+			App::dialog_message_1b("ERROR",
+								   _("Cannot load file"),
+								   error_message,
+								   _("OK"));
+		} else {
+			auto still_missing_items = check_canvas_has_missing_items(replacement_canvas, map_->at(missing_path).missing_items);
+			if (!still_missing_items.empty()) {
+				std::string still_missing_items_str;
+				for (const auto& item : still_missing_items)
+					still_missing_items_str += item + ", ";
+				if (!still_missing_items_str.empty()) {
+					still_missing_items_str.pop_back(); // ' '
+					still_missing_items_str.pop_back(); // ','
+				}
+				const std::string error_message = synfig::strprintf(_("The file still misses some items: %s.\n"
+																"You should check if this proposed replacement file (%s) is the one"
+																"that has the missing items or try to fix it first (by opening it first)"
+																" before fix and load the broken %s"),
+															  still_missing_items_str.c_str(),
+															  replacement.u8_str(),
+															  missing_path.u8_str());
+				synfig::error(error_message);
+				App::dialog_message_1b("ERROR",
+									   _("File is not good enough"),
+									   error_message,
+									   _("OK"));
+			} else {
+				if (label) {
+					label->set_markup(synfig::strprintf("(<small>%s</small>)", replacement.u8_str()));
+					label->set_tooltip_text(replacement.relative_to(canvas_filepath_).u8string());
+				}
+				replacer_map_[missing_path] = replacement;
+			}
+		}
 	}
 	update_response_button_sensitivity();
 }
