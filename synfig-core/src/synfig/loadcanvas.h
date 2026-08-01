@@ -81,7 +81,7 @@ struct BrokenUseIdInfo
 //! Map to fix broken links due to missing files
 //! (original_file_path, (new_file_path, [(valuenode_id, value_type), ...]))
 //! If new_file_path is null, there is no replacement file path to that item
-struct CanvasBrokenUseIdMap : std::map<filesystem::Path, BrokenUseIdInfo>
+struct CanvasBrokenUseIdMap : private std::map<filesystem::Path, BrokenUseIdInfo>
 {
 	bool
 	fix(std::string& use_id) const
@@ -121,6 +121,22 @@ struct CanvasBrokenUseIdMap : std::map<filesystem::Path, BrokenUseIdInfo>
 		return true;
 	}
 
+	bool
+	add_replacement(const filesystem::Path& broken_file, const filesystem::Path& replacement)
+	{
+		auto it = find(broken_file);
+		if (it == cend())
+			return false;
+		it->second.replacement = replacement;
+		return true;
+	}
+
+	using std::map<filesystem::Path, BrokenUseIdInfo>::empty;
+	using std::map<filesystem::Path, BrokenUseIdInfo>::size;
+	using std::map<filesystem::Path, BrokenUseIdInfo>::const_iterator;
+	using std::map<filesystem::Path, BrokenUseIdInfo>::cbegin;
+	using std::map<filesystem::Path, BrokenUseIdInfo>::cend;
+	using std::map<filesystem::Path, BrokenUseIdInfo>::at;
 };
 
 
