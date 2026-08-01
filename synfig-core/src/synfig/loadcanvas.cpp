@@ -1733,7 +1733,7 @@ CanvasParser::parse_animated(xmlpp::Element *element,Canvas::Handle canvas)
 						warnings_text += warnings;
 					}
 					else
-						waypoint_value_node=canvas->surefind_value_node(use_id, &filepath_fix_map);
+						waypoint_value_node=canvas->surefind_value_node(use_id, type, &filepath_fix_map);
 				} catch (Exception::IDNotFound&) {
 					register_broken_use_id(use_id, type.description.name);
 				}
@@ -1960,7 +1960,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 				}
 				int placeholders(canvas->value_node_list().placeholder_count());
 				try {
-					c[index] = canvas->surefind_value_node(id, &filepath_fix_map);
+					c[index] = canvas->surefind_value_node(id, type, &filepath_fix_map);
 					// Don't accept links for unsolved exported Value Nodes.
 					// Except if it is parsing <bones>, as this section is defined before <defs>
 					if (!in_bones_section) {
@@ -2291,7 +2291,7 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 
 				try
 				{
-					list_entry=canvas->surefind_value_node(use_id, &filepath_fix_map);
+					list_entry=canvas->surefind_value_node(use_id, type, &filepath_fix_map);
 				}
 				catch(Exception::IDNotFound&)
 				{
@@ -2551,7 +2551,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 				fix_broken_use_id(canvas->get_file_name(), use_id);
 				try
 				{
-					list_entry.value_node=canvas->surefind_value_node(use_id, &filepath_fix_map);
+					list_entry.value_node=canvas->surefind_value_node(use_id, type, &filepath_fix_map);
 					if(PlaceholderValueNode::Handle::cast_dynamic(list_entry.value_node))
 						throw Exception::IDNotFound("parse_dynamic_list()");
 				}
@@ -2904,9 +2904,12 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 				std::string use_id = use_attr->get_value();
 				fix_broken_use_id(canvas->get_file_name(), use_id);
 
+				const ValueBase default_param_value = layer->get_param(param_name);
+				const Type& param_type = default_param_value.get_type();
+
 				if (use_id.empty())
 					error(child,_("Empty use=\"\" value in <param>"));
-				else if(layer->get_param(param_name).get_type()==type_canvas)
+				else if(param_type == type_canvas)
 				{
 					String warnings;
 					try {
@@ -2921,13 +2924,13 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 						layer->set_param(param_name, v);
 					} catch (Exception::IDNotFound& ex) {
 						error(child,strprintf(_("Failed to load subcanvas '%s' referenced in parameter \"%s\""), use_id.c_str(), param_name.c_str()));
-						register_broken_use_id(use_id, layer->get_param(param_name).get_type().description.name);
+						register_broken_use_id(use_id, param_type.description.name);
 					}
 				}
 				else
 				try
 				{
-					ValueNode::Handle value_node = canvas->surefind_value_node(use_id, &filepath_fix_map);
+					ValueNode::Handle value_node = canvas->surefind_value_node(use_id, param_type, &filepath_fix_map);
 					if(PlaceholderValueNode::Handle::cast_dynamic(value_node))
 						throw Exception::IDNotFound("parse_layer()");
 
@@ -2972,7 +2975,7 @@ CanvasParser::parse_layer(xmlpp::Element *element,Canvas::Handle canvas)
 				catch(Exception::IDNotFound&)
 				{
 					error(child,strprintf(_("Unknown ID (%s) referenced in parameter \"%s\""),use_id.c_str(), param_name.c_str()));
-					register_broken_use_id(use_id, layer->get_param(param_name).get_type().description.name);
+					register_broken_use_id(use_id, param_type.description.name);
 				}
 
 				continue;

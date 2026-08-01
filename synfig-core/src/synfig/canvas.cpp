@@ -570,19 +570,19 @@ Canvas::_get_relative_id(etl::loose_handle<const Canvas> x)const
 }
 
 ValueNode::Handle
-Canvas::find_value_node(const String &id, bool might_fail, CanvasBrokenUseIdMap* broken_links)
+Canvas::find_value_node(const String &id, bool might_fail, const Type& expected_type, CanvasBrokenUseIdMap* broken_links)
 {
 	return
 		ValueNode::Handle::cast_const(
-			const_cast<const Canvas*>(this)->find_value_node(id, might_fail, broken_links)
+			const_cast<const Canvas*>(this)->find_value_node(id, might_fail, expected_type, broken_links)
 		);
 }
 
 ValueNode::ConstHandle
-Canvas::find_value_node(const String &id, bool might_fail, CanvasBrokenUseIdMap* broken_links)const
+Canvas::find_value_node(const String &id, bool might_fail, const Type& expected_type, CanvasBrokenUseIdMap* broken_links)const
 {
 	if(is_inline() && parent_)
-		return parent_->find_value_node(id, might_fail, broken_links);
+		return parent_->find_value_node(id, might_fail, expected_type, broken_links);
 
 	if(id.empty())
 	{
@@ -607,16 +607,16 @@ Canvas::find_value_node(const String &id, bool might_fail, CanvasBrokenUseIdMap*
 		return find_canvas(canvas_id, warnings, broken_links)->value_node_list_.find(value_node_id, might_fail);
 	} catch (...) {
 		if (broken_links)
-			broken_links->add(id, "");
+			broken_links->add(id, expected_type.description.name);
 		throw;
 	}
 }
 
 ValueNode::Handle
-Canvas::surefind_value_node(const String &id, CanvasBrokenUseIdMap* broken_links)
+Canvas::surefind_value_node(const String &id, const Type& expected_type, CanvasBrokenUseIdMap* broken_links)
 {
 	if(is_inline() && parent_)
-		return parent_->surefind_value_node(id, broken_links);
+		return parent_->surefind_value_node(id, expected_type, broken_links);
 
 	if(id.empty())
 		throw Exception::IDNotFound("Empty ID");
@@ -636,7 +636,7 @@ Canvas::surefind_value_node(const String &id, CanvasBrokenUseIdMap* broken_links
 		return surefind_canvas(canvas_id,warnings, broken_links)->value_node_list_.surefind(value_node_id);
 	} catch (...) {
 		if (broken_links)
-			broken_links->add(id, "");
+			broken_links->add(id, expected_type.description.name);
 		throw;
 	}
 }
