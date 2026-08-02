@@ -6,14 +6,14 @@ speed2_gamma 4.0
 speed2_slowness 0.8
 stroke_holdtime 10.0
 stroke_duration_logarithmic 1.18
-slow_tracking 5.9
+slow_tracking 0
 change_color_v 0.0
 elliptical_dab_ratio 1.0
 change_color_h 0.0
 change_color_l 0.0
 offset_by_speed_slowness 1.0
 speed1_gamma 2.87
-slow_tracking_per_dab 5.99
+slow_tracking_per_dab 0
 dabs_per_basic_radius 2.18
 opaque 1.0
 color_s 0.0
