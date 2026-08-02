@@ -519,7 +519,7 @@ Dock_PalEdit::refresh()
 		widget_color->set_value(get_color(i));
 		widget_color->set_size_request(12,12);
 		if (!palette_[i].name.empty())
-			widget_color->set_tooltip_text(strprintf(_("Color name: %s"), palette_[i].name.c_str()));
+			widget_color->set_tooltip_text(strprintf(_("%s"), palette_[i].name.c_str()));
 		widget_color->signal_activate().connect(
 			sigc::bind(
 				sigc::mem_fun(*this,&studio::Dock_PalEdit::select_fill_color),
