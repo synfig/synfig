@@ -6,14 +6,14 @@
 # include "pch.h"  
 #else  
 # ifdef HAVE_CONFIG_H  
-#  include <config.h>  
+# include <config.h>  
+# endif
 #include "synfig/paramdesc.h"
-# endif  
 #include <hb-ft.h>
 #ifdef WITH_FONTCONFIG  
 #include <fontconfig/fontconfig.h>  
 #endif
-
+#include <set>
 #include "lyr_textgroup.h"  
   
 #include <synfig/canvas.h>  
