@@ -996,6 +996,14 @@ Layer_TextGroup::sync_glyphs()
 hb_font_t* font =
     Layer_Freetype::get_cached_hb_font(face);
 
+    if (!font) {
+        while (!canvas->empty())
+            canvas->erase(canvas->begin());
+        signal_subcanvas_changed()();
+        changed();
+        return;
+    }
+
     hb_font_set_scale(
     	font,
     	face->units_per_EM,
@@ -1108,15 +1116,28 @@ auto shaped_lines =
 
         }  
     }    
-  
+
 	std::vector<Layer::Handle> old_layers;
 	std::vector<GlyphIdentity> old_identities;
+	uint32_t fallback_ordinal = 0;
 	for (auto it = canvas->begin(); it != canvas->end(); ++it) {
     	old_layers.push_back(*it);
-    	GlyphIdentity id{0, 0};
-    	if (auto* gl = dynamic_cast<Layer_GlyphShape*>(it->get())) {
-        	id.cluster     = gl->get_cluster();
-        	id.glyph_index = gl->get_glyph_index();
+
+    	// Sentinel: guaranteed not to collide with any real {cluster, glyph_index}
+    	// pair, and unique per old layer, so a parse failure never spuriously
+    	// matches another parse failure.
+    	GlyphIdentity id{ std::numeric_limits<uint32_t>::max(), fallback_ordinal++ };
+
+    	if (dynamic_cast<Layer_GlyphShape*>(it->get())) {
+        	const std::string desc = (*it)->get_description();
+        	const auto cp = desc.find("cluster_");
+        	const auto gp = desc.rfind("_glyph_");
+        	if (cp != std::string::npos && gp != std::string::npos && gp > cp + 8) {
+            	try {
+                	id.cluster     = (uint32_t)std::stoul(desc.substr(cp + 8, gp - (cp + 8)));
+                	id.glyph_index = (uint32_t)std::stoul(desc.substr(gp + 7));
+            	} catch (...) { /* keep sentinel */ }
+        	}
     	}
     	old_identities.push_back(id);
 	}
@@ -1128,26 +1149,36 @@ auto shaped_lines =
 
 	const size_t n = old_identities.size();  
 	const size_t m = new_identities.size();  
-	std::vector<std::vector<int>> dp(n + 1, std::vector<int>(m + 1, 0));  
-	for (size_t i = 1; i <= n; ++i)  
-    	for (size_t j = 1; j <= m; ++j)  
-        	dp[i][j] = (old_identities[i-1] == new_identities[j-1])  
-                   ? dp[i-1][j-1] + 1  
-                   : std::max(dp[i-1][j], dp[i][j-1]);  
- 	std::vector<Layer::Handle> reuse_for_new(m); // null -> create a new layer  
-	{  
-    	size_t i = n, j = m;  
-    	while (i > 0 && j > 0) {  
-        	if (old_identities[i-1] == new_identities[j-1]) {  
-            	reuse_for_new[j-1] = old_layers[i-1]; // reuse -> keeps value nodes  
-            	--i; --j;  
-        	} else if (dp[i-1][j] >= dp[i][j-1]) {  
-            	--i;                                     
-        	} else {  
-            	--j;                                     
-        	}  
-    	}  
-	}  
+
+	std::vector<Layer::Handle> reuse_for_new(m); // null -> create a new layer  
+
+	bool unchanged_sequence = (n == m);
+	if (unchanged_sequence)
+		for (size_t k = 0; k < n; ++k)
+			if (!(old_identities[k] == new_identities[k])) { unchanged_sequence = false; break; }
+
+	if (unchanged_sequence) {
+		for (size_t j = 0; j < m; ++j)
+			reuse_for_new[j] = old_layers[j];
+	} else {
+		std::vector<std::vector<int>> dp(n + 1, std::vector<int>(m + 1, 0));  
+		for (size_t i = 1; i <= n; ++i)  
+			for (size_t j = 1; j <= m; ++j)  
+				dp[i][j] = (old_identities[i-1] == new_identities[j-1])  
+						   ? dp[i-1][j-1] + 1  
+						   : std::max(dp[i-1][j], dp[i][j-1]);  
+		size_t i = n, j = m;  
+		while (i > 0 && j > 0) {  
+			if (old_identities[i-1] == new_identities[j-1]) {  
+				reuse_for_new[j-1] = old_layers[i-1];  
+				--i; --j;  
+			} else if (dp[i-1][j] >= dp[i][j-1]) {  
+				--i;                                     
+			} else {  
+				--j;                                     
+			}  
+		}  
+	}
 
 	std::vector<Layer::Handle> new_order;  
 	new_order.reserve(m);  
