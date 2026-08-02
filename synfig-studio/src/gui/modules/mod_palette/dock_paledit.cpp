@@ -35,7 +35,6 @@
 #endif
 #include "dock_paledit.h"
 
-#include <cstdio>
 #include <errno.h>
 #include <sys/stat.h>
 
@@ -50,6 +49,7 @@
 #include <gui/localization.h>
 #include <gui/widgets/widget_color.h>
 
+#include <synfig/filesystemnative.h>
 #include <synfig/general.h>
 #include <synfigapp/main.h>
 #include <synfigapp/uimanager.h>
@@ -726,23 +726,13 @@ Dock_PalEdit::restore_default_palette()
 	backup_path.concat(".bak");
 
 	int suffix = 1;
-#if _WIN32
-	struct _stat s;
-	while (_wstat(backup_path.c_str(), &s) == 0) {
-#else
-	struct stat s;
-	while (stat(backup_path.c_str(), &s) == 0) {
-#endif
+	while (synfig::FileSystemNative::instance()->is_file(backup_path.u8string())) {
 		backup_path = custom_path;
 		backup_path.concat(".bak" + std::to_string(suffix));
 		suffix++;
 	}
 
-#if _WIN32
-	_wrename(custom_path.c_str(), backup_path.c_str());
-#else
-	rename(custom_path.c_str(), backup_path.c_str());
-#endif
+	synfig::FileSystemNative::instance()->file_rename(custom_path.u8string(), backup_path.u8string());
 
 	load_default_palette();
 }
