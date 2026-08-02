@@ -57,6 +57,9 @@ protected:
 
 public:
 	virtual ~ModPalette() { stop(); }
+
+	Dock_PalEdit*   get_pal_edit()   { return dock_pal_edit; }
+	Dock_PalBrowse* get_pal_browse() { return dock_pal_browse; }
 };
 
 }; // END of namespace studio
