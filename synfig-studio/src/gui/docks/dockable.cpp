@@ -176,14 +176,16 @@ void Dockable::detach_to_pointer()
 	mouse_device = seat->get_pointer();
 #else
 	Glib::RefPtr<Gdk::DeviceManager> dev_manager = get_display()->get_device_manager();
-	dev_manager->get_client_pointer();
+	mouse_device = dev_manager->get_client_pointer();
 #endif
 	int x, y;
-	mouse_device->get_position(x, y);
+	if (mouse_device)
+		mouse_device->get_position(x, y);
 
 	detach();
 
-	get_window()->move(x, y);
+	if (mouse_device && get_window())
+		get_window()->move(x, y);
 }
 
 void
