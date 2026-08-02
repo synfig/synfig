@@ -1,27 +1,34 @@
 #ifndef __SYNFIG_LYR_TEXTGROUP_H  
 #define __SYNFIG_LYR_TEXTGROUP_H  
-
+ 
 #include <synfig/layer.h>
 #include <synfig/layers/layer_shape.h>
 #include <synfig/layers/layer_pastecanvas.h>  
 #include <synfig/rendering/primitive/contour.h>
 #include <synfig/value.h>
 #include <synfig/string.h>
-
+#include <sigc++/connection.h>
+#include <set>
+#include <map>
+#include <vector>
+ 
 #include <ft2build.h>  
 #include FT_FREETYPE_H  
 #include FT_GLYPH_H  
 #if HAVE_HARFBUZZ  
 #include <hb.h>  
 #endif  
-
+ 
 enum StaggerOrder {  
     STAGGER_ORDER_FORWARD   = 0,  
     STAGGER_ORDER_REVERSE   = 1,  
     STAGGER_ORDER_CENTER_OUT= 2,  
     STAGGER_ORDER_RANDOM    = 3  
 };
-
+ 
+static const int SHARE_TARGET_NONE = 0;
+ 
+ 
 class Layer_GlyphShape : public synfig::Layer_Shape  
 {  
     SYNFIG_LAYER_MODULE_EXT  
@@ -65,7 +72,17 @@ protected:
    	    synfig::ContextParams context_params) const override;  
     
 };
-
+ 
+struct SharedEntry {
+    synfig::String       target_param;
+    synfig::Time         delay;
+    int                  order;
+    synfig::ValueNode::RHandle node;
+    bool                        valid = true;
+    sigc::connection            deleted_conn;
+    std::map<synfig::Layer*, std::pair<synfig::Time, synfig::ValueNode::Handle>> wrapper_cache;
+};
+ 
 class Layer_TextGroup : public synfig::Layer_PasteCanvas  
 {  
     SYNFIG_LAYER_MODULE_EXT  
@@ -84,9 +101,10 @@ private:
     synfig::ValueBase param_stagger_delay;
     synfig::ValueBase param_font;
     synfig::ValueBase param_color;
-   	synfig::ValueBase param_stagger_order;
-	synfig::ValueBase param_share_target;
-
+    synfig::ValueBase param_stagger_order;
+    synfig::ValueBase param_share_target;
+    synfig::ValueBase param_share_animations;
+ 
 public:  
     Layer_TextGroup();  
     ~Layer_TextGroup();  
@@ -99,20 +117,45 @@ public:
     
 private:  
     void sync_glyphs();
-    int glyph_ordinal(int index, int count) const;
-	void update_wave_offsets(synfig::Time time, bool force_sync_after = false) const;    
-	std::map<synfig::String, synfig::ValueNode::Handle> shared_anim_nodes;
-	void attach_shared_nodes();
-	bool in_attach_shared_ = false;
-	void detach_shared_param(const synfig::String& param);
-	size_t source_glyph_index_ = 0;
-	void rebuild_shared_registry();
-	void share_param(const synfig::String& param);
-	void rebuild_stagger_permutation();
-	void request_full_resync();
-	Layer_GlyphShape::Handle find_source_glyph() const;
+    bool in_attach_shared_ = false;
+    void detach_shared_param(const synfig::String& param);
+    size_t source_glyph_index_ = 0;
+    void rebuild_stagger_permutation();
+    void request_full_resync();
+    Layer_GlyphShape::Handle find_source_glyph() const;
     std::vector<synfig::String> get_shareable_params() const;
-	
+    std::vector<SharedEntry> shared_entries_;
+    synfig::String encode_shared_entry(const SharedEntry& e);
+    bool decode_shared_entry(const synfig::String& s, SharedEntry& out);
+ 
+    struct ShareChoice {
+        synfig::String param;
+        bool           already_shared = false;
+        synfig::Time   cur_delay;
+        int            cur_order = 0;
+    };
+    enum class ShareMode { SHARE, UNSHARE };
+    struct ShareAction {
+        synfig::String param;
+        ShareMode      mode = ShareMode::SHARE;
+
+        ShareAction() = default;
+        ShareAction(synfig::String p, ShareMode m)
+            : param(std::move(p)), mode(m) {}
+    };
+    std::vector<ShareChoice> build_share_choices() const;
+    mutable std::vector<ShareAction> last_share_actions_;
+ 
+    bool resolve_and_export_node(SharedEntry& entry);
+    bool share_param(const synfig::String& param, synfig::Time delay, int order);
+    bool unshare_param(const synfig::String& param);
+ 
+    void rebuild_shared_entries_from_param();
+    void retry_pending_shared_entries();
+    void push_shared_animations_param();
+    void attach_shared_entries();
+    int  ordinal_for_entry(const SharedEntry& entry, int index, int count) const;
+    synfig::ValueNode::Handle find_wired_shared_node(const synfig::String& target_param) const;
 protected:
     void on_canvas_set() override;     
     virtual void set_time_vfunc(synfig::IndependentContext context,

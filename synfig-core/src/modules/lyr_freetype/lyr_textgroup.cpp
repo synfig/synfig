@@ -89,7 +89,8 @@ void
 Layer_TextGroup::on_canvas_set()
 {
     Layer_PasteCanvas::on_canvas_set();
-    rebuild_shared_registry();
+    rebuild_shared_entries_from_param();
+    retry_pending_shared_entries();   
 }
  
   
@@ -106,13 +107,14 @@ Layer_TextGroup::Layer_TextGroup()
     , param_grid_fit(ValueBase(false))  
     , param_direction(ValueBase(0))                 
     , param_stagger_delay(ValueBase(Time(0.0)))
+    , param_font(ValueBase(std::string()))
+    , param_color(ValueBase(Color::black()))
     , param_stagger_order(ValueBase(int(STAGGER_ORDER_FORWARD)))
-    , param_font(ValueBase(std::string()))           
-    , param_color(ValueBase(Color::black()))        
-    , param_share_target(ValueBase(String()))
-{  
-    SET_INTERPOLATION_DEFAULTS();  
-    SET_STATIC_DEFAULTS();  
+    , param_share_target(ValueBase(int(SHARE_TARGET_NONE)))
+    , param_share_animations(ValueBase(std::string()))
+{
+    SET_INTERPOLATION_DEFAULTS();
+    SET_STATIC_DEFAULTS();
 }  
   
 Layer_TextGroup::~Layer_TextGroup(){}  
@@ -160,21 +162,60 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
         changed();
     });
     
-    // Wave animation params
+    // Stagger Delay/Order are *staging* values only — they do nothing on
+    // their own. They're read at the moment a param name is committed via
+    // "Add Shared Animation", which stamps them
+    // onto that one SharedEntry. This keeps entries independent: rotation
+    // can stagger at one rate, scale at another, and touching these sliders
+    // never silently changes an entry you're not currently committing.
     IMPORT_VALUE_PLUS(param_stagger_delay, {
         if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();
     });
     IMPORT_VALUE_PLUS(param_stagger_order,{  
         if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();  
     });
-   
-    IMPORT_VALUE_PLUS(param_share_target, {
-        String target = param_share_target.get(String());
-        if (!target.empty())
-            share_param(target);
-        // immediately snap it back to empty so it can't be silently replayed
-        param_share_target = ValueBase(String());
-    });
+
+IMPORT_VALUE_PLUS(param_share_target, ([&](){
+
+    int action_idx = param_share_target.get(int());
+    if (action_idx > 0 && action_idx < (int)last_share_actions_.size()) {
+        const ShareAction& act = last_share_actions_[action_idx];
+
+        switch (act.mode) {
+        case ShareMode::SHARE: {
+            // share_param() already treats "already shared" as "update this
+            // entry's delay/order to whatever the sliders currently hold"
+            // rather than a no-op, so this one action covers both creating
+            // a new share and re-timing an existing one.
+            Time delay = param_stagger_delay.get(Time());
+            int  order = param_stagger_order.get(int());
+            if (!share_param(act.param, delay, order))
+                synfig::warning("Share Animation: '%s' is not an animated glyph parameter", act.param.c_str());
+            else if (get_canvas())
+                get_canvas()->get_root()->signal_force_refresh()();
+            break;
+        }
+        case ShareMode::UNSHARE: {
+            if (unshare_param(act.param)) {
+                if (get_canvas()) get_canvas()->get_root()->signal_force_refresh()();
+            } else {
+                synfig::warning("Share Animation: '%s' is not currently shared", act.param.c_str());
+            }
+            break;
+        }
+        }
+    }
+    param_share_target = ValueBase(int(SHARE_TARGET_NONE));
+})());
+
+IMPORT_VALUE_PLUS(param_share_animations, {
+    // This field is a read-out of shared_entries_, not an input. The only
+    // place it's legitimately treated as input is on_canvas_set() (loading
+    // a saved file, where shared_entries_ doesn't exist yet). A hand-edit
+    // during a live session is discarded and the field snaps back to the
+    // true current state — same pattern as share_target snapping to empty.
+    push_shared_animations_param();
+});
     
     return Layer_PasteCanvas::set_param(param, value);
 }
@@ -207,6 +248,7 @@ Layer_TextGroup::get_param(const String& param) const
 	EXPORT_VALUE(param_stagger_delay);
 	EXPORT_VALUE(param_stagger_order);
 	EXPORT_VALUE(param_share_target);
+	EXPORT_VALUE(param_share_animations);
     EXPORT_NAME();  
     EXPORT_VERSION();  
     return Layer_PasteCanvas::get_param(param);  
@@ -337,9 +379,46 @@ Layer_TextGroup::get_param_vocab() const
         .add_enum_value(STAGGER_ORDER_CENTER_OUT, "center_out", _("Center Out"))  
         .add_enum_value(STAGGER_ORDER_RANDOM,     "random",     _("Random"))  
     );
-	ret.push_back(ParamDesc("share_target")
+	{
+		// Rebuilt every call so the dropdown reflects whatever glyph params
+		// are actually animated right now, not a fixed list — but every
+		// param always gets BOTH a Share/Update entry and an Unshare entry,
+		// regardless of current shared state. Studio builds this dropdown's
+		// item list once and doesn't rebuild it on our internal changed()
+		// signals, so an entry that only appears once a param is "already
+		// shared" would be permanently unselectable until the layer is
+		// deselected and reselected. Always presenting both keeps every
+		// action reachable no matter how stale the panel's copy is.
+		last_share_actions_.clear();
+		last_share_actions_.push_back(ShareAction{String(), ShareMode::SHARE}); // index 0 = NONE, unused
+
+		ParamDesc share_desc("share_target");
+		share_desc.set_local_name(_("Add / Update / Remove Shared Animation"))
+			.set_description(_("Select a glyph parameter to share (using the current Stagger Delay/Order), re-time it, or unshare it"))
+			.set_hint("enum")
+			.set_static(true)
+			.add_enum_value(SHARE_TARGET_NONE, "none", _("— Select —"));
+
+		for (const auto& c : build_share_choices()) {
+			int share_idx = (int)last_share_actions_.size();
+			last_share_actions_.push_back(ShareAction{c.param, ShareMode::SHARE});
+			String share_label = c.already_shared
+				? strprintf(_("Share/Update: %s  (currently %.3fs, order %d)"), c.param.c_str(), (double)c.cur_delay, c.cur_order)
+				: (_("Share: ") + c.param);
+			share_desc.add_enum_value(share_idx, "share_" + c.param, share_label);
+
+			int unshare_idx = (int)last_share_actions_.size();
+			last_share_actions_.push_back(ShareAction{c.param, ShareMode::UNSHARE});
+			share_desc.add_enum_value(unshare_idx, "unshare_" + c.param, _("Unshare: ") + c.param);
+		}
+		ret.push_back(share_desc);
+	}
+
+	ret.push_back(ParamDesc("share_animations")
     	.set_local_name(_("Share Animation"))
-   		.set_description(_("Connect all glyphs to the shared animation graph"))
+    	.set_description(_("Glyph parameters shared across all glyphs, each with its own stagger delay/order"))
+		.set_static(true)
+    	.not_critical()
 	);
 	return ret;  
 }
@@ -406,36 +485,9 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
     return task;  
 }
 
-void  
-Layer_TextGroup::attach_shared_nodes()
-{  
-    
-    if (in_attach_shared_) return;
-	in_attach_shared_ = true;
-    
-    Canvas::Handle canvas = get_sub_canvas();
-    
-    if (canvas) {
-        for (auto& kv : shared_anim_nodes) {
-            const String& param = kv.first;
-            ValueNode::Handle node = kv.second;
-            if (!node) continue;
-            for (auto iter = canvas->begin(); iter != canvas->end(); ++iter) {
-                Layer_GlyphShape::Handle g = Layer_GlyphShape::Handle::cast_dynamic(*iter);
-                if (!g) continue;
-                g->connect_dynamic_param(param, node);
-            }
-        }
-    }
-
-    in_attach_shared_ = false;
-}
-
 void
 Layer_TextGroup::detach_shared_param(const String& param)
 {
-    // Currently unused.
-	// Will be used when shared animations become removable.
 	Canvas::Handle canvas = get_sub_canvas();
     if (canvas) {
         for (auto iter = canvas->begin(); iter != canvas->end(); ++iter) {
@@ -445,23 +497,6 @@ Layer_TextGroup::detach_shared_param(const String& param)
     }
     shared_anim_nodes.erase(param);
     changed();
-}
-
-void
-Layer_TextGroup::rebuild_shared_registry()
-{
-    shared_anim_nodes.clear();
-    Canvas::Handle canvas = get_sub_canvas();
-    if (!canvas) return;
-
-    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter) {
-        Layer_GlyphShape::Handle g = Layer_GlyphShape::Handle::cast_dynamic(*iter);
-        if (!g) continue;
-        for (auto& kv : g->dynamic_param_list()) {
-            if (!kv.second->get_id().empty())      // only exported nodes count as "shared"
-                shared_anim_nodes[kv.first] = kv.second;
-        }
-    }
 }
 
 Layer_GlyphShape::Handle
@@ -494,90 +529,216 @@ Layer_TextGroup::get_shareable_params() const
     return params;
 }
 
-void
-Layer_TextGroup::share_param(const String& param)
+std::vector<Layer_TextGroup::ShareChoice>
+Layer_TextGroup::build_share_choices() const
 {
-    if (shared_anim_nodes.count(param))  
-   		return;  
-	
-	Canvas::Handle canvas = get_sub_canvas();
-    if (!canvas) return;
-
-    Layer_GlyphShape::Handle source_glyph = find_source_glyph();
-
-    if (!source_glyph)
-    {
-        synfig::error("Share: no glyph layers found");
-        return;
+    std::vector<ShareChoice> choices;
+    for (const auto& p : get_shareable_params()) {
+        ShareChoice c;
+        c.param = p;
+        for (const auto& e : shared_entries_) {
+            if (e.valid && e.target_param == p) {
+                c.already_shared = true;
+                c.cur_delay = e.delay;
+                c.cur_order = e.order;
+                break;
+            }
+        }
+        choices.push_back(c);
     }
+    return choices;
+}
 
-    const DynamicParamList& dpl = source_glyph->dynamic_param_list();
-    auto it = dpl.find(param);
-
-    if (it == dpl.end() || !it->second)
-    {
-        std::vector<String> valid = get_shareable_params();
-   		String joined;
-    	for (const String& p : valid)
-        	joined += (joined.empty() ? "" : ", ") + p;
-        synfig::error(
-        	"Share: '%s' isn't animated on the source glyph (animated params available: %s)",
-       	 	param.c_str(), joined.empty() ? "none" : joined.c_str());        
-        return;
+int
+Layer_TextGroup::ordinal_for_entry(const SharedEntry& entry, int index, int count) const
+{
+    if (count <= 0) return index;
+    switch (entry.order) {
+        case STAGGER_ORDER_REVERSE:    return (count - 1) - index;
+        case STAGGER_ORDER_CENTER_OUT: return (int)std::floor(std::fabs(index - (count - 1) / 2.0));
+        case STAGGER_ORDER_RANDOM:     return (index < (int)stagger_perm_.size()) ? stagger_perm_[index] : index;
+        default:                       return index;
     }
+}
 
-    ValueNode::Handle node = it->second;
+void
+Layer_TextGroup::attach_shared_entries()
+{
+    if (in_attach_shared_) return;
+    in_attach_shared_ = true;
 
-    if (node->get_id().empty())
-    {
-    	String id =
-        	"textgroup_" +
-            get_guid().get_string() +
-            "_" +
-            param;
+    if (Canvas::Handle canvas = get_sub_canvas()) {
+        int count = 0;
+        for (auto it = canvas->begin(); it != canvas->end(); ++it)
+            if (dynamic_cast<Layer_GlyphShape*>(it->get())) ++count;
 
-        canvas->add_value_node(node, id);
+        std::set<Layer*> touched; // glyphs that got a newly-wired wrapper this pass
 
-        // Sanity check.
-        ValueNode::Handle check =
-            canvas->find_value_node(id, false);
+        for (auto& entry : shared_entries_) {
+            if (!entry.valid || !entry.node) continue;
+            std::map<Layer*, std::pair<Time, ValueNode::Handle>> next_cache;
+            int i = 0;
+            for (auto iter = canvas->begin(); iter != canvas->end(); ++iter) {
+                auto g = Layer_GlyphShape::Handle::cast_dynamic(*iter);
+                if (!g) continue;
+                Time off(ordinal_for_entry(entry, i, count) * (double)entry.delay);
+                auto cached = entry.wrapper_cache.find(g.get());
+                ValueNode::Handle wrapper;
+                if (cached != entry.wrapper_cache.end() && cached->second.first == off) {
+                    wrapper = cached->second.second;
+                } else {
+                    wrapper = ValueNode::Handle(
+                        ValueNode_TimeOffset::create_with_offset(entry.node.get(), off));
+                    g->connect_dynamic_param(entry.target_param, wrapper);
+                    touched.insert(g.get());
+                }
+                next_cache[g.get()] = { off, wrapper };
+                ++i;
+            }
+            entry.wrapper_cache = std::move(next_cache);
+        }
 
-        if (check != node)
-        {
-            synfig::error(
-                "Share: failed to export shared graph '%s'",
-                param.c_str());
-            return;
+        if (!touched.empty()) {
+            Time now = canvas->get_time();
+            IndependentContext ctx(canvas->end());
+            for (Layer* l : touched)
+                l->set_time(ctx, now);
         }
     }
 
-    shared_anim_nodes[param] = node;
-
-    attach_shared_nodes();
-
-    // changed();
+    in_attach_shared_ = false;
+    
 }
 
-int  
-Layer_TextGroup::glyph_ordinal(int index, int count) const  
-{  
-    if (count <= 0) return index;  
-    switch (param_stagger_order.get(int())) {  
-        case STAGGER_ORDER_REVERSE:  
-            return (count - 1) - index;  
-        case STAGGER_ORDER_CENTER_OUT: {  
-            const double c = (count - 1) / 2.0;  
-            return static_cast<int>(std::floor(std::fabs(index - c)));  
-        }  
-        case STAGGER_ORDER_RANDOM:
-    	if (index >= 0 &&
-        	index < (int)stagger_perm_.size())
-        	return stagger_perm_[index];
-    	return index;  
-        case STAGGER_ORDER_FORWARD:  
-        default:  
-            return index;  
-    }  
+ValueNode::Handle
+Layer_TextGroup::find_wired_shared_node(const String& target_param) const
+{
+    Canvas::Handle canvas = get_sub_canvas();
+    if (!canvas) return nullptr;
+
+    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter) {
+        auto g = Layer_GlyphShape::Handle::cast_dynamic(*iter);
+        if (!g) continue;
+
+        const DynamicParamList& dpl = g->dynamic_param_list();
+        auto it = dpl.find(target_param);
+        if (it == dpl.end() || !it->second) continue;
+
+        auto wrapper = ValueNode_TimeOffset::Handle::cast_dynamic(it->second);
+        if (!wrapper) continue;
+
+        ValueNode::Handle inner = wrapper->get_link("link");
+        if (inner && !inner->get_id().empty())
+            return inner;
+    }
+    return nullptr;
+}
+
+bool
+Layer_TextGroup::resolve_and_export_node(SharedEntry& entry)
+{
+    Canvas::Handle canvas = get_sub_canvas();
+    if (!canvas) return false;
+
+    // Already wired up (freshly loaded from file, or attached earlier
+    // this session)? Just adopt it.
+    ValueNode::Handle node = find_wired_shared_node(entry.target_param);
+
+    if (!node) {
+        // Genuinely new share: nothing connected yet. Export the source
+        // glyph's own animated node under a fresh id. The string itself
+        // never needs to be reproducible later — once it's written into
+        // the file, every future load resolves it via the saved ":id"
+        // reference (step 1 above), not by recomputing this string.
+        Layer_GlyphShape::Handle source_glyph = find_source_glyph();
+        if (!source_glyph) { synfig::error("Share: no glyph layers found"); return false; }
+
+        const DynamicParamList& dpl = source_glyph->dynamic_param_list();
+        auto it = dpl.find(entry.target_param);
+        if (it == dpl.end() || !it->second) return false;
+
+        node = it->second;
+
+        if (node->get_id().empty()) {
+            String id = "textgroup_" + GUID().get_string() + "_" + entry.target_param;
+            try {
+                canvas->add_value_node(node, id);
+            } catch (const std::exception&) {
+                synfig::error("Share: failed to export shared graph '%s'", entry.target_param.c_str());
+                return false;
+            }
+        }
+    }
+
+    // wrapper_cache is keyed only on (glyph, Time offset) — if the resolved
+    // node differs from what this entry had before (e.g. it was deleted
+    // and just got re-exported under a new id), any cached wrapper still
+    // points at the old node. Drop the cache so attach_shared_entries()
+    // is forced to rebuild every wrapper against the new node.
+    if (entry.node.get() != node.get())
+        entry.wrapper_cache.clear();
+
+    entry.node  = ValueNode::RHandle(node.get());
+    entry.valid = true;
+
+    entry.deleted_conn.disconnect();
+    entry.deleted_conn = node->signal_deleted().connect(
+        sigc::bind(sigc::mem_fun(*this, &Layer_TextGroup::on_shared_node_deleted), entry.target_param));
+
+    return true;
+}
+bool
+Layer_TextGroup::share_param(const String& param, Time delay, int order)
+{
+    // Already shared: treat this as "update this entry's stagger", not a
+    // no-op. Only the one entry matching `param` is touched — every other
+    // entry keeps whatever delay/order it was last committed with.
+    for (auto& e : shared_entries_) {
+        if (e.target_param == param) {
+            if (e.delay != delay || e.order != order) {
+                e.delay = delay;
+                e.order = order;
+                push_shared_animations_param();
+                attach_shared_entries();
+            }
+            return true;
+        }
+    }
+
+    std::vector<String> valid = get_shareable_params();
+    if (std::find(valid.begin(), valid.end(), param) == valid.end())
+        return false;
+
+    SharedEntry entry;
+    entry.target_param = param;
+    entry.delay = delay;
+    entry.order = order;
+
+    if (!resolve_and_export_node(entry))
+        return false;
+
+    shared_entries_.push_back(entry);
+    push_shared_animations_param();
+    attach_shared_entries();
+    return true;
+}
+
+bool
+Layer_TextGroup::unshare_param(const String& param)
+{
+    auto it = std::find_if(shared_entries_.begin(), shared_entries_.end(),
+        [&](const SharedEntry& e) { return e.target_param == param; });
+    if (it == shared_entries_.end())
+        return false;
+
+    // Drop the bookkeeping entry before severing the glyph wiring:
+    // detach_shared_param() ends with its own attach_shared_entries() call,
+    // which would immediately re-wire this param if it were still present
+    // in shared_entries_ at that point.
+    shared_entries_.erase(it);
+    detach_shared_param(param);
+    push_shared_animations_param();
+    return true;
 }
 
 void Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) const  
@@ -603,6 +764,108 @@ void Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) cons
     }    
 }
 
+void
+Layer_TextGroup::push_shared_animations_param()
+{
+    if (destructing_) return;
+    String packed;
+    for (const auto& e : shared_entries_) {
+        if (!packed.empty()) packed += "\n";
+        packed += encode_shared_entry(e);
+    }
+    param_share_animations = ValueBase(packed);
+    changed();
+    signal_dynamic_param_changed()("share_animations");
+}
+
+void
+Layer_TextGroup::rebuild_shared_entries_from_param()
+{
+    String packed = param_share_animations.get(String());
+
+    std::vector<String> rows;
+    size_t start = 0;
+    while (true) {
+        size_t pos = packed.find('\n', start);
+        String row = (pos == String::npos) ? packed.substr(start)
+                                            : packed.substr(start, pos - start);
+        if (!row.empty()) rows.push_back(row);
+        if (pos == String::npos) break;
+        start = pos + 1;
+    }
+
+    std::vector<SharedEntry> parsed;
+    std::set<String> seen_params;
+
+    for (const auto& row : rows) {
+        SharedEntry e;
+        if (!decode_shared_entry(row, e)) continue;
+
+        if (!seen_params.insert(e.target_param).second)
+            continue;
+
+        bool reused = false;
+        for (auto& existing : shared_entries_) {
+            if (existing.target_param == e.target_param) {
+                e.node = existing.node; e.valid = existing.valid;
+                e.deleted_conn = existing.deleted_conn;
+                e.wrapper_cache = existing.wrapper_cache;
+                reused = true;
+                break;
+            }
+        }
+        if (!reused && !resolve_and_export_node(e))
+            e.valid = false;
+
+        parsed.push_back(std::move(e));
+    }
+    // Anything that was shared before but is no longer in the freshly
+    // parsed list (row deleted or edited out) needs its actual glyph
+    // wiring severed — dropping it from shared_entries_ alone leaves
+    // every glyph still connected to the old wrapper.
+    std::vector<String> removed;
+    for (const auto& old_entry : shared_entries_)
+        if (!seen_params.count(old_entry.target_param))
+            removed.push_back(old_entry.target_param);
+
+    shared_entries_ = std::move(parsed);
+    for (const auto& param : removed)
+        detach_shared_param(param);   // disconnects that param + re-runs attach_shared_entries()
+
+    attach_shared_entries();
+}
+
+void
+Layer_TextGroup::retry_pending_shared_entries()
+{
+    bool any_resolved = false;
+    for (auto& e : shared_entries_) {
+        if (e.valid && e.node) continue;
+        if (resolve_and_export_node(e)) any_resolved = true;
+    }
+    if (any_resolved) attach_shared_entries();
+}
+
+void Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) const
+{
+    context.set_time(time);
+    Canvas::Handle canvas = get_sub_canvas();
+    if (!canvas) return;
+
+    if (!pending_dynamic_cleanup_.empty()) {
+        Layer_TextGroup* self = const_cast<Layer_TextGroup*>(this);
+        for (const auto& p : pending_dynamic_cleanup_)
+            self->disconnect_dynamic_param(p);
+        pending_dynamic_cleanup_.clear();
+    }
+
+    Time base_time = time * get_time_dilation() + get_time_offset();
+    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter)
+        (*iter)->set_time(IndependentContext(canvas->end()), base_time);
+}
+
+
+
 Layer::Handle  
 Layer_GlyphShape::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid) const  
 {  
@@ -622,10 +885,11 @@ Layer_GlyphShape::clone(etl::loose_handle<Canvas> canvas, const GUID& deriv_guid
 void
 Layer_TextGroup::rebuild_stagger_permutation()
 {
+    // Always computed, not gated on the current global Stagger Order value:
+    // an already-shared entry may have been committed with order=Random
+    // even while the slider has since moved on to Forward for the next
+    // share, and it still needs a valid permutation available.
     stagger_perm_.clear();
-
-    if (param_stagger_order.get(int()) != STAGGER_ORDER_RANDOM)
-        return;
 
     Canvas::Handle canvas = get_sub_canvas();
     if (!canvas) return;
@@ -651,6 +915,26 @@ Layer_TextGroup::rebuild_stagger_permutation()
     stagger_perm_.resize(keyed.size());
     for (size_t rank = 0; rank < keyed.size(); ++rank)
         stagger_perm_[keyed[rank].second] = (int)rank;
+}
+
+String
+Layer_TextGroup::encode_shared_entry(const SharedEntry& e)
+{
+    return e.target_param + "\t" + strprintf("%.6f", (double)e.delay) + "\t" + std::to_string(e.order);
+}
+
+bool
+Layer_TextGroup::decode_shared_entry(const String& s, SharedEntry& out)
+{
+    size_t p1 = s.find('\t');
+    if (p1 == String::npos) return false;
+    size_t p2 = s.find('\t', p1 + 1);
+    if (p2 == String::npos) return false;
+
+    out.target_param = s.substr(0, p1);
+    out.delay = Time(atof(s.substr(p1 + 1, p2 - p1 - 1).c_str()));
+    out.order = atoi(s.substr(p2 + 1).c_str());
+    return true;
 }
 
 void  
@@ -885,7 +1169,8 @@ auto shaped_lines =
     	++layer_iter;  
 	}
 	rebuild_stagger_permutation();   
-	attach_shared_nodes();
+	attach_shared_entries();
     signal_subcanvas_changed()();  
-    changed();  
+    changed();
+    retry_pending_shared_entries();
 }
