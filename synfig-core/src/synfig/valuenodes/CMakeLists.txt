@@ -54,7 +54,7 @@ target_sources(libsynfig
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_switch.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_timedswap.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_timeloop.cpp"
-		"${CMAKE_CURRENT_LIST_DIR}/valuenode_timeoffset.cpp"        
+		"${CMAKE_CURRENT_LIST_DIR}/valuenode_timeoffset.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/valuenode_timestring.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_twotone.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_vectorangle.cpp"
