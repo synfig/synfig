@@ -86,8 +86,11 @@ private:
 	void select_outline_color(int i);
 	synfig::Color get_color(int i)const;
 	void edit_color(int i);
+	void rename_color(int i);
 	void apply_color_to_selected_layer(int i) const;
 	bool confirm_duplicate_color_addition() const;
+
+	bool open_dialog_rename_color(int i, synfig::String& new_name);
 
 public:
 	static Dock_PalEdit* get_instance() { return instance; }

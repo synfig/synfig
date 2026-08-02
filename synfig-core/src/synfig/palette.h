@@ -85,6 +85,7 @@ public:
 	iterator find_light();
 
 	bool is_color_present(const Color& color) const;
+	bool is_color_present(const String& name) const;
 
 	static Palette grayscale(int steps, ColorReal gamma);
 

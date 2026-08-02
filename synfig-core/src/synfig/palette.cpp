@@ -289,7 +289,16 @@ Palette::is_color_present(const Color& color) const
 		if (iter->color == color)
 			return true;
 	}
+	return false;
+}
 
+bool
+Palette::is_color_present(const String& name) const
+{
+	for (const auto& item : *this) {
+		if (item.name == name)
+			return true;
+	}
 	return false;
 }
 
