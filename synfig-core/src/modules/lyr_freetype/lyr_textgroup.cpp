@@ -89,6 +89,10 @@ void
 Layer_TextGroup::on_canvas_set()
 {
     Layer_PasteCanvas::on_canvas_set();
+    if (dynamic_param_list().count("share_target"))
+        disconnect_dynamic_param("share_target");
+    if (dynamic_param_list().count("share_animations"))
+        disconnect_dynamic_param("share_animations");
     rebuild_shared_entries_from_param();
     retry_pending_shared_entries();   
 }
@@ -117,7 +121,15 @@ Layer_TextGroup::Layer_TextGroup()
     SET_STATIC_DEFAULTS();
 }  
   
-Layer_TextGroup::~Layer_TextGroup(){}  
+Layer_TextGroup::~Layer_TextGroup(){
+    destructing_ = true;
+    for (auto &entry : shared_entries_)
+    {
+        if (entry.deleted_conn.connected())
+            entry.deleted_conn.disconnect();
+    }
+
+}  
   
 String  
 Layer_TextGroup::get_local_name() const  
@@ -176,6 +188,8 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
     });
 
 IMPORT_VALUE_PLUS(param_share_target, ([&](){
+    if (dynamic_param_list().count("share_target"))
+        pending_dynamic_cleanup_.insert("share_target");
 
     int action_idx = param_share_target.get(int());
     if (action_idx > 0 && action_idx < (int)last_share_actions_.size()) {
@@ -209,6 +223,8 @@ IMPORT_VALUE_PLUS(param_share_target, ([&](){
 })());
 
 IMPORT_VALUE_PLUS(param_share_animations, {
+    if (dynamic_param_list().count("share_animations"))
+        pending_dynamic_cleanup_.insert("share_animations");
     // This field is a read-out of shared_entries_, not an input. The only
     // place it's legitimately treated as input is on_canvas_set() (loading
     // a saved file, where shared_entries_ doesn't exist yet). A hand-edit
@@ -495,7 +511,7 @@ Layer_TextGroup::detach_shared_param(const String& param)
             if (g) g->disconnect_dynamic_param(param);
         }
     }
-    shared_anim_nodes.erase(param);
+    attach_shared_entries();
     changed();
 }
 
@@ -741,27 +757,24 @@ Layer_TextGroup::unshare_param(const String& param)
     return true;
 }
 
-void Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) const  
-{  
-    context.set_time(time);  
-    Canvas::Handle canvas = get_sub_canvas();  
-    if (!canvas) return;  
-            
-    Time stagger  = param_stagger_delay.get(Time());
-    Real dilation = get_time_dilation();
-    Time toffset  = get_time_offset(); 
-	int count = 0;  
-    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter)  
-        if (dynamic_cast<Layer_GlyphShape*>(iter->get())) ++count;  
-    int i = 0;
-    for (auto iter = canvas->begin(); iter != canvas->end(); ++iter) {  
-        Layer_GlyphShape* gl = dynamic_cast<Layer_GlyphShape*>(iter->get());  
-        if (!gl) continue;  
-        const int ord = glyph_ordinal(i, count);  
-        Time glyph_time = time * dilation + toffset + Time(ord * (double)stagger);  
-        (*iter)->set_time(IndependentContext(canvas->end()), glyph_time);  
-        ++i;
-    }    
+void
+Layer_TextGroup::on_shared_node_deleted(String target_param)
+{
+    if (destructing_) return;
+    if (!get_canvas()) return;   // detached — likely an undo/redo snapshot being torn down, not a live edit
+
+    bool changed_any = false;
+    for (auto& e : shared_entries_) {
+        if (e.target_param == target_param) {
+            e.valid = false;
+            e.node = nullptr;
+            if (e.deleted_conn.connected())
+                e.deleted_conn.disconnect();
+            changed_any = true;
+        }
+    }
+    if (changed_any)
+        push_shared_animations_param();
 }
 
 void

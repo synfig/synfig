@@ -120,6 +120,8 @@ private:
     bool in_attach_shared_ = false;
     void detach_shared_param(const synfig::String& param);
     size_t source_glyph_index_ = 0;
+    bool destructing_ = false;
+    mutable std::set<synfig::String> pending_dynamic_cleanup_;
     void rebuild_stagger_permutation();
     void request_full_resync();
     Layer_GlyphShape::Handle find_source_glyph() const;
@@ -149,6 +151,7 @@ private:
     bool resolve_and_export_node(SharedEntry& entry);
     bool share_param(const synfig::String& param, synfig::Time delay, int order);
     bool unshare_param(const synfig::String& param);
+    void on_shared_node_deleted(synfig::String target_param);
  
     void rebuild_shared_entries_from_param();
     void retry_pending_shared_entries();
