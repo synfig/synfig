@@ -21,7 +21,8 @@
 #include <synfig/general.h>  
 #include <synfig/localization.h>  
 #include <glibmm/ustring.h>  
-#include <synfig/valuenode.h>  
+#include <synfig/valuenode.h>
+#include <synfig/valuenodes/valuenode_timeoffset.h>
 #include <synfig/layers/layer_shape.h>  
 #include <synfig/rendering/primitive/contour.h>
 #include "lyr_freetype.h"  
