@@ -35,6 +35,7 @@
 #endif
 #include "dock_paledit.h"
 
+#include <cstdio>
 #include <errno.h>
 #include <sys/stat.h>
 
@@ -189,7 +190,18 @@ Dock_PalEdit::Dock_PalEdit():
 	),
 		sigc::mem_fun(
 			*this,
-			&Dock_PalEdit::set_default_palette
+			&Dock_PalEdit::load_default_palette
+		)
+	);
+	action_group->add(Gtk::Action::create_with_icon_name(
+		"palette-save-as-default",
+		"document-save-as",
+		_("Set as default"),
+		_("Save current palette as the default palette")
+	),
+		sigc::mem_fun(
+			*this,
+			&Dock_PalEdit::on_set_as_default_pressed
 		)
 	);
 
@@ -204,6 +216,7 @@ Dock_PalEdit::Dock_PalEdit():
 	"	<toolitem action='palette-save' />"
 	"	<toolitem action='palette-load' />"
 	"	<toolitem action='palette-set-default' />"
+	"	<toolitem action='palette-save-as-default' />"
 	"	</toolbar>"
 	"</ui>"
 	;
@@ -229,7 +242,7 @@ Dock_PalEdit::Dock_PalEdit():
 	add(table);
 	table.set_homogeneous(true);
 
-	set_default_palette();
+	load_default_palette();
 
 	show_all_children();
 }
@@ -340,6 +353,18 @@ Dock_PalEdit::on_open_pressed()
 		break;
 	}
 	refresh();
+}
+
+void
+Dock_PalEdit::on_set_as_default_pressed()
+{
+	synfig::filesystem::Path filename = App::get_config_file("default.spal");
+	try {
+		palette_.save_to_file(filename);
+	} catch (const std::string& err) {
+		synfig::error(err);
+		App::dialog_message_1b("ERROR", err, "details", _("Close"));
+	}
 }
 
 static Gtk::MenuItem*
@@ -607,8 +632,17 @@ Dock_PalEdit::apply_color_to_selected_layer(int i) const
 }
 
 void
-Dock_PalEdit::set_default_palette()
+Dock_PalEdit::load_default_palette()
 {
+	synfig::filesystem::Path custom_path = App::get_config_file("default.spal");
+	try {
+		palette_ = synfig::Palette::load_from_file(custom_path);
+		refresh();
+		return;
+	} catch (...) {
+		// If loading fails (e.g. file does not exist), fall back to the hardcoded palette below
+	}
+
 	int width=12;
 
 	palette_.clear();
@@ -682,6 +716,35 @@ Dock_PalEdit::set_default_palette()
 	}
 	*/
 	refresh();
+}
+
+void
+Dock_PalEdit::restore_default_palette()
+{
+	synfig::filesystem::Path custom_path = App::get_config_file("default.spal");
+	synfig::filesystem::Path backup_path = custom_path;
+	backup_path.concat(".bak");
+
+	int suffix = 1;
+#if _WIN32
+	struct _stat s;
+	while (_wstat(backup_path.c_str(), &s) == 0) {
+#else
+	struct stat s;
+	while (stat(backup_path.c_str(), &s) == 0) {
+#endif
+		backup_path = custom_path;
+		backup_path.concat(".bak" + std::to_string(suffix));
+		suffix++;
+	}
+
+#if _WIN32
+	_wrename(custom_path.c_str(), backup_path.c_str());
+#else
+	rename(custom_path.c_str(), backup_path.c_str());
+#endif
+
+	load_default_palette();
 }
 
 int

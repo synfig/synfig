@@ -68,6 +68,8 @@ class Dock_PalEdit : public Dockable
 
 	void on_open_pressed();
 
+	void on_set_as_default_pressed();
+
 	void show_menu(int i);
 
 	sigc::signal<void> signal_changed_;
@@ -96,7 +98,9 @@ public:
 
 	int size()const;
 
-	void set_default_palette();
+	void load_default_palette();
+
+	void restore_default_palette();
 
 	void refresh();
 

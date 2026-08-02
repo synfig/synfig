@@ -48,6 +48,7 @@
 #include <gui/canvasview.h>
 #include <gui/duck.h>
 #include <gui/localization.h>
+#include <gui/modules/mod_palette/dock_paledit.h>
 #include <gui/resourcehelper.h>
 #include <gui/widgets/widget_enum.h>
 #include <gui/autorecover.h>
@@ -985,6 +986,10 @@ Dialog_Setup::on_restore_pressed()
 		toggle_handle_tooltip_transformation.set_active(false);
 		toggle_handle_tooltip_transfo_name.set_active(false);
 		toggle_handle_tooltip_transfo_value.set_active(false);
+
+		// Palette
+		if (Dock_PalEdit* pal_edit = Dock_PalEdit::get_instance())
+			pal_edit->restore_default_palette();
 
 		// Keyboard accels
 		auto accel_rows = treeview_accels->get_model()->children();
