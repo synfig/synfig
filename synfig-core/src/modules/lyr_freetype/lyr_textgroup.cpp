@@ -252,12 +252,18 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
 	IMPORT_VALUE_PLUS(param_share_animations, {
 		if (dynamic_param_list().count("share_animations"))
 			pending_dynamic_cleanup_.insert("share_animations");
-		// This field is a read-out of shared_entries_, not an input. The only
-		// place it's legitimately treated as input is on_canvas_set() (loading
-		// a saved file, where shared_entries_ doesn't exist yet). A hand-edit
-		// during a live session is discarded and the field snaps back to the
-		// true current state — same pattern as share_target snapping to empty.
-		push_shared_animations_param();
+		// If Studio is echoing back the value we last pushed, ignore it.
+		// Otherwise (e.g. during file load), adopt the incoming serialized
+		// state and rebuild shared_entries_ from it.
+		String incoming = param_share_animations.get(String());
+		String current;
+		for (const auto& e : shared_entries_) {
+			if (!current.empty()) current += "\n";
+			current += encode_shared_entry(e);
+		}
+		if (incoming != current)
+			rebuild_shared_entries_from_param();
+		
 	});
 
 	return Layer_PasteCanvas::set_param(param, value);
@@ -464,8 +470,8 @@ Layer_TextGroup::get_param_vocab() const
 			.set_local_name(_("Share Animation"))
 			.set_description(_("Glyph parameters shared across all glyphs, "
 							   "each with its own stagger delay/order"))
-			.set_static(true)
-			.not_critical());
+			.set_static(true));
+			
 	return ret;
 }
 
