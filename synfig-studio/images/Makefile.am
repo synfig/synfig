@@ -86,6 +86,7 @@ EXTRA_DIST = \
 	action_rounded_interpolation_icon.sif \
 	action_innerrounded_interpolation_icon.sif \
 	action_squared_interpolation_icon.sif \
+	action_layer_upgrade_icon.sif \
 	\
 	action_doc_icons.sif \
 	\
@@ -142,6 +143,7 @@ EXTRA_DIST = \
 	layer_other_timeloop_icon.sif \
 	layer_other_xorpattern_icon.sif \
 	layer_stylize_bevel_icon.sif \
+	layer_stylize_bevel_deprecated_icon.sif \
 	layer_stylize_shade_icon.sif \
 	layer_transform_rotate_icon.sif \
 	layer_transform_scale_icon.sif \
@@ -291,6 +293,7 @@ ICONS = \
 	action_rounded_interpolation_icon.$(EXT) \
 	action_innerrounded_interpolation_icon.$(EXT) \
 	action_squared_interpolation_icon.$(EXT) \
+	action_layer_upgrade_icon.$(EXT) \
 	\
 	action_doc_new_icon.$(EXT) \
 	action_doc_open_icon.$(EXT) \
@@ -359,6 +362,7 @@ ICONS = \
 	layer_other_timeloop_icon.$(EXT) \
 	layer_other_xorpattern_icon.$(EXT) \
 	layer_stylize_bevel_icon.$(EXT) \
+	layer_stylize_bevel_deprecated_icon.$(EXT) \
 	layer_stylize_shade_icon.$(EXT) \
 	layer_transform_rotate_icon.$(EXT) \
 	layer_transform_scale_icon.$(EXT) \
