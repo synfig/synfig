@@ -75,6 +75,7 @@ Layer_GlyphShape::get_local_name() const
 void
 Layer_GlyphShape::set_glyph_chunks(const rendering::Contour::ChunkList& chunks)
 {
+    std::lock_guard<std::recursive_mutex> lock(params_mutex_);
 	stored_chunks = chunks;
 	force_sync();
 }
@@ -86,6 +87,13 @@ Layer_GlyphShape::sync_vfunc()
 	if (stored_chunks.empty())
 		return;
 	add(stored_chunks);
+}
+
+void
+Layer_GlyphShape::set_time_vfunc(IndependentContext context, Time time) const
+{
+	std::lock_guard<std::recursive_mutex> lock(params_mutex_);
+	Layer_Shape::set_time_vfunc(context, time);
 }
 
 void
@@ -272,6 +280,7 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
 bool
 Layer_GlyphShape::set_param(const String& param, const ValueBase& value)
 {
+    std::lock_guard<std::recursive_mutex> lock(params_mutex_);
 	IMPORT_VALUE(param_rotation);
 	IMPORT_VALUE(param_scale);
 	IMPORT_VALUE(param_anim_offset);
@@ -498,6 +507,7 @@ Layer_GlyphShape::get_param_vocab() const
 rendering::Task::Handle
 Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
 {
+    std::lock_guard<std::recursive_mutex> lock(params_mutex_);
 	rendering::Task::Handle task =
 		Layer_Shape::build_composite_task_vfunc(context_params);
 

@@ -37,12 +37,12 @@ private:
 	synfig::rendering::Contour::ChunkList stored_chunks;
 	synfig::ValueBase param_scale;
 	synfig::ValueBase param_rotation;
-	synfig::ValueBase param_offset;
 	synfig::ValueBase param_anim_offset;
 	uint32_t glyph_index_ = 0;
 	size_t line_index_ = 0;
 	synfig::Real base_y_ = 0.0;
 	uint32_t cluster_ = 0;
+	mutable std::recursive_mutex params_mutex_;
 
 public:
 	Layer_GlyphShape();
@@ -70,7 +70,7 @@ public:
 
 protected:
 	void sync_vfunc() override;
-
+	void set_time_vfunc(synfig::IndependentContext context, synfig::Time time) const override;
 	synfig::rendering::Task::Handle build_composite_task_vfunc(
 		synfig::ContextParams context_params) const override;
 };
