@@ -7,6 +7,8 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/widget_curves.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_defaults.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_distance.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/widget_spin.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/widget_entry.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_enum.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_sublayer.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widget_filename.cpp"
