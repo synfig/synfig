@@ -196,7 +196,6 @@ class Widget_Preview : public Gtk::Table
 	Gtk::Scale		scr_time_scrub;
 	Gtk::ToggleButton*	b_loop;
 	Gtk::ScrolledWindow	preview_window;
-	Gtk::Label*	playback_label;
 	//Glib::RefPtr<Gdk::GC>		gc_area;
 	Glib::RefPtr<Gdk::Pixbuf>	currentbuf;
 	int					currentindex;
@@ -232,7 +231,7 @@ class Widget_Preview : public Gtk::Table
 
 	//bool play_frameupdate();
 	void update();
-	bool on_playback_input_focus_out(GdkEventFocus* event);
+	bool on_playback_speed_focus_out(GdkEventFocus* event);
 	
 	void update_playback();
 
@@ -303,6 +302,7 @@ protected:
 	ModelColumns factors;
 
 	Gtk::ComboBoxText zoom_preview;
+	Gtk::ComboBoxText speed_preview;
 	Glib::RefPtr<Gtk::ListStore> factor_refTreeModel;
 	
 private:
@@ -310,7 +310,6 @@ private:
 	Gtk::Box *toolbar;
 	Gtk::Button *play_button;
 	Gtk::Button *pause_button;
-	Gtk::Entry *playback_input;
 	bool on_key_pressed(GdkEventKey*);
 	void on_zoom_entry_activated();
 

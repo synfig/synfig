@@ -353,6 +353,7 @@ Widget_Preview::Widget_Preview():
 	singleframe(),
 	toolbarisshown(),
 	zoom_preview(true),
+	speed_preview(true),
 	toolbar(),
 	play_button(),
 	pause_button(),
@@ -399,17 +400,6 @@ Widget_Preview::Widget_Preview():
 
 	//2nd row: prevframe play/pause nextframe loop | halt-render re-preview erase-all
 	toolbar = Gtk::manage(new class Gtk::Box());
-
-	// playback rate input (float with 2 decimal places)
-	playback_input = Gtk::manage(new Gtk::Entry());
-	playback_input->set_text("1.00");
-	playback_input->set_width_chars(5);
-	playback_input->set_max_length(6);
-	playback_input->set_alignment(1.0); // right align
-	toolbar->pack_start(*playback_input, Gtk::PACK_SHRINK, 0);
-	playback_input->signal_activate().connect(sigc::mem_fun(*this, &Widget_Preview::update_playback));
-	playback_input->signal_focus_out_event().connect(sigc::mem_fun(*this, &Widget_Preview::on_playback_input_focus_out), false);
-	playback_input->show();
 
 	//prev rendered frame
 	Gtk::Button* prev_framebutton = create_tool_button("animate_seek_prev_frame_icon", _("Seek to previous frame"));
@@ -514,12 +504,30 @@ Widget_Preview::Widget_Preview():
 
 	toolbar->pack_end(zoom_preview, Gtk::PACK_SHRINK, 0);
 
+	//playback speed
+	speed_preview.append("0.25x");
+	speed_preview.append("0.5x");
+	speed_preview.append("1.0x");
+	speed_preview.append("1.5x");
+	speed_preview.append("2.0x");
+	Gtk::Entry* speed_entry = speed_preview.get_entry();
+	speed_entry->set_text("1.0x"); //default playback speed
+	speed_entry->set_icon_from_icon_name("animate_mode_on_icon");
+	speed_entry->signal_activate().connect(sigc::mem_fun(*this, &Widget_Preview::update_playback));
+	speed_entry->signal_focus_out_event().connect(sigc::mem_fun(*this, &Widget_Preview::on_playback_speed_focus_out), false);
+	speed_preview.signal_changed().connect(sigc::mem_fun(*this, &Widget_Preview::update_playback));
+
+	//set the speed widget width
+	speed_preview.set_size_request(65, -1);
+	speed_preview.set_margin_end(8);
+	speed_preview.show();
+
+	toolbar->pack_end(speed_preview, Gtk::PACK_SHRINK, 0);
+
 	show_toolbar();
 
 	//3rd row: previewing frame numbering and rendered frame numbering
 	Gtk::Box *status = manage(new Gtk::Box());
-	playback_label = manage(new Gtk::Label("1.00x"));
-	status->pack_start(*playback_label, Gtk::PACK_SHRINK, 5);
 	status->pack_start(l_currenttime, Gtk::PACK_SHRINK, 5);
 	Gtk::Label *separator = manage(new Gtk::Label(" / "));
 	status->pack_start(*separator, Gtk::PACK_SHRINK, 0);
@@ -646,14 +654,15 @@ void studio::Widget_Preview::update()
 
 }
 
-bool Widget_Preview::on_playback_input_focus_out(GdkEventFocus* event)
+bool Widget_Preview::on_playback_speed_focus_out(GdkEventFocus* event)
 {
     update_playback();
     return false;
 }
 
 void studio::Widget_Preview::update_playback() {
-	Glib::ustring text = playback_input->get_text();
+	Gtk::Entry* entry = speed_preview.get_entry();
+	Glib::ustring text = entry->get_text();
 	try {
 		double value;
 		value = std::stod(text);
@@ -667,8 +676,7 @@ void studio::Widget_Preview::update_playback() {
 	}
 	char buf[16];
 	snprintf(buf, sizeof(buf), "%.2fx", playback_speed);
-	playback_label->set_text(buf);
-	playback_input->set_text(Glib::ustring(buf));
+	entry->set_text(Glib::ustring(buf));
 	play_button->grab_focus();
 	update();
 }
