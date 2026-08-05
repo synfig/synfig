@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file renderer_bbox.h
+/*!	\file renderer_boundingbox.h
 **  \brief Renderer_BBox class is used to render in the workarea the bounding box
 ** of the selected layer(s)
 **
@@ -26,8 +26,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERER_BBOX_H
-#define __SYNFIG_RENDERER_BBOX_H
+#ifndef __SYNFIG_RENDERER_BOUNDINGBOX_H
+#define __SYNFIG_RENDERER_BOUNDINGBOX_H
 
 /* === H E A D E R S ======================================================= */
 
