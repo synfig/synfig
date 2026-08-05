@@ -1,9 +1,9 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/task/taskblendgl.cpp
+/*!	\file synfig/rendering/software/task/taskblendsw.cpp
 **	\brief TaskBlendGL
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -25,6 +25,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <vector>
 #ifdef USING_PCH
 #	include "pch.h"
 #else
@@ -32,12 +33,20 @@
 #	include <config.h>
 #endif
 
-#include <synfig/general.h>
-#include <synfig/localization.h>
+#include "taskgl.h"
+
+#include "synfig/general.h"
+#include "../surfacegl.h"
+#include "../internal/headers.h"
+
+#include "../internal/context.h"
+#include "../internal/environment.h"
+#include "../internal/shaders.h"
+#include "../internal/plane.h"
+
+#include "../../common/task/taskpixelprocessor.h"
 
 #include "../../common/task/taskblend.h"
-#include "taskgl.h"
-#include "../internal/environment.h"
 
 #endif
 
@@ -54,115 +63,173 @@ using namespace rendering;
 
 namespace {
 
-class TaskBlendGL: public TaskBlend, public TaskGL
+class TaskBlendGL: public TaskBlend,
+                   public TaskGL
 {
 public:
 	typedef etl::handle<TaskBlendGL> Handle;
 	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
-	virtual bool run(RunParams &params) const {
-		/* TODO:
-		gl::Context::Lock lock(env().context);
-
-		SurfaceGL::Handle a =
-			SurfaceGL::Handle::cast_dynamic(sub_task_a()->target_surface);
-		SurfaceGL::Handle b =
-			SurfaceGL::Handle::cast_dynamic(sub_task_b()->target_surface);
-		SurfaceGL::Handle target =
-			SurfaceGL::Handle::cast_dynamic(target_surface);
-
-		const RectInt &ra = sub_task_a()->target_surface->used_rect;
-		const RectInt &rb = sub_task_b()->target_surface->used_rect;
-
-		if (!Color::is_straight(blend_method) && Color::is_onto(blend_method))
+	bool blit_sub_task(gl::Framebuffer& framebuffer, const Task::Handle& sub, bool use_blend, bool use_b = false) const
+	{
+		RectInt r = target_rect;
+		if(sub && sub->is_valid())
 		{
-			if (ra.valid() && rb.valid())
-				set_intersect(params.used_rect, ra, rb);
-			else
-				params.used_rect = RectInt(0, 0, 0, 0);
+			VectorInt oa = TaskList::calc_target_offset(*this, *sub);
+			RectInt ra = sub->target_rect - oa;
+
+			if(ra.is_valid())
+			{
+				rect_set_intersect(ra, ra, r);
+
+				// blit sub_task_a in the intersection
+				LockRead lsrc(sub);
+				if(!lsrc) {
+					return false;
+				}
+
+				gl::Framebuffer& src = lsrc.cast_handle()->get_framebuffer();
+				src.use_read(0);
+
+				framebuffer.use_write(false);
+
+				glScissor(ra.minx, ra.miny, ra.get_width(), ra.get_height());
+
+				if(!use_blend)
+				{
+					gl::Programs::Program shader = env().get_or_create_context().get_program("blit");
+					shader.use();
+					shader.set_1i("tex", 0);
+					shader.set_2i("offset", oa);
+				} else
+				{
+					gl::Programs::Program shader = env().get_or_create_context().get_blend_program(blend_method);
+					shader.use();
+					shader.set_1f("amount", amount);
+                    if(use_b)
+                    {
+                        shader.set_1i("use_a", 0);
+                        shader.set_1i("use_b", 1);
+                        shader.set_1i("sampler_b", 0);
+                        shader.set_2i("offset_b", oa);
+                    } else
+                    {
+                        shader.set_1i("use_a", 1);
+                        shader.set_1i("use_b", 0);
+                        shader.set_1i("sampler_a", 0);
+                        shader.set_2i("offset_a", oa);
+                    }
+				}
+
+				gl::Plane plane;
+				plane.render();
+
+				src.unuse();
+			}
 		}
-		else
-		if (!Color::is_straight(blend_method))
+		return true;
+	}
+
+	virtual bool run(RunParams&) const
+	{
+		if(!is_valid()) return true;
+
+		LockWrite ldst(this);
+		if(!ldst) return false;
+
+		gl::Context::Lock lock(env().get_or_create_context());
+		gl::Framebuffer& framebuffer = ldst->get_framebuffer();
+
+		glEnable(GL_SCISSOR_TEST);
+
+		glViewport(0, 0, ldst->get_width(), ldst->get_height());
+		glScissor(target_rect.minx, target_rect.miny, target_rect.get_width(), target_rect.get_height());
+
+		framebuffer.use_write();
+        if(Color::is_straight(blend_method))
+        {
+            if(!blit_sub_task(framebuffer, sub_task_a(), true, true))
+            {
+                framebuffer.unuse();
+                return false;
+            }
+        } else {
+            if(!blit_sub_task(framebuffer, sub_task_a(), false))
+            {
+                framebuffer.unuse();
+                return false;
+            }
+        }
+
+		if(!blit_sub_task(framebuffer, sub_task_b(), true))
 		{
-			if (ra.valid() && rb.valid())
-				set_union(params.used_rect, ra, rb);
-			else
-				params.used_rect = ra.valid() ? ra : rb;
+			framebuffer.unuse();
+			return false;
 		}
-		else
-		if (Color::is_onto(blend_method))
+
+		if(sub_task_a() && sub_task_a()->is_valid() &&
+			sub_task_b() && sub_task_b()->is_valid())
 		{
-			params.used_rect = ra;
+			VectorInt oa = TaskList::calc_target_offset(*this, *sub_task_a());
+			RectInt ra = sub_task_a()->target_rect - oa;
+
+			VectorInt ob = TaskList::calc_target_offset(*this, *sub_task_b());
+			RectInt rb = sub_task_b()->target_rect - ob;
+
+			if(ra.is_valid() && rb.is_valid())
+			{
+				RectInt r = target_rect;
+				rect_set_intersect(r, r, ra);
+				rect_set_intersect(r, r, rb);
+
+                if(r.is_valid())
+                {
+                    LockRead lsrc_a(sub_task_a()), lsrc_b(sub_task_b());
+                    if(!lsrc_a || !lsrc_b) {
+                        framebuffer.unuse();
+                        return false;
+                    }
+
+                    framebuffer.use_write(false);
+
+                    glScissor(r.minx, r.miny, r.get_width(), r.get_height());
+
+                    gl::Framebuffer& src_a = lsrc_a.cast_handle()->get_framebuffer();
+                    src_a.use_read(0);
+
+                    gl::Framebuffer& src_b = lsrc_b.cast_handle()->get_framebuffer();
+                    src_b.use_read(1);
+
+                    gl::Programs::Program shader = env().get_or_create_context().get_blend_program(blend_method);
+                    shader.use();
+                    shader.set_1f("amount", amount);
+                    shader.set_1i("use_a", 1);
+                    shader.set_1i("use_b", 1);
+                    shader.set_1i("sampler_a", 1);
+                    shader.set_2i("offset_a", ob);
+                    shader.set_1i("sampler_b", 0);
+                    shader.set_2i("offset_b", oa);
+
+                    gl::Plane plane;
+                    plane.render();
+
+                    src_a.unuse();
+                    src_b.unuse();
+                }
+			}
 		}
+		glDisable(GL_SCISSOR_TEST);
 
-		if (params.used_rect.valid())
-		{
-			gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.get_id());
-			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, target->get_id(), 0);
-			glViewport(0, 0, target->get_width(), target->get_height());
-			env().context.check();
+		framebuffer.unuse();
 
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, a->get_id());
-			glBindSampler(0, env().samplers.get_nearest());
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, b->get_id());
-			glBindSampler(1, env().samplers.get_nearest());
-			env().context.check();
-
-			gl::Buffers::BufferLock quad_buf = env().buffers.get_default_quad_buffer();
-			gl::Buffers::VertexArrayLock quad_va = env().buffers.get_vertex_array();
-			env().context.check();
-
-			glBindVertexArray(quad_va.get_id());
-			glEnableVertexAttribArray(0);
-			glBindBuffer(GL_ARRAY_BUFFER, quad_buf.get_id());
-			glVertexAttribPointer(0, 2, GL_DOUBLE, GL_TRUE, 0, quad_buf.get_pointer());
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			env().context.check();
-
-			GLint vp[4] = { };
-			glGetIntegerv(GL_VIEWPORT, vp);
-			glScissor(
-				vp[0] + params.used_rect.minx,
-				vp[1] + params.used_rect.miny,
-				params.used_rect.maxx - params.used_rect.minx,
-				params.used_rect.maxy - params.used_rect.miny );
-			glEnable(GL_SCISSOR_TEST);
-
-			env().shaders.blend(blend_method, amount);
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-			env().context.check();
-
-			glDisable(GL_SCISSOR_TEST);
-
-			glDisableVertexAttribArray(0);
-			glBindVertexArray(0);
-			env().context.check();
-
-			glActiveTexture(GL_TEXTURE1);
-			glBindSampler(1, 0);
-			glBindTexture(GL_TEXTURE_2D, 0);
-			glActiveTexture(GL_TEXTURE0);
-			glBindSampler(0, 0);
-			glBindTexture(GL_TEXTURE_2D, 0);
-			env().context.check();
-
-			glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-			env().context.check();
-		}
-		*/
 		return true;
 	}
 };
 
 
 Task::Token TaskBlendGL::token(
-	DescReal<TaskBlendGL, TaskBlend>("BlendGL") );
-
+	DescReal<TaskBlendGL, TaskBlend>("TaskBlendGL") );
 } // end of anonimous namespace
 
 /* === E N T R Y P O I N T ================================================= */

@@ -1,9 +1,9 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/glsl/antialiased_textured_rect_vertex.glsl
-**	\brief Antialiased Textured Rect Vertex Shader
+/*!	\file synfig/rendering/opengl/internal/headers.h
+**	\brief Headers
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -23,18 +23,12 @@
 */
 /* ========================================================================= */
 
-#version 330 core
+#ifndef __SYNFIG_RENDERING_GL_HEADERS_H
+#define __SYNFIG_RENDERING_GL_HEADERS_H
 
-layout(location = 0) in vec2 position;
-layout(location = 1) in vec2 vertex_texcoord;
-layout(location = 2) in vec2 vertex_aacoord;
+#include "../glad/include/glad/glad.h"
+#include <GLFW/glfw3.h>
 
-out vec2 texcoord;
-out vec2 aacoord;
+#define OPENGL_DEBUG_OUTPUT
 
-void main()
-{
-	gl_Position = vec4(position, 0.0, 1.0);
-	texcoord = vertex_texcoord;
-	aacoord = vertex_aacoord;
-}
+#endif
