@@ -23,6 +23,8 @@ ValueNode_TimeOffset::ValueNode_TimeOffset(Type &x):
 	LinkableValueNode(x)
 {
 	init_children_vocab();
+	set_link("link",   ValueNode_Const::create(x));
+	set_link("offset", ValueNode_Const::create(Time(0)));
 }
 
 ValueNode_TimeOffset::ValueNode_TimeOffset(const ValueNode::Handle &x):
@@ -31,6 +33,12 @@ ValueNode_TimeOffset::ValueNode_TimeOffset(const ValueNode::Handle &x):
     init_children_vocab();
     set_link("link",   x);
     set_link("offset", ValueNode_Const::create(Time(0)));
+    if (!link_ || !offset_){
+    	synfig::error(
+        	"TimeOffset missing children: link=%p offset=%p",
+        	link_.get(),
+        	offset_.get());
+	}
 }
 
 ValueNode_TimeOffset*
@@ -87,8 +95,10 @@ ValueNode_TimeOffset::operator()(Time t)const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
 		"%s:%d operator()\n", __FILE__, __LINE__);
+	if (!link_)
+		return ValueBase();
 
-	Time offset = (*offset_)(t).get(Time());
+	Time offset = offset_ ? (*offset_)(t).get(Time()) : Time(0);
 	return (*link_)(t + offset);
 }
 
