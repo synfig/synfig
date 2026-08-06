@@ -645,16 +645,6 @@ LayerTree::on_selection_changed()
 {
 	synfigapp::SelectionManager::LayerList layer_list(get_selection_manager()->get_selected_layers());
 
-	if (layer_list.size() == 1) {
-		synfig::Layer::Handle layer = layer_list.front();
-		if (layer && layer->get_name() == "free_form_deform") {
-			if (App::get_state_manager()) {
-				Glib::RefPtr<Gtk::Action> action = App::get_state_manager()->get_action_group()->get_action("set-state-ffd");
-				if (action) action->activate();
-			}
-		}
-	}
-
 	Gtk::TreeIter iter;
 	if(last_top_selected_layer && !layer_tree_store_->find_layer_row(last_top_selected_layer,iter))
 	{
