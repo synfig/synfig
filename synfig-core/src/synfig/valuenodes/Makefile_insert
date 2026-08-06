@@ -53,6 +53,7 @@ VALUENODES_HH = \
 	valuenodes/valuenode_switch.h \
 	valuenodes/valuenode_timedswap.h \
 	valuenodes/valuenode_timeloop.h \
+	valuenodes/valuenode_timeoffset.h \
 	valuenodes/valuenode_timestring.h \
 	valuenodes/valuenode_twotone.h \
 	valuenodes/valuenode_vectorangle.h \
@@ -125,6 +126,7 @@ VALUENODES_CC = \
 	valuenodes/valuenode_switch.cpp \
 	valuenodes/valuenode_timedswap.cpp \
 	valuenodes/valuenode_timeloop.cpp \
+	valuenodes/valuenode_timeoffset.cpp \
 	valuenodes/valuenode_timestring.cpp \
 	valuenodes/valuenode_twotone.cpp \
 	valuenodes/valuenode_vectorangle.cpp \
