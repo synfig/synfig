@@ -63,7 +63,7 @@ class TaskMetaballs: public rendering::Task
 {
 public:
 	typedef etl::handle<TaskMetaballs> Handle;
-	SYNFIG_EXPORT static Token token;
+	static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
 	std::vector<synfig::Point> centers;
@@ -80,7 +80,7 @@ class TaskMetaballsSW: public TaskMetaballs, public rendering::TaskPaintPixelSW
 {
 public:
 	typedef etl::handle<TaskMetaballs> Handle;
-	SYNFIG_EXPORT static Token token;
+	static Token token;
 	Token::Handle get_token() const override { return token.handle(); }
 
 	Color get_color(const Vector& p) const override
@@ -126,9 +126,9 @@ public:
 	}
 };
 
-SYNFIG_EXPORT rendering::Task::Token TaskMetaballs::token(
+rendering::Task::Token TaskMetaballs::token(
 	DescAbstract<TaskMetaballs>("Metaballs") );
-SYNFIG_EXPORT rendering::Task::Token TaskMetaballsSW::token(
+rendering::Task::Token TaskMetaballsSW::token(
 	DescReal<TaskMetaballsSW, TaskMetaballs>("MetaballsSW") );
 
 /* === M E T H O D S ======================================================= */
