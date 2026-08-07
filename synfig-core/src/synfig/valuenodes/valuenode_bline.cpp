@@ -997,7 +997,7 @@ void
 ValueNode_BLine::ref() const noexcept
 {
 	DEBUG_LOG("SYNFIG_DEBUG_BLINE_REFCOUNT",
-		"%s:%d %lx   ref bline %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
+		"%s:%d %lx   ref bline %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (use_count()*2), "", use_count()+1);
 
 	LinkableValueNode::ref();
 }
@@ -1006,7 +1006,7 @@ void
 ValueNode_BLine::unref()const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_BLINE_REFCOUNT",
-		"%s:%d %lx unref bline %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
+		"%s:%d %lx unref bline %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((use_count()-1)*2), "", use_count()-1);
 
 	LinkableValueNode::unref();
 }
