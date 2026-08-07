@@ -1199,7 +1199,7 @@ StatePolygon_Context::refresh_ducks()
 
 	std::list<synfig::Point>::iterator iter=polygon_point_list.begin();
 
-	etl::handle<WorkArea::Duck> duck;
+	WorkArea::Duck::Handle duck;
 	duck=new WorkArea::Duck(*iter);
 	duck->set_editable(true);
 #ifdef DISTINGUISH_FIRST_DUCK
@@ -1216,7 +1216,7 @@ StatePolygon_Context::refresh_ducks()
 
 	for(++iter;iter!=polygon_point_list.end();++iter)
 	{
-		etl::handle<WorkArea::Bezier> bezier(new WorkArea::Bezier());
+		WorkArea::Bezier::Handle bezier(new WorkArea::Bezier());
 		bezier->p1=bezier->c1=duck;
 
 		duck=new WorkArea::Duck(*iter);

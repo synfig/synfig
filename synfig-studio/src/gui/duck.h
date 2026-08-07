@@ -471,9 +471,9 @@ inline Duck::Type
 operator&(const Duck::Type lhs, const Duck::Type rhs)
 { return static_cast<Duck::Type>(int(lhs)&int(rhs)); }
 
-class DuckMap : public std::map<synfig::GUID,etl::handle<studio::Duck> >
+class DuckMap : public std::map<synfig::GUID, studio::Duck::Handle>
 {
-	typedef std::map<synfig::GUID,etl::handle<studio::Duck> > PARENT_TYPE;
+	typedef std::map<synfig::GUID, studio::Duck::Handle> PARENT_TYPE;
 public:
 	void insert(const Duck::Handle& x) { operator[](x->get_guid())=x;  }
 }; // END of class DuckMap
