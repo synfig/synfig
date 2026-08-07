@@ -2662,14 +2662,6 @@ StateFFD_Context::on_regenerate_pressed()
 	get_canvas_interface()->get_instance()->perform_action(action_edge);
 
 	if (editing_existing_mesh_) {
-		Gtk::MessageDialog dialog(
-			*App::main_window,
-			_("This will replace all mesh points and edges with auto-generated ones. Continue?"),
-			false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_YES_NO, true);
-		dialog.set_title(_("Regenerate Mesh"));
-		if (dialog.run() != Gtk::RESPONSE_YES)
-			return;
-
 		polygon_point_list.clear();
 		for (auto& p : points) polygon_point_list.push_back(p);
 		edit_triangles_.clear();
