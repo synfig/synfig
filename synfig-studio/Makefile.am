@@ -72,7 +72,7 @@ mimeinfodir              = $(datadir)/mime-info
 mimeinfo_DATA            = synfigstudio.keys synfigstudio.mime
 
 # Appdata
-appdatadir = $(datadir)/appdata
+appdatadir = $(datadir)/metainfo
 appdata_DATA = org.synfig.SynfigStudio.appdata.xml
 @INTLTOOL_XML_RULE@
 
