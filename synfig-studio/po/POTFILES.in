@@ -31,6 +31,7 @@ src/gui/dialogs/dialog_canvasdependencies.h
 src/gui/dialogs/canvasresize.cpp
 src/gui/dialogs/dialog_color.cpp
 src/gui/dialogs/dialog_color.h
+src/gui/dialogs/dialog_fixmissingfiles.cpp
 src/gui/dialogs/dialog_ffmpegparam.cpp
 src/gui/dialogs/dialog_gradient.cpp
 src/gui/dialogs/dialog_gradient.h
@@ -530,6 +531,7 @@ src/synfigapp/value_desc.h
 src/gui/resources/ui/canvas_options.glade
 src/gui/resources/ui/canvas_resize.glade
 src/gui/resources/ui/dialog_canvasdependencies.glade
+src/gui/resources/ui/dialog_fixmissingfiles.glade
 src/gui/resources/ui/dialog_pasteoptions.glade
 src/gui/resources/ui/dialog_workspaces.glade
 src/gui/resources/ui/preview_options.glade
