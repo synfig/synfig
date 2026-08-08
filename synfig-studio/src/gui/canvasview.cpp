@@ -598,6 +598,7 @@ CanvasView::CanvasView(etl::loose_handle<studio::Instance> instance,etl::handle<
 	//SIGNALS
 	#define CONNECT(x, y) x().connect(sigc::mem_fun(*this, y))
 	CONNECT(canvas_interface()->signal_dirty_preview, &CanvasView::on_dirty_preview);
+	CONNECT(canvas_interface()->signal_force_refresh, &CanvasView::on_force_refresh);
 	CONNECT(canvas_interface()->signal_mode_changed,  &CanvasView::on_mode_changed);
 	CONNECT(canvas_interface()->signal_time_changed,  &CanvasView::on_interface_time_changed);
 	#undef CONNECT
@@ -2422,6 +2423,15 @@ CanvasView::on_dirty_preview()
 		IsWorking is_working(*this);
 		work_area->queue_render();
 	}
+	// else
+ //    {
+ //        work_area->queue_render(true);
+ //    }
+}
+
+void CanvasView::on_force_refresh()  
+{  
+    work_area->queue_render(true);  // always clears tile cache and re-renders  
 }
 
 void
