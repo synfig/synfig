@@ -61,7 +61,7 @@ class Instance : public synfigapp::Instance
 public:
 	typedef std::list< etl::handle<CanvasView> > CanvasViewList;
 
-	enum Status
+	enum class Status
 	{
 		STATUS_OK,
 		STATUS_ERROR,
