@@ -106,6 +106,7 @@ private:
 	synfig::ValueBase param_font;
 	synfig::ValueBase param_color;
 	synfig::ValueBase param_stagger_order;
+	synfig::ValueBase param_stagger_seed;
 	synfig::ValueBase param_share_target;
 	synfig::ValueBase param_share_animations;
 

@@ -122,6 +122,7 @@ Layer_TextGroup::Layer_TextGroup()
 	  param_font(ValueBase(std::string())),
 	  param_color(ValueBase(Color::black())),
 	  param_stagger_order(ValueBase(int(STAGGER_ORDER_FORWARD))),
+	  param_stagger_seed(ValueBase(int(0))),
 	  param_share_target(ValueBase(int(SHARE_TARGET_NONE))),
 	  param_share_animations(ValueBase(std::string()))
 {
@@ -196,6 +197,15 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
 			get_canvas()->get_root()->signal_force_refresh()();
 	});
 	IMPORT_VALUE_PLUS(param_stagger_order, {
+		if (get_canvas())
+			get_canvas()->get_root()->signal_force_refresh()();
+	});
+	// Unlike delay/order, the seed isn't staged-then-stamped onto a
+	// SharedEntry — stagger_perm_ is live, shared data that any
+	// RANDOM-order entry reads immediately, so a seed change has to
+	// rebuild it right away rather than waiting for the next glyph resync.
+	IMPORT_VALUE_PLUS(param_stagger_seed, {
+		rebuild_stagger_permutation();
 		if (get_canvas())
 			get_canvas()->get_root()->signal_force_refresh()();
 	});
@@ -306,6 +316,7 @@ Layer_TextGroup::get_param(const String& param) const
 	EXPORT_VALUE(param_font);
 	EXPORT_VALUE(param_stagger_delay);
 	EXPORT_VALUE(param_stagger_order);
+	EXPORT_VALUE(param_stagger_seed);
 	EXPORT_VALUE(param_share_target);
 	EXPORT_VALUE(param_share_animations);
 	EXPORT_NAME();
@@ -473,6 +484,15 @@ Layer_TextGroup::get_param_vocab() const
 		}
 		ret.push_back(share_desc);
 	}
+	ret.push_back(
+	ParamDesc("stagger_seed")
+		.set_local_name(_("Stagger Random Seed"))
+		.set_description(
+			_("Seed used to generate the Random stagger order. Has no "
+			  "effect unless Stagger Order is set to Random, but "
+			  "remains visible/editable regardless so a seed can be "
+			  "chosen in advance"))
+		.set_hint("int"));
 
 	ret.push_back(
 		ParamDesc("share_animations")
@@ -1031,7 +1051,7 @@ Layer_TextGroup::rebuild_stagger_permutation()
 		return;
 
 	uint32_t layer_salt = static_cast<uint32_t>(
-		std::hash<std::string>{}(get_guid().get_string()));
+    	param_stagger_seed.get(int()));
 
 	std::vector<std::pair<uint64_t, size_t>> keyed;
 	size_t i = 0;
