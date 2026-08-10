@@ -1,9 +1,10 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file synfig/rendering/opengl/internal/shaders.cpp
-**	\brief Environment
+**	\brief Shaders
 **
 **	\legal
 **	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -32,20 +33,21 @@
 #	include <config.h>
 #endif
 
-#include <cctype>
+#include "shaders.h"
+
+#include "synfig/general.h"
+#include "synfig/main.h"
 
 #include <fstream>
-
-#include <synfig/general.h>
-#include <synfig/localization.h>
-#include <synfig/main.h>
-
-#include "shaders.h"
+#include <cassert>
 
 #endif
 
 using namespace synfig;
 using namespace rendering;
+
+using Shader = gl::Shaders::Shader;
+using Program = gl::Programs::Program;
 
 /* === M A C R O S ========================================================= */
 
@@ -55,40 +57,130 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
-gl::Shaders::Shaders(Context &context):
-	context(context),
+// loads and compiles shader, file extension used to determine shader type
 
-	simple_vertex_id(),
-	simple_program_id(),
+// SHADER
 
-	color_fragment_id(),
-	color_program_id(),
-	color_uniform(),
-
-	texture_vertex_id(),
-	texture_fragment_id(),
-	texture_program_id(),
-	texture_uniform(),
-
-	antialiased_textured_rect_vertex_id()
+Shader
+compile_shader(GLenum type, const std::string& content)
 {
-	Context::Lock lock(context);
+	Shader s;
+	s.valid = false;
 
-	// simple
-	simple_vertex_id = load_and_compile_shader(GL_VERTEX_SHADER, "simple_vertex.glsl");
-	simple_program_id = glCreateProgram();
-	glAttachShader(simple_program_id, simple_vertex_id);
-	glLinkProgram(simple_program_id);
-	check_program(simple_program_id, "simple");
+	s.id = glCreateShader(type);
 
-	// color
-	color_fragment_id = load_and_compile_shader(GL_FRAGMENT_SHADER, "color_fragment.glsl");
-	color_program_id = glCreateProgram();
-	glAttachShader(color_program_id, simple_vertex_id);
-	glAttachShader(color_program_id, color_fragment_id);
-	glLinkProgram(color_program_id);
-	check_program(color_program_id, "color");
-	color_uniform = glGetUniformLocation(color_program_id, "color");
+	const GLchar* source = content.c_str();
+	glShaderSource(s.id, 1, &source, 0);
+
+	glCompileShader(s.id);
+
+	GLint isCompiled = 0;
+	glGetShaderiv(s.id, GL_COMPILE_STATUS, &isCompiled);
+	if(isCompiled == GL_FALSE)
+	{
+		GLint maxLength = 0;
+		glGetShaderiv(s.id, GL_INFO_LOG_LENGTH, &maxLength);
+
+		std::vector<GLchar> infoLog(maxLength);
+		glGetShaderInfoLog(s.id, maxLength, &maxLength, &infoLog[0]);
+		
+		error("Opengl shader error: %s", infoLog.data());
+
+		glDeleteShader(s.id);
+
+		return s;
+	}
+
+	s.valid = true;
+	return s;
+}
+
+std::string
+get_shader_path(const std::string& file)
+{
+	return Main::get_instance().bin_path + "/shaders/" + file;
+}
+
+Shader
+load_shader(const std::string& file)
+{
+	const std::string ext = file.substr(file.find('.'));
+
+	String path = get_shader_path(file);
+
+	std::ifstream f(path.c_str());
+	assert(f.good());
+
+	std::string src = String( std::istreambuf_iterator<char>(f),
+			       std::istreambuf_iterator<char>() );
+
+	if(ext == ".vs") return compile_shader(GL_VERTEX_SHADER, src);
+	else if(ext == ".fs") return compile_shader(GL_FRAGMENT_SHADER, src);
+
+	return { 0, false };
+}
+
+void
+delete_shader(Shader s)
+{
+	assert(s.valid);
+	glDeleteShader(s.id);
+}
+
+void
+gl::Shaders::load_blend(Color::BlendMethod method, const String &name)
+{
+	std::ifstream f(get_shader_path("blend.fs"));
+	assert(f.good());
+
+	std::string src = String( std::istreambuf_iterator<char>(f),
+			       std::istreambuf_iterator<char>() );
+
+	size_t pos = src.find("#0");
+	if (pos != String::npos)
+		src = src.substr(0, pos) + name + src.substr(pos + 2);
+
+	blend_shaders[method] = compile_shader(GL_FRAGMENT_SHADER, src);
+}
+
+bool
+gl::Shaders::initialize()
+{
+	map["basic.vs"] = load_shader("basic.vs");
+	assert(map["basic.vs"].valid);
+
+	map["solid.fs"] = load_shader("solid.fs");
+	assert(map["solid.fs"].valid);
+
+	map["colormatrix.fs"] = load_shader("colormatrix.fs");
+	assert(map["colormatrix.fs"].valid);
+
+	map["blit.fs"] = load_shader("blit.fs");
+	assert(map["blit.fs"].valid);
+
+	map["blit_alpha.fs"] = load_shader("blit_alpha.fs");
+	assert(map["blit_alpha.fs"].valid);
+
+	map["blit_gamma.fs"] = load_shader("blit_gamma.fs");
+	assert(map["blit_gamma.fs"].valid);
+
+	map["chroma_key.fs"] = load_shader("chroma_key.fs");
+	assert(map["chroma_key.fs"].valid);
+
+	map["luma_key.fs"] = load_shader("luma_key.fs");
+	assert(map["luma_key.fs"].valid);
+
+	map["box_blur.fs"] = load_shader("blurs/box_blur.fs");
+	assert(map["box_blur.fs"].valid);
+
+	map["cross_blur.fs"] = load_shader("blurs/cross_blur.fs");
+	assert(map["cross_blur.fs"].valid);
+
+	map["disc_blur.fs"] = load_shader("blurs/disc_blur.fs");
+	assert(map["disc_blur.fs"].valid);
+
+	map["gauss_blur.fs"] = load_shader("blurs/gauss_blur.fs");
+	assert(map["gauss_blur.fs"].valid);
 
 	// blend
 	load_blend(Color::BLEND_COMPOSITE,      "composite");
@@ -115,256 +207,319 @@ gl::Shaders::Shaders(Context &context):
 	load_blend(Color::BLEND_ALPHA_DARKEN,   "alphadarken");
 	load_blend(Color::BLEND_ADD_COMPOSITE,  "add_composite");
 	load_blend(Color::BLEND_ALPHA,          "alpha");
-	#ifndef NDEBUG
-	for(int i = 0; i < Color::BLEND_END; ++i)
-		assert(blend_programs[i].id);
-	#endif
 
-	// texture
-	texture_vertex_id = load_and_compile_shader(GL_VERTEX_SHADER, "texture_vertex.glsl");
-	texture_fragment_id = load_and_compile_shader(GL_FRAGMENT_SHADER, "texture_fragment.glsl");
-	texture_program_id = glCreateProgram();
-	glAttachShader(texture_program_id, texture_vertex_id);
-	glAttachShader(texture_program_id, texture_fragment_id);
-	glLinkProgram(texture_program_id);
-	check_program(texture_program_id, "texture");
-	texture_uniform = glGetUniformLocation(texture_program_id, "sampler");
 
-	// antialiased textured rect
-	antialiased_textured_rect_vertex_id = load_and_compile_shader(GL_VERTEX_SHADER, "antialiased_textured_rect_vertex.glsl");
-	load_antialiased_textured_rect(Color::INTERPOLATION_NEAREST, "nearest");
-	load_antialiased_textured_rect(Color::INTERPOLATION_LINEAR, "linear");
-	load_antialiased_textured_rect(Color::INTERPOLATION_COSINE, "cosine");
-	load_antialiased_textured_rect(Color::INTERPOLATION_CUBIC, "cubic");
-	#ifndef NDEBUG
-	for(int i = 0; i < Color::INTERPOLATION_COUNT; ++i)
-		assert(antialiased_textured_rect_programs[i].id);
-	#endif
+	valid = true;
+	return true;
 }
 
-gl::Shaders::~Shaders()
+void
+gl::Shaders::deinitialize()
 {
-	Context::Lock lock(context);
-	glUseProgram(0);
+	for(auto shader: map)
+	{
+		// only delete loaded shaders
+		if(!shader.second.valid) continue;
+		delete_shader(shader.second);
+	}
 
-	// texture
-	glDeleteProgram(texture_program_id);
-	glDeleteShader(texture_fragment_id);
-	glDeleteShader(texture_vertex_id);
+	for(int method = 0; method < Color::BLEND_END; method++)
+	{
+		Shader& shader = blend_shaders[method];
+		if(!shader.valid) continue;
+		delete_shader(shader);
+	}
+
+	valid = false;
+	info("Shaders deinitialized");
+}
+
+Shader
+gl::Shaders::get_shader(const std::string &str) const
+{
+	auto itr = map.find(str);
+	if(itr != map.end()) return itr->second;
+	return { 0, false };
+}
+
+Shader
+gl::Shaders::get_blend_shader(Color::BlendMethod method) const
+{
+	return blend_shaders[method];
+}
+
+// PROGRAMS
+
+Program
+create_program(std::vector<Shader> shaders)
+{
+	Program p;
+	p.valid = false;
+
+	p.id = glCreateProgram();
+
+	for(Shader s: shaders)
+	{
+		if(!s.valid) return p;
+
+		glAttachShader(p.id, s.id);
+	}
+
+	glLinkProgram(p.id);
+
+	GLint isLinked = 0;
+	glGetProgramiv(p.id, GL_LINK_STATUS, (int *)&isLinked);
+	if (isLinked == GL_FALSE)
+	{
+		GLint maxLength = 0;
+		glGetProgramiv(p.id, GL_INFO_LOG_LENGTH, &maxLength);
+
+		std::vector<GLchar> infoLog(maxLength);
+		glGetProgramInfoLog(p.id, maxLength, &maxLength, &infoLog[0]);
+
+		error("Opengl Program error: %s", infoLog.data());
+		
+		glDeleteProgram(p.id);
+		return p;
+	}
+
+	for(Shader s: shaders)
+	{
+		glDetachShader(p.id, s.id);
+	}
+
+	p.valid = true;
+	return p;
+}
+
+Program
+clone_program(const Program& p)
+{
+	assert(p.valid);
+	return create_program(p.shaders);
+}
+
+void
+delete_program(Program p)
+{
+	assert(p.valid);
+	glDeleteProgram(p.id);
+}
+
+void
+gl::Programs::load_blend(const Shaders& shaders, Color::BlendMethod method, const String &name)
+{
+	blend_programs[method] = create_program({ shaders.get_blend_shader(method), shaders.get_shader("basic.vs") });
+	assert(blend_programs[method].valid);
+}
+
+bool
+gl::Programs::initialize(const Shaders& shaders)
+{
+	assert(shaders.is_valid());
+
+	map["solid"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("solid.fs") });
+	assert(map["solid"].valid);
+
+	map["colormatrix"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("colormatrix.fs") });
+	assert(map["colormatrix"].valid);
+
+	map["blit"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("blit.fs") });
+	assert(map["blit"].valid);
+
+	map["blit_alpha"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("blit_alpha.fs") });
+	assert(map["blit_alpha"].valid);
+
+	map["blit_gamma"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("blit_gamma.fs") });
+	assert(map["blit_gamma"].valid);
+
+	map["chroma_key"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("chroma_key.fs") });
+	assert(map["chroma_key"].valid);
+
+	map["luma_key"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("luma_key.fs") });
+	assert(map["luma_key"].valid);
+
+	map["box_blur"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("box_blur.fs") });
+	assert(map["box_blur"].valid);
+
+	map["cross_blur"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("cross_blur.fs") });
+	assert(map["cross_blur"].valid);
+
+	map["disc_blur"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("disc_blur.fs") });
+	assert(map["disc_blur"].valid);
+
+	map["gauss_blur"] = create_program({ shaders.get_shader("basic.vs"), shaders.get_shader("gauss_blur.fs") });
+	assert(map["gauss_blur"].valid);
 
 	// blend
-	for(int i = 0; i < Color::BLEND_END; ++i)
+	load_blend(shaders, Color::BLEND_COMPOSITE,      "composite");
+	load_blend(shaders, Color::BLEND_STRAIGHT,       "straight");
+	load_blend(shaders, Color::BLEND_ONTO,           "onto");
+	load_blend(shaders, Color::BLEND_STRAIGHT_ONTO,  "straightonto");
+	load_blend(shaders, Color::BLEND_BEHIND,         "behind");
+	load_blend(shaders, Color::BLEND_SCREEN,         "screen");
+	load_blend(shaders, Color::BLEND_OVERLAY,        "overlay");
+	load_blend(shaders, Color::BLEND_HARD_LIGHT,     "hardlight");
+	load_blend(shaders, Color::BLEND_MULTIPLY,       "multiply");
+	load_blend(shaders, Color::BLEND_DIVIDE,         "divide");
+	load_blend(shaders, Color::BLEND_ADD,            "add");
+	load_blend(shaders, Color::BLEND_SUBTRACT,       "subtract");
+	load_blend(shaders, Color::BLEND_DIFFERENCE,     "difference");
+	load_blend(shaders, Color::BLEND_BRIGHTEN,       "brighten");
+	load_blend(shaders, Color::BLEND_DARKEN,         "darken");
+	load_blend(shaders, Color::BLEND_COLOR,          "color");
+	load_blend(shaders, Color::BLEND_HUE,            "hue");
+	load_blend(shaders, Color::BLEND_SATURATION,     "saturation");
+	load_blend(shaders, Color::BLEND_LUMINANCE,      "luminance");
+	load_blend(shaders, Color::BLEND_ALPHA_OVER,     "alphaover");
+	load_blend(shaders, Color::BLEND_ALPHA_BRIGHTEN, "alphabrighten");
+	load_blend(shaders, Color::BLEND_ALPHA_DARKEN,   "alphadarken");
+	load_blend(shaders, Color::BLEND_ADD_COMPOSITE,  "add_composite");
+	load_blend(shaders, Color::BLEND_ALPHA,          "alpha");
+
+	valid = true;
+	return true;
+}
+
+void
+gl::Programs::deinitialize()
+{
+	for(auto program: map)
 	{
-		glDeleteProgram(blend_programs[i].id);
-		glDeleteShader(blend_programs[i].fragment_id);
+		delete_program(program.second);
 	}
 
-	// color
-	glDeleteProgram(color_program_id);
-	glDeleteShader(color_fragment_id);
-
-	// simple
-	glDeleteProgram(simple_program_id);
-	glDeleteShader(simple_vertex_id);
-}
-
-String
-gl::Shaders::get_shader_path()
-{
-	return Main::get_instance().lib_synfig_path + "/glsl";
-}
-
-String
-gl::Shaders::get_shader_path(const String &filename)
-{
-	return get_shader_path()
-		 + "/"
-		 + filename;
-}
-
-String
-gl::Shaders::load_shader(const String &filename)
-{
-	String path = get_shader_path(filename);
-	std::ifstream f(path.c_str());
-	//assert(f);
-	return String( std::istreambuf_iterator<char>(f),
-			       std::istreambuf_iterator<char>() );
-}
-
-GLuint
-gl::Shaders::compile_shader(GLenum type, const String &src)
-{
-	//assert(!src.empty());
-	GLuint id = glCreateShader(type);
-	const char *lines = src.c_str();
-	glShaderSource(id, 1, &lines, nullptr);
-	glCompileShader(id);
-	check_shader(id, src);
-	return id;
-}
-
-GLuint
-gl::Shaders::load_and_compile_shader(GLenum type, const String &filename)
-{
-	return compile_shader(type, load_shader(filename));
-}
-
-void
-gl::Shaders::check_shader(GLuint id, const String &src)
-{
-	GLint compileStatus = 0;
-	glGetShaderiv(id, GL_COMPILE_STATUS, &compileStatus);
-	if (!compileStatus) {
-		GLint log_length = 0;
-		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &log_length);
-		String log;
-		log.resize(log_length);
-		glGetShaderInfoLog(id, log.size(), &log_length, &log[0]);
-		log.resize(log_length);
-		warning( String()
-			   + "~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-			   + "cannot compile shader:\n"
-			   + "~~~~~~source~~~~~~~~~~~~~~~\n"
-			   + src + "\n"
-			   + "~~~~~~log~~~~~~~~~~~~~~~~~~\n"
-			   + log + "\n"
-			   + "~~~~~~~~~~~~~~~~~~~~~~~~~~~" );
+	for(int method = 0; method < Color::BLEND_END; method++)
+	{
+		Program& program = blend_programs[method];
+		if(!program.valid) continue;
+		delete_program(program);
 	}
+	valid = false;
 }
 
-void
-gl::Shaders::check_program(GLuint id, const String &name)
+gl::Programs
+gl::Programs::clone() const
 {
- 	GLint linkStatus = 0;
-	glGetProgramiv(id, GL_LINK_STATUS, &linkStatus);
-	if (!linkStatus) {
-		GLint log_length = 0;
-		glGetProgramiv(id, GL_INFO_LOG_LENGTH, &log_length);
-		std::string log;
-		log.resize(log_length);
-		glGetProgramInfoLog(id, log.size(), &log_length, &log[0]);
-		warning( String()
-			   + "~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-			   + "cannot link program " + name +  ":\n"
-			   + "~~~~~~name~~~~~~~~~~~~~~~~~\n"
-			   + name + "\n"
-			   + "~~~~~~log~~~~~~~~~~~~~~~~~~\n"
-			   + log + "\n"
-			   + "~~~~~~~~~~~~~~~~~~~~~~~~~~~" );
+	gl::Programs programs = *this;
+
+	for(auto& program: programs.map)
+	{
+		program.second = clone_program(program.second);
+		programs.valid = programs.valid && program.second.valid;
 	}
 
-	glValidateProgram(id);
-	GLint validateStatus = 0;
-	glGetProgramiv(id, GL_VALIDATE_STATUS, &validateStatus);
-	if (!validateStatus) {
-		GLint log_length = 0;
-		glGetProgramiv(id, GL_INFO_LOG_LENGTH, &log_length);
-		String log;
-		log.resize(log_length);
-		glGetProgramInfoLog(id, log.size(), &log_length, &log[0]);
-		warning( String()
-			   + "~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-			   + "program not validated " + name +  ":\n"
-			   + "~~~~~~name~~~~~~~~~~~~~~~~~\n"
-			   + name + "\n"
-			   + "~~~~~~log~~~~~~~~~~~~~~~~~~\n"
-			   + log + "\n"
-			   + "~~~~~~~~~~~~~~~~~~~~~~~~~~~" );
-	}
+	return programs;
+}
+
+Program
+gl::Programs::get_program(const std::string &str) const
+{
+	if(map.count(str) == 0) return {0, false};
+
+	Program p = map.at(str);
+	p.shaders = {};
+	return p;
+}
+
+Program
+gl::Programs::get_blend_program(Color::BlendMethod method) const
+{
+	return blend_programs[method];
+}
+
+// PROGRAM
+
+void
+gl::Programs::Program::set_1i(const std::string &name, int value)
+{
+	assert(valid);
+
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform1i(loc, value);
 }
 
 void
-gl::Shaders::load_blend(Color::BlendMethod method, const String &name)
+gl::Programs::Program::set_1f(const std::string &name, float value)
 {
-	assert(method >= 0 && method < Color::BLEND_END);
+	assert(valid);
 
-	String src = load_shader("blend_fragment.glsl");
-	size_t pos = src.find("#0");
-	if (pos != String::npos)
-		src = src.substr(0, pos) + name + src.substr(pos + 2);
-
-	BlendProgramInfo &i = blend_programs[method];
-	i.fragment_id = compile_shader(GL_FRAGMENT_SHADER, src);
-	i.id = glCreateProgram();
-	glAttachShader(i.id, simple_vertex_id);
-	glAttachShader(i.id, i.fragment_id);
-	glLinkProgram(i.id);
-	check_program(i.id, "blend_" + name);
-	i.amount_uniform = glGetUniformLocation(i.id, "amount");
-	i.sampler_dest_uniform = glGetUniformLocation(i.id, "sampler_dest");
-	i.sampler_src_uniform = glGetUniformLocation(i.id, "sampler_src");
-	context.check("gl::Shaders::load_blend");
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform1f(loc, value);
 }
 
 void
-gl::Shaders::load_antialiased_textured_rect(Color::Interpolation interpolation, const String &name)
+gl::Programs::Program::set_2i(const std::string &name, VectorInt value)
 {
-	assert(interpolation >= 0 && interpolation < (int)Color::INTERPOLATION_COUNT);
+	assert(valid);
 
-	String src = load_shader("antialiased_textured_rect_fragment.glsl");
-	size_t pos = src.find("#0");
-	if (pos != String::npos)
-		src = src.substr(0, pos) + name + src.substr(pos + 2);
-
-	AntialiasedTexturedRectProgramInfo &i = antialiased_textured_rect_programs[interpolation];
-	i.fragment_id = compile_shader(GL_FRAGMENT_SHADER, src);
-	i.id = glCreateProgram();
-	glAttachShader(i.id, antialiased_textured_rect_vertex_id);
-	glAttachShader(i.id, i.fragment_id);
-	glLinkProgram(i.id);
-	check_program(i.id, "antialiased_textured_rect_" + name);
-	i.sampler_uniform = glGetUniformLocation(i.id, "sampler");
-	i.aascale_uniform = glGetUniformLocation(i.id, "aascale");
-	context.check("gl::Shaders::load_antialiased_textured_rect");
-}
-
-
-void
-gl::Shaders::simple()
-{
-	glUseProgram(simple_program_id);
-	context.check("gl::Shaders::simple");
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform2i(loc, value[0], value[1]);
 }
 
 void
-gl::Shaders::color(const Color &c)
+gl::Programs::Program::set_2f(const std::string &name, Vector value)
 {
-	glUseProgram(color_program_id);
-	glUniform4fv(color_uniform, 1, (const GLfloat*)&c);
-	context.check("gl::Shaders::color");
+	assert(valid);
+
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform2f(loc, value[0], value[1]);
 }
 
 void
-gl::Shaders::blend(Color::BlendMethod method, Color::value_type amount)
+gl::Programs::Program::set_2f(const std::string &name, float a, float b)
 {
-	assert(method >= 0 && method < Color::BLEND_END);
-	BlendProgramInfo &i = blend_programs[method];
-	glUseProgram(i.id);
-	glUniform1f(i.amount_uniform, amount);
-	glUniform1i(i.sampler_dest_uniform, 0);
-	glUniform1i(i.sampler_src_uniform, 1);
-	context.check("gl::Shaders::blend");
+	assert(valid);
+
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform2f(loc, a, b);
 }
 
 void
-gl::Shaders::texture()
+gl::Programs::Program::set_3f(const std::string &name, float a, float b, float c)
 {
-	glUseProgram(texture_program_id);
-	glUniform1i(texture_uniform, 0);
-	context.check("gl::Shaders::texture");
+	assert(valid);
+
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform3f(loc, a, b, c);
 }
 
 void
-gl::Shaders::antialiased_textured_rect(Color::Interpolation interpolation, const Vector &aascale)
+gl::Programs::Program::set_4i(const std::string &name, int a, int b, int c, int d)
 {
-	assert(interpolation >= 0 && interpolation < (int)Color::INTERPOLATION_COUNT);
-	AntialiasedTexturedRectProgramInfo &i = antialiased_textured_rect_programs[interpolation];
-	glUseProgram(i.id);
-	glUniform1i(i.sampler_uniform, 0);
-	glUniform2f(i.aascale_uniform, (float)aascale[0], (float)aascale[1]);
-	context.check("gl::Shaders::antialiased_textured_rect");
+	assert(valid);
+
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform4i(loc, a, b, c, d);
 }
 
+void
+gl::Programs::Program::set_color(const std::string &name, Color value)
+{
+	assert(valid);
+
+	int loc = glGetUniformLocation(id, name.c_str());
+	glUniform4f(loc, value.get_r(), value.get_g(), value.get_b(), value.get_a());
+}
+
+void
+gl::Programs::Program::set_mat5x5(const std::string &name, ColorMatrix mat)
+{
+	assert(valid);
+
+	set_1f(name + ".m00", mat[0][0]); set_1f(name + ".m01", mat[0][1]);	set_1f(name + ".m02", mat[0][2]); set_1f(name + ".m03", mat[0][3]);	set_1f(name + ".m04", mat[0][4]);
+	set_1f(name + ".m10", mat[1][0]); set_1f(name + ".m11", mat[1][1]);	set_1f(name + ".m12", mat[1][2]); set_1f(name + ".m13", mat[1][3]);	set_1f(name + ".m14", mat[1][4]);
+	set_1f(name + ".m20", mat[2][0]); set_1f(name + ".m21", mat[2][1]);	set_1f(name + ".m22", mat[2][2]); set_1f(name + ".m23", mat[2][3]);	set_1f(name + ".m24", mat[2][4]);
+	set_1f(name + ".m30", mat[3][0]); set_1f(name + ".m31", mat[3][1]);	set_1f(name + ".m32", mat[3][2]); set_1f(name + ".m33", mat[3][3]);	set_1f(name + ".m34", mat[3][4]);
+	set_1f(name + ".m40", mat[4][0]); set_1f(name + ".m41", mat[4][1]);	set_1f(name + ".m42", mat[4][2]); set_1f(name + ".m43", mat[4][3]);	set_1f(name + ".m44", mat[4][4]);
+}
+
+void
+gl::Programs::Program::use()
+{
+	assert(valid);
+
+	glUseProgram(id);
+}
 
 /* === E N T R Y P O I N T ================================================= */

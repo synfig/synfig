@@ -16,6 +16,6 @@ install(
 
 ## TODO: make configurable
 include(${CMAKE_CURRENT_LIST_DIR}/common/CMakeLists.txt)
-# include(${CMAKE_CURRENT_LIST_DIR}/opengl/CMakeLists.txt)
+include(${CMAKE_CURRENT_LIST_DIR}/opengl/CMakeLists.txt)
 include(${CMAKE_CURRENT_LIST_DIR}/primitive/CMakeLists.txt)
 include(${CMAKE_CURRENT_LIST_DIR}/software/CMakeLists.txt)

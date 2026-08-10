@@ -1,9 +1,9 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/task/taskcontourgl.cpp
+/*!	\file synfig/rendering/software/task/taskcontourgl.cpp
 **	\brief TaskContourGL
 **
 **	\legal
-**	......... ... 2015-2018 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -25,6 +25,10 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include "synfig/color/color.h"
+#include "synfig/matrix.h"
+#include "synfig/vector.h"
+#include <vector>
 #ifdef USING_PCH
 #	include "pch.h"
 #else
@@ -32,10 +36,18 @@
 #	include <config.h>
 #endif
 
-#include "taskcontourgl.h"
+#include "taskgl.h"
 
-#include "../internal/environment.h"
+#include "synfig/general.h"
 #include "../surfacegl.h"
+#include "../internal/headers.h"
+
+#include "../internal/context.h"
+#include "../internal/environment.h"
+#include "../internal/shaders.h"
+#include "../internal/plane.h"
+
+#include "../../common/task/taskcontour.h"
 
 #endif
 
@@ -50,196 +62,152 @@ using namespace rendering;
 
 /* === M E T H O D S ======================================================= */
 
+namespace {
 
-Task::Token TaskContourGL::token(
-	DescReal<TaskContourGL, TaskContour>("ContourGL") );
-
-
-void
-TaskContourGL::render_polygon(
-	const std::vector<Vector> &polygon,
-	const Rect &bounds,
-	bool invert,
-	bool antialias,
-	Contour::WindingStyle winding_style,
-	const Color &color )
+class TaskContourGL: public TaskContour, public TaskGL
 {
-	if (polygon.empty()) return;
-	gl::Environment &e = gl::Environment::get_instance();
+public:
+	typedef etl::handle<TaskContourGL> Handle;
+	static Token token;
+	virtual Token::Handle get_token() const { return token.handle(); }
 
-	if (antialias) e.antialiasing.multisample_begin(false);
+	virtual bool run(RunParams&) const
+	{
+		if(!is_valid()) return true;
 
-	glClearColor(color.get_r(), color.get_g(), color.get_b(), 0.f);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glClearColor(0.f, 0.f, 0.f, 0.f);
+		LockWrite ldst(this);
+		if(!ldst) return false;
 
-	gl::Buffers::BufferLock quad_buf = e.buffers.get_default_quad_buffer();
-	gl::Buffers::VertexArrayLock quad_va = e.buffers.get_vertex_array();
+		gl::Context::Lock lock(env().get_or_create_context());
 
-	gl::Buffers::BufferLock polygon_buf = e.buffers.get_array_buffer(polygon);
-	gl::Buffers::VertexArrayLock polygon_va = e.buffers.get_vertex_array();
+		glEnable(GL_SCISSOR_TEST);
 
-	bool even_odd = winding_style == Contour::WINDING_EVEN_ODD;
+		glViewport(0, 0, ldst->get_width(), ldst->get_height());
+		glScissor(target_rect.minx, target_rect.miny, target_rect.get_width(), target_rect.get_height());
 
-	GLint vp[4] = { };
-	glGetIntegerv(GL_VIEWPORT, vp);
-	int x0 = (int)floor(vp[0] + (bounds.minx + 1.0)*0.5*vp[2]);
-	int x1 = (int)ceil (vp[0] + (bounds.maxx + 1.0)*0.5*vp[2]);
-	int y0 = (int)floor(vp[1] + (bounds.miny + 1.0)*0.5*vp[3]);
-	int y1 = (int)ceil (vp[1] + (bounds.maxy + 1.0)*0.5*vp[3]);
-	glScissor(x0, y0, x1-x0, y1-y0);
+        gl::Framebuffer framebuffer;
+        framebuffer.from_dims(ldst->get_width(), ldst->get_height(), true);
 
-	glEnable(GL_SCISSOR_TEST);
-	glEnable(GL_STENCIL_TEST);
+        framebuffer.use_write(true);
+        glViewport(0, 0, ldst->get_width(), ldst->get_height());
 
-	// render mask
+        Contour::ChunkList chunks = contour->get_chunks();
 
-	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-	glClear(GL_STENCIL_BUFFER_BIT);
-	glStencilFunc(GL_ALWAYS, 0, 0);
-	if (even_odd) {
-		glStencilOp(GL_INCR_WRAP, GL_INCR_WRAP, GL_INCR_WRAP);
-	} else {
-		glStencilOpSeparate(GL_FRONT, GL_INCR_WRAP, GL_INCR_WRAP, GL_INCR_WRAP);
-		glStencilOpSeparate(GL_BACK, GL_DECR_WRAP, GL_DECR_WRAP, GL_DECR_WRAP);
-	}
+		Vector ppu = get_pixels_per_unit();
 
-	glBindVertexArray(polygon_va.get_id());
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, polygon_buf.get_id());
-	glVertexAttribPointer(0, 2, GL_DOUBLE, GL_TRUE, 0, polygon_buf.get_pointer());
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+		Matrix bounds_transfromation;
+		bounds_transfromation.m00 = ppu[0];
+		bounds_transfromation.m11 = ppu[1];
+		bounds_transfromation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
+		bounds_transfromation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
 
-	e.shaders.simple();
-	glDrawArrays(GL_TRIANGLE_FAN, 0, polygon.size());
+		Matrix matrix = bounds_transfromation * transformation->matrix;
 
-	glDisableVertexAttribArray(0);
-	glBindVertexArray(0);
+        std::vector<GLubyte> pathCommands;
+        std::vector<float> pathCoords;
 
-	// fill mask
+        for(int i = 0; i < chunks.size(); i++)
+        {
+            Vector p0 = matrix.get_transformed(chunks[i].p1);
+            Vector p1 = matrix.get_transformed(chunks[i].pp0);
+            Vector p2 = matrix.get_transformed(chunks[i].pp1);
 
-	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-	if (!even_odd && !invert)
-		glStencilFunc(GL_NOTEQUAL, 0, -1);
-	if (!even_odd &&  invert)
-		glStencilFunc(GL_EQUAL, 0, -1);
-	if ( even_odd && !invert)
-		glStencilFunc(GL_EQUAL, 1, 1);
-	if ( even_odd &&  invert)
-		glStencilFunc(GL_EQUAL, 0, 1);
+            p0[0] = -(1.0f - 2.0f * (p0[0] / ldst->get_width()));
+            p1[0] = -(1.0f - 2.0f * (p1[0] / ldst->get_width()));
+            p2[0] = -(1.0f - 2.0f * (p2[0] / ldst->get_width()));
 
-	glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_TRUE);
+            p0[1] = -(1.0f - 2.0f * (p0[1] / ldst->get_height()));
+            p1[1] = -(1.0f - 2.0f * (p1[1] / ldst->get_height()));
+            p2[1] = -(1.0f - 2.0f * (p2[1] / ldst->get_height()));
 
-	glBindVertexArray(quad_va.get_id());
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, quad_buf.get_id());
-	glVertexAttribPointer(0, 2, GL_DOUBLE, GL_TRUE, 0, quad_buf.get_pointer());
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+            switch (chunks[i].type) {
+                case Contour::ChunkType::MOVE:
+                    pathCommands.push_back(GL_MOVE_TO_NV);
+                    pathCoords.push_back((p0[0]));
+                    pathCoords.push_back((p0[1]));
+                    break;
+                case Contour::ChunkType::LINE:
+                    pathCommands.push_back(GL_LINE_TO_NV);
+                    pathCoords.push_back((p0[0]));
+                    pathCoords.push_back((p0[1]));
+                    break;
+                case Contour::ChunkType::CONIC:
+                    pathCommands.push_back(GL_QUADRATIC_CURVE_TO_NV);
 
-	e.shaders.color(color);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+                    pathCoords.push_back((p1[0]));
+                    pathCoords.push_back((p1[1]));
 
-	glDisableVertexAttribArray(0);
-	glBindVertexArray(0);
+                    pathCoords.push_back((p0[0]));
+                    pathCoords.push_back((p0[1]));
+                    break;
+                case Contour::ChunkType::CUBIC:
+                    pathCommands.push_back(GL_CUBIC_CURVE_TO_NV);
+                    pathCoords.push_back((p1[0]));
+                    pathCoords.push_back((p1[1]));
 
-	glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-	glDisable(GL_STENCIL_TEST);
-	glDisable(GL_SCISSOR_TEST);
+                    pathCoords.push_back((p2[0]));
+                    pathCoords.push_back((p2[1]));
 
-	if (antialias) e.antialiasing.multisample_end();
-}
+                    pathCoords.push_back((p0[0]));
+                    pathCoords.push_back((p0[1]));
+                    break;
+                case Contour::ChunkType::CLOSE:
+                    pathCommands.push_back(GL_CLOSE_PATH_NV);
+                    break;
+            }
+        }
 
-void
-TaskContourGL::render_contour(
-	const Contour &contour,
-	const Matrix &transform_matrix,
-	bool invert,
-	bool antialias,
-	Contour::WindingStyle winding_style,
-	const Color &color,
-	Real detail )
-{
-	GLint vp[4] = { };
-	glGetIntegerv(GL_VIEWPORT, vp);
-	if (!vp[2] || !vp[3]) return;
+        unsigned int pathObj = glGenPathsNV(1);
 
-	std::vector<Vector> polygon;
-	Rect full_bounds(-1.0, -1.0, 1.0, 1.0);
-	Rect bounds = full_bounds;
-	Vector pixel_size(2.0/(Real)vp[2], 2.0/(Real)vp[3]);
+        glPathCommandsNV(pathObj, pathCommands.size(), pathCommands.data(),
+                pathCoords.size(), GL_FLOAT, pathCoords.data());
 
-	contour.split(polygon, bounds, transform_matrix, pixel_size*detail);
+        glStencilFillPathNV(pathObj, GL_COUNT_UP_NV, 0x1F);
 
-	if (invert) bounds = full_bounds;
-	render_polygon(polygon, bounds, invert, antialias, winding_style, color);
-}
+        glEnable(GL_STENCIL_TEST);
+        if(contour->winding_style == Contour::WindingStyle::WINDING_NON_ZERO) glStencilFunc(GL_NOTEQUAL, 0, 0x1F);
+        else glStencilFunc(GL_NOTEQUAL, 0, 0x1);
 
-bool
-TaskContourGL::run(RunParams & /* params */) const
-{
-	if (!is_valid())
+        glStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
+
+        gl::Programs::Program shader = env().get_or_create_context().get_program("solid");
+        shader.use();
+        shader.set_color("color", contour->color);
+
+        gl::Plane plane;
+        plane.render();
+
+        framebuffer.unuse();
+        glDisable(GL_STENCIL_TEST);
+
+        gl::Framebuffer& dest = ldst->get_framebuffer();
+        dest.use_write(true);
+        framebuffer.use_read(0);
+
+        shader = env().get_or_create_context().get_program("blit");
+        shader.use();
+        shader.set_1i("tex", 0);
+        shader.set_2i("offset", VectorInt(0, 0));
+
+        plane.render();
+
+        framebuffer.unuse();
+        framebuffer.reset();
+
+        dest.unuse();
+
+        glDeletePathsNV(pathObj, 1);
+
+		glDisable(GL_SCISSOR_TEST);
+
 		return true;
+	}
+};
 
-	// transformation
 
-	Vector rect_size = source_rect.get_size();
-	Matrix bounds_transformation;
-	bounds_transformation.m00 = 2.0/rect_size[0];
-	bounds_transformation.m11 = 2.0/rect_size[1];
-	bounds_transformation.m20 = -1.0 - source_rect.minx*bounds_transformation.m00;
-	bounds_transformation.m21 = -1.0 - source_rect.miny*bounds_transformation.m11;
+// Task::Token TaskContourGL::token(
+// 	DescReal<TaskContourGL, TaskContour>("TaskContourGL") );
 
-	Matrix matrix = bounds_transformation * transformation->matrix;
-
-	// apply bounds
-
-	std::vector<Vector> polygon;
-	Rect bounds(-1.0, -1.0, 1.0, 1.0);
-	Vector pixel_size(
-		2.0/(Real)target_rect.get_width(),
-		2.0/(Real)target_rect.get_height() );
-	contour->split(polygon, bounds, matrix, pixel_size*detail);
-
-	// lock resources
-
-	gl::Context::Lock lock(env().context);
-	LockWrite la(this);
-	if (!la)
-		return false;
-
-	// bind framebuffer
-
-	gl::Framebuffers::RenderbufferLock renderbuffer = env().framebuffers.get_renderbuffer(GL_STENCIL_INDEX8, la->get_width(), la->get_height());
-	gl::Framebuffers::FramebufferLock framebuffer = env().framebuffers.get_framebuffer();
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer.get_id());
-	glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.get_id());
-	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, la->get_id(), 0);
-	env().framebuffers.check("TaskContourGL::run bind framebuffer");
-	glViewport(
-		target_rect.minx,
-		target_rect.miny,
-		target_rect.get_width(),
-		target_rect.get_height() );
-	env().context.check("TaskContourGL::run viewport");
-
-	// render
-
-	render_polygon(
-		polygon,
-		bounds,
-		contour->invert,
-		allow_antialias && contour->antialias,
-		contour->winding_style,
-		contour->color );
-
-	// release framebuffer
-
-	glFramebufferTexture2D(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
-	glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, 0);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	env().context.check("TaskContourGL::run release contour");
-
-	return true;
-}
+} // end of anonimous namespace
 
 /* === E N T R Y P O I N T ================================================= */
