@@ -4,6 +4,7 @@ set(UI_FILES
 	canvas_resize.glade
 	dialog_canvasdependencies.glade
 	dialog_pasteoptions.glade
+	plugin_manager_card.glade
 	dialog_workspaces.glade
 	preview_options.glade
 	shortcuts_window.glade
