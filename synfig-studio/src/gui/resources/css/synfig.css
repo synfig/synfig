@@ -119,3 +119,11 @@
 #layers_panel .even {
 	background-color: rgba(0,0,0,0.05);
 }
+
+/*
+ * Keyframe list widget colors
+ */
+.keyframe-list {
+	background-color: rgba(117, 140, 179, 1.0);
+	color: rgba(0, 0, 0, 1.0);
+}
