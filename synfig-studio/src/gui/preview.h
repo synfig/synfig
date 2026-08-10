@@ -199,6 +199,7 @@ class Widget_Preview : public Gtk::Table
 	//Glib::RefPtr<Gdk::GC>		gc_area;
 	Glib::RefPtr<Gdk::Pixbuf>	currentbuf;
 	int					currentindex;
+	double 				playback_speed;
 	//double			timeupdate;
 	double				timedisp;
 	//double				audiotime;
@@ -230,6 +231,9 @@ class Widget_Preview : public Gtk::Table
 
 	//bool play_frameupdate();
 	void update();
+	bool on_playback_speed_focus_out(GdkEventFocus* event);
+	
+	void update_playback();
 
 	void scrub_updated(double t);
 
@@ -299,6 +303,7 @@ protected:
 	ModelColumns factors;
 
 	Gtk::ComboBoxText zoom_preview;
+	Gtk::ComboBoxText speed_preview;
 	Glib::RefPtr<Gtk::ListStore> factor_refTreeModel;
 	
 private:
