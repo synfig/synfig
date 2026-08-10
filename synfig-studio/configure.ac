@@ -8,6 +8,10 @@ AM_SILENT_RULES([yes])
 
 AM_CONDITIONAL(DEVELOPMENT_SNAPSHOT, true)
 
+AS_IF([test "x$DEVELOPMENT_SNAPSHOT_TRUE" != "x#"], [
+    AC_DEFINE([DEVELOPMENT_SNAPSHOT], [1], [Build is development snapshot])
+])
+
 AC_CONFIG_AUX_DIR([config])
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
@@ -131,6 +135,19 @@ AC_ARG_WITH(userdir,[
     AC_DEFINE_UNQUOTED(SYNFIG_USER_APP_DIR,"$with_userdir",[Synfig User Data Directory])
 ],[])
 
+AC_ARG_ENABLE([update-checker],
+    AS_HELP_STRING([--enable-update-checker],
+           [Enable online update checker functionality (default: disabled)]),
+    [],
+    [enable_update_checker=no]
+)
+
+if test "x$enable_update_checker" = "xyes"; then
+    AC_DEFINE(ENABLE_UPDATE_CHECKER,[],[Online update checker enabled.])
+    AC_MSG_RESULT([ ** Online update checker enabled.])
+fi
+AM_CONDITIONAL(ENABLE_UPDATE_CHECKER, test "x$enable_update_checker" = "xyes")
+
 # -- H E A D E R S --------------------------------------------
 
 # Headers for gui/ipc.cpp and gui/app.cpp
@@ -249,6 +266,7 @@ Debug Mode -----------------------> $debug
 Profiling Mode -------------------> $profiling
 Optimizations --------------------> $optimization
 JACK Enabled ---------------------> $enable_jack
+Update Checker Enabled -----------> $enable_update_checker
 Build images ---------------------> $with_images
 
 "'$'"CXX ------------------------------> '$CXX'
