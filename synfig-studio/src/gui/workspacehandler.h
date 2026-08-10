@@ -64,10 +64,16 @@ public:
 	/// stores custom workspace layouts in a config file
 	bool save(const synfig::filesystem::Path& filename);
 
+	bool favorite(const std::string& name);
+	void clear_favorite();
+	std::string get_favorite() const;
+	bool is_favorite(const std::string& name) const;
+
 	sigc::signal<void> & signal_list_changed();
 
 private:
 	std::map<std::string, std::string> workspaces;
+	std::string favorite_workspace_name_;
 
 	sigc::signal<void> signal_list_changed_;
 };

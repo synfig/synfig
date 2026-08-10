@@ -42,6 +42,8 @@ class Dialog_Workspaces : public Gtk::Dialog
 
 	Gtk::Button * rename_button;
 	Gtk::Button * delete_button;
+	Gtk::Button * favorite_button;
+	Gtk::Button * unfavorite_button;
 
 	Glib::RefPtr<Gtk::TreeSelection> current_selection;
 	Glib::RefPtr<Gtk::ListStore> workspace_model;
@@ -55,6 +57,10 @@ private:
 	void on_selection_changed();
 	void on_delete_clicked();
 	void on_rename_clicked();
+	void on_favorite_clicked();
+	void on_unfavorite_clicked();
+
+	std::vector<std::string> get_selected_names() const;
 
 	void rebuild_list();
 };
