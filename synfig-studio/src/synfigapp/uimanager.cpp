@@ -53,10 +53,10 @@ using namespace synfigapp;
 
 UIInterface::Response
 ConsoleUIInterface::confirmation(
-			const std::string &message,
-			const std::string &details,
-			const std::string &confirm,
-			const std::string &cancel,
+			const std::string& message,
+			const std::string& details,
+			const std::string& confirm,
+			const std::string& cancel,
 			Response dflt
 )
 {
@@ -86,12 +86,12 @@ ConsoleUIInterface::confirmation(
 
 UIInterface::Response
 ConsoleUIInterface::yes_no_cancel(
-			const std::string &message,
-			const std::string &details,
-			const std::string &/*button1*/,
-			const std::string &/*button2*/,
-			const std::string &/*button3*/,
-			bool hasDestructiveAction,
+			const std::string& message,
+			const std::string& details,
+			const std::string& /*button1*/,
+			const std::string& /*button2*/,
+			const std::string& /*button3*/,
+			Response /*destructive_response*/,
 			Response dflt
 )
 {
@@ -121,7 +121,7 @@ ConsoleUIInterface::yes_no_cancel(
 
 
 bool
-ConsoleUIInterface::task(const std::string &task)
+ConsoleUIInterface::task(const std::string& task)
 {
 	std::cout<<task.c_str()<<std::endl;
 	return true;
@@ -129,7 +129,7 @@ ConsoleUIInterface::task(const std::string &task)
 
 
 bool
-ConsoleUIInterface::error(const std::string &task)
+ConsoleUIInterface::error(const std::string& task)
 {
 	std::cout<<_("error: ")<<task.c_str()<<std::endl;
 	return true;
@@ -137,7 +137,7 @@ ConsoleUIInterface::error(const std::string &task)
 
 
 bool
-ConsoleUIInterface::warning(const std::string &task)
+ConsoleUIInterface::warning(const std::string& task)
 {
 	std::cout<<_("warning: ")<<task.c_str()<<std::endl;
 	return true;
