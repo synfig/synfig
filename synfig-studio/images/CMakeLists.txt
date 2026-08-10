@@ -42,6 +42,9 @@ set(IMG_SOURCE_keyframe_lock_future_off_icon keyframe_lock_icons 3)
 set(IMG_SOURCE_tangent_merge_icon tangent_merge_split_icons 0)
 set(IMG_SOURCE_tangent_split_icon tangent_merge_split_icons 1)
 
+set(IMG_SOURCE_layer_lock_on_icon layer_lock_icons 0)
+set(IMG_SOURCE_layer_lock_off_icon layer_lock_icons 1)
+
 set(IMG_SOURCE_utils_chain_link_on_icon utils_chain_link_icons 0)
 set(IMG_SOURCE_utils_chain_link_off_icon utils_chain_link_icons 1)
 
@@ -178,6 +181,10 @@ set(ICONS
 	layer_transform_scale_icon
 	layer_transform_translate_icon
 	layer_transform_zoom_icon
+
+	layer_lock_on_icon
+	layer_lock_off_icon
+
 	library_icon
 	meta_data_icon
 	navigator_icon

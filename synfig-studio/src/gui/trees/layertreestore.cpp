@@ -96,6 +96,7 @@ LayerTreeStore::LayerTreeStore(etl::loose_handle<synfigapp::CanvasInterface> can
 	// Connect Signals to Terminals
 	canvas_interface()->signal_layer_status_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_status_changed));
 	canvas_interface()->signal_layer_exclude_from_rendering_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_exclude_from_rendering_changed));
+	canvas_interface()->signal_layer_hit_locked_changed().connect(sigc::mem_fun(*this, &studio::LayerTreeStore::on_layer_hit_locked_changed));
 	canvas_interface()->signal_layer_z_range_changed().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_z_range_changed));
 	canvas_interface()->signal_layer_lowered().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_lowered));
 	canvas_interface()->signal_layer_raised().connect(sigc::mem_fun(*this,&studio::LayerTreeStore::on_layer_raised));
@@ -223,6 +224,11 @@ LayerTreeStore::get_value_vfunc(const Gtk::TreeModel::iterator& iter, int column
 			if (column == model.exclude_from_rendering.index())
 			{
 				set_gvalue_tpl<bool>(value, layer->get_exclude_from_rendering());
+			}
+			else
+			if (column == model.hit_locked.index())
+			{
+				set_gvalue_tpl<bool>(value, layer->is_hit_locked());
 			}
 			else
 			if (column == model.style.index())
@@ -409,6 +415,28 @@ LayerTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int column,
 				action->set_param("canvas_interface",canvas_interface());
 				action->set_param("layer",layer);
 				action->set_param("new_state",bool(x.get()));
+
+				canvas_interface()->get_instance()->perform_action(action);
+				return;
+			}
+			else
+			if (column == model.hit_locked.index())
+			{
+				if (!layer)
+					return;
+
+				Glib::Value<bool> x;
+				x.init(model.hit_locked.type());
+				g_value_copy(value.gobj(), x.gobj());
+
+				synfigapp::Action::Handle action(synfigapp::Action::create(x.get() ? "LayerSetHitLockedOn" : "LayerSetHitLockedOff"));
+				if (!action)
+					return;
+
+				action->set_param("canvas", canvas_interface()->get_canvas());
+				action->set_param("canvas_interface",canvas_interface());
+				action->set_param("layer", layer);
+				action->set_param("new_state", x.get());
 
 				canvas_interface()->get_instance()->perform_action(action);
 				return;
@@ -1050,6 +1078,18 @@ LayerTreeStore::on_layer_exclude_from_rendering_changed(synfig::Layer::Handle ha
 	else
 	{
 		synfig::warning("Couldn't find layer to be excluded/included from/to rendering in layer list. Rebuilding index...");
+		rebuild();
+	}
+}
+
+void
+LayerTreeStore::on_layer_hit_locked_changed(synfig::Layer::Handle handle, bool /*x*/)
+{
+	Gtk::TreeModel::Children::iterator iter;
+	if (find_layer_row(handle, iter)) {
+		(*iter)[model.hit_locked] = handle->is_hit_locked();
+	} else {
+		synfig::warning("Couldn't find layer to be selectable or not. Rebuilding index...");
 		rebuild();
 	}
 }
