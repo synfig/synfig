@@ -75,6 +75,25 @@ public:
 	 * @return true, if successful
 	 */
 	bool run_task(const rendering::TaskDistort& task) const;
+
+	/**
+	 * Helper to compute info useful to loop the task target_rect raster surface.
+	 * @see get_loop_info()
+	 */
+	struct LoopInfo {
+		bool should_abort = false; /**< If true, it should quit run() immediatly with error flag (return false) */
+		bool may_end = false; /**< If true, it should quit run() immediatly as successful (return true) */
+
+		Point initial_p; /**< The initial value of point p (vector coordinates) */
+		Point p_dy; /**< The increase rate of point p after each line/row */
+		Point p_dx; /**< The increase rate of point p after each column */
+
+		PointInt pen_dy; /**< The increase rate of the pen in target_rect surface after each line/row */
+
+		Matrix sub_world_to_raster_transformation; /**< COmputes the conversion from vector to raster coordinates in sub_task surface */
+	};
+
+	static LoopInfo get_loop_info(const rendering::Task& task);
 };
 
 }

@@ -38,6 +38,7 @@
 #include <synfig/value.h>
 #include <synfig/gradient.h>
 #include <synfig/angle.h>
+#include <synfig/rendering/common/task/taskdistort.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -70,6 +71,8 @@ private:
 	ValueBase param_distort_inside;
 	//! Parameter: (bool)
 	ValueBase param_distort_outside;
+	//! Parameter: (bool)
+	ValueBase param_cobra;
 
 	Point distort(const Point &pos, bool reverse=false)const;
 public:
@@ -93,7 +96,41 @@ public:
 protected:
 	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
 	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
+
+public:
+	struct Internal
+	{
+		Point center;
+		Real radius;
+		Angle rotations;
+		bool distort_inside;
+		bool distort_outside;
+
+		Point transform(const Point& point) const;
+		Point transform(const Point& point, bool reverse) const;
+	};
 }; // END of class Twirl
+
+class TaskTwirl
+	: public rendering::TaskDistort
+{
+public:
+	typedef etl::handle<TaskTwirl> Handle;
+	static Token token;
+	Token::Handle get_token() const override;
+
+	Twirl::Internal internal;
+
+	// virtual bool get_mode_allow_source_as_target() const {
+	// 	if (const Mode *mode = dynamic_cast<const Mode*>(this))
+	// 		return mode->get_mode_allow_source_as_target();
+	// 	return false;
+	// }
+
+	Rect compute_required_source_rect(const Rect& source_rect, const Matrix& raster_to_world_transformation) const override;
+
+	Rect calc_bounds() const override;
+};
 
 }; // END of namespace lyr_std
 }; // END of namespace modules
