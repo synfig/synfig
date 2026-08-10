@@ -443,6 +443,10 @@ LayerParamTreeStore::rebuild()
 				break;
 			}
 		}
+
+		// Expand transformation row
+		if (iter->get_local_name() == "Transformation" && iter->get_row_expanded())
+			layer_tree->param_tree_view().expand_row(Gtk::TreePath(row), false);
 	}
 }
 
