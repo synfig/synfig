@@ -138,7 +138,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateSmoothMove::StateSmoothMove():
-	Smach::state<StateSmoothMove_Context>("smooth_move", N_("Smooth Move Tool"))
+	Smach::state<StateSmoothMove_Context>("smooth_move", N_("Smooth Move"))
 {
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateSmoothMove_Context::event_refresh_tool_options));
 	insert(event_def(EVENT_STOP,&StateSmoothMove_Context::event_stop_handler));
