@@ -60,13 +60,23 @@ ValueNode_Logarithm::ValueNode_Logarithm(const ValueBase &x):
 	LinkableValueNode(x.get_type())
 {
 	init_children_vocab();
-	Real value(x.get(Real()));
+
+	Real value;
+	if (get_type() == type_angle)
+		value = Angle::rad(x.get(Angle())).get();
+	else
+		value = x.get(Real());
+
 	Real infinity(999999.0);
 	Real epsilon(0.000001);
 
 	value = exp(value);
 
-	set_link("link",     ValueNode_Const::create(Real(value)));
+	if (get_type() == type_angle)
+		set_link("link", ValueNode_Const::create(Angle::rad(value)));
+	else
+		set_link("link", ValueNode_Const::create(Real(value)));
+
 	set_link("epsilon",  ValueNode_Const::create(Real(epsilon)));
 	set_link("infinite", ValueNode_Const::create(Real(infinity)));
 }
@@ -95,7 +105,7 @@ ValueNode_Logarithm::set_link_vfunc(int i,ValueNode::Handle value)
 
 	switch(i)
 	{
-	case 0: CHECK_TYPE_AND_SET_VALUE(link_,     type_real);
+	case 0: CHECK_TYPE_AND_SET_VALUE(link_,     get_type());
 	case 1: CHECK_TYPE_AND_SET_VALUE(epsilon_,  type_real);
 	case 2: CHECK_TYPE_AND_SET_VALUE(infinite_, type_real);
 	}
@@ -120,17 +130,32 @@ ValueNode_Logarithm::operator()(Time t)const
 	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
 		"%s:%d operator()\n", __FILE__, __LINE__);
 
-	Real link     = (*link_)    (t).get(Real());
-	Real epsilon  = (*epsilon_) (t).get(Real());
+	Real link;
+	if (get_type() == type_angle)
+		link = Angle::rad((*link_)(t).get(Angle())).get();
+	else
+		link = (*link_)(t).get(Real());
+
+	Real epsilon 	= (*epsilon_) (t).get(Real());
 	Real infinite = (*infinite_)(t).get(Real());
 
 	if (epsilon < 0.00000001)
 		epsilon = 0.00000001;
 
 	if (link < epsilon)
+	{
+		if (get_type() == type_angle)
+			return Angle::rad(-infinite);
+		else
 			return -infinite;
+	}
 	else
-		return log(link);
+	{
+		if (get_type() == type_angle)
+			return Angle::rad(log(link));
+		else
+			return log(link);
+	}
 }
 
 
@@ -138,7 +163,7 @@ ValueNode_Logarithm::operator()(Time t)const
 bool
 ValueNode_Logarithm::check_type(Type &type)
 {
-	return type==type_real;
+	return type==type_real || type==type_angle;
 }
 
 LinkableValueNode::Vocab
