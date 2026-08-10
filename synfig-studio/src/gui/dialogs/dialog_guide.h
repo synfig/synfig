@@ -33,9 +33,12 @@
 
 #include <gtkmm/dialog.h>
 #include <gtkmm/spinbutton.h>
+#include <gui/widgets/widget_distance.h>
 #include <gtkmm/comboboxtext.h>
 
+#include <synfig/distance.h>
 #include <synfigapp/value_desc.h>
+#include <synfig/real.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -59,12 +62,21 @@ class Dialog_Guide : public Gtk::Dialog
 	WorkArea* current_work_area;
 
 	Gtk::SpinButton* angle_widget;
+
+	synfig::Distance::System prev_system;
+	synfig::Distance::System curr_system;
+	Widget_Distance* x_widget;
+	Widget_Distance* y_widget;
 	Glib::RefPtr<Gtk::Adjustment> angle_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> x_adjustment;
+	Glib::RefPtr<Gtk::Adjustment> y_adjustment;
 
 	Gtk::ComboBoxText angle_type_picker;
+	Gtk::ComboBoxText distance_system_picker;
 
 	void on_ok_or_apply_pressed(bool ok);
 	void set_angle_type();
+	void set_distance_system();
 	void init_widget_values();
 
 	GuideList::iterator curr_guide;
