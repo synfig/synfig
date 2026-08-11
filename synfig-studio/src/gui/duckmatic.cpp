@@ -1278,7 +1278,7 @@ Duckmatic::get_ffd_overlay_config(
 	bool is_ffd = false;
 	if (value_desc.parent_is_layer()) {
 		Layer::Handle layer = value_desc.get_layer();
-		if (layer && layer->get_name() == "free_form_deform" && value_desc.get_param_name() == "grid_points") {
+		if (layer && layer->get_name() == "free_form_deform" && value_desc.get_param_name() == "control_points") {
 			is_ffd = true;
 			ffd_mode = layer->get_param("mesh_mode").get(int());
 			cols = layer->get_param("grid_size_x").get(int());

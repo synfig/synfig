@@ -10,7 +10,7 @@ class Layer_FreeFormDeform : public Layer_MeshTransform
 	SYNFIG_LAYER_MODULE_EXT
 private:
 	//! Parameter : (list of Points) The control lattice
-	ValueBase param_grid_points;
+	ValueBase param_control_points;
 
 	//! Parameter : (Integer) e.g., 3 for a 3x3 grid
 	ValueBase param_grid_size_x;
@@ -97,7 +97,7 @@ public:
 	virtual void on_canvas_set();
 
 	void prepare_mesh(); // The core math engine
-	void regenerate_grid_points(); // Rebuild uniform grid when size changes
+	void regenerate_control_points(); // Rebuild uniform grid when size changes
 	std::vector<Point> get_interpolated_grid(int new_cols, int new_rows) const;
 	synfig::Rect get_context_bounds() const;
 	std::vector<synfig::Point> compute_grid_for_bounds(const synfig::Rect& bounds, int cols, int rows) const;

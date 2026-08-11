@@ -51,15 +51,15 @@ Layer_FreeFormDeform::Layer_FreeFormDeform():
 	param_auto_mesh_dpi(300),
 	needs_reset_(true)
 {
-	std::vector<ValueBase> grid_points;
+	std::vector<ValueBase> control_points;
 	const int rows = param_grid_size_y.get(int());
 	const int cols = param_grid_size_x.get(int());
 	for (int y = 0; y < rows; ++y) {
 		for (int x = 0; x < cols; ++x) {
-			grid_points.push_back(ValueBase(Point(-2.0 + x * 2.0, 2.0 - y * 2.0)));
+			control_points.push_back(ValueBase(Point(-2.0 + x * 2.0, 2.0 - y * 2.0)));
 		}
 	}
-	param_grid_points.set_list_of(grid_points);
+	param_control_points.set_list_of(control_points);
 	
 	std::vector<ValueBase> empty_points;
 	param_source_points.set_list_of(empty_points);
@@ -88,18 +88,18 @@ Layer_FreeFormDeform::get_local_name()const
 bool
 Layer_FreeFormDeform::set_param(const String & param, const ValueBase &value)
 {
-	IMPORT_VALUE_PLUS(param_grid_points, {
+	IMPORT_VALUE_PLUS(param_control_points, {
 		needs_reset_ = false;
 		prepare_mesh();
 	});
 	IMPORT_VALUE_PLUS(param_grid_size_x, { 
 		int expected = param_grid_size_x.get(int()) * param_grid_size_y.get(int());
-		if ((int)param_grid_points.get_list().size() < expected) regenerate_grid_points();
+		if ((int)param_control_points.get_list().size() < expected) regenerate_control_points();
 		prepare_mesh(); 
 	});
 	IMPORT_VALUE_PLUS(param_grid_size_y, { 
 		int expected = param_grid_size_x.get(int()) * param_grid_size_y.get(int());
-		if ((int)param_grid_points.get_list().size() < expected) regenerate_grid_points();
+		if ((int)param_control_points.get_list().size() < expected) regenerate_control_points();
 		prepare_mesh(); 
 	});
 	IMPORT_VALUE_PLUS(param_smoothness, prepare_mesh());
@@ -119,7 +119,7 @@ Layer_FreeFormDeform::set_param(const String & param, const ValueBase &value)
 ValueBase
 Layer_FreeFormDeform::get_param(const String& param)const
 {
-	EXPORT_VALUE(param_grid_points);
+	EXPORT_VALUE(param_control_points);
 	EXPORT_VALUE(param_grid_size_x);
 	EXPORT_VALUE(param_grid_size_y);
 	EXPORT_VALUE(param_smoothness);
@@ -145,8 +145,8 @@ Layer_FreeFormDeform::get_param_vocab()const
 {
 	Layer::Vocab ret(Layer_MeshTransform::get_param_vocab());
 
-	ret.push_back(ParamDesc("grid_points")
-		.set_local_name(_("Grid Points"))
+	ret.push_back(ParamDesc("control_points")
+		.set_local_name(_("Control Points"))
 		.set_description(_("List of grid control points"))
 	);
 
@@ -693,11 +693,11 @@ Layer_FreeFormDeform::on_canvas_set()
 			int cols = param_grid_size_x.get(int());
 			int rows = param_grid_size_y.get(int());
 			
-			std::vector<Point> grid_points = compute_grid_for_bounds(bounds, cols, rows);
-			std::vector<ValueBase> grid_points_vb;
-			for (const auto& p : grid_points) grid_points_vb.push_back(ValueBase(p));
+			std::vector<Point> control_points = compute_grid_for_bounds(bounds, cols, rows);
+			std::vector<ValueBase> control_points_vb;
+			for (const auto& p : control_points) control_points_vb.push_back(ValueBase(p));
 
-			param_grid_points.set_list_of(grid_points_vb);
+			param_control_points.set_list_of(control_points_vb);
 			param_source_tl.set(Point(bounds.minx, bounds.maxy));
 			param_source_br.set(Point(bounds.maxx, bounds.miny));
 			prepare_mesh();
@@ -756,7 +756,7 @@ Layer_FreeFormDeform::get_context_bounds() const
 std::vector<synfig::Point>
 Layer_FreeFormDeform::compute_grid_for_bounds(const synfig::Rect& bounds, int cols, int rows) const
 {
-	std::vector<synfig::Point> grid_points;
+	std::vector<synfig::Point> control_points;
 	Real minx = bounds.minx;
 	Real maxx = bounds.maxx;
 	Real miny = bounds.miny;
@@ -766,21 +766,21 @@ Layer_FreeFormDeform::compute_grid_for_bounds(const synfig::Rect& bounds, int co
 		for (int x = 0; x < cols; ++x) {
 			Real px = minx + x * (maxx - minx) / (cols - 1);
 			Real py = maxy - y * (maxy - miny) / (rows - 1);
-			grid_points.push_back(Point(px, py));
+			control_points.push_back(Point(px, py));
 		}
 	}
-	return grid_points;
+	return control_points;
 }
 
 /* ---- Grid regeneration ---- */
 
-void Layer_FreeFormDeform::regenerate_grid_points()
+void Layer_FreeFormDeform::regenerate_control_points()
 {
 	int cols = param_grid_size_x.get(int());
 	int rows = param_grid_size_y.get(int());
 	if (cols < 2 || rows < 2) return;
 
-	std::vector<ValueBase> grid_points;
+	std::vector<ValueBase> control_points;
 	Point tl = param_source_tl.get(Point());
 	Point br = param_source_br.get(Point());
 	Angle angle = param_source_angle.get(Angle());
@@ -798,10 +798,10 @@ void Layer_FreeFormDeform::regenerate_grid_points()
 			Real rx = center[0] + dx * angle_cos - dy * angle_sin;
 			Real ry = center[1] + dx * angle_sin + dy * angle_cos;
 			
-			grid_points.push_back(ValueBase(Point(rx, ry)));
+			control_points.push_back(ValueBase(Point(rx, ry)));
 		}
 	}
-	param_grid_points.set_list_of(grid_points);
+	param_control_points.set_list_of(control_points);
 }
 
 std::vector<Point> Layer_FreeFormDeform::get_interpolated_grid(int new_cols, int new_rows) const
@@ -814,7 +814,7 @@ std::vector<Point> Layer_FreeFormDeform::get_interpolated_grid(int new_cols, int
 	if (smoothness > 1.0) smoothness = 1.0;
 
 	std::vector<Point> ctrl_points;
-	const ValueBase::List &points_list = param_grid_points.get_list();
+	const ValueBase::List &points_list = param_control_points.get_list();
 	for(ValueBase::List::const_iterator i = points_list.begin(); i != points_list.end(); ++i) {
 		if (i->can_get(Point())) ctrl_points.push_back(i->get(Point()));
 	}
@@ -913,7 +913,7 @@ void Layer_FreeFormDeform::prepare_mesh()
 	if (mode == 1) {
 		// --- CUSTOM MESH MODE ---
 		std::vector<Point> deformed_pts;
-		const ValueBase::List &grid_list = param_grid_points.get_list();
+		const ValueBase::List &grid_list = param_control_points.get_list();
 		for(auto i = grid_list.begin(); i != grid_list.end(); ++i) {
 			if (i->can_get(Point())) deformed_pts.push_back(i->get(Point()));
 		}
@@ -1096,7 +1096,7 @@ void Layer_FreeFormDeform::prepare_mesh()
 	if (cols < 2 || rows < 2) return;
 
 	std::vector<Point> ctrl_points;
-	const ValueBase::List &points_list = param_grid_points.get_list();
+	const ValueBase::List &points_list = param_control_points.get_list();
 	for(ValueBase::List::const_iterator i = points_list.begin(); i != points_list.end(); ++i) {
 		if (i->can_get(Point())) {
 			ctrl_points.push_back(i->get(Point()));

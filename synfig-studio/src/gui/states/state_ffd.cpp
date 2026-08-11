@@ -1123,18 +1123,18 @@ StateFFD_Context::on_grid_x_changed()
 
 	std::vector<synfig::Point> new_points = ffd_typed->get_interpolated_grid(new_cols, old_rows);
 
-	std::vector<synfig::ValueBase> grid_points;
+	std::vector<synfig::ValueBase> control_points;
 	for (auto& p : new_points) {
-		grid_points.push_back(p);
+		control_points.push_back(p);
 	}
-	synfig::ValueBase new_grid_points_value(grid_points);
+	synfig::ValueBase new_control_points_value(control_points);
 
-	synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(new_grid_points_value, get_canvas());
+	synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(new_control_points_value, get_canvas());
 
 	synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
 	action_connect->set_param("canvas", get_canvas());
 	action_connect->set_param("canvas_interface", get_canvas_interface());
-	action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "grid_points"));
+	action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "control_points"));
 	action_connect->set_param("src", dyn_list);
 
 	if(!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
@@ -1178,18 +1178,18 @@ StateFFD_Context::on_grid_y_changed()
 
 	std::vector<synfig::Point> new_points = ffd_typed->get_interpolated_grid(old_cols, new_rows);
 
-	std::vector<synfig::ValueBase> grid_points;
+	std::vector<synfig::ValueBase> control_points;
 	for (auto& p : new_points) {
-		grid_points.push_back(p);
+		control_points.push_back(p);
 	}
-	synfig::ValueBase new_grid_points_value(grid_points);
+	synfig::ValueBase new_control_points_value(control_points);
 
-	synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(new_grid_points_value, get_canvas());
+	synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(new_control_points_value, get_canvas());
 
 	synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
 	action_connect->set_param("canvas", get_canvas());
 	action_connect->set_param("canvas_interface", get_canvas_interface());
-	action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "grid_points"));
+	action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "control_points"));
 	action_connect->set_param("src", dyn_list);
 
 	if(!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
@@ -2098,14 +2098,14 @@ StateFFD_Context::on_reset_pressed()
 	int mesh_mode = ffd_typed->get_param("mesh_mode").get(int());
 	
 	if (mesh_mode == 1) {
-		// Custom Mesh: Reset grid_points to source_points
+		// Custom Mesh: Reset control_points to source_points
 		synfig::ValueBase source_points_vb = ffd_typed->get_param("source_points");
 		
 		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(source_points_vb, get_canvas());
 		synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
 		action_connect->set_param("canvas", get_canvas());
 		action_connect->set_param("canvas_interface", get_canvas_interface());
-		action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "grid_points"));
+		action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "control_points"));
 		action_connect->set_param("src", dyn_list);
 		if (!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
 			group.cancel();
@@ -2113,14 +2113,14 @@ StateFFD_Context::on_reset_pressed()
 		}
 	} else {
 		// Grid Mode
-		ffd_typed->regenerate_grid_points();
-		synfig::ValueBase grid_points_vb = ffd_typed->get_param("grid_points");
+		ffd_typed->regenerate_control_points();
+		synfig::ValueBase control_points_vb = ffd_typed->get_param("control_points");
 
-		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(grid_points_vb, get_canvas());
+		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(control_points_vb, get_canvas());
 		synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
 		action_connect->set_param("canvas", get_canvas());
 		action_connect->set_param("canvas_interface", get_canvas_interface());
-		action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "grid_points"));
+		action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "control_points"));
 		action_connect->set_param("src", dyn_list);
 		if (!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
 			group.cancel();
@@ -2347,7 +2347,7 @@ StateFFD_Context::on_make_ffd_pressed()
 		}
 
 		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(pts_vb), get_canvas());
-		layer->connect_dynamic_param("grid_points", dyn_list);
+		layer->connect_dynamic_param("control_points", dyn_list);
 		layer->set_param("source_points", synfig::ValueBase(pts_vb));
 		layer->set_param("triangles", synfig::ValueBase(tris_vb));
 	} else {
@@ -2365,13 +2365,13 @@ StateFFD_Context::on_make_ffd_pressed()
 		}
 
 		etl::handle<Layer_FreeFormDeform> ffd_typed = etl::handle<Layer_FreeFormDeform>::cast_dynamic(layer);
-		if (ffd_typed) ffd_typed->regenerate_grid_points();
+		if (ffd_typed) ffd_typed->regenerate_control_points();
 
-		synfig::ValueBase grid_points_vb = layer->get_param("grid_points");
-		layer->set_param("grid_points", grid_points_vb);
+		synfig::ValueBase control_points_vb = layer->get_param("control_points");
+		layer->set_param("control_points", control_points_vb);
 		
-		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(grid_points_vb, get_canvas());
-		layer->connect_dynamic_param("grid_points", dyn_list);
+		synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(control_points_vb, get_canvas());
+		layer->connect_dynamic_param("control_points", dyn_list);
 	}
 
 	auto canvas_interface = get_canvas_interface();
@@ -2469,14 +2469,14 @@ StateFFD_Context::on_update_ffd_pressed()
 			if (ffd_typed) {
 				synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(), _("Update FFD Grid Size"));
 				std::vector<synfig::Point> new_points = ffd_typed->get_interpolated_grid(new_cols, new_rows);
-				std::vector<synfig::ValueBase> grid_points;
-				for (auto& p : new_points) grid_points.push_back(p);
+				std::vector<synfig::ValueBase> control_points;
+				for (auto& p : new_points) control_points.push_back(p);
 				
-				synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(grid_points), get_canvas());
+				synfig::ValueNode::Handle dyn_list = synfig::ValueNode_DynamicList::create(synfig::ValueBase(control_points), get_canvas());
 				synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
 				action_connect->set_param("canvas", get_canvas());
 				action_connect->set_param("canvas_interface", get_canvas_interface());
-				action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "grid_points"));
+				action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "control_points"));
 				action_connect->set_param("src", dyn_list);
 				if(action_connect->is_ready()) get_canvas_interface()->get_instance()->perform_action(action_connect);
 
@@ -2534,7 +2534,7 @@ StateFFD_Context::on_update_ffd_pressed()
 	synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
 	action_connect->set_param("canvas", get_canvas());
 	action_connect->set_param("canvas_interface", get_canvas_interface());
-	action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "grid_points"));
+	action_connect->set_param("dest", synfigapp::ValueDesc(ffd, "control_points"));
 	action_connect->set_param("src", dyn_list);
 
 	if(!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
@@ -2624,7 +2624,7 @@ StateFFD_Context::on_regenerate_pressed()
 	synfigapp::Action::Handle action_connect = synfigapp::Action::create("ValueDescConnect");
 	action_connect->set_param("canvas", ffd->get_canvas());
 	action_connect->set_param("canvas_interface", get_canvas_interface());
-	action_connect->set_param("dest", synfigapp::ValueDesc(ffd_layer, "grid_points"));
+	action_connect->set_param("dest", synfigapp::ValueDesc(ffd_layer, "control_points"));
 	action_connect->set_param("src", dyn_list);
 	if (!action_connect->is_ready() || !get_canvas_interface()->get_instance()->perform_action(action_connect)) {
 		group.cancel();
