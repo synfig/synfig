@@ -464,6 +464,8 @@ StateFFD_Context::update_creation_controls_visibility()
 			create_grid_x_spin.show();
 			create_grid_y_label.show();
 			create_grid_y_spin.show();
+			smoothness_label.show();
+			smoothness_hscl.show();
 			mesh_margin_label.show();
 			mesh_margin_hscl.show();
 			mesh_edge_length_label.hide();
@@ -473,6 +475,8 @@ StateFFD_Context::update_creation_controls_visibility()
 			create_grid_x_spin.hide();
 			create_grid_y_label.hide();
 			create_grid_y_spin.hide();
+			smoothness_label.hide();
+			smoothness_hscl.hide();
 			mesh_margin_label.show();
 			mesh_margin_hscl.show();
 			mesh_edge_length_label.show();
@@ -988,8 +992,8 @@ StateFFD_Context::update_controls_from_layer()
 				create_grid_x_spin.show();
 				create_grid_y_label.show();
 				create_grid_y_spin.show();
-				smoothness_label.hide();
-				smoothness_hscl.hide();
+				smoothness_label.show();
+				smoothness_hscl.show();
 				mesh_margin_label.hide();
 				mesh_margin_hscl.hide();
 				clear_button.hide();
@@ -1000,8 +1004,8 @@ StateFFD_Context::update_controls_from_layer()
 				create_grid_x_spin.hide();
 				create_grid_y_label.hide();
 				create_grid_y_spin.hide();
-				smoothness_label.show();
-				smoothness_hscl.show();
+				smoothness_label.hide();
+				smoothness_hscl.hide();
 				mesh_margin_label.show();
 				mesh_margin_hscl.show();
 				mesh_edge_length_label.show();
@@ -1016,8 +1020,8 @@ StateFFD_Context::update_controls_from_layer()
 				grid_x_spin.hide();
 				grid_y_label.hide();
 				grid_y_spin.hide();
-				smoothness_label.hide();
-				smoothness_hscl.hide();
+				smoothness_label.show();
+				smoothness_hscl.show();
 				mesh_margin_label.hide();
 				mesh_margin_hscl.hide();
 				regenerate_button.hide();
@@ -1222,9 +1226,6 @@ StateFFD_Context::on_smoothness_changed()
 	get_canvas_interface()->signal_layer_param_changed()(ffd, "smoothness");
 	get_work_area()->queue_render();
 }
-
-// on_cull_threshold_changed removed — CIP filter replaces cull threshold
-
 Smach::event_result
 StateFFD_Context::event_refresh_tool_options(const Smach::event& /*x*/)
 {
@@ -2284,6 +2285,7 @@ StateFFD_Context::on_make_ffd_pressed()
 
 	int mode = mesh_mode_enum.get_value();
 	layer->set_param("mesh_mode", synfig::ValueBase(mode));
+	layer->set_param("smoothness", synfig::ValueBase((synfig::Real)smoothness_hscl.get_value()));
 	layer->set_param("cull_threshold", synfig::ValueBase(0.0));
 	layer->set_param("auto_mesh_margin", synfig::ValueBase((synfig::Real)mesh_margin_hscl.get_value()));
 	layer->set_param("auto_mesh_edge_length", synfig::ValueBase(mesh_edge_length_hscl.get_value()));
@@ -2390,6 +2392,15 @@ StateFFD_Context::on_edit_mesh_pressed()
 	synfig::Layer::Handle ffd = get_selected_ffd_layer();
 	if (!ffd) return;
 
+	Gtk::MessageDialog dialog(
+		*App::main_window,
+		_("Editing the mesh structure will reset all existing FFD deformation. Continue?"),
+		false, Gtk::MESSAGE_WARNING, Gtk::BUTTONS_YES_NO, true);
+	dialog.set_title(_("Reset FFD Deformation"));
+	if (dialog.run() != Gtk::RESPONSE_YES)
+		return;
+
+	on_reset_pressed();
 	editing_existing_mesh_ = true;
 
 	int mesh_mode = ffd->get_param("mesh_mode").get(int());
@@ -2402,7 +2413,7 @@ StateFFD_Context::on_edit_mesh_pressed()
 
 	edit_triangles_.clear();
 
-	// Extract existing source points
+	// Structural editing starts from the source mesh after the confirmed reset.
 	polygon_point_list.clear();
 	const synfig::ValueBase& src_vb = ffd->get_param("source_points");
 	if (src_vb.get_type() == synfig::type_list) {
@@ -2433,7 +2444,7 @@ StateFFD_Context::on_edit_mesh_pressed()
 
 	update_controls_from_layer();
 	refresh_ducks();
-	get_work_area()->queue_draw();
+	get_work_area()->queue_render();
 }
 
 void
@@ -2499,7 +2510,8 @@ StateFFD_Context::on_update_ffd_pressed()
 
 	std::vector<synfig::ValueBase> pts_vb;
 	for (auto& p : polygon_point_list) {
-		// Note: We assume points are in the same local space they were extracted from.
+		// Structural editing starts from an undeformed mesh, so edited points
+		// define both its new source and destination positions.
 		pts_vb.push_back(p);
 	}
 
