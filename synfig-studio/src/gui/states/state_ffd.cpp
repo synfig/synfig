@@ -1319,16 +1319,18 @@ StateFFD_Context::event_refresh_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateFFD_Context::event_mouse_click_handler(const Smach::event& x)
 {
-	bool can_add_points = editing_existing_mesh_;
-	if (!can_add_points && mesh_mode_enum.get_value() == 1) {
+	bool can_add_points = false;
+	if (editing_existing_mesh_) {
+		synfig::Layer::Handle ffd = get_selected_ffd_layer();
+		if (ffd && ffd->get_param("mesh_mode").get(int()) == 1)
+			can_add_points = true;
+	} else if (mesh_mode_enum.get_value() == 1) {
 		synfig::Layer::Handle selected;
 		auto selection = get_canvas_interface()->get_selection_manager()->get_selected_layers();
-		if (!selection.empty()) {
+		if (!selection.empty())
 			selected = selection.front();
-		}
-		if (is_valid_group_for_ffd(selected)) {
+		if (is_valid_group_for_ffd(selected))
 			can_add_points = true;
-		}
 	}
 
 	if (!can_add_points) return Smach::RESULT_OK;
@@ -1407,16 +1409,18 @@ StateFFD_Context::event_mouse_doubleclick_handler(const Smach::event& x)
 Smach::event_result
 StateFFD_Context::event_key_press_handler(const Smach::event& x)
 {
-	bool can_add_points = editing_existing_mesh_;
-	if (!can_add_points && mesh_mode_enum.get_value() == 1) {
+	bool can_add_points = false;
+	if (editing_existing_mesh_) {
+		synfig::Layer::Handle ffd = get_selected_ffd_layer();
+		if (ffd && ffd->get_param("mesh_mode").get(int()) == 1)
+			can_add_points = true;
+	} else if (mesh_mode_enum.get_value() == 1) {
 		synfig::Layer::Handle selected;
 		auto selection = get_canvas_interface()->get_selection_manager()->get_selected_layers();
-		if (!selection.empty()) {
+		if (!selection.empty())
 			selected = selection.front();
-		}
-		if (is_valid_group_for_ffd(selected)) {
+		if (is_valid_group_for_ffd(selected))
 			can_add_points = true;
-		}
 	}
 
 	if (!can_add_points) return Smach::RESULT_OK;
