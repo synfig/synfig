@@ -50,7 +50,7 @@
 #include <gui/localization.h>
 #include <gui/workarearenderer/workarearenderer.h>
 #include <gui/workarearenderer/renderer_background.h>
-#include <gui/workarearenderer/renderer_bbox.h>
+#include <gui/workarearenderer/renderer_boundingbox.h>
 #include <gui/workarearenderer/renderer_bonedeformarea.h>
 #include <gui/workarearenderer/renderer_bonesetup.h>
 #include <gui/workarearenderer/renderer_canvas.h>
