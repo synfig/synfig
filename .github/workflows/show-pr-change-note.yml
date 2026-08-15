@@ -9,6 +9,10 @@ jobs:
     name: Show Pull Request Change Note
     runs-on: ubuntu-latest
     steps:
+      # This prevents package installation failures
+      - name: Update apt cache
+        run: sudo apt-get update
+
       - name: Use The Release Notes Manager Action
         uses: Ahmed-Khaled-dev/release-notes-manager@v1.0.1
         env:
