@@ -99,7 +99,7 @@ ValueNode_TimeOffset::operator()(Time t)const
 		return ValueBase();
 
 	Time offset = offset_ ? (*offset_)(t).get(Time()) : Time(0);
-	return (*link_)(t + offset);
+	return (*link_)(t - offset);
 }
 
 bool
