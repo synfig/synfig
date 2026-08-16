@@ -85,6 +85,7 @@ struct SharedEntry
 	sigc::connection deleted_conn;
 	std::map<synfig::Layer*, std::pair<synfig::Time, synfig::ValueNode::Handle>>
 		wrapper_cache;
+	std::map<synfig::Layer*, synfig::ValueNode::Handle> pre_share_nodes;
 };
 
 class Layer_TextGroup : public synfig::Layer_PasteCanvas

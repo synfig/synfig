@@ -600,7 +600,20 @@ Layer_TextGroup::detach_shared_param(const SharedEntry& entry)
             }
             else
             {
-                g->disconnect_dynamic_param(param);
+                // Restore the glyph's original animation from before sharing.
+                auto prior = entry.pre_share_nodes.find(g.get());
+
+                if (prior != entry.pre_share_nodes.end() &&
+                    prior->second)
+                {
+                    g->connect_dynamic_param(
+                        param,
+                        prior->second);
+                }
+                else
+                {
+                    g->disconnect_dynamic_param(param);
+                }
             }
         }
     }
