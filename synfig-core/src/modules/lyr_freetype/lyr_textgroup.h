@@ -124,7 +124,7 @@ public:
 private:
 	void sync_glyphs();
 	bool in_attach_shared_ = false;
-	void detach_shared_param(const synfig::String& param);
+	void detach_shared_param(const SharedEntry& entry);
 	size_t source_glyph_index_ = 0;
 	bool destructing_ = false;
 	mutable std::set<synfig::String> pending_dynamic_cleanup_;

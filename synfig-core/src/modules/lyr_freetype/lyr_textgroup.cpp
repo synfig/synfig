@@ -564,21 +564,49 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
 }
 
 void
-Layer_TextGroup::detach_shared_param(const String& param)
+Layer_TextGroup::detach_shared_param(const SharedEntry& entry)
 {
-	Canvas::Handle canvas = get_sub_canvas();
-	if (canvas)
-	{
-		for (auto iter = canvas->begin(); iter != canvas->end(); ++iter)
-		{
-			Layer_GlyphShape::Handle g =
-				Layer_GlyphShape::Handle::cast_dynamic(*iter);
-			if (g)
-				g->disconnect_dynamic_param(param);
-		}
-	}
-	attach_shared_entries();
-	changed();
+    Canvas::Handle canvas = get_sub_canvas();
+
+    if (canvas)
+    {
+        const String& param = entry.target_param;
+
+        Layer_GlyphShape::Handle source = find_source_glyph();
+
+        for (auto iter = canvas->begin();
+             iter != canvas->end();
+             ++iter)
+        {
+            Layer_GlyphShape::Handle g =
+                Layer_GlyphShape::Handle::cast_dynamic(*iter);
+
+            if (!g)
+                continue;
+
+            if (g == source)
+            {
+                // Restore the original unwrapped source node.
+                if (entry.node)
+                {
+                    g->connect_dynamic_param(
+                        param,
+                        ValueNode::Handle(entry.node.get()));
+                }
+                else
+                {
+                    g->disconnect_dynamic_param(param);
+                }
+            }
+            else
+            {
+                g->disconnect_dynamic_param(param);
+            }
+        }
+    }
+
+    attach_shared_entries();
+    changed();
 }
 
 Layer_GlyphShape::Handle
@@ -678,36 +706,57 @@ Layer_TextGroup::attach_shared_entries()
 
 		for (auto& entry : shared_entries_)
 		{
-			if (!entry.valid || !entry.node)
-				continue;
-			std::map<Layer*, std::pair<Time, ValueNode::Handle>> next_cache;
-			int i = 0;
-			for (auto iter = canvas->begin(); iter != canvas->end(); ++iter)
-			{
-				auto g = Layer_GlyphShape::Handle::cast_dynamic(*iter);
-				if (!g)
-					continue;
-				Time off(ordinal_for_entry(entry, i, count) *
-						 (double)entry.delay);
-				auto cached = entry.wrapper_cache.find(g.get());
-				ValueNode::Handle wrapper;
-				if (cached != entry.wrapper_cache.end() &&
-					cached->second.first == off)
-				{
-					wrapper = cached->second.second;
-				}
-				else
-				{
-					wrapper = ValueNode::Handle(
-						ValueNode_TimeOffset::create_with_offset(
-							entry.node.get(), off));
-					g->connect_dynamic_param(entry.target_param, wrapper);
-					touched.insert(g.get());
-				}
-				next_cache[g.get()] = {off, wrapper};
-				++i;
-			}
-			entry.wrapper_cache = std::move(next_cache);
+    		if (!entry.valid || !entry.node)
+        		continue;
+
+    		std::map<Layer*, std::pair<Time, ValueNode::Handle>> next_cache;
+
+    		int i = 0;
+    		for (auto iter = canvas->begin(); iter != canvas->end(); ++iter)
+    		{
+        		auto g = Layer_GlyphShape::Handle::cast_dynamic(*iter);
+        		if (!g)
+            		continue;
+
+        		Time off(ordinal_for_entry(entry, i, count) *
+                 	(double)entry.delay);
+
+        		auto cached = entry.wrapper_cache.find(g.get());
+
+        		ValueNode::Handle wrapper;
+
+        		if (cached != entry.wrapper_cache.end() &&
+            		cached->second.first == off)
+        		{
+            		wrapper = cached->second.second;
+        		}
+        		else
+        		{
+            		// Preserve the glyph's original animation before replacing it
+            		// with the shared wrapper.
+            		auto& dpl = g->dynamic_param_list();
+            		auto existing = dpl.find(entry.target_param);
+
+            		if (existing != dpl.end() &&
+                		existing->second &&
+                		!entry.pre_share_nodes.count(g.get()))
+            		{
+               			entry.pre_share_nodes[g.get()] = existing->second;
+            		}
+
+            		wrapper = ValueNode::Handle(
+                		ValueNode_TimeOffset::create_with_offset(
+                    		entry.node.get(), off));
+
+            		g->connect_dynamic_param(entry.target_param, wrapper);
+            		touched.insert(g.get());
+        		}
+
+        		next_cache[g.get()] = {off, wrapper};
+        		++i;
+    		}
+
+    		entry.wrapper_cache = std::move(next_cache);
 		}
 
 		if (!touched.empty())
@@ -870,9 +919,9 @@ Layer_TextGroup::unshare_param(const String& param)
 	// detach_shared_param() ends with its own attach_shared_entries() call,
 	// which would immediately re-wire this param if it were still present
 	// in shared_entries_ at that point.
+	SharedEntry entry = *it;
 	shared_entries_.erase(it);
-	detach_shared_param(param);
-	push_shared_animations_param();
+	detach_shared_param(entry);
 	return true;
 }
 
@@ -971,15 +1020,18 @@ Layer_TextGroup::rebuild_shared_entries_from_param()
 	// parsed list (row deleted or edited out) needs its actual glyph
 	// wiring severed — dropping it from shared_entries_ alone leaves
 	// every glyph still connected to the old wrapper.
-	std::vector<String> removed;
-	for (const auto& old_entry : shared_entries_)
-		if (!seen_params.count(old_entry.target_param))
-			removed.push_back(old_entry.target_param);
+	std::vector<SharedEntry> removed;
+
+	for (auto& old_entry : shared_entries_)
+	{
+    	if (!seen_params.count(old_entry.target_param))
+        	removed.push_back(std::move(old_entry));
+	}
 
 	shared_entries_ = std::move(parsed);
-	for (const auto& param : removed)
-		detach_shared_param(
-			param); // disconnects that param + re-runs attach_shared_entries()
+
+	for (auto& entry : removed)
+    	detach_shared_param(entry);// disconnects that param + re-runs attach_shared_entries()
 
 	attach_shared_entries();
 }
