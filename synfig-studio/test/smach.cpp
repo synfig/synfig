@@ -67,7 +67,7 @@ public:
 	DefaultStateContext(MachineContext *context):context(context) { printf("Entered Default State\n"); }
 	~DefaultStateContext() { printf("Left Default State\n"); }
 
-	Smach::event_result event1_handler(const Smach::event& x)
+	Smach::event_result event1_handler(const Smach::event& /*x*/)
 	{
 		printf("DEFAULT STATE: Received Event 1\n");
 		return Smach::RESULT_ACCEPT;
@@ -101,7 +101,7 @@ public:
 	State1Context(MachineContext *context):context(context) { printf("Entered State 1\n"); }
 	~State1Context() { printf("Left State 1\n"); }
 
-	Smach::event_result event1_handler(const Smach::event& x)
+	Smach::event_result event1_handler(const Smach::event& /*x*/)
 	{
 		printf("STATE1: Received Event 1\n");
 		return Smach::RESULT_OK;
@@ -167,7 +167,7 @@ public:
 } state_2;
 
 Smach::event_result
-State1Context::event3_handler(const Smach::event& x)
+State1Context::event3_handler(const Smach::event& /*x*/)
 {
 	printf("STATE1: Received Event 3, throwing state to change to...\n");
 
