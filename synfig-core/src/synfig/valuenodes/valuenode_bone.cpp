@@ -950,7 +950,7 @@ void
 ValueNode_Bone::ref() const noexcept
 {
 	DEBUG_LOG("SYNFIG_DEBUG_BONE_REFCOUNT",
-		"%s:%d %s   ref valuenode_bone %*s -> %2d\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), (count()*2), "", count()+1);
+		"%s:%d %s   ref valuenode_bone %*s -> %2d\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), (use_count()*2), "", use_count()+1);
 
 	LinkableValueNode::ref();
 }
@@ -959,7 +959,7 @@ void
 ValueNode_Bone::unref()const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_BONE_REFCOUNT",
-		"%s:%d %s unref valuenode_bone %*s%2d <-\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), ((count()-1)*2), "", count()-1);
+		"%s:%d %s unref valuenode_bone %*s%2d <-\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), ((use_count()-1)*2), "", use_count()-1);
 
 	LinkableValueNode::unref();
 }
@@ -1072,7 +1072,7 @@ void
 ValueNode_Bone_Root::ref() const noexcept
 {
 	DEBUG_LOG("SYNFIG_DEBUG_BONE_REFCOUNT",
-		"%s:%d %s   ref valuenode_bone_root %*s -> %2d\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), (count()*2), "", count()+1);
+		"%s:%d %s   ref valuenode_bone_root %*s -> %2d\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), (use_count()*2), "", use_count()+1);
 
 	LinkableValueNode::ref();
 }
@@ -1081,7 +1081,7 @@ void
 ValueNode_Bone_Root::unref()const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_BONE_REFCOUNT",
-		"%s:%d %s unref valuenode_bone_root %*s%2d <-\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), ((count()-1)*2), "", count()-1);
+		"%s:%d %s unref valuenode_bone_root %*s%2d <-\n", __FILE__, __LINE__, GET_GUID_CSTR(get_guid()), ((use_count()-1)*2), "", use_count()-1);
 
 	LinkableValueNode::unref();
 }

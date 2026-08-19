@@ -650,7 +650,7 @@ void
 Undoable::ref() const noexcept
 {
 	DEBUG_LOG("SYNFIG_DEBUG_ACTION_REFCOUNT",
-		"%s:%d %lx   ref undoable %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (count()*2), "", count()+1);
+		"%s:%d %lx   ref undoable %*s -> %2d\n", __FILE__, __LINE__, uintptr_t(this), (use_count()*2), "", use_count()+1);
 
 	Base::ref();
 }
@@ -659,7 +659,7 @@ void
 Undoable::unref()const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_ACTION_REFCOUNT",
-		"%s:%d %lx unref undoable %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((count()-1)*2), "", count()-1);
+		"%s:%d %lx unref undoable %*s%2d <-\n", __FILE__, __LINE__, uintptr_t(this), ((use_count()-1)*2), "", use_count()-1);
 
 	Base::unref();
 }
