@@ -232,7 +232,7 @@ filesystem::Path get_binary_path();
  * If OS::get_binary_path() fails, use this path instead.
  * Normally set to argv[0]
  */
-extern filesystem::Path fallback_binary_path;
+filesystem::Path& get_fallback_binary_path();
 
 /**
  * Returns the current working directory.
