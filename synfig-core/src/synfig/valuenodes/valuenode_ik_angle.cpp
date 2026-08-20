@@ -118,9 +118,9 @@ ValueNode_IK::operator()(Time t)const
     static const Real precision = 0.000000001;
 	Vector origin = (*link_pole_)(t).get(Vector());
 	Vector target = (*link_target_)(t).get(Vector());
-	Real L1 = (*length_bone1_)(Time(0)).get(Real());
-	Real L2 = (*length_bone2_)(Time(0)).get(Real());
-	Real L3 = (*length_bone3_)(Time(0)).get(Real());
+	Real L1 = (*length_bone1_)(Time(t)).get(Real());
+	Real L2 = (*length_bone2_)(Time(t)).get(Real());
+	Real L3 = (*length_bone3_)(Time(t)).get(Real());
 	bool flip = (*flip_)(t).get(bool());
 	int joint_mode = (*joint_bone_)(Time(0)).get(int());
 	int rig_type = (*t_bone_)(Time(0)).get(int());
