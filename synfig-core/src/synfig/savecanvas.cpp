@@ -246,7 +246,7 @@ xmlpp::Element* encode_dash_item(xmlpp::Element* root, DashItem dash_item)
 	return root;
 }
 
-xmlpp::Element* encode_anim_share(xmlpp::Element* root, AnimShare anim_share)
+xmlpp::Element* encode_anim_share(xmlpp::Element* root, const AnimShare& anim_share)
 {
     root->set_name(type_anim_share.description.name);
     encode_string (root->add_child("param") ->add_child("string"),  anim_share.get_param());

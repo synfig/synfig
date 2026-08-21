@@ -571,11 +571,11 @@ void
 Layer_TextGroup::detach_shared_param(const SharedEntry& entry)
 {
     const String& param = entry.target_param;
-    std::set<Layer*> retimed;
 
     Canvas::Handle canvas = get_sub_canvas();
     if (canvas)
     {
+        std::set<Layer*> retimed;
         Layer_GlyphShape::Handle source = find_source_glyph();
 
         for (auto iter = canvas->begin(); iter != canvas->end(); ++iter)

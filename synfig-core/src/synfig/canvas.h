@@ -391,7 +391,7 @@ public:
 
 	//! Returns true if the Canvas is in line
 	bool is_inline()const { return is_inline_; }
-	
+
 	//! Returns a handle to the RendDesc for this Canvas
 	RendDesc &rend_desc() { return desc_; }
 
