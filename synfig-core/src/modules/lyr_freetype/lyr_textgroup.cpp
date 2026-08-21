@@ -1166,6 +1166,17 @@ Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) const
 			self->disconnect_dynamic_param(p);
 		pending_dynamic_cleanup_.clear();
 	}
+	if (pending_shared_rebuild_)
+	{
+    	Layer_TextGroup* self =
+        	const_cast<Layer_TextGroup*>(this);
+
+    	self->pending_shared_rebuild_ = false;
+
+    	self->retry_pending_shared_entries();
+
+    	self->attach_shared_entries();
+	}
 
 	Time base_time = time * get_time_dilation() + get_time_offset();
 	for (auto iter = canvas->begin(); iter != canvas->end(); ++iter)
