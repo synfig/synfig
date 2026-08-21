@@ -57,13 +57,6 @@ ValueNode_AnimShareList::create(const ValueBase &value,
 
   std::vector<ValueBase> list = value.get_list();
 
-  synfig::info(">>> AnimShareList input count=%d", (int)list.size());
-
-  for (const auto &item : list) {
-    synfig::info(">>> AnimShareList item type_anim_share=%d",
-                 item.get_type() == type_anim_share);
-  }
-
   ValueNode_AnimShareList *value_node(new ValueNode_AnimShareList());
 
   if (!value.empty()) {
@@ -139,7 +132,7 @@ LinkableValueNode *ValueNode_AnimShareList::create_new() const {
   return new ValueNode_AnimShareList();
 }
 
-bool ValueNode_AnimShareList::check_type(Type &type) {
+bool ValueNode_AnimShareList::check_type(Type & type) {
   return type == type_list;
 }
 void ValueNode_AnimShareList::clear() {

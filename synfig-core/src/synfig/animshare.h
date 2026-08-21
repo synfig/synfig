@@ -3,8 +3,6 @@
 
 /* === H E A D E R S =================================================== */
 
-/* === H E A D E R S ======================================================= */
-
 #include "string.h"
 #include "time.h"
 #include "uniqueid.h"
@@ -17,7 +15,7 @@ class AnimShare : public UniqueID {
 private:
   String param_; //!< target animated glyph parameter name
   Time delay_;   //!< stagger delay
-  int order_;    //!< stagger order (cast from the ShareOrder enum)
+  int order_;    //!< stagger order
 
 public:
   AnimShare();
