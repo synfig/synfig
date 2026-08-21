@@ -167,6 +167,39 @@ Layer_TextGroup::request_full_resync()
 	sync_glyphs();
 }
 
+void
+Layer_TextGroup::perform_share_action_deferred(ShareAction act)
+{
+    switch (act.mode)
+    {
+        case ShareMode::SHARE:
+        {
+            Time delay = param_stagger_delay.get(Time());
+            int order = param_stagger_order.get(int());
+            if (!share_param(act.param, delay, order))
+                synfig::warning("Share Animation: '%s' is not "
+                                "an animated glyph parameter",
+                                act.param.c_str());
+            else if (get_canvas())
+                get_canvas()->get_root()->signal_force_refresh()();
+            break;
+        } 
+        case ShareMode::UNSHARE: 
+        {
+            if (unshare_param(act.param))
+            {
+                if (get_canvas())
+                    get_canvas()->get_root()->signal_force_refresh()();
+            }
+            else
+                synfig::warning("Share Animation: '%s' is not "
+                                "currently shared",
+                                act.param.c_str());
+            break;
+        }
+    }
+}
+
 bool
 Layer_TextGroup::set_param(const String& param, const ValueBase& value)
 {

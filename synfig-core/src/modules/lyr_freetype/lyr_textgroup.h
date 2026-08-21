@@ -164,6 +164,8 @@ private:
 		{
 		}
 	};
+
+    void perform_share_action_deferred(ShareAction act);
 	std::vector<ShareChoice> build_share_choices() const;
 	mutable std::vector<ShareAction> last_share_actions_;
 
