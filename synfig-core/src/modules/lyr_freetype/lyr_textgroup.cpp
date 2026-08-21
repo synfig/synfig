@@ -574,60 +574,55 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
 
 void
 Layer_TextGroup::detach_shared_param(const SharedEntry& entry)
-{
+{  
+    const String& param = entry.target_param;
+    std::set<Layer*> retimed;
+
     Canvas::Handle canvas = get_sub_canvas();
-
     if (canvas)
-    {
-        const String& param = entry.target_param;
-
+    {  
         Layer_GlyphShape::Handle source = find_source_glyph();
 
-        for (auto iter = canvas->begin();
-             iter != canvas->end();
-             ++iter)
-        {
+        for (auto iter = canvas->begin(); iter != canvas->end(); ++iter)
+        {  
             Layer_GlyphShape::Handle g =
                 Layer_GlyphShape::Handle::cast_dynamic(*iter);
-
             if (!g)
                 continue;
 
-            if (g == source)
+            if (!g->dynamic_param_list().count(param))
+                continue;
+
+            if (g == source && entry.node)
             {
-                // Restore the original unwrapped source node.
-                if (entry.node)
-                {
-                    g->connect_dynamic_param(
-                        param,
-                        ValueNode::Handle(entry.node.get()));
-                }
-                else
-                {
-                    g->disconnect_dynamic_param(param);
-                }
+                g->connect_dynamic_param(param,ValueNode::Handle(entry.node.get()));
             }
             else
             {
-                // Restore the glyph's original animation from before sharing.
-                auto prior = entry.pre_share_nodes.find(g.get());
-
-                if (prior != entry.pre_share_nodes.end() &&
-                    prior->second)
-                {
-                    g->connect_dynamic_param(
-                        param,
-                        prior->second);
-                }
-                else
-                {
-                    g->disconnect_dynamic_param(param);
-                }
+                auto pre = entry.pre_share_nodes.find(g.get());
+    			if (pre != entry.pre_share_nodes.end() && pre->second)
+        			g->connect_dynamic_param(param, ValueNode::Handle(pre->second.get()));
+   				 else
+                	g->disconnect_dynamic_param(param);
             }
+            retimed.insert(g.get());
+        }
+
+        attach_shared_entries();
+
+        if (!retimed.empty())
+        {
+            Time now = canvas->get_time();
+            IndependentContext ctx(canvas->end());
+            for (Layer* l : retimed)
+                l->set_time(ctx, now);
         }
     }
+    else
+    {
+        attach_shared_entries();
+    }
 
-    attach_shared_entries();
     changed();
 }
 
