@@ -48,7 +48,7 @@ ValueNode_TimeOffset::create(const ValueBase& x, etl::loose_handle<Canvas>)
 }
 
 ValueNode_TimeOffset*
-ValueNode_TimeOffset::create_with_offset(const ValueNode::Handle &link, const Time &offset)
+ValueNode_TimeOffset::create_with_offset(const ValueNode::Handle& link, const Time &offset)
 {
     ValueNode_TimeOffset *node = new ValueNode_TimeOffset(link);   // default offset = 0
     node->set_link("offset", ValueNode_Const::create(offset));    // then override it
@@ -56,7 +56,7 @@ ValueNode_TimeOffset::create_with_offset(const ValueNode::Handle &link, const Ti
 }
 
 LinkableValueNode*
-ValueNode_TimeOffset::create_new()const
+ValueNode_TimeOffset::create_new() const
 {
 	return new ValueNode_TimeOffset(get_type());
 }
@@ -80,7 +80,7 @@ ValueNode_TimeOffset::set_link_vfunc(int i, ValueNode::Handle value)
 }
 
 ValueNode::LooseHandle
-ValueNode_TimeOffset::get_link_vfunc(int i)const
+ValueNode_TimeOffset::get_link_vfunc(int i) const
 {
 	assert(i>=0 && i<link_count());
 
@@ -91,7 +91,7 @@ ValueNode_TimeOffset::get_link_vfunc(int i)const
 }
 
 ValueBase
-ValueNode_TimeOffset::operator()(Time t)const
+ValueNode_TimeOffset::operator()(Time t) const
 {
 	DEBUG_LOG("SYNFIG_DEBUG_VALUENODE_OPERATORS",
 		"%s:%d operator()\n", __FILE__, __LINE__);
@@ -103,7 +103,7 @@ ValueNode_TimeOffset::operator()(Time t)const
 }
 
 bool
-ValueNode_TimeOffset::check_type(Type &type)
+ValueNode_TimeOffset::check_type(Type & type)
 {
 	if(type != type_nil)
 		return true;
@@ -111,7 +111,7 @@ ValueNode_TimeOffset::check_type(Type &type)
 }
 
 LinkableValueNode::Vocab
-ValueNode_TimeOffset::get_children_vocab_vfunc()const
+ValueNode_TimeOffset::get_children_vocab_vfunc() const
 {
 	if(children_vocab.size())
 		return children_vocab;

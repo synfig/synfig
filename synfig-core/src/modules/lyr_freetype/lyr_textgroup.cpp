@@ -134,7 +134,7 @@ Layer_TextGroup::Layer_TextGroup()
 	  param_direction(ValueBase(0)), param_stagger_delay(ValueBase(Time(0.0))),
 	  param_font(ValueBase(std::string())),
 	  param_color(ValueBase(Color::black())),
-	  param_stagger_order(ValueBase(int(STAGGER_ORDER_FORWARD))),
+	  param_stagger_order(ValueBase(int(StaggerOrder::STAGGER_ORDER_FORWARD))),
 	  param_stagger_seed(ValueBase(int(0))),
 	  param_share_target(ValueBase(int(SHARE_TARGET_NONE))),
 	  param_share_animations(ValueBase(std::vector<AnimShare>()))
@@ -449,21 +449,16 @@ Layer_TextGroup::get_param_vocab() const
 			.set_description(_("Order in which glyphs are staggered in time"))
 			.set_hint("enum")
 			.set_static(true)
-			.add_enum_value(STAGGER_ORDER_FORWARD, "forward", _("Forward"))
-			.add_enum_value(STAGGER_ORDER_REVERSE, "reverse", _("Reverse"))
-			.add_enum_value(STAGGER_ORDER_CENTER_OUT, "center_out",
-							_("Center Out"))
-			.add_enum_value(STAGGER_ORDER_RANDOM, "random", _("Random")));
-	{
-		// Always expose both Share/Update and Unshare. Studio does not rebuild
-		// this enum list on internal changes, so conditional entries would
-		// become unreachable until the layer is reselected.
-		last_share_actions_.clear();
-		last_share_actions_.push_back(
-			ShareAction{String(), ShareMode::SHARE});
+			.add_enum_value(static_cast<int>(StaggerOrder::STAGGER_ORDER_FORWARD), "forward", _("Forward"))
+			.add_enum_value(static_cast<int>(StaggerOrder::STAGGER_ORDER_REVERSE), "reverse", _("Reverse"))
+			.add_enum_value(static_cast<int>(StaggerOrder::STAGGER_ORDER_CENTER_OUT), "center_out",	_("Center Out"))
+			.add_enum_value(static_cast<int>(StaggerOrder::STAGGER_ORDER_RANDOM), "random", _("Random")));
+		{
+			last_share_actions_.clear();
+			last_share_actions_.push_back(ShareAction{String(), ShareMode::SHARE});
 
-		ParamDesc share_desc("share_target");
-		share_desc.set_local_name(_("Add / Update / Remove Shared Animation"))
+			ParamDesc share_desc("share_target");
+			share_desc.set_local_name(_("Add / Update / Remove Shared Animation"))
 			.set_description(
 				_("Select a glyph parameter to share (using the current "
 				  "Stagger Delay/Order), re-time it, or unshare it"))
@@ -690,13 +685,14 @@ Layer_TextGroup::ordinal_for_entry(const SharedEntry& entry, int index,
 {
 	if (count <= 0)
 		return index;
-	switch (entry.order)
+	StaggerOrder stagger_order = static_cast<StaggerOrder>(entry.order);
+	switch (stagger_order)
 	{
-		case STAGGER_ORDER_REVERSE:
+		case StaggerOrder::STAGGER_ORDER_REVERSE:
 			return (count - 1) - index;
-		case STAGGER_ORDER_CENTER_OUT:
+		case StaggerOrder::STAGGER_ORDER_CENTER_OUT:
 			return (int)std::floor(std::fabs(index - (count - 1) / 2.0));
-		case STAGGER_ORDER_RANDOM:
+		case StaggerOrder::STAGGER_ORDER_RANDOM:
 			return (index < (int)stagger_perm_.size()) ? stagger_perm_[index]
 													   : index;
 		default:

@@ -19,12 +19,12 @@
 #include <hb.h>
 #endif
 
-enum StaggerOrder
+enum class StaggerOrder
 {
-	STAGGER_ORDER_FORWARD = 0,
-	STAGGER_ORDER_REVERSE = 1,
-	STAGGER_ORDER_CENTER_OUT = 2,
-	STAGGER_ORDER_RANDOM = 3
+    STAGGER_ORDER_FORWARD = 0,
+    STAGGER_ORDER_REVERSE = 1,
+    STAGGER_ORDER_CENTER_OUT = 2,
+    STAGGER_ORDER_RANDOM = 3
 };
 
 static const int SHARE_TARGET_NONE = 0;
