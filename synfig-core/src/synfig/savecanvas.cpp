@@ -47,6 +47,7 @@
 #include "valuenodes/valuenode_bline.h"
 #include "valuenodes/valuenode_bone.h"
 #include "dashitem.h"
+#include "animshare.h"
 #include "time.h"
 #include "keyframe.h"
 #include "layer.h"
@@ -245,6 +246,15 @@ xmlpp::Element* encode_dash_item(xmlpp::Element* root, DashItem dash_item)
 	return root;
 }
 
+xmlpp::Element* encode_anim_share(xmlpp::Element* root, AnimShare anim_share)
+{
+    root->set_name(type_anim_share.description.name);
+    encode_string (root->add_child("param") ->add_child("string"),  anim_share.get_param());
+    encode_time   (root->add_child("delay") ->add_child("time"),    anim_share.get_delay());
+    encode_integer(root->add_child("order") ->add_child("integer"), anim_share.get_order());
+    return root;
+}
+
 xmlpp::Element* encode_gradient(xmlpp::Element* root,Gradient x)
 {
 	root->set_name("gradient");
@@ -371,6 +381,8 @@ xmlpp::Element* encode_value(xmlpp::Element* root,const ValueBase &data,Canvas::
 		return encode_width_point(root,data.get(WidthPoint()));
 	if (type == type_dash_item)
 		return encode_dash_item(root,data.get(DashItem()));
+	if (type == type_anim_share)
+    	return encode_anim_share(root,data.get(AnimShare()));
 	if (type == type_gradient)
 	{
 		encode_gradient(root,data.get(Gradient()));
