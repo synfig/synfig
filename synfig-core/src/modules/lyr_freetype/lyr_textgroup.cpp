@@ -183,8 +183,8 @@ Layer_TextGroup::perform_share_action_deferred(ShareAction act)
             else if (get_canvas())
                 get_canvas()->get_root()->signal_force_refresh()();
             break;
-        } 
-        case ShareMode::UNSHARE: 
+        }
+        case ShareMode::UNSHARE:
         {
             if (unshare_param(act.param))
             {
@@ -258,23 +258,23 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
 
 	IMPORT_VALUE_PLUS(
     param_share_target,
-    ( 
+    (
         [&]()
         {
             if (dynamic_param_list().count("share_target"))
                 pending_dynamic_cleanup_.insert("share_target");
-  
+
             int action_idx = param_share_target.get(int());
-  
+
             param_share_target = ValueBase(int(SHARE_TARGET_NONE));
-  
+
             if (action_idx > 0 &&
                 action_idx < (int)last_share_actions_.size())
             {
                 ShareAction act = last_share_actions_[action_idx];
-  
+
                 // Defer the actual share/unshare + panel refresh until GTK
-                // has finished emitting the combo box's "changed" signal. 
+                // has finished emitting the combo box's "changed" signal.
                 // Running it inline frees the combo box mid-callback -> SIGSEGV.
                 Glib::signal_idle().connect_once(
                     sigc::bind(
@@ -286,8 +286,8 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
 
 	IMPORT_VALUE_PLUS(param_share_animations, {
     	// If a dynamic AnimShareList is already connected, that's the source
-    	// of truth — connect_dynamic_param()/on_canvas_set() already rebuild
-    	// shared_entries_ from it. Don't fight that here.
+    	// // of truth — connect_dynamic_param()/on_canvas_set() already rebuild
+    	// // shared_entries_ from it. Don't fight that here.
     	if (!dynamic_param_list().count("share_animations")) {
         	rebuild_shared_entries_from_param();
     	}
@@ -569,17 +569,17 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
 
 void
 Layer_TextGroup::detach_shared_param(const SharedEntry& entry)
-{  
+{
     const String& param = entry.target_param;
     std::set<Layer*> retimed;
 
     Canvas::Handle canvas = get_sub_canvas();
     if (canvas)
-    {  
+    {
         Layer_GlyphShape::Handle source = find_source_glyph();
 
         for (auto iter = canvas->begin(); iter != canvas->end(); ++iter)
-        {  
+        {
             Layer_GlyphShape::Handle g =
                 Layer_GlyphShape::Handle::cast_dynamic(*iter);
             if (!g)
@@ -595,10 +595,10 @@ Layer_TextGroup::detach_shared_param(const SharedEntry& entry)
             else
             {
                 auto pre = entry.pre_share_nodes.find(g.get());
-    			if (pre != entry.pre_share_nodes.end() && pre->second)
-        			g->connect_dynamic_param(param, ValueNode::Handle(pre->second.get()));
-   				 else
-                	g->disconnect_dynamic_param(param);
+                if (pre != entry.pre_share_nodes.end() && pre->second)
+                    g->connect_dynamic_param(param, ValueNode::Handle(pre->second.get()));
+                else
+                    g->disconnect_dynamic_param(param);
             }
             retimed.insert(g.get());
         }
@@ -755,7 +755,7 @@ Layer_TextGroup::attach_shared_entries()
                 		!entry.pre_share_nodes.count(g.get()))
             		{
                 		auto existing_wrapper = ValueNode_TimeOffset::Handle::cast_dynamic(existing->second);
-    					bool already_is_share_wrapper = existing_wrapper && 
+    					bool already_is_share_wrapper = existing_wrapper &&
     						existing_wrapper->get_link("link").get() == entry.node.get();
 
     					if (!already_is_share_wrapper)

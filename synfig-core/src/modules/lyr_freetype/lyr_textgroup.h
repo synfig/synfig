@@ -121,7 +121,6 @@ public:
 	synfig::Layer::Vocab get_param_vocab() const override;
 	synfig::String get_local_name() const override;
 	std::vector<int> stagger_perm_;
-	
 
 private:
 	void sync_glyphs();
