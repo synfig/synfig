@@ -758,18 +758,30 @@ Layer_TextGroup::attach_shared_entries()
                 		existing->second &&
                 		!entry.pre_share_nodes.count(g.get()))
             		{
+                		auto existing_wrapper = ValueNode_TimeOffset::Handle::cast_dynamic(existing->second);
+    					bool already_is_share_wrapper = existing_wrapper && 
+    						existing_wrapper->get_link("link").get() == entry.node.get();
+
+    					if (!already_is_share_wrapper)
+
                			entry.pre_share_nodes[g.get()] = existing->second;
             		}
 
             		wrapper = ValueNode::Handle(
                 		ValueNode_TimeOffset::create_with_offset(
                     		entry.node.get(), off));
-
-            		g->connect_dynamic_param(entry.target_param, wrapper);
-            		touched.insert(g.get());
-        		}
+            		}
 
         		next_cache[g.get()] = {off, wrapper};
+        		auto& dpl = g->dynamic_param_list();
+				auto current = dpl.find(entry.target_param);
+
+				if (current == dpl.end() ||
+ 				   current->second != wrapper)
+				{
+    				g->connect_dynamic_param(entry.target_param,wrapper);
+					touched.insert(g.get());
+				}
         		++i;
     		}
 
