@@ -417,7 +417,7 @@ LayerTree::on_waypoint_changed(synfig::Waypoint& waypoint , synfig::ValueNode::H
 }
 
 void
-LayerTree::select_layer(synfig::Layer::Handle layer)
+LayerTree::select_layer(synfig::Layer::Handle layer, bool move_cursor)
 {
 	Gtk::TreeModel::Children::iterator iter;
 	if(layer_tree_store_->find_layer_row(layer,iter))
@@ -432,7 +432,8 @@ LayerTree::select_layer(synfig::Layer::Handle layer)
 
 		layer_tree_view().scroll_to_row(path);
 		layer_tree_view().get_selection()->select(iter);
-		layer_tree_view().set_cursor(path);
+		if(move_cursor)
+			layer_tree_view().set_cursor(path);
 	}
 }
 
@@ -461,7 +462,7 @@ LayerTree::select_layers(const LayerList &layer_list)
 {
 	LayerList::const_iterator iter;
 	for(iter = layer_list.begin(); iter != layer_list.end(); ++iter)
-		select_layer(*iter);
+		select_layer(*iter, false);
 }
 
 static inline void __layer_grabber(const Gtk::TreeModel::iterator& iter, LayerTree::LayerList* ret)

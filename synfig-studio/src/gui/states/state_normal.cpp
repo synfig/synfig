@@ -774,8 +774,21 @@ StateNormal_Context::event_layer_click(const Smach::event& x)
 				canvas_view_->get_selection_manager()->clear_selected_layers();
 				canvas_view_->get_selection_manager()->set_selected_layers(layer_list);
 			}
+			else if(event.modifier&Gdk::CONTROL_MASK)
+			{
+				// Ctrl+click on a layer not yet selected: add it to the
+				// existing selection instead of replacing it. Using the
+				// plural set_selected_layers() (rather than the singular
+				// set_selected_layer()) also avoids LayerTree::select_layer()'s
+				// set_cursor() call, which would otherwise clear the whole
+				// selection down to just this one layer.
+				layer_list.push_back(event.layer);
+				canvas_view_->get_selection_manager()->set_selected_layers(layer_list);
+			}
 			else
 			{
+				// Plain click on a layer not yet selected: replace the
+				// whole selection with just this layer.
 				canvas_view_->get_selection_manager()->set_selected_layer(event.layer);
 			}
 		}
