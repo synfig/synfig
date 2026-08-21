@@ -19,6 +19,7 @@ target_sources(libsynfig
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_const.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_cos.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_dilist.cpp"
+		"${CMAKE_CURRENT_LIST_DIR}/valuenode_animsharelist.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_dotproduct.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_duplicate.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_dynamiclist.cpp"
