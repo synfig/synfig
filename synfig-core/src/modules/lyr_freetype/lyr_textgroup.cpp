@@ -1,7 +1,9 @@
 #include "synfig/layer.h"
 #include "synfig/real.h"
 #include "synfig/value.h"
+#include "synfig/animshare.h"
 #include "synfig/valuenodes/valuenode_angle.h"
+#include "synfig/valuenodes/valuenode_animsharelist.h"
 #ifdef USING_PCH
 #include "pch.h"
 #else
@@ -23,6 +25,7 @@
 #include <glibmm/ustring.h>
 #include <synfig/valuenode.h>
 #include <synfig/valuenodes/valuenode_timeoffset.h>
+#include <synfig/valuenodes/valuenode_composite.h>
 #include <synfig/layers/layer_shape.h>
 #include <synfig/rendering/primitive/contour.h>
 #include "lyr_freetype.h"
@@ -30,7 +33,7 @@
 #include <synfig/rendering/common/task/tasktransformation.h>
 #include <random>
 #include <algorithm>
-
+#include <glibmm/main.h>
 #endif
 
 using namespace synfig;
@@ -99,13 +102,23 @@ Layer_GlyphShape::set_time_vfunc(IndependentContext context, Time time) const
 void
 Layer_TextGroup::on_canvas_set()
 {
-	Layer_PasteCanvas::on_canvas_set();
-	if (dynamic_param_list().count("share_target"))
-		disconnect_dynamic_param("share_target");
-	if (dynamic_param_list().count("share_animations"))
-		disconnect_dynamic_param("share_animations");
-	rebuild_shared_entries_from_param();
-	retry_pending_shared_entries();
+    Layer_PasteCanvas::on_canvas_set();
+
+    if (dynamic_param_list().count("share_target"))
+        disconnect_dynamic_param("share_target");
+
+    auto it = dynamic_param_list().find("share_animations");
+
+    if (it != dynamic_param_list().end() && it->second)
+    {
+        rebuild_shared_entries_from_valuenode(it->second);
+    }
+    else
+    {
+        rebuild_shared_entries_from_param();
+    }
+
+    pending_shared_rebuild_ = true;
 }
 
 Layer_TextGroup::Layer_TextGroup()
@@ -124,7 +137,7 @@ Layer_TextGroup::Layer_TextGroup()
 	  param_stagger_order(ValueBase(int(STAGGER_ORDER_FORWARD))),
 	  param_stagger_seed(ValueBase(int(0))),
 	  param_share_target(ValueBase(int(SHARE_TARGET_NONE))),
-	  param_share_animations(ValueBase(std::string()))
+	  param_share_animations(ValueBase(std::vector<AnimShare>()))
 {
 	SET_INTERPOLATION_DEFAULTS();
 	SET_STATIC_DEFAULTS();
@@ -211,77 +224,40 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
 	});
 
 	IMPORT_VALUE_PLUS(
-		param_share_target,
-		(
-			[&]()
-			{
-				if (dynamic_param_list().count("share_target"))
-					pending_dynamic_cleanup_.insert("share_target");
-
-				int action_idx = param_share_target.get(int());
-				if (action_idx > 0 &&
-					action_idx < (int)last_share_actions_.size())
-				{
-					const ShareAction& act = last_share_actions_[action_idx];
-
-					switch (act.mode)
-					{
-						case ShareMode::SHARE:
-						{
-							// share_param() already treats "already shared" as
-							// "update this entry's delay/order to whatever the
-							// sliders currently hold" rather than a no-op, so
-							// this one action covers both creating a new share
-							// and re-timing an existing one.
-							Time delay = param_stagger_delay.get(Time());
-							int order = param_stagger_order.get(int());
-							if (!share_param(act.param, delay, order))
-								synfig::warning("Share Animation: '%s' is not "
-												"an animated glyph parameter",
-												act.param.c_str());
-							else if (get_canvas())
-								get_canvas()
-									->get_root()
-									->signal_force_refresh()();
-							break;
-						}
-						case ShareMode::UNSHARE:
-						{
-							if (unshare_param(act.param))
-							{
-								if (get_canvas())
-									get_canvas()
-										->get_root()
-										->signal_force_refresh()();
-							}
-							else
-							{
-								synfig::warning("Share Animation: '%s' is not "
-												"currently shared",
-												act.param.c_str());
-							}
-							break;
-						}
-					}
-				}
-				param_share_target = ValueBase(int(SHARE_TARGET_NONE));
-			})());
+    param_share_target,
+    ( 
+        [&]()
+        {
+            if (dynamic_param_list().count("share_target"))
+                pending_dynamic_cleanup_.insert("share_target");
+  
+            int action_idx = param_share_target.get(int());
+  
+            param_share_target = ValueBase(int(SHARE_TARGET_NONE));
+  
+            if (action_idx > 0 &&
+                action_idx < (int)last_share_actions_.size())
+            {
+                ShareAction act = last_share_actions_[action_idx];
+  
+                // Defer the actual share/unshare + panel refresh until GTK
+                // has finished emitting the combo box's "changed" signal. 
+                // Running it inline frees the combo box mid-callback -> SIGSEGV.
+                Glib::signal_idle().connect_once(
+                    sigc::bind(
+                        sigc::mem_fun(*this,
+                            &Layer_TextGroup::perform_share_action_deferred),
+                        act));
+            }
+        })());
 
 	IMPORT_VALUE_PLUS(param_share_animations, {
-		if (dynamic_param_list().count("share_animations"))
-			pending_dynamic_cleanup_.insert("share_animations");
-		// If Studio is echoing back the value we last pushed, ignore it.
-		// Otherwise (e.g. during file load), adopt the incoming serialized
-		// state and rebuild shared_entries_ from it.
-		String incoming = param_share_animations.get(String());
-		String current;
-		for (const auto& e : shared_entries_) {
-			if (!current.empty()) current += "\n";
-			current += encode_shared_entry(e);
-		}
-		if (incoming != current)
-			rebuild_shared_entries_from_param();
-		
+    	// If a dynamic AnimShareList is already connected, that's the source
+    	// of truth — connect_dynamic_param()/on_canvas_set() already rebuild
+    	// shared_entries_ from it. Don't fight that here.
+    	if (!dynamic_param_list().count("share_animations")) {
+        	rebuild_shared_entries_from_param();
+    	}
 	});
 
 	return Layer_PasteCanvas::set_param(param, value);
@@ -935,6 +911,8 @@ Layer_TextGroup::unshare_param(const String& param)
 	SharedEntry entry = *it;
 	shared_entries_.erase(it);
 	detach_shared_param(entry);
+	Glib::signal_idle().connect_once(
+        sigc::mem_fun(*this, &Layer_TextGroup::push_shared_animations_param));
 	return true;
 }
 
@@ -968,58 +946,64 @@ Layer_TextGroup::push_shared_animations_param()
 {
 	if (destructing_)
 		return;
-	String packed;
-	for (const auto& e : shared_entries_)
+
+	auto existing = dynamic_param_list().find("share_animations");
+	ValueNode_AnimShareList::Handle list_node = existing != dynamic_param_list().end()
+		? ValueNode_AnimShareList::Handle::cast_dynamic(existing->second)
+		: ValueNode_AnimShareList::Handle();
+
+	if (!list_node)
 	{
-		if (!packed.empty())
-			packed += "\n";
-		packed += encode_shared_entry(e);
+		std::vector<AnimShare> items;
+		for (auto& e : shared_entries_)
+			items.emplace_back(e.target_param, e.delay, e.order);
+
+		list_node = ValueNode_AnimShareList::create(ValueBase(items), get_canvas());
+		if (!list_node)
+			return;
+
+		connect_dynamic_param("share_animations", ValueNode::Handle(list_node));
 	}
-	param_share_animations = ValueBase(packed);
+	else
+	{
+		list_node->clear();
+		for (const auto& e : shared_entries_)
+		{
+			AnimShare item(e.target_param, e.delay, e.order);
+			list_node->add(ValueNode::Handle(ValueNode_Composite::create(item)));
+		}
+	}
+
 	changed();
 	signal_dynamic_param_changed()("share_animations");
 }
 
 void
-Layer_TextGroup::rebuild_shared_entries_from_param()
+Layer_TextGroup::apply_shared_entries_from_items(const std::vector<AnimShare>& items)
 {
-	String packed = param_share_animations.get(String());
-
-	std::vector<String> rows;
-	size_t start = 0;
-	while (true)
-	{
-		size_t pos = packed.find('\n', start);
-		String row = (pos == String::npos) ? packed.substr(start)
-										   : packed.substr(start, pos - start);
-		if (!row.empty())
-			rows.push_back(row);
-		if (pos == String::npos)
-			break;
-		start = pos + 1;
-	}
-
 	std::vector<SharedEntry> parsed;
 	std::set<String> seen_params;
 
-	for (const auto& row : rows)
+	for (const auto& item : items)
 	{
 		SharedEntry e;
-		if (!decode_shared_entry(row, e))
-			continue;
+		e.target_param = item.get_param();
+		e.delay        = item.get_delay();
+		e.order        = item.get_order();
 
 		if (!seen_params.insert(e.target_param).second)
 			continue;
 
 		bool reused = false;
-		for (auto& existing : shared_entries_)
+		for (auto& old_entry : shared_entries_)
 		{
-			if (existing.target_param == e.target_param)
+			if (old_entry.target_param == e.target_param)
 			{
-				e.node = existing.node;
-				e.valid = existing.valid;
-				e.deleted_conn = existing.deleted_conn;
-				e.wrapper_cache = existing.wrapper_cache;
+				e.node            = old_entry.node;
+				e.valid           = old_entry.valid;
+				e.deleted_conn    = old_entry.deleted_conn;
+				e.wrapper_cache   = old_entry.wrapper_cache;
+				e.pre_share_nodes = old_entry.pre_share_nodes;
 				reused = true;
 				break;
 			}
@@ -1029,12 +1013,11 @@ Layer_TextGroup::rebuild_shared_entries_from_param()
 
 		parsed.push_back(std::move(e));
 	}
-	// Anything that was shared before but is no longer in the freshly
-	// parsed list (row deleted or edited out) needs its actual glyph
-	// wiring severed — dropping it from shared_entries_ alone leaves
-	// every glyph still connected to the old wrapper.
-	std::vector<SharedEntry> removed;
 
+	// Anything that dropped out of the incoming list needs its glyphs
+	// detached — otherwise they stay wired to the old shared wrapper
+	// forever, invisible to shared_entries_ from this point on.
+	std::vector<SharedEntry> removed;
 	for (auto& old_entry : shared_entries_)
 	{
     	if (!seen_params.count(old_entry.target_param))
@@ -1047,6 +1030,82 @@ Layer_TextGroup::rebuild_shared_entries_from_param()
     	detach_shared_param(entry);// disconnects that param + re-runs attach_shared_entries()
 
 	attach_shared_entries();
+}
+
+void
+Layer_TextGroup::rebuild_shared_entries_from_param()
+{
+	// The real persisted value is the dynamic AnimShareList — see the
+	// comment on param_share_animations in the header for why we don't
+	// read the static param here.
+	auto existing = dynamic_param_list().find("share_animations");
+	auto list_node = existing != dynamic_param_list().end()
+		? ValueNode_AnimShareList::Handle::cast_dynamic(existing->second)
+		: ValueNode_AnimShareList::Handle();
+
+	if (!list_node)
+	{
+		shared_entries_.clear();
+		attach_shared_entries();
+		return;
+	}
+
+	std::vector<AnimShare> items;
+	for (const auto& entry : list_node->list)
+	{
+		if (!entry.value_node)
+			continue;
+
+		auto composite = ValueNode_Composite::Handle::cast_dynamic(entry.value_node);
+		if (!composite)
+			continue;
+
+		ValueBase value = (*composite)(Time(0));
+		if (value.get_type() != type_anim_share)
+			continue;
+
+		items.push_back(value.get(AnimShare()));
+	}
+
+	apply_shared_entries_from_items(items);
+}
+
+void
+Layer_TextGroup::rebuild_shared_entries_from_valuenode(const ValueNode::Handle& x)
+{
+	if (!x)
+		return;
+
+	ValueBase v = (*x)(Time(0));
+	if (v.get_type() != type_list)
+		return;
+
+	std::vector<AnimShare> items;
+	for (const ValueBase& item : v.get_list())
+	{
+		if (item.get_type() != type_anim_share)
+			continue;
+		items.push_back(item.get(AnimShare()));
+	}
+
+	apply_shared_entries_from_items(items);
+}
+
+bool
+Layer_TextGroup::connect_dynamic_param(
+    const String& param,
+    ValueNode::LooseHandle x)
+{
+    bool ret = Layer_PasteCanvas::connect_dynamic_param(param, x);
+
+    if (ret && param == "share_animations")
+    {
+       rebuild_shared_entries_from_valuenode(x);
+
+        pending_shared_rebuild_ = true;
+    }
+
+    return ret;
 }
 
 void

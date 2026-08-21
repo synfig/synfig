@@ -115,12 +115,13 @@ public:
 	Layer_TextGroup();
 	~Layer_TextGroup();
 
-	bool set_param(const synfig::String& param,
-				   const synfig::ValueBase& value) override;
+	bool set_param(const synfig::String& param,const synfig::ValueBase& value) override;
+	bool connect_dynamic_param(const synfig::String& param,synfig::ValueNode::LooseHandle x) override;
 	synfig::ValueBase get_param(const synfig::String& param) const override;
 	synfig::Layer::Vocab get_param_vocab() const override;
 	synfig::String get_local_name() const override;
 	std::vector<int> stagger_perm_;
+	
 
 private:
 	void sync_glyphs();
@@ -136,6 +137,9 @@ private:
 	std::vector<SharedEntry> shared_entries_;
 	synfig::String encode_shared_entry(const SharedEntry& e);
 	bool decode_shared_entry(const synfig::String& s, SharedEntry& out);
+	mutable bool pending_shared_rebuild_ = false;
+    void rebuild_shared_entries_from_valuenode(
+        const synfig::ValueNode::Handle& x);
 
 	struct ShareChoice
 	{
@@ -170,6 +174,7 @@ private:
 	void on_shared_node_deleted(synfig::String target_param);
 
 	void rebuild_shared_entries_from_param();
+	void apply_shared_entries_from_items(const std::vector<synfig::AnimShare>& items);
 	void retry_pending_shared_entries();
 	void push_shared_animations_param();
 	void attach_shared_entries();
