@@ -44,7 +44,14 @@
 #include <gui/localization.h>
 
 #include <synfig/general.h>
+#include <synfig/animshare.h>
 #include <synfig/valuenodes/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_animsharelist.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+
+#include <synfigapp/actions/valuenodedynamiclistinsert.h>
+#include <synfigapp/actions/valuenodedynamiclistremove.h>
+#include <synfigapp/actions/valuenodedynamiclistremovesmart.h>
 
 #include <synfigapp/action_system.h>
 
@@ -257,11 +264,167 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 			}
 			else
 			{
-				canvas_interface()->change_value((*iter)[model.value_desc],x.get());
+				synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
+				if (value_desc.parent_is_layer() && value_desc.get_param_name() == "share_target")
+    			{
+        			synfig::Layer::Handle layer = value_desc.get_layer();
+        			const synfig::ValueBase selected_value = x.get();
+					const int selected = selected_value.get(int());
+
+        			synfig::ParamDesc share_desc;
+
+        			for (const auto& param : layer->get_param_vocab())
+        			{
+            			if (param.get_name() == "share_target")
+            			{
+                			share_desc = param;
+                			break;
+            			}
+        			}
+
+        			synfig::String selected_name;
+
+        			for (const auto& enum_data : share_desc.get_enum_list())
+        			{
+            			if (enum_data.value == selected)
+            			{
+                			selected_name = enum_data.name;
+                			break;
+            			}
+        			}
+
+        			if (selected_name.empty() || selected_name == "none")
+            			return;
+
+        			bool unshare = false;
+        			synfig::String target_param;
+
+        			if (selected_name.rfind("share_", 0) == 0)
+        			{
+            			target_param = selected_name.substr(6);
+        			}
+        			else if (selected_name.rfind("unshare_", 0) == 0)
+        			{
+            			unshare = true;
+            			target_param = selected_name.substr(8);
+        			}
+        			else
+        			{
+            			return;
+        			}
+
+        			auto dynamic_it = layer->dynamic_param_list().find("share_animations");
+
+        			if (dynamic_it == layer->dynamic_param_list().end())
+    		        	return;
+
+        			synfig::ValueNode_AnimShareList::Handle list_node =
+            			synfig::ValueNode_AnimShareList::Handle::cast_dynamic(dynamic_it->second);
+
+        			if (!list_node)
+            			return;
+
+        			int existing_index = -1;
+
+        			for (int i = 0; i < static_cast<int>(list_node->list.size()); ++i)
+        			{
+            			const auto& entry = list_node->list[i];
+
+            			if (!entry.value_node)
+                			continue;
+
+            			auto composite = synfig::ValueNode_Composite::Handle::cast_dynamic(entry.value_node);
+
+            			if (!composite) continue;
+
+            			synfig::ValueBase item = (*composite)(synfig::Time(0));
+
+            			if (item.get_type() != synfig::type_anim_share) continue;
+
+            			const synfig::AnimShare& share = item.get(synfig::AnimShare());
+
+						if (share.get_param() == target_param)
+            			{
+                			existing_index = i;
+                			break;
+            			}
+        			}
+
+        			synfigapp::Action::Handle action;
+
+        			if (unshare)
+        			{
+            			if (existing_index < 0) return;
+
+            			action = synfigapp::Action::ValueNodeDynamicListRemove::create();
+
+            			action->set_param("canvas", canvas_interface()->get_canvas());
+						action->set_param("canvas_interface", canvas_interface());
+						action->set_param("value_desc", synfigapp::ValueDesc(list_node, existing_index));
+        			}
+        			else
+            		{
+            			if (existing_index >= 0)
+                			return;
+
+            			const synfig::Time delay = layer->get_param("stagger_delay").get(synfig::Time());
+						const int order = layer->get_param("stagger_order").get(int());
+
+            			synfig::AnimShare share(target_param, delay, order);
+
+            			synfig::ValueNode::Handle item = synfig::ValueNode_Composite::create(share);
+
+            			action = synfigapp::Action::ValueNodeDynamicListInsert::create();
+
+            			action->set_param("canvas", canvas_interface()->get_canvas());
+
+            			action->set_param("canvas_interface",canvas_interface());
+
+            			action->set_param("value_desc", synfigapp::ValueDesc(layer,"share_animations"));
+
+            			action->set_param("item", item);
+        			}
+
+					if (!action->is_ready())
+    					return;
+
+			        if (!canvas_interface()->get_instance()->perform_action(action))
+    			        return;
+
+        			return;
+    			}
+    				// Clearing the Parameter child of an AnimShare entry removes
+    				// the entire entry instead of leaving an empty row behind.
+    				if (value_desc.parent_is_value_node())
+					{
+        				auto parent =
+            				synfig::ValueNode_Composite::Handle::cast_dynamic(
+                				value_desc.get_parent_value_node());
+
+        				if (parent && parent->get_type() == synfig::type_anim_share &&
+            				x.get().get_type() == synfig::type_string && x.get().get(synfig::String()).empty())
+        				{
+            				synfigapp::Action::Handle action =
+                			synfigapp::Action::ValueNodeDynamicListRemoveSmart::create();
+
+            				action->set_param("canvas",canvas_interface()->get_canvas());
+							action->set_param("canvas_interface",canvas_interface());
+							action->set_param("value_desc",value_desc);
+
+            				if (!action->is_ready()) return;
+							if (!canvas_interface()->get_instance()->perform_action(action))
+    							return;
+
+            				return;
+        				}
+    				}
+
+
+    				canvas_interface()->change_value(value_desc, x.get());
+				return;
+				}
 			}
-			return;
-		}
-		else
+			else
 /*
 		if(column==model.active.index())
 		{

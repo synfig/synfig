@@ -158,6 +158,9 @@ public:	// Signal Interface
 	//sigc::signal<void>& signal_dirty_preview() { return signal_dirty_preview_; }
 	sigc::signal<void>& signal_dirty_preview() { return get_canvas()->signal_dirty(); }
 
+	//! Signal to force an immediate refresh even during playback  
+	sigc::signal<void>& signal_force_refresh() { return get_canvas()->signal_force_refresh(); }
+
 	sigc::signal<void,synfig::ValueNode::Handle,synfig::ValueNode::Handle>&
 		signal_value_node_child_added() { return get_canvas()->signal_value_node_child_added(); }
 	sigc::signal<void,synfig::ValueNode::Handle,synfig::ValueNode::Handle>&

@@ -66,6 +66,7 @@
 #include <synfig/valuenodes/valuenode_timedswap.h>
 #include <synfig/valuenodes/valuenode_twotone.h>
 #include <synfig/valuenodes/valuenode_wplist.h>
+#include <synfig/valuenodes/valuenode_animsharelist.h>
 
 #include <synfigapp/localization.h>
 
@@ -383,6 +384,14 @@ CanvasInterface::layer_set_defaults(const synfig::Layer::Handle &layer)
 					{
 						value_node=ValueNodeRegistry::create("dilist",iter->second);
 						ValueNode_DIList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
+					}
+					for (iter2 = list.begin(); iter2 != list.end(); ++iter2)
+    					if (iter2->get_type() != type_anim_share)
+        					break;
+					if (iter2 == list.end())
+					{
+    					value_node=ValueNodeRegistry::create("animsharelist",iter->second);
+    					ValueNode_AnimShareList::Handle::cast_dynamic(value_node)->set_member_canvas(canvas);
 					}
 				}
 				// it has something else so just insert the dynamic list

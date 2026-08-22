@@ -1,6 +1,10 @@
 # FIXME: move libsynfig into a separate domain
 src/modules/lyr_freetype/lyr_freetype.cpp
 src/modules/lyr_freetype/lyr_freetype.h
+src/modules/lyr_freetype/lyr_textgroup.cpp
+src/modules/lyr_freetype/lyr_textgroup.h
+src/modules/lyr_freetype/text_processing.cpp
+src/modules/lyr_freetype/text_processing.h
 src/modules/lyr_freetype/main.cpp
 src/modules/lyr_std/bevel.cpp
 src/modules/lyr_std/bevel.h
@@ -444,6 +448,8 @@ src/synfig/valuenodes/valuenode_timedswap.cpp
 src/synfig/valuenodes/valuenode_timedswap.h
 src/synfig/valuenodes/valuenode_timeloop.cpp
 src/synfig/valuenodes/valuenode_timeloop.h
+src/synfig/valuenodes/valuenode_timeoffset.cpp
+src/synfig/valuenodes/valuenode_timeoffset.h
 src/synfig/valuenodes/valuenode_timestring.cpp
 src/synfig/valuenodes/valuenode_timestring.h
 src/synfig/valuenodes/valuenode_twotone.cpp

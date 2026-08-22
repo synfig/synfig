@@ -45,6 +45,7 @@
 #include "filesystemnative.h"
 #include "weightedvalue.h"
 #include "pair.h"
+#include "animshare.h"
 
 /* === M A C R O S ========================================================= */
 
@@ -216,6 +217,8 @@ private:
 	WidthPoint parse_width_point(xmlpp::Element *node);
 	//! Dash Item Value Base Parsing Function
 	DashItem parse_dash_item(xmlpp::Element *node);
+	//! Animation Share Value Base Parsing Function
+	AnimShare parse_anim_share(xmlpp::Element *element,Canvas::Handle canvas);
 
 	//! Keyframe Parsing Function
 	Keyframe parse_keyframe(xmlpp::Element *node,Canvas::Handle canvas);

@@ -65,6 +65,7 @@
 #include "valueoperations.h"
 #include "zstreambuf.h"
 #include "segment.h"
+#include "animshare.h"
 
 #include "layers/layer_group.h"
 
@@ -78,6 +79,7 @@
 #include "valuenodes/valuenode_const.h"
 #include "valuenodes/valuenode_dilist.h"
 #include "valuenodes/valuenode_dynamiclist.h"
+#include "valuenodes/valuenode_animsharelist.h"
 #include "valuenodes/valuenode_exp.h"
 #include "valuenodes/valuenode_scale.h"
 #include "valuenodes/valuenode_weightedaverage.h"
@@ -1263,7 +1265,88 @@ CanvasParser::parse_dash_item(xmlpp::Element *element)
 	return ret;
 }
 
+AnimShare
+CanvasParser::parse_anim_share(xmlpp::Element *element, Canvas::Handle canvas)
+{
+	assert(element->get_name()=="anim_share");
 
+	AnimShare ret;
+
+	xmlpp::Element::NodeList list = element->get_children();
+	for(xmlpp::Element::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter)
+	{
+		xmlpp::Element *child(dynamic_cast<xmlpp::Element*>(*iter));
+		if(!child)
+			continue;
+		else
+		if(child->get_name()=="param")
+		{
+			xmlpp::Element::NodeList clist = child->get_children();
+			xmlpp::Element::NodeList::iterator citer;
+
+			// Search for the first non-text XML element
+			for(citer = clist.begin(); citer != clist.end(); ++citer)
+				if(dynamic_cast<xmlpp::Element*>(*citer)) break;
+
+			if(citer==clist.end())
+			{
+				error(element, "Undefined value in <param>");
+				continue;
+			}
+			if((*citer)->get_name()!="string")
+			{
+				error_unexpected_element((*citer),(*citer)->get_name(),"string");
+				continue;
+			}
+			ret.set_param(parse_string(dynamic_cast<xmlpp::Element*>(*citer)));
+		}
+		else
+		if(child->get_name()=="delay")
+		{
+			xmlpp::Element::NodeList clist = child->get_children();
+			xmlpp::Element::NodeList::iterator citer;
+
+			for(citer = clist.begin(); citer != clist.end(); ++citer)
+				if(dynamic_cast<xmlpp::Element*>(*citer)) break;
+
+			if(citer==clist.end())
+			{
+				error(element, "Undefined value in <delay>");
+				continue;
+			}
+			if((*citer)->get_name()!="time")
+			{
+				error_unexpected_element((*citer),(*citer)->get_name(),"time");
+				continue;
+			}
+			ret.set_delay(parse_time(dynamic_cast<xmlpp::Element*>(*citer),canvas));
+		}
+		else
+		if(child->get_name()=="order")
+		{
+			xmlpp::Element::NodeList clist = child->get_children();
+			xmlpp::Element::NodeList::iterator citer;
+
+			for(citer = clist.begin(); citer != clist.end(); ++citer)
+				if(dynamic_cast<xmlpp::Element*>(*citer)) break;
+
+			if(citer==clist.end())
+			{
+				error(element, "Undefined value in <order>");
+				continue;
+			}
+			if((*citer)->get_name()!="integer")
+			{
+				error_unexpected_element((*citer),(*citer)->get_name(),"integer");
+				continue;
+			}
+			ret.set_order(parse_integer(dynamic_cast<xmlpp::Element*>(*citer)));
+		}
+		else
+			error_unexpected_element(child,child->get_name());
+	}
+	return ret;
+}
 
 Angle
 CanvasParser::parse_angle(xmlpp::Element *element)
@@ -1592,6 +1675,9 @@ CanvasParser::parse_value(xmlpp::Element *element,Canvas::Handle canvas)
 	if(element->get_name()=="dash_item")
 		return parse_dash_item(element);
 	else
+	if(element->get_name()=="anim_share")
+		return parse_anim_share(element, canvas);
+	else
 	if(element->get_name()=="transformation")
 	{
 		ValueBase ret;
@@ -1887,9 +1973,10 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 	}
 
 	DEBUG_LOG("SYNFIG_DEBUG_LOAD_CANVAS", "%s:%d creating linkable '%s' type '%s'\n", __FILE__, __LINE__, element->get_name().c_str(), type.description.name.c_str());
+
 	LinkableValueNode::Handle value_node=ValueNodeRegistry::create(element->get_name(),type);
+
 	//ValueNode::Handle c[value_node->link_count()]; changed because of clang complain
-	std::vector<ValueNode::Handle> c(value_node->link_count());
 
 	if(!value_node)
 	{
@@ -1900,7 +1987,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 		printf("%s:%d parse_linkable_value_node done error creating\n", __FILE__, __LINE__);
 		return 0;
 	}
-
+	std::vector<ValueNode::Handle> c(value_node->link_count());
 	if(value_node->get_type()!=type)
 	{
 		error(element, strprintf(_("<%s> did not accept type '%s'"),
@@ -2315,6 +2402,7 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 		element->get_name()=="bline" ||
 		element->get_name()=="wplist" ||
 		element->get_name()=="dilist" ||
+		element->get_name()=="animsharelist" ||
 		element->get_name()=="average" ||
 		element->get_name()=="weighted_average" );
 
@@ -2354,6 +2442,10 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	else if(element->get_name()=="dilist")
 	{
 		value_node = ValueNode_DIList::create();
+	}
+	else if(element->get_name()=="animsharelist")
+	{
+	    value_node = ValueNode_AnimShareList::create();
 	}
 	else if(element->get_name()=="weighted_average")
 	{
@@ -2648,6 +2740,12 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 	else
 	if(element->get_name()=="dilist") // This is not a typo. The dynamic list parser will parse a dilist.
 		value_node=parse_dynamic_list(element,canvas);
+	else
+	if(element->get_name()=="animsharelist")
+	{
+    	DEBUG_LOG("SYNFIG_DEBUG_LOAD_CANVAS", "%s:%d parse_value_node calls parse_dynamic_list for animsharelist\n",__FILE__, __LINE__);
+    	value_node=parse_dynamic_list(element,canvas);
+	}
 	else
 	if(element->get_name()=="weighted_average" || element->get_name()=="average") // This is not a typo. The dynamic list parser will parse a weighted_average.
 		value_node=parse_dynamic_list(element,canvas);

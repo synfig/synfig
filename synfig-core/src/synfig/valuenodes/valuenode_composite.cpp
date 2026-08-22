@@ -52,6 +52,7 @@
 #include <synfig/blinepoint.h>
 #include <synfig/widthpoint.h>
 #include <synfig/dashitem.h>
+#include <synfig/animshare.h>
 
 #endif
 
@@ -164,6 +165,22 @@ synfig::ValueNode_Composite::ValueNode_Composite(const ValueBase &value, Canvas:
 			value_node->set_static(true);
 			set_link("side_after",value_node);
 		}
+	}
+	else
+	if (type == type_anim_share)
+	{
+    	AnimShare a(value.get(AnimShare()));
+    	set_link("param", ValueNode_Const::create(a.get_param()));   // String
+    	set_link("delay", ValueNode_Const::create(a.get_delay()));   // Time
+
+    	ValueNode_Const::Handle order_node =
+        	ValueNode_Const::Handle::cast_dynamic(
+            	ValueNode_Const::create(a.get_order()));             // int
+    	if (order_node)
+    	{
+        	order_node->set_static(true);
+        	set_link("order", order_node);
+    	}
 	}
 	else
 	if (type == type_transformation)
@@ -279,6 +296,16 @@ synfig::ValueNode_Composite::operator()(Time t)const
 		return ret;
 	}
 	else
+	if (type == type_anim_share)
+	{
+		AnimShare ret;
+		assert(components[0] && components[1] && components[2]);
+		ret.set_param((*components[0])(t).get(String()));
+		ret.set_delay((*components[1])(t).get(Time()));
+		ret.set_order((*components[2])(t).get(int()));
+		return ret;
+	}
+	else
 	if (type == type_dash_item)
 	{
 		DashItem ret;
@@ -378,6 +405,13 @@ ValueNode_Composite::set_link_vfunc(int i,ValueNode::Handle x)
 			components[i]=x;
 			return true;
 		}
+	}
+	else
+	if (type == type_anim_share)
+	{
+		if (i==0 && x->get_type()==ValueBase(String()).get_type()) { components[i]=x; return true; }
+		if (i==1 && x->get_type()==ValueBase(Time()).get_type())   { components[i]=x; return true; }
+		if (i==2 && x->get_type()==ValueBase(int()).get_type())    { components[i]=x; return true; }
 	}
 	else
 	if (type == type_dash_item
@@ -577,6 +611,13 @@ ValueNode_Composite::get_link_index_from_name(const String &name)const
 			return 3;
 	}
 	else
+	if (type == type_anim_share)
+	{
+		if(name=="param") return 0;
+		if(name=="delay") return 1;
+		if(name=="order") return 2;
+	}
+	else
 	if (type == type_transformation)
 	{
 		if(name=="offset")
@@ -620,6 +661,7 @@ ValueNode_Composite::check_type(Type &type)
 		|| type==type_width_point
 		|| type==type_dash_item
 		|| type==type_transformation
+		|| type==type_anim_share
 		|| dynamic_cast<types_namespace::TypeWeightedValueBase*>(&type) != nullptr
 		|| dynamic_cast<types_namespace::TypePairBase*>(&type) != nullptr;
 }
@@ -810,6 +852,17 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 			.add_enum_value(WidthPoint::TYPE_INNER_PEAK,"inner_peak", _("Off-Peak Stop"))
 		);
 		return ret;
+	}
+	else
+	if (type == type_anim_share)
+	{
+		ret.push_back(ParamDesc("param").set_local_name(_("Parameter")));
+		ret.push_back(ParamDesc("delay").set_local_name(_("Delay")));
+		ret.push_back(ParamDesc("order").set_local_name(_("Order"))
+			.set_hint("enum").set_static(true)
+			.add_enum_value(0,"forward",_("Forward"))
+			.add_enum_value(1,"reverse",_("Reverse"))
+			.add_enum_value(2,"random",_("Random")));
 	}
 	else
 	if (type == type_transformation)
