@@ -51,6 +51,7 @@
 
 #include <synfigapp/actions/valuenodedynamiclistinsert.h>
 #include <synfigapp/actions/valuenodedynamiclistremove.h>
+#include <synfigapp/actions/valuenodedynamiclistremovesmart.h>
 
 #include <synfigapp/action_system.h>
 
@@ -302,8 +303,7 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
         			{
             			target_param = selected_name.substr(6);
         			}
-        			else
-        			if (selected_name.rfind("unshare_", 0) == 0)
+        			else if (selected_name.rfind("unshare_", 0) == 0)
         			{
             			unshare = true;
             			target_param = selected_name.substr(8);
@@ -392,11 +392,37 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
     			        return;
 
         			return;
+    			}
+    				// Clearing the Parameter child of an AnimShare entry removes
+    				// the entire entry instead of leaving an empty row behind.
+    				if (value_desc.parent_is_value_node())
+					{
+        				auto parent =
+            				synfig::ValueNode_Composite::Handle::cast_dynamic(
+                				value_desc.get_parent_value_node());
+
+        				if (parent && parent->get_type() == synfig::type_anim_share &&
+            				x.get().get_type() == synfig::type_string && x.get().get(synfig::String()).empty())
+        				{
+            				synfigapp::Action::Handle action =
+                			synfigapp::Action::ValueNodeDynamicListRemoveSmart::create();
+
+            				action->set_param("canvas",canvas_interface()->get_canvas());
+							action->set_param("canvas_interface",canvas_interface());
+							action->set_param("value_desc",value_desc);
+
+            				if (!action->is_ready()) return;
+							if (!canvas_interface()->get_instance()->perform_action(action))
+    							return;
+
+            				return;
+        				}
     				}
 
+
     				canvas_interface()->change_value(value_desc, x.get());
-				}
 				return;
+				}
 			}
 			else
 /*
