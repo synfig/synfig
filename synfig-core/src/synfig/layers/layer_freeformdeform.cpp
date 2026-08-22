@@ -235,7 +235,7 @@ Layer_FreeFormDeform::get_clamped_ctrl_point(
 	int gx, int gy, int cols, int rows) const
 {
 	// Extrapolate indices outside the grid to maintain straight edges
-	auto get_clamped_x = [&](int x, int y) {
+	auto get_clamped_x = [&](int x, int y) -> Point {
 		if (x < 0) return ctrl_points[y * cols + 0] * 2.0 - ctrl_points[y * cols + 1];
 		if (x >= cols) return ctrl_points[y * cols + cols - 1] * 2.0 - ctrl_points[y * cols + cols - 2];
 		return ctrl_points[y * cols + x];
