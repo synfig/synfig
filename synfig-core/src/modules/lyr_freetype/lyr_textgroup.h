@@ -121,6 +121,7 @@ public:
 	synfig::Layer::Vocab get_param_vocab() const override;
 	synfig::String get_local_name() const override;
 	std::vector<int> stagger_perm_;
+	void connect_shared_animations_signal(const synfig::ValueNode::LooseHandle& node);
 
 private:
 	void sync_glyphs();
@@ -137,8 +138,8 @@ private:
 	synfig::String encode_shared_entry(const SharedEntry& e);
 	bool decode_shared_entry(const synfig::String& s, SharedEntry& out);
 	mutable bool pending_shared_rebuild_ = false;
-    void rebuild_shared_entries_from_valuenode(
-        const synfig::ValueNode::Handle& x);
+    void rebuild_shared_entries_from_valuenode(const synfig::ValueNode::Handle& x);
+    sigc::connection shared_animations_changed_conn_;
 
 	struct ShareChoice
 	{
@@ -164,7 +165,6 @@ private:
 		}
 	};
 
-    void perform_share_action_deferred(ShareAction act);
 	std::vector<ShareChoice> build_share_choices() const;
 	mutable std::vector<ShareAction> last_share_actions_;
 

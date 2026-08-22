@@ -111,14 +111,14 @@ Layer_TextGroup::on_canvas_set()
 
     if (it != dynamic_param_list().end() && it->second)
     {
+        connect_shared_animations_signal(it->second);
         rebuild_shared_entries_from_valuenode(it->second);
     }
     else
     {
+        shared_animations_changed_conn_.disconnect();
         rebuild_shared_entries_from_param();
     }
-
-    pending_shared_rebuild_ = true;
 }
 
 Layer_TextGroup::Layer_TextGroup()
@@ -165,39 +165,6 @@ Layer_TextGroup::request_full_resync()
 	if (get_canvas())
 		get_canvas()->get_root()->signal_force_refresh()();
 	sync_glyphs();
-}
-
-void
-Layer_TextGroup::perform_share_action_deferred(ShareAction act)
-{
-    switch (act.mode)
-    {
-        case ShareMode::SHARE:
-        {
-            Time delay = param_stagger_delay.get(Time());
-            int order = param_stagger_order.get(int());
-            if (!share_param(act.param, delay, order))
-                synfig::warning("Share Animation: '%s' is not "
-                                "an animated glyph parameter",
-                                act.param.c_str());
-            else if (get_canvas())
-                get_canvas()->get_root()->signal_force_refresh()();
-            break;
-        }
-        case ShareMode::UNSHARE:
-        {
-            if (unshare_param(act.param))
-            {
-                if (get_canvas())
-                    get_canvas()->get_root()->signal_force_refresh()();
-            }
-            else
-                synfig::warning("Share Animation: '%s' is not "
-                                "currently shared",
-                                act.param.c_str());
-            break;
-        }
-    }
 }
 
 bool
@@ -264,24 +231,9 @@ Layer_TextGroup::set_param(const String& param, const ValueBase& value)
             if (dynamic_param_list().count("share_target"))
                 pending_dynamic_cleanup_.insert("share_target");
 
-            int action_idx = param_share_target.get(int());
+            // int action_idx = param_share_target.get(int());
 
             param_share_target = ValueBase(int(SHARE_TARGET_NONE));
-
-            if (action_idx > 0 &&
-                action_idx < (int)last_share_actions_.size())
-            {
-                ShareAction act = last_share_actions_[action_idx];
-
-                // Defer the actual share/unshare + panel refresh until GTK
-                // has finished emitting the combo box's "changed" signal.
-                // Running it inline frees the combo box mid-callback -> SIGSEGV.
-                Glib::signal_idle().connect_once(
-                    sigc::bind(
-                        sigc::mem_fun(*this,
-                            &Layer_TextGroup::perform_share_action_deferred),
-                        act));
-            }
         })());
 
 	IMPORT_VALUE_PLUS(param_share_animations, {
@@ -1134,14 +1086,28 @@ Layer_TextGroup::connect_dynamic_param(
 {
     bool ret = Layer_PasteCanvas::connect_dynamic_param(param, x);
 
-    if (ret && param == "share_animations")
-    {
-       rebuild_shared_entries_from_valuenode(x);
-
-        pending_shared_rebuild_ = true;
+    if (ret && param == "share_animations"){
+        rebuild_shared_entries_from_valuenode(x);
+        connect_shared_animations_signal(x);
     }
 
     return ret;
+}
+
+void
+Layer_TextGroup::connect_shared_animations_signal(const synfig::ValueNode::LooseHandle& node)
+{
+    shared_animations_changed_conn_.disconnect();
+
+    if (!node)
+        return;
+
+    shared_animations_changed_conn_ =
+        node->signal_changed().connect(
+            [this]()
+            {
+                pending_shared_rebuild_ = true;
+            });
 }
 
 void
@@ -1176,14 +1142,10 @@ Layer_TextGroup::set_time_vfunc(IndependentContext context, Time time) const
 	}
 	if (pending_shared_rebuild_)
 	{
-    	Layer_TextGroup* self =
-        	const_cast<Layer_TextGroup*>(this);
+    	Layer_TextGroup* self = const_cast<Layer_TextGroup*>(this);
 
     	self->pending_shared_rebuild_ = false;
-
-    	self->retry_pending_shared_entries();
-
-    	self->attach_shared_entries();
+    	self->rebuild_shared_entries_from_param();
 	}
 
 	Time base_time = time * get_time_dilation() + get_time_offset();
