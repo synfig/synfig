@@ -133,6 +133,8 @@ src/gui/states/state_eyedrop.cpp
 src/gui/states/state_eyedrop.h
 src/gui/states/state_fill.cpp
 src/gui/states/state_fill.h
+src/gui/states/state_ffd.cpp
+src/gui/states/state_ffd.h
 src/gui/states/state_gradient.cpp
 src/gui/states/state_gradient.h
 src/gui/states/state_lasso.cpp

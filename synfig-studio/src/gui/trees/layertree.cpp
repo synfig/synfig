@@ -39,8 +39,9 @@
 #include <glibmm/main.h> //Glib::signal_timeout()
 
 #include <gtkmm/treemodelsort.h>
-
 #include <gui/app.h>
+#include <gui/docks/dock_toolbox.h>
+#include <gui/statemanager.h>
 #include <gui/cellrenderer/cellrenderer_value.h>
 #include <gui/cellrenderer/cellrenderer_timetrack.h>
 #include <gui/exception_guard.h>

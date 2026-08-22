@@ -2210,7 +2210,8 @@ studio::WorkArea::set_zoom(float z)
 
 	// TODO: FIXME: QuickHack
 	if (canvas_view->get_smach().get_state_name() != std::string("polygon")
-	 && canvas_view->get_smach().get_state_name() != std::string("bline"))
+	 && canvas_view->get_smach().get_state_name() != std::string("bline")
+	 && canvas_view->get_smach().get_state_name() != std::string("ffd"))
 			canvas_view->queue_rebuild_ducks();
 }
 
