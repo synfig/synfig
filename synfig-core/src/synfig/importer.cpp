@@ -63,6 +63,7 @@ using namespace synfig;
 Importer::Book* synfig::Importer::book_;
 
 static std::map<FileSystem::Identifier,Importer::LooseHandle> *__open_importers;
+std::mutex importer_mutex_;
 
 /* === P R O C E D U R E S ================================================= */
 
@@ -80,7 +81,10 @@ bool
 Importer::subsys_stop()
 {
 	delete book_;
+	std::lock_guard<std::mutex> lock(importer_mutex_);
+	__open_importers->clear();
 	delete __open_importers;
+	__open_importers = nullptr;
 	return true;
 }
 
@@ -103,10 +107,13 @@ Importer::open(const FileSystem::Identifier &identifier, bool force)
 
 	// If we already have an importer open under that filename,
 	// then use it instead.
-	if(__open_importers->count(identifier))
 	{
-		//synfig::info("Found importer already open, using it...");
-		return (*__open_importers)[identifier];
+		std::lock_guard<std::mutex> lock(importer_mutex_);
+		if(__open_importers->count(identifier))
+		{
+			//synfig::info("Found importer already open, using it...");
+			return (*__open_importers)[identifier];
+		}
 	}
 
 	String ext(identifier.filename.extension().u8string());
@@ -128,7 +135,10 @@ Importer::open(const FileSystem::Identifier &identifier, bool force)
 	try {
 		Importer::Handle importer;
 		importer=Importer::book()[ext].factory(identifier);
-		(*__open_importers)[identifier]=importer;
+		{
+			std::lock_guard<std::mutex> lock(importer_mutex_);
+			(*__open_importers)[identifier]=importer;
+		}
 		return importer;
 	}
 	catch (const String& str)
@@ -140,6 +150,7 @@ Importer::open(const FileSystem::Identifier &identifier, bool force)
 
 void Importer::forget(const FileSystem::Identifier &identifier)
 {
+	std::lock_guard<std::mutex> lock(importer_mutex_);
 	__open_importers->erase(identifier);
 }
 
@@ -151,11 +162,16 @@ Importer::Importer(const FileSystem::Identifier &identifier):
 
 Importer::~Importer()
 {
+	std::lock_guard<std::mutex> lock(importer_mutex_);
 	// Remove ourselves from the open importer list
 	std::map<FileSystem::Identifier,Importer::LooseHandle>::iterator iter;
-	for(iter=__open_importers->begin();iter!=__open_importers->end();)
-		if(iter->second==this)
-			__open_importers->erase(iter++); else ++iter;
+	for(iter=__open_importers->begin();iter!=__open_importers->end();) {
+		if(iter->second==this) {
+			iter = __open_importers->erase(iter);
+		} else {
+			++iter;
+		}
+	}
 }
 
 rendering::Surface::Handle
