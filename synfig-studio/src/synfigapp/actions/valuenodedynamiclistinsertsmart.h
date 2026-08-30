@@ -82,6 +82,8 @@ class ValueNodeDynamicListInsertSmartKeepShape :
 public:
 	ValueNodeDynamicListInsertSmartKeepShape();
 
+	static bool is_candidate(const ParamList& x);
+
 	ACTION_MODULE_EXT
 };
 

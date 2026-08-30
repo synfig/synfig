@@ -436,3 +436,27 @@ Action::ValueNodeDynamicListInsertSmartKeepShape::ValueNodeDynamicListInsertSmar
 {
 	keep_shape=true;
 }
+
+bool
+ValueNodeDynamicListInsertSmartKeepShape::is_candidate(const ParamList& x)
+{
+	// if (!ValueNodeDynamicListInsertSmart::is_candidate(x))
+	// 	return false;
+
+	if (!candidate_check(get_param_vocab(), x))
+		return false;
+
+	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
+
+	if (value_desc.parent_is_value_node()) {
+		// We need a Dynamic List parent.
+		if (auto list = ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node()))
+			return list->get_contained_type() == type_bline_point;
+	}
+	if (value_desc.is_value_node()) {
+		// Or a Dynamic List value node
+		if (auto list = ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_value_node()))
+			return list->get_contained_type() == type_bline_point;
+	}
+	return false;
+}
