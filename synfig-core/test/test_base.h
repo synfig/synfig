@@ -29,6 +29,10 @@
 #include <cstdlib> // std::abs
 #include <iostream> // std::cerr
 #include <sstream>
+#include <string>    // For std::string
+#include <locale>    // For std::localea
+
+
 #include <vector>
 
 #include <synfig/general.h> // synfig::error , synfig::info
