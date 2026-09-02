@@ -38,6 +38,8 @@
 #include <synfig/localization.h>
 
 #include <synfig/context.h>
+#include <synfig/rendering/common/task/taskdistort.h>
+#include <synfig/rendering/software/task/tasksw.h>
 
 #endif
 
@@ -55,11 +57,254 @@ SYNFIG_LAYER_INIT(Julia);
 SYNFIG_LAYER_SET_NAME(Julia,"julia");
 SYNFIG_LAYER_SET_LOCAL_NAME(Julia,N_("Julia Set"));
 SYNFIG_LAYER_SET_CATEGORY(Julia,N_("Fractals"));
-SYNFIG_LAYER_SET_VERSION(Julia,"0.2");
+SYNFIG_LAYER_SET_VERSION(Julia,"0.3");
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
+
+class TaskJulia
+	: public rendering::TaskDistort
+{
+public:
+	typedef etl::handle<TaskJulia> Handle;
+	static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Color icolor;
+	Color ocolor;
+	Angle color_shift;
+	int iterations;
+	Point seed;
+	bool distort_inside;
+	bool shade_inside;
+	bool solid_inside;
+	bool invert_inside;
+	bool color_inside;
+	bool distort_outside;
+	bool shade_outside;
+	bool solid_outside;
+	bool invert_outside;
+	bool color_outside;
+
+	bool color_cycle;
+	bool smooth_outside;
+	bool broken;
+
+	ColorReal squared_bailout;
+
+	Rect
+	compute_required_source_rect(const Rect& source_rect, const Matrix& /*inv_matrix*/) const override
+	{
+		if (!distort_inside && ! distort_outside) {
+			if (color_inside && color_outside)
+				return Rect();
+			else
+				return source_rect;
+		}
+
+		if (distort_outside && !solid_outside) {
+			const Point c = seed;
+			Rect r;
+			for (Point::value_type y = source_rect.miny; y < source_rect.maxy; y += get_units_per_pixel()[1]) {
+				for (Point::value_type x = source_rect.minx; x < source_rect.maxx; x += get_units_per_pixel()[0]) {
+					Point z {x, y};
+					for (int i=0; i<iterations; i++) {
+						// Perform complex multiplication
+						Real zr_hold = z[0];
+						z[0] = z[0]*z[0]-z[1]*z[1] + c[0];
+						z[1] = zr_hold*z[1]*2 + c[1];
+
+						// Use "broken" algorithm, if requested (looks weird)
+						if (broken)
+							z[0] += z[1];
+
+						if (z.mag_squared() > squared_bailout) {
+							break;
+						}
+					}
+					r.minx = std::min(r.minx, z[0]);
+					r.miny = std::min(r.miny, z[1]);
+					r.maxx = std::max(r.maxx, z[0]);
+					r.maxy = std::max(r.maxy, z[1]);
+				}
+			}
+			return r;
+		}
+
+		if (solid_outside)
+			return source_rect;
+
+		Vector expansion(8, 8);
+		Rect rect(source_rect.get_min() - expansion, source_rect.get_max() + expansion);
+		Rect::value_type diff = rect.get_width() - rect.get_height();
+		if (approximate_greater(diff, 0.)) {
+			rect.expand_y(diff);
+		} else if (approximate_less(diff, 0.)) {
+			rect.expand_x(-diff);
+		}
+		return rect;
+	}
+
+};
+
+class TaskJuliaSW
+	: public TaskJulia, public rendering::TaskSW
+{
+public:
+	typedef etl::handle<TaskJuliaSW> Handle;
+	static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	TaskJuliaSW()
+	{
+	}
+
+	Color
+	get_color(const Point& point, const synfig::Surface& context) const
+	{
+		Real
+			cr, ci,
+			zr, zi;
+
+		ColorReal mag(0);
+
+		Color ret;
+
+		cr=seed[0];
+		ci=seed[1];
+		zr=point[0];
+		zi=point[1];
+
+		const struct SideInfo
+		{
+			Color color;
+			bool is_solid;
+			bool must_distort;
+			bool must_invert;
+			bool must_color;
+			bool must_shade;
+		} side_info[2] = {
+			{icolor, solid_inside, distort_inside, invert_inside, color_inside, shade_inside},
+			{ocolor, solid_outside, distort_outside, invert_outside, color_outside, shade_outside},
+		};
+		ColorReal shade_factor;
+		ColorReal depth;
+
+		int side_idx = 0; // inside
+
+		for (int i=0; i<iterations; i++) {
+			// Perform complex multiplication
+			Real zr_hold = zr;
+			zr = zr*zr-zi*zi + cr;
+			zi = zr_hold*zi*2 + ci;
+
+			// Use "broken" algorithm, if requested (looks weird)
+			if(broken) zr += zi;
+
+			// Calculate Magnitude
+			mag = zr*zr + zi*zi;
+
+			if (mag > squared_bailout) {
+				side_idx = 1; // outside
+				depth = static_cast<ColorReal>(i);
+				if (smooth_outside) {
+					// Darco's original mandelbrot smoothing algo
+					// depth=((Point::value_type)i+(2.0-sqrt(mag))/PI);
+
+					// Linas Vepstas algo (Better than darco's)
+					// See (http://linas.org/art-gallery/escape/smooth.html)
+					depth -= log(log(sqrt(mag))) / LOG_OF_2;
+
+					// Clamp
+					if (depth<0) depth=0;
+				}
+				shade_factor = depth/static_cast<ColorReal>(iterations);
+				break;
+			}
+		}
+
+		if (side_idx == 0)
+			shade_factor = mag;
+
+		const auto& info = side_info[side_idx];
+		if (info.is_solid)
+			ret = info.color;
+		else {
+			Point q = info.must_distort ? Point(zr,zi) : point;
+
+			auto pixel_offset = -required_source_rect.get_min().multiply_coords(sub_tasks[0]->get_pixels_per_unit());
+			q = q.multiply_coords(sub_tasks[0]->get_pixels_per_unit()) + pixel_offset;
+			if (q[0] >= context.get_w() || q[0] < 0 || q[1] >= context.get_h() || q[1] < 0)
+				ret = Color::magenta();
+			else
+				ret = context.cubic_sample(q[0], q[1]);
+		}
+
+		if (info.must_invert)
+			ret = ~ret;
+
+		if (info.must_color)
+			ret = ret.set_uv(zr,zi).clamped_negative();
+
+		if (side_idx == 1 && color_cycle) // outside
+			ret = ret.rotate_uv(color_shift*depth).clamped_negative();
+
+		if (info.must_shade)
+			ret += (info.color - ret) * shade_factor;
+		return ret;
+	}
+
+	bool run(Task::RunParams& /*params*/) const override
+	{
+		if (!sub_task())
+			return true;
+		if (!is_valid())
+			return true;
+
+		const Vector ppu = get_pixels_per_unit();
+
+		rendering::TaskSW::LockWrite la(this);
+		if (!la)
+			return false;
+
+		rendering::TaskSW::LockRead lb(sub_task());
+		if (!lb)
+			return false;
+		// const Vector ppub = sub_task()->get_pixels_per_unit();
+		const int tw = target_rect.get_width();
+		const synfig::Surface& b = lb->get_surface();
+
+		synfig::Surface::pen pen(la->get_surface().get_pen(target_rect.minx, target_rect.miny));
+
+		Matrix bounds_transformation;
+		bounds_transformation.m00 = ppu[0];
+		bounds_transformation.m11 = ppu[1];
+		bounds_transformation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
+		bounds_transformation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
+
+		Matrix inv_matrix = bounds_transformation.get_inverted();
+
+		Vector dx = inv_matrix.axis_x();
+		Vector dy = inv_matrix.axis_y() - dx*(Real)tw;
+		Vector p = inv_matrix.get_transformed( Vector((Real)target_rect.minx, (Real)target_rect.miny) );
+
+		for (int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p += dy, pen.inc_y(), pen.dec_x(tw)) {
+			for (int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p += dx, pen.inc_x()) {
+				pen.put_value(get_color(p, b));
+			}
+		}
+
+		return true;
+	}
+};
+
+rendering::Task::Token TaskJulia::token(
+	DescAbstract<TaskJulia>("Julia") );
+rendering::Task::Token TaskJuliaSW::token(
+	DescReal<TaskJuliaSW, TaskJulia>("JuliaSW") );
+
+
 
 Julia::Julia():
 param_color_shift(ValueBase(Angle::deg(0)))
@@ -158,16 +403,6 @@ Julia::get_param(const String & param)const
 	EXPORT_VERSION();
 
 	return ValueBase();
-}
-
-RendDesc
-Julia::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
-{
-	RendDesc desc(renddesc);
-	desc.set_wh(512, 512);
-	desc.set_tl(Vector(-5.0, -5.0));
-	desc.set_br(Vector( 5.0,  5.0));
-	return desc;
 }
 
 Color
@@ -356,4 +591,38 @@ Julia::get_param_vocab()const
 
 
 	return ret;
+}
+
+rendering::Task::Handle
+Julia::build_rendering_task_vfunc(Context context) const
+{
+	rendering::Task::Handle task = context.build_rendering_task();
+
+	TaskJulia::Handle task_julia(new TaskJulia());
+	task_julia->icolor = param_icolor.get(Color());
+	task_julia->ocolor = param_ocolor.get(Color());
+	task_julia->color_shift = param_color_shift.get(Angle());
+	task_julia->iterations = param_iterations.get(int());
+	task_julia->seed = param_seed.get(Point());
+	task_julia->distort_inside = param_distort_inside.get(bool());
+	task_julia->shade_inside = param_shade_inside.get(bool());
+	task_julia->solid_inside = param_solid_inside.get(bool());
+	task_julia->invert_inside = param_invert_inside.get(bool());
+	task_julia->color_inside = param_color_inside.get(bool());
+	task_julia->distort_outside = param_distort_outside.get(bool());
+	task_julia->shade_outside = param_shade_outside.get(bool());
+	task_julia->solid_outside = param_solid_outside.get(bool());
+	task_julia->invert_outside = param_invert_outside.get(bool());
+	task_julia->color_outside = param_color_outside.get(bool());
+
+	task_julia->color_cycle = param_color_cycle.get(bool());
+	task_julia->smooth_outside = param_smooth_outside.get(bool());
+	task_julia->broken = param_broken.get(bool());
+	task_julia->squared_bailout = squared_bailout;
+
+	task_julia->sub_task() = task;
+
+	task = task_julia;
+
+	return task;
 }
