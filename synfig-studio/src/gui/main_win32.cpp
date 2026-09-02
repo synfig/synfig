@@ -38,6 +38,14 @@ for which a new license (GPL+exception) is in place.
 #include <windows.h>
 #include <wincon.h>
 
+#include "exchndl.h"
+#include <ctime>
+#include <vector>
+#include <synfig/filesystem_path.h>
+#include <synfig/general.h>
+#include <synfig/version.h>
+#include "localization.h"
+
 void redirectIOToConsole()
 {
 	int hConHandle;
@@ -73,6 +81,92 @@ void redirectIOToConsole()
 	// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog 
 	// point to console as well
 	std::ios::sync_with_stdio();
+}
+
+static std::string
+get_current_timestamp()
+{
+	std::time_t current_time = std::time(nullptr);
+	std::string time_str(30, 0);
+	std::strftime(&time_str[0], time_str.size(), "%Y-%m-%d.%H-%M-%S", std::localtime(&current_time));
+	return time_str;
+}
+
+static bool
+is_directory_exists(LPCWSTR path)
+{
+	DWORD dwAttrib = GetFileAttributesW(path);
+
+	return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
+			(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
+}
+
+static bool
+create_directory_recursive(const synfig::filesystem::Path& filename)
+{
+	wchar_t folder[MAX_PATH];
+	ZeroMemory(folder, MAX_PATH * sizeof(wchar_t));
+
+	wchar_t* end = wcschr(filename.c_str(), L'/');
+
+	while (end != NULL) {
+		wcsncpy(folder, filename.c_str(), end - filename.c_str() + 1);
+		if (!is_directory_exists(folder)) {
+			if (!CreateDirectoryW(folder, NULL)) {
+				if (GetLastError() != ERROR_ALREADY_EXISTS) {
+					synfig::error(_("Couldn't create directory %s (for %s)"), synfig::filesystem::Path::from_native(folder).u8_str(), filename.u8_str());
+					return false;
+				}
+			}
+		}
+		end = wcschr(++end, L'/');
+	}
+	return true;
+}
+
+void
+register_crash_report()
+{
+	std::vector<synfig::filesystem::Path> possible_lib_paths = {{"."}};
+	HMODULE hModule = nullptr;
+
+	for (const auto& path : possible_lib_paths) {
+		hModule = LoadLibraryW((path.native() + L"/exchndl.dll").c_str());
+		if (hModule)
+			break;
+	}
+
+	if (!hModule) {
+		synfig::warning(_("Couldn't find library exchndl.dll to crash report, if any"));
+		return;
+	}
+
+	typedef void (*PFNEXCHNDLINIT)();
+	PFNEXCHNDLINIT pfnExcHndlInit = (PFNEXCHNDLINIT)GetProcAddress(hModule, "ExcHndlInit");
+
+	if (!pfnExcHndlInit) {
+		synfig::warning(_("Couldn't find entrypoint ExcHndlInit in library exchndl.dll"));
+		return;
+	}
+
+	pfnExcHndlInit();
+
+	std::wstring localappdata = _wgetenv(L"LOCALAPPDATA");
+	if (!localappdata.empty()) {
+		auto filename = synfig::filesystem::Path::from_native(localappdata);
+		filename /= synfig::filesystem::Path(synfig::strprintf("synfig/crashes/synfig-%s-%s.RPT", synfig::get_version(), get_current_timestamp().c_str()));
+
+		bool has_specific_filepath = create_directory_recursive(filename);
+
+		if (has_specific_filepath) {
+			typedef BOOL (*PFEXCHNDLSETLOGFILENAMEW)(const WCHAR*);
+			PFEXCHNDLSETLOGFILENAMEW pfExcHndlSetLogFileNameW = (PFEXCHNDLSETLOGFILENAMEW)GetProcAddress(hModule, "ExcHndlSetLogFileNameW");
+			if (pfExcHndlSetLogFileNameW) {
+				if (pfExcHndlSetLogFileNameW(filename.c_str()))
+					synfig::info(_("If a crash occurs, refer to file %s"), filename.u8_str());
+			}
+		}
+	}
 }
 
 #endif /* WIN32 */
