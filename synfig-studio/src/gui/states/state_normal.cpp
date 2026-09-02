@@ -203,7 +203,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateNormal::StateNormal():
-	Smach::state<StateNormal_Context>("normal", N_("Transform Tool"))
+	Smach::state<StateNormal_Context>("normal", N_("Transform"))
 {
 	insert(event_def(EVENT_STOP,&StateNormal_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateNormal_Context::event_refresh_handler));

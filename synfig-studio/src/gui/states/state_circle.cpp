@@ -276,7 +276,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateCircle::StateCircle():
-	Smach::state<StateCircle_Context>("circle", N_("Circle Tool"))
+	Smach::state<StateCircle_Context>("circle", N_("Circle"))
 {
 	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateCircle_Context::event_layer_selection_changed_handler));
 	insert(event_def(EVENT_STOP,&StateCircle_Context::event_stop_handler));
