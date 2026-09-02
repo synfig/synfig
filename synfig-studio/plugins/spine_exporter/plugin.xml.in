@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+   <_name>Export to Spine format</_name>
+   <exec>spine_exporter.py</exec>
+</plugin>
