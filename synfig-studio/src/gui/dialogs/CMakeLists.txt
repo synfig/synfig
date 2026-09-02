@@ -21,5 +21,6 @@ target_sources(synfigstudio
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_workspaces.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/dialog_template.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/vectorizersettings.cpp"
+		"${CMAKE_CURRENT_LIST_DIR}/dialog_pluginmanager.cpp"
     
 )

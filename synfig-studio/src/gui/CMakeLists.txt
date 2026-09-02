@@ -88,6 +88,7 @@ target_link_libraries(synfigstudio PRIVATE
 	PkgConfig::XMLPP
 	libsynfig
 	synfigapp
+	PkgConfig::CURL
 )
 
 if (FONTCONFIG_FOUND)
