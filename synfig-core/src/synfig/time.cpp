@@ -60,7 +60,9 @@ using namespace synfig;
 
 /* === G L O B A L S ======================================================= */
 
+#ifndef _MSC_VER
 const Time::value_type Time::epsilon_ = static_cast<Time::value_type>(0.0005);
+#endif
 
 /* === M E T H O D S ======================================================= */
 

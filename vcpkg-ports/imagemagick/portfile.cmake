@@ -1,7 +1,7 @@
 vcpkg_download_distfile(ARCHIVE
-    URLS "https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.0-39.tar.gz"
-    FILENAME "ImageMagick-7.1.0-39.tar.gz"
-    SHA512 A655DA17BE5E7B1A9CA95960DD29261ACD21222A2087BB187E9A06B29446F3755CF305B86185FED9D8B4BA30F46D1D679159B4670089ECCF93153A6A7FA63160
+    URLS "https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.1-29.tar.gz"
+    FILENAME "ImageMagick-7.1.1-29.tar.gz"
+    SHA512 44d516e13b434677fcb391dbfae3386faae8b73f18ef8dac1f75ac1e56831761ec2e0fdbee5c5e7c2d1af384a28d09b1fdd0970676052a25ec18f6814efbc6f4
 )
 
 vcpkg_extract_source_archive_ex(
@@ -9,7 +9,7 @@ vcpkg_extract_source_archive_ex(
     ARCHIVE "${ARCHIVE}"
     PATCHES
       disable_complex_fftw.patch
-      dont_include_win32config.patch
+#      dont_include_win32config.patch
       fix_make_dependency.patch
       fix_ssize_t_undefined.patch
 )

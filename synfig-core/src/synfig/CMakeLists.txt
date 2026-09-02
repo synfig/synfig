@@ -11,22 +11,6 @@ add_definitions(-DVERSION="${STUDIO_VERSION_MAJOR}.${STUDIO_VERSION_MINOR}.${STU
 
 message(STATUS "MLT DIR: ${MLT_INCLUDE_DIRS}")
 
-# By default, the libtool places its headers in the system directory (/usr/local/include), and
-# compiler automatically finds ltdl.h header. But on MacOS, CMake overrides the system directory
-# using the `-sysroot` flag, and this header cannot be found. (https://gitlab.kitware.com/cmake/cmake/-/issues/19120)
-# So, we need to manually find it.
-
-if(APPLE OR VCPKG_TOOLCHAIN)
-    find_path(LTDL_INCLUDE_DIRS ltdl.h)
-    find_library(LTDL_LIBRARIES ltdl)
-    message(STATUS "Libltdl headers:   ${LTDL_INCLUDE_DIRS}")
-    message(STATUS "Libltdl libraries: ${LTDL_LIBRARIES}")
-else()
-    set(LTDL_LIBRARIES ltdl)
-endif()
-
-target_include_directories(libsynfig PUBLIC ${LTDL_INCLUDE_DIRS})
-
 target_sources(libsynfig
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/activepoint.cpp"
@@ -122,10 +106,10 @@ target_link_libraries(libsynfig PUBLIC
 	PkgConfig::SIGCPP
 	PkgConfig::GLIBMM
 	PkgConfig::GIOMM
+	PkgConfig::GMODULE
 	PkgConfig::XMLPP
 	PkgConfig::FFTW
 	ZLIB::ZLIB
-	${LTDL_LIBRARIES}
 	${CMAKE_THREAD_LIBS_INIT}
 	${Intl_LIBRARIES}
 )

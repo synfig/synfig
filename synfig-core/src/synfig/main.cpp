@@ -657,7 +657,7 @@ synfig::OS::get_binary_path()
 	{
 		// In worst case use value specified as fallback 
 		// (usually should come from argv[0])
-		return filesystem::absolute(OS::fallback_binary_path);
+		return filesystem::absolute(OS::get_fallback_binary_path()).u8string();
 	}
 	
 	

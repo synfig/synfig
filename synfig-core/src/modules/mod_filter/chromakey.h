@@ -48,7 +48,7 @@ class TaskChromaKey: public rendering::TaskPixelProcessor
 {
 public:
 	typedef etl::handle<TaskChromaKey> Handle;
-	SYNFIG_EXPORT static Token token;
+	static Token token;
 	virtual Token::Handle get_token() const { return token.handle(); }
 
 	Color key_color;
