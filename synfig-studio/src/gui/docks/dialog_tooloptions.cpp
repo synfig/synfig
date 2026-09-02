@@ -52,11 +52,13 @@ using namespace studio;
 /* === M E T H O D S ======================================================= */
 
 Dialog_ToolOptions::Dialog_ToolOptions():
-	Dockable("tool_options",_("Tool Options"),"about_icon"),
-	empty_label(_("This tool has no options"))
+	Dockable("tool_options", _("Tool Options"), "about_icon"),
+	empty_label(_("This tool has no options")),
+	primary_focus_widget_(nullptr)
 {
-	add(sub_vbox_);
 
+	add(sub_vbox_);
+	
 	sub_vbox_.set_margin_end(10);
 	sub_vbox_.set_margin_bottom(10);
 	
@@ -71,14 +73,22 @@ Dialog_ToolOptions::~Dialog_ToolOptions()
 void
 Dialog_ToolOptions::clear()
 {
-	Dockable::clear();
-	set_local_name(_("Tool Options"));
-	add(sub_vbox_);
-	set_widget(empty_label);
-	sub_vbox_.set_valign(Gtk::Align::ALIGN_CENTER);
-	empty_label.show();
+    Dockable::clear();
+    set_local_name(_("Tool Options"));
+    add(sub_vbox_);
+    set_widget(empty_label);
+    sub_vbox_.set_valign(Gtk::Align::ALIGN_CENTER);
+    empty_label.show();
 
-	set_icon("about_icon");
+    set_icon("about_icon");
+    
+    primary_focus_widget_ = nullptr;
+}
+
+void
+Dialog_ToolOptions::set_primary_focus_widget(Gtk::Widget* widget)
+{
+    primary_focus_widget_ = widget;
 }
 
 void
@@ -92,3 +102,25 @@ Dialog_ToolOptions::set_widget(Gtk::Widget&x)
 	sub_vbox_.set_valign(Gtk::Align::ALIGN_FILL);
 	x.show();
 }
+
+
+void
+Dialog_ToolOptions::focus_primary_widget()
+{
+    if (!primary_focus_widget_) return;
+    
+    if (primary_focus_widget_->is_sensitive() && 
+        primary_focus_widget_->is_visible() && 
+        primary_focus_widget_->get_can_focus())
+    {
+        primary_focus_widget_->grab_focus();
+        
+        // For entry widgets, we'll just focus them without text selection
+        // since we can't safely access Entry-specific methods
+        if (primary_focus_widget_->get_name() == "GtkEntry") {
+            // Can't do text selection without Gtk::Entry definition
+            // Just leave it as focus-only
+        }
+    }
+}
+
