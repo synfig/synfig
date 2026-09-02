@@ -45,6 +45,7 @@
 #include <synfig/surface.h>
 #include <synfig/value.h>
 #include <synfig/transform.h>
+#include <synfig/rendering/software/task/tasksw.h>
 
 #endif
 
@@ -56,16 +57,233 @@ SYNFIG_LAYER_INIT(RadialBlur);
 SYNFIG_LAYER_SET_NAME(RadialBlur,"radial_blur");
 SYNFIG_LAYER_SET_LOCAL_NAME(RadialBlur,N_("Radial Blur"));
 SYNFIG_LAYER_SET_CATEGORY(RadialBlur,N_("Blurs"));
-SYNFIG_LAYER_SET_VERSION(RadialBlur,"0.1");
+SYNFIG_LAYER_SET_VERSION(RadialBlur,"0.2");
 
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
 
-/* === E N T R Y P O I N T ================================================= */
+class TaskRadialBlur
+	: public rendering::Task
+{
+public:
+	typedef etl::handle<TaskRadialBlur> Handle;
+	static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	Vector origin;
+	Real size = 0.2;
+	bool fade_out = false;
+
+	Real blend_amount = 1.0;
+	Color::BlendMethod blend_method = Color::BLEND_STRAIGHT;
+
+	void
+	set_coords_sub_tasks() override
+	{
+		if (sub_tasks.empty() || !sub_tasks.at(0))
+			return;
+
+		const Point tl(source_rect.get_min()), br(source_rect.get_max());
+		const int w(target_rect.get_width()), h(target_rect.get_height());
+		const Real pw(get_units_per_pixel()[0]),ph(get_units_per_pixel()[1]);
+
+		Rect rect(tl, br);
+		Point pos;
+		// find how far towards the origin of the blur we are going to
+		// wander for each of the 4 corners of our tile, expanding the
+		// render description for each of them if necessary
+		int x, y;
+		for(y=0,pos[1]=tl[1];y<h;y+=(h-1),pos[1]+=ph*(h-1))
+			for(x=0,pos[0]=tl[0];x<w;x+=(w-1),pos[0]+=pw*(w-1))
+				rect.expand((pos-origin)*(1.0f-size) + origin);
+
+		Vector stl = rect.get_min();
+		Vector sbr = rect.get_max();
+		if (br[0] < tl[0]) std::swap(stl[0], sbr[0]);
+		if (br[1] < tl[1]) std::swap(stl[1], sbr[1]);
+
+		// round out to the nearest pixel
+		Point tmp_surface_tl = Point(tl[0] - pw*(int((tl[0]-stl[0])/pw+1-1e-6)),
+									 tl[1] - ph*(int((tl[1]-stl[1])/ph+1-1e-6)));
+		Point tmp_surface_br = Point(br[0] + pw*(int((sbr[0]-br[0])/pw+2-1e-6)),
+									 br[1] + ph*(int((sbr[1]-br[1])/ph+2-1e-6)));
+
+		// round to nearest integer width and height (should be very
+		// nearly whole numbers already, but don't want to round 5.99999
+		// down to 5)
+		int tmp_surface_width = int((tmp_surface_br[0]-tmp_surface_tl[0])/pw + 0.5);
+		int tmp_surface_height = int((tmp_surface_br[1]-tmp_surface_tl[1])/ph + 0.5);
+		sub_tasks[0]->set_coords(Rect(tmp_surface_tl, tmp_surface_br), VectorInt(tmp_surface_width, tmp_surface_height));
+	}
+
+	/**
+	 * Compute how large is the source_rect given a sub_task source_rect
+	 */
+	Rect
+	compute_expanded_rect(const Rect& original_rect, const Vector& upp) const
+	{
+		const Point tl(original_rect.get_min()), br(original_rect.get_max());
+
+		Rect rect(tl, br);
+		{
+			Point pos = tl;
+			// find how far towards the origin of the blur we are going to
+			// wander for each of the 4 corners of our tile, expanding the
+			// render description for each of them if necessary
+			for (int j = 0; j < 2; ++j, pos[1] = br[1] - upp[1]) {
+				pos[0]=tl[0];
+				for (int i = 0; i < 2; ++i, pos[0] = br[0] - upp[0])
+					rect.expand((pos-origin)/(1.0f-size) + origin);
+			}
+		}
+
+		Vector stl = rect.get_min();
+		Vector sbr = rect.get_max();
+		if (br[0] < tl[0]) std::swap(stl[0], sbr[0]);
+		if (br[1] < tl[1]) std::swap(stl[1], sbr[1]);
+
+		return Rect(stl, sbr);
+	}
+};
+
+class TaskRadialBlurSW
+	: public TaskRadialBlur, public rendering::TaskSW
+{
+public:
+	typedef etl::handle<TaskRadialBlurSW> Handle;
+	static Token token;
+	Token::Handle get_token() const override { return token.handle(); }
+
+	bool run(Task::RunParams& /*params*/) const override
+	{
+		if (!sub_task(0))
+			return true;
+		if (!is_valid())
+			return true;
+
+		Surface::value_prep_type cooker;
+
+		Rect expanded_subtask_source_rect = compute_expanded_rect(sub_task(0)->source_rect, sub_task(0)->get_units_per_pixel());
+		Rect common_source_rect;
+		rect_set_intersect(common_source_rect, source_rect, expanded_subtask_source_rect);
+		if (!common_source_rect.is_valid())
+			return true;
+
+		const Point tl(common_source_rect.get_min()), br(common_source_rect.get_max());
+
+		RectInt ra;
+		{
+			const Vector ppu = get_pixels_per_unit();
+			Matrix world_to_raster_transformation;
+			world_to_raster_transformation.m00 = ppu[0];
+			world_to_raster_transformation.m11 = ppu[1];
+			world_to_raster_transformation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
+			world_to_raster_transformation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
+
+			Rect raf{world_to_raster_transformation.get_transformed(tl), world_to_raster_transformation.get_transformed(br)};
+			ra = RectInt{VectorInt{int(raf.get_min()[0]), int(raf.get_min()[1])}, VectorInt{int(raf.get_max()[0]), int(raf.get_max()[1])}};
+		}
+
+		const int w(ra.get_width()), h(ra.get_height());
+		const Vector upp = get_units_per_pixel();
+		const Vector sub_ppu = sub_task(0)->get_pixels_per_unit();
+
+		rendering::TaskSW::LockWrite la(this);
+		if (!la)
+			return false;
+
+		rendering::TaskSW::LockRead lb(sub_task(0));
+		if (!lb)
+			return false;
+		const synfig::Surface& sub_surface = lb->get_surface();
+
+
+		Matrix sub_world_to_raster_transformation;
+		sub_world_to_raster_transformation.m00 = sub_ppu[0];
+		sub_world_to_raster_transformation.m11 = sub_ppu[1];
+		sub_world_to_raster_transformation.m20 = sub_task(0)->target_rect.minx - sub_ppu[0]*sub_task(0)->source_rect.minx;
+		sub_world_to_raster_transformation.m21 = sub_task(0)->target_rect.miny - sub_ppu[1]*sub_task(0)->source_rect.miny;
+
+		Point pos(tl);
+		Surface::alpha_pen apen(la->get_surface().get_pen(ra.get_min()[0], ra.get_min()[1]), blend_amount, blend_method);
+		for (int y=ra.get_min()[1]; y<ra.get_max()[1]; y++,  apen.inc_y(), apen.dec_x(w), pos[1]+=upp[1], pos[0] = tl[0]) {
+			for (int x=ra.get_min()[0]; x<ra.get_max()[0]; x++, apen.inc_x(), pos[0]+=upp[0]) {
+				const Point begin = sub_world_to_raster_transformation.get_transformed(pos);
+				const Point end = sub_world_to_raster_transformation.get_transformed((pos-origin)*(1.0f-size) + origin);
+
+				int x0(round_to_int(begin[0])),
+					y0(round_to_int(begin[1])),
+					x1(round_to_int(end[0])),
+					y1(round_to_int(end[1]));
+
+				int steep = 1;
+				int sx, sy;  /* step positive or negative (1 or -1) */
+				int dx, dy;  /* delta (difference in X and Y between points) */
+				int e;
+				int sub_w(sub_surface.get_w());
+				int sub_h(sub_surface.get_h());
+
+				dx = std::abs(x1 - x0);
+				sx = ((x1 - x0) > 0) ? 1 : -1;
+				dy = std::abs(y1 - y0);
+				sy = ((y1 - y0) > 0) ? 1 : -1;
+				if (dy > dx) {
+					steep = 0;
+					std::swap(x0, y0);
+					std::swap(dx, dy);
+					std::swap(sx, sy);
+					std::swap(sub_w, sub_h);
+				}
+				e = (dy << 1) - dx;
+				Color pool(Color::alpha());
+				int poolsize(0);
+				for (int i = 0; i < dx; i++) {
+					if(y0>=0 && x0>=0 && y0 < sub_h && x0 < sub_w) {
+						if (fade_out) {
+							if (steep)
+								pool += cooker.cook(sub_surface[y0][x0])*(i-dx);
+							else
+								pool += cooker.cook(sub_surface[x0][y0])*(i-dx);
+							poolsize+=(i-dx);
+						} else {
+							if (steep)
+								pool += cooker.cook(sub_surface[y0][x0]);
+							else
+								pool += cooker.cook(sub_surface[x0][y0]);
+							poolsize+=1;
+						}
+					} else
+						synfig::error("%s:%d unexpected %d >= %d or %d >= %d?\n", __FILE__, __LINE__, x0, w, y0, h);
+
+					while (e >= 0) {
+						y0 += sy;
+						e -= (dx << 1);
+					}
+					x0 += sx;
+					e += (dy << 1);
+				}
+
+				if (steep)
+					la->get_surface()[y][x] = sub_surface[y0][x0];
+				else
+					la->get_surface()[y][x] = sub_surface[x0][y0];
+				if (poolsize) {
+					apen.put_value(cooker.uncook(pool / poolsize));
+				}
+			}
+		}
+		return true;
+	}
+};
+
+rendering::Task::Token TaskRadialBlur::token(
+	DescAbstract<TaskRadialBlur>("RadialBlur") );
+rendering::Task::Token TaskRadialBlurSW::token(
+	DescReal<TaskRadialBlurSW, TaskRadialBlur>("RadialBlurSW") );
 
 RadialBlur::RadialBlur():
-	Layer_CompositeFork(1.0,Color::BLEND_STRAIGHT),
+	synfig::Layer_Composite(1.0, Color::BLEND_STRAIGHT),
 	param_origin (ValueBase(Vector(0,0))),
 	param_size(ValueBase(Real(0.2))),
 	param_fade_out(ValueBase(false))
@@ -133,211 +351,20 @@ RadialBlur::get_color(Context context, const Point &p)const
 	return context.get_color(p);
 }
 
-bool
-RadialBlur::accelerated_render(Context context,Surface *surface,int quality, const RendDesc &renddesc, ProgressCallback *cb)const
+rendering::Task::Handle
+RadialBlur::build_rendering_task_vfunc(Context context)const
 {
-	RENDER_TRANSFORMED_IF_NEED(__FILE__, __LINE__)
+	TaskRadialBlur::Handle task_radialblur(new TaskRadialBlur());
+	task_radialblur->origin = param_origin.get(Vector());
+	task_radialblur->size = param_size.get(Real());
+	task_radialblur->fade_out = param_fade_out.get(bool());
 
-	Vector origin=param_origin.get(Vector());
-	Real size=param_size.get(Real());
-	bool fade_out=param_fade_out.get(bool());
-	
-	// don't do anything at quality 10
-	if (quality == 10)
-		return context.accelerated_render(surface,quality,renddesc,cb);
+	task_radialblur->blend_amount = get_amount();
+	task_radialblur->blend_method = get_blend_method();
 
-	if(cb && !cb->amount_complete(0,10000))
-		return false;
+	task_radialblur->sub_task(0) = context.build_rendering_task();
 
-	Surface tmp_surface;
-	const Point tl(renddesc.get_tl()), br(renddesc.get_br());
-	const int w(renddesc.get_w()), h(renddesc.get_h());
-	const Real pw(renddesc.get_pw()),ph(renddesc.get_ph());
-
-	Rect rect(tl, br);
-	Point pos;
-
-	// find how far towards the origin of the blur we are going to
-	// wander for each of the 4 corners of our tile, expanding the
-	// render description for each of them if necessary
-	int x, y;
-	for(y=0,pos[1]=tl[1];y<h;y+=(h-1),pos[1]+=ph*(h-1))
-		for(x=0,pos[0]=tl[0];x<w;x+=(w-1),pos[0]+=pw*(w-1))
-			rect.expand((pos-origin)*(1.0f-size) + origin);
-
-	Vector stl = rect.get_min();
-	Vector sbr = rect.get_max();
-	if (br[0] < tl[0]) std::swap(stl[0], sbr[0]);
-	if (br[1] < tl[1]) std::swap(stl[1], sbr[1]);
-
-	// round out to the nearest pixel
-	Point tmp_surface_tl = Point(tl[0] - pw*(int((tl[0]-stl[0])/pw+1-1e-6)),
-								 tl[1] - ph*(int((tl[1]-stl[1])/ph+1-1e-6)));
-	Point tmp_surface_br = Point(br[0] + pw*(int((sbr[0]-br[0])/pw+2-1e-6)),
-								 br[1] + ph*(int((sbr[1]-br[1])/ph+2-1e-6)));
-
-	// round to nearest integer width and height (should be very
-	// nearly whole numbers already, but don't want to round 5.99999
-	// down to 5)
-	int tmp_surface_width = int((tmp_surface_br[0]-tmp_surface_tl[0])/pw + 0.5);
-	int tmp_surface_height = int((tmp_surface_br[1]-tmp_surface_tl[1])/ph + 0.5);
-
-	RendDesc desc(renddesc);
-	desc.clear_flags();
-	desc.set_wh(tmp_surface_width,tmp_surface_height);
-	desc.set_tl(tmp_surface_tl);
-	desc.set_br(tmp_surface_br);
-
-	// render the layers beneath us
-	if(!context.accelerated_render(&tmp_surface,quality,desc,cb))
-		return false;
-
-	// copy the part of the layers beneath us that corresponds to this tile
-	surface->set_wh(w, h);
-	Surface::pen pen(surface->get_pen(0, 0));
-	tmp_surface.blit_to(pen,
-						int((tl[0] - tmp_surface_tl[0])/pw + 0.5),
-						int((tl[1] - tmp_surface_tl[1])/ph + 0.5),
-						w, h);
-
-	Surface::alpha_pen apen(surface->begin());
-
-	apen.set_alpha(get_amount());
-	apen.set_blend_method(get_blend_method());
-
-/*
-	int steps(5);
-
-	if(quality>=9)steps=20;
-	else if(quality>=5)steps=30;
-	else if(quality>=4)steps=60;
-	else if(quality>=3)steps=100;
-	else steps=120;
-*/
-
-	Surface::value_prep_type cooker;
-
-	// loop through the pixels
-	for(y=0,pos[1]=tl[1];y<h;y++,apen.inc_y(),apen.dec_x(x),pos[1]+=ph)
-		for(x=0,pos[0]=tl[0];x<w;x++,apen.inc_x(),pos[0]+=pw)
-		{
-			Point
-				begin(pos-tmp_surface_tl),
-				end((pos-origin)*(1.0f-size) + origin-tmp_surface_tl);
-			begin[0]/=pw;begin[1]/=ph;
-			end[0]/=pw;end[1]/=ph;
-
-			Color pool(Color::alpha());
-			int poolsize(0);
-
-			int x0(round_to_int(begin[0])),
-				y0(round_to_int(begin[1])),
-				x1(round_to_int(end[0])),
-				y1(round_to_int(end[1]));
-
-			int i;
-			int steep = 1;
-			int sx, sy;  /* step positive or negative (1 or -1) */
-			int dx, dy;  /* delta (difference in X and Y between points) */
-			int e;
-			int w(tmp_surface_width), h(tmp_surface_height);
-
-			dx = std::abs(x1 - x0);
-			sx = ((x1 - x0) > 0) ? 1 : -1;
-			dy = std::abs(y1 - y0);
-			sy = ((y1 - y0) > 0) ? 1 : -1;
-			if (dy > dx)
-			{
-				steep = 0;
-				std::swap(x0, y0);
-				std::swap(dx, dy);
-				std::swap(sx, sy);
-				std::swap(w,h);
-			}
-			e = (dy << 1) - dx;
-			for (i = 0; i < dx; i++)
-			{
-				if(y0>=0 && x0>=0 && y0<h && x0<w)
-				{
-					if(fade_out)
-					{
-						if (steep)
-							pool+=cooker.cook(tmp_surface[y0][x0])*(i-dx);
-						else
-							pool+=cooker.cook(tmp_surface[x0][y0])*(i-dx);
-						poolsize+=(i-dx);
-					}
-					else
-					{
-						if (steep)
-							pool+=cooker.cook(tmp_surface[y0][x0]);
-						else
-							pool+=cooker.cook(tmp_surface[x0][y0]);
-						poolsize+=1;
-					}
-				} else
-					printf("%s:%d unexpected %d >= %d or %d >= %d?\n", __FILE__, __LINE__, x0, w, y0, h);
-
-				while (e >= 0)
-				{
-					y0 += sy;
-					e -= (dx << 1);
-				}
-				x0 += sx;
-				e += (dy << 1);
-			}
-			if(poolsize)
-			{
-				pool/=poolsize;
-				apen.put_value(cooker.uncook(pool));
-			}
-/*
-			Point begin,end;
-			begin=pos;
-			end=(pos-origin)*(1.0f-size)+origin;
-
-			Color pool(Color::alpha());
-			float f,poolsize(0);
-			int i;
-			int steps(steps*size);
-			for(f=0,i=0;i<steps;i++,f+=1.0f/(steps-1))
-			{
-				Point loc((end-begin)*f+begin-tl);
-				loc[0]/=pw;loc[1]/=ph;
-
-				if(fade_out)
-					pool+=tmp_surface.linear_sample(loc[0],loc[1])*(i-steps),poolsize+=(i-steps);
-				else
-					pool+=tmp_surface.linear_sample(loc[0],loc[1]),poolsize+=1;
-			}
-			pool/=poolsize;
-			apen.put_value(pool);
-*/
-		}
-
-
-	if(cb && !cb->amount_complete(10000,10000)) return false;
-
-// #define DRAW_TILE_OUTLINES
-#ifdef DRAW_TILE_OUTLINES
-	// draw red lines to show tiles
-	{
-		int x, y;
-		if (w != 0 && h != 0) {
-			Surface::alpha_pen apen(surface->begin());
-			apen.set_alpha(get_amount());
-			apen.set_blend_method(get_blend_method());
-			apen.set_value(Color(1, 0, 0, .1));
-			for (x = 0; x < w; x++) { apen.put_value(); apen.inc_x(); } apen.dec_x(w);
-			for (y = 0; y < h; y++) { apen.put_value(); apen.inc_y(); } apen.dec_y(h);
-		}
-	}
-#endif // DRAW_TILE_OUTLINES
-
-	return true;
+	return task_radialblur;
 }
 
-
-rendering::Task::Handle
-RadialBlur::build_rendering_task_vfunc(Context context) const
-	{ return Layer::build_rendering_task_vfunc(context); }
+/* === E N T R Y P O I N T ================================================= */
