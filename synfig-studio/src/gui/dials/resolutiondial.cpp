@@ -81,18 +81,23 @@ ResolutionDial::ResolutionDial()
 }
 
 void
-ResolutionDial::insert_to_toolbar(Gtk::Toolbar &toolbar, int index)
+ResolutionDial::insert_to_toolbar(Gtk::Box &toolbar, int index)
 {
-	if (index < 0) index = toolbar.get_n_items();
+	if (index < 0) index = toolbar.get_children().size();
+	
+    // Add widgets to the toolbar
+    toolbar.pack_start(increase_resolution, Gtk::PACK_SHRINK);
+    toolbar.pack_start(use_low_resolution, Gtk::PACK_SHRINK);
+    toolbar.pack_start(decrease_resolution, Gtk::PACK_SHRINK);
 
-	// reverse order
-	toolbar.insert(increase_resolution, index);
-	toolbar.insert(use_low_resolution,  index);
-	toolbar.insert(decrease_resolution, index);
+    // Reorder widgets to the specified index
+    toolbar.reorder_child(increase_resolution, index);
+    toolbar.reorder_child(use_low_resolution,  index + 1);
+    toolbar.reorder_child(decrease_resolution, index + 2);
 }
 
 void
-ResolutionDial::remove_from_toolbar(Gtk::Toolbar &toolbar)
+ResolutionDial::remove_from_toolbar(Gtk::Box &toolbar)
 {
 	toolbar.remove(decrease_resolution);
 	toolbar.remove(use_low_resolution);

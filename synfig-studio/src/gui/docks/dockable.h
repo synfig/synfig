@@ -32,6 +32,7 @@
 
 #include <gtkmm/eventbox.h>
 #include <gtkmm/grid.h>
+#include <gtkmm/box.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/toolbar.h>
 #include <gtkmm/toolbutton.h>
@@ -87,6 +88,7 @@ public:
 
 	void add(Gtk::Widget& x);
 	void set_toolbar(Gtk::Toolbar& toolbar);
+	void set_toolbar(Gtk::Box& box);
 	Gtk::ToolButton* add_button(const std::string& icon_name, const synfig::String& tooltip = synfig::String());
 
 	void reset_container();
