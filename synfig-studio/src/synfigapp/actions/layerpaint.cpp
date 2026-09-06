@@ -50,10 +50,18 @@ using namespace synfigapp;
 ACTION_INIT(Action::LayerPaint);
 ACTION_SET_NAME(Action::LayerPaint, "LayerPaint");
 ACTION_SET_LOCAL_NAME(Action::LayerPaint, N_("Brush Stroke"));
-ACTION_SET_TASK(Action::LayerPaint, "brush_stroke");
+ACTION_SET_TASK(Action::LayerPaint, "paint");
 ACTION_SET_CATEGORY(Action::LayerPaint, Action::CATEGORY_NONE);
 ACTION_SET_PRIORITY(Action::LayerPaint, 0);
 ACTION_SET_VERSION(Action::LayerPaint, "0.0");
+
+ACTION_INIT(Action::BitmapLayerFill);
+ACTION_SET_NAME(Action::BitmapLayerFill, "BitmapLayerFill");
+ACTION_SET_LOCAL_NAME(Action::BitmapLayerFill, N_("Fill"));
+ACTION_SET_TASK(Action::BitmapLayerFill, "paint");
+ACTION_SET_CATEGORY(Action::BitmapLayerFill, Action::CATEGORY_NONE);
+ACTION_SET_PRIORITY(Action::BitmapLayerFill, 0);
+ACTION_SET_VERSION(Action::BitmapLayerFill, "0.0");
 
 #define CHECKPOINT_INTERVAL 20
 
@@ -214,9 +222,8 @@ Action::LayerPaint::PaintStroke::apply()
 				return;
 			}
 			if (layer->rendering_surface && final_surface && final_surface->is_valid()) {
-				Surface* surface_copy = new Surface(*final_surface);
 				layer->rendering_surface = new rendering::SurfaceResource(
-					new rendering::SurfaceSW(*surface_copy, true)
+					new rendering::SurfaceSW(*final_surface, true)
 				);
 				layer->changed();
 				applied = true;
@@ -538,4 +545,383 @@ Action::LayerPaint::undo()
 			stroke.get_layer()->add_surface_modification_id(id);
 		applied = !applied;
 	}
+}
+
+void
+Action::BitmapLayerFill::fill(synfig::Surface& surface)
+{
+	const int flood_x = flood_point[0];
+	const int flood_y = flood_point[1];
+
+	const Color target_color = surface[flood_y][flood_x];
+	if (target_color == color)
+		return;
+
+	// for (int y = 0; y < surface.get_h(); ++y)
+	// 	for (int x = 0; x < surface.get_w(); ++x)
+	// 		surface[x][y] = color;
+	// return;
+
+	// auto inside = [](const Color& color, const Color& target_color) -> bool {
+	// 	return target_color == color;
+	// };
+	struct ColorChecker {
+		const Color target_color;
+		const synfig::Surface& surface;
+		synfig::surface<bool> visited;
+
+		ColorChecker(const Color c, const synfig::Surface& s)
+			: target_color(c), surface(s)
+		{
+			visited.set_wh(surface.get_w(), surface.get_h());
+		}
+
+		bool inside(int x, int y) const {
+			if (x < 0 || x >= surface.get_w())
+				return false;
+			if (y < 0 || y >= surface.get_h())
+				return false;
+
+			const Color& color = surface[y][x];
+			const Color::value_type dR = target_color.get_r() - color.get_r();
+			const Color::value_type dG = target_color.get_g() - color.get_g();
+			const Color::value_type dB = target_color.get_b() - color.get_b();
+			const Color::value_type r = (target_color.get_r() + color.get_r()) / 2. * 255;
+
+			const Color::value_type dist = sqrt(255*((2+r/256)*dR*dR + 4*dG*dG + (2 + (255-r)/256)*dB*dB));
+			return dist < 5;
+			return target_color == surface[y][x];
+		}
+
+		// bool paint(int x, int y) {
+		// 	surface[x][y] = target_color;
+		// }
+
+	};
+
+	const ColorChecker color_checker(target_color, surface);
+
+	struct Span {
+		int x1;
+		int x2;
+		int y;
+		int dy;
+	};
+
+	std::vector<Span> queue;
+
+	queue.push_back({flood_x, flood_x, flood_y, 1});
+	queue.push_back({flood_x, flood_x, flood_y - 1, 1});
+
+	while (!queue.empty()) {
+		Span s = queue.back();
+		queue.pop_back();
+
+		int x = s.x1;
+		if (color_checker.inside(x, s.y)) {
+			while (color_checker.inside(x - 1, s.y)) {
+				// surface[s.y][x - 1] = color;
+				Color& surface_color = surface[s.y][x - 1];
+				Color::value_type a = surface_color.get_a();
+				surface_color = color;
+				surface_color.set_a(a);
+				x = x - 1;
+			}
+			if (x < s.x1)
+				queue.push_back({x, s.x1 - 1, s.y - s.dy, -s.dy});
+		}
+		while (s.x1 <= s.x2) {
+			while (color_checker.inside(s.x1, s.y)) {
+				Color& surface_color = surface[s.y][s.x1];
+				Color::value_type a = surface_color.get_a();
+				surface_color = color;
+				surface_color.set_a(a);
+				s.x1 += 1;
+			}
+			if (s.x1 > x)
+				queue.push_back({x, s.x1 - 1, s.y + s.dy, s.dy});
+			if (s.x1 - 1 > s.x2)
+				queue.push_back({s.x2 + 1, s.x1 - 1, s.y - s.dy, -s.dy});
+			s.x1 += 1;
+			while (s.x1 <= s.x2 && !color_checker.inside(s.x1, s.y))
+				s.x1 += 1;
+			x = s.x1;
+		}
+	}
+}
+
+Action::BitmapLayerFill::BitmapLayerFill()
+	: undo_mode(UndoMode::CHECKPOINTING),
+	  prepared(false)
+{
+}
+
+Action::ParamVocab
+Action::BitmapLayerFill::get_param_vocab()
+{
+	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
+
+	ret.push_back(ParamDesc("layer", Param::TYPE_LAYER)
+		.set_local_name(_("Layer"))
+		.set_desc(_("Layer to paint on"))
+	);
+
+	ret.push_back(ParamDesc("point", Param::TYPE_VALUE)
+		.set_local_name(_("Point"))
+		.set_desc(_("Point from where start the fill flooding"))
+	);
+
+	ret.push_back(ParamDesc("color", Param::TYPE_VALUE)
+		.set_local_name(_("Color"))
+		.set_desc(_("Fill color to flood"))
+	);
+
+	return ret;
+}
+
+bool
+Action::BitmapLayerFill::is_candidate(const ParamList& x)
+{
+	// Check if we have a layer parameter and it's a bitmap layer
+	for (const auto& i : x) {
+		if (i.first == "layer" && i.second.get_type() == Param::TYPE_LAYER) {
+			Layer::Handle layer = i.second.get_layer();
+			if (Layer_Bitmap::Handle::cast_dynamic(layer)) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool
+Action::BitmapLayerFill::set_param(const synfig::String& name, const Action::Param& param)
+{
+	if (name == "layer" && param.get_type() == Param::TYPE_LAYER) {
+		Layer_Bitmap::Handle bitmap_layer = Layer_Bitmap::Handle::cast_dynamic(param.get_layer());
+		if (bitmap_layer) {
+			layer = bitmap_layer;
+			return true;
+		}
+		return false;
+	}
+
+	if (name == "point" && param.get_type() == Param::TYPE_VALUE) {
+		auto value = param.get_value();
+		if (value.get_type() == type_vector) {
+			auto point = value.get(Point());
+			flood_point[0] = point[0];
+			flood_point[1] = point[1];
+fprintf(stderr, "flood point: %i , %i\n", flood_point[0], flood_point[1]);
+			return true;
+		}
+		return false;
+	}
+
+	if (name == "color" && param.get_type() == Param::TYPE_VALUE) {
+		auto value = param.get_value();
+		if (value.get_type() == type_color) {
+			color = value.get(Color());
+			return true;
+		}
+		return false;
+	}
+
+	return CanvasSpecific::set_param(name, param);
+}
+
+bool
+Action::BitmapLayerFill::is_ready() const
+{
+	return layer && color.is_valid() && /*flood_point.is_valid() &&*/ CanvasSpecific::is_ready();
+}
+
+void
+Action::BitmapLayerFill::perform()
+{
+	if (!layer) {
+		return;
+	}
+
+	// switch (undo_mode) {
+	// case UndoMode::SURFACE_SAVING:
+	{
+		if (!original_surface.is_valid()) {
+			if (layer->rendering_surface) {
+				rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+				if (lock) {
+					original_surface = lock->get_surface();
+				}
+			}
+		}
+		if (!final_surface || !final_surface->is_valid()) {
+			rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+			if (lock && lock->get_surface().is_valid()) {
+				final_surface = std::unique_ptr<synfig::Surface>(new synfig::Surface(lock->get_surface()));
+				fill(*final_surface);
+			}
+		}
+
+		rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(layer->rendering_surface);
+		if (lock && lock->get_surface().is_valid()) {
+			synfig::Surface& surface = lock->get_surface();
+			layer->rendering_surface = new rendering::SurfaceResource(
+				new rendering::SurfaceSW(*final_surface, true)
+				);
+		}
+
+		layer->changed();
+
+		// if (!prepared || applied || !layer) {
+		// 	return;
+		// }
+		// if (layer->rendering_surface && final_surface && final_surface->is_valid()) {
+		// 	Surface* surface_copy = new Surface(*final_surface);
+		// 	layer->rendering_surface = new rendering::SurfaceResource(
+		// 		new rendering::SurfaceSW(*surface_copy, true)
+		// 		);
+		// 	layer->changed();
+		// 	applied = true;
+		// }
+		// break;
+	// }
+	// case UndoMode::REDRAW:
+	// {
+	// 	if (!prepared || applied || !layer || points.empty() || !brush_)
+	// 		return;
+
+	// 	// if this is the first stroke on this layer store the original surface
+	// 	if (original_layer_surface.find(layer) == original_layer_surface.end()) {
+	// 		if (layer->rendering_surface) {
+	// 			rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+	// 			if (lock && lock->get_surface().is_valid()) {
+	// 				original_layer_surface[layer] = lock->get_surface();
+	// 			}
+	// 		}
+	// 	}
+	// 	// apply stroke
+	// 	if (layer->rendering_surface && final_surface && final_surface->is_valid()) {
+	// 		Surface* surface_copy = new Surface(*final_surface);
+	// 		layer->rendering_surface = new rendering::SurfaceResource(
+	// 			new rendering::SurfaceSW(*surface_copy, true)
+	// 			);
+	// 		layer->changed();
+	// 		applied = true;
+	// 	}
+	// 	// add to history
+	// 	StrokeData stroke_data;
+	// 	stroke_data.points = points;
+	// 	stroke_data.layer = layer;
+	// 	stroke_data.brush = std::move(brush_);
+	// 	stroke_data.before_tl = original_tl;
+	// 	stroke_data.before_br = original_br;
+	// 	strokes_history[layer->get_canvas()].push_back(std::move(stroke_data));
+	// 	stroke_index = strokes_history[layer->get_canvas()].size() - 1;
+	// 	break;
+	// }
+	// case UndoMode::CHECKPOINTING:
+	// {
+	// 	if (!prepared || applied || !layer || points.empty() || !brush_)
+	// 		return;
+
+	// 	// If this is the first stroke on this layer store the original surface
+	// 	if (original_layer_surface.find(layer) == original_layer_surface.end()) {
+	// 		if (layer->rendering_surface) {
+	// 			rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+	// 			if (lock && lock->get_surface().is_valid()) {
+	// 				original_layer_surface[layer] = lock->get_surface();
+	// 			}
+	// 		}
+	// 	}
+
+	// 	// if we need to checkpoint save the surface
+	// 	std::unique_ptr<Surface> temp_checkpoint;
+	// 	if (strokes_history[layer->get_canvas()].size() % CHECKPOINT_INTERVAL == 0) {
+	// 		if (layer->rendering_surface) {
+	// 			rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+	// 			if (lock && lock->get_surface().is_valid()) {
+	// 				temp_checkpoint.reset(new Surface(lock->get_surface()));
+	// 			}
+	// 		}
+	// 	}
+
+	// 	if (layer->rendering_surface && final_surface && final_surface->is_valid()) {
+	// 		Surface* surface_copy = new Surface(*final_surface);
+	// 		layer->rendering_surface = new rendering::SurfaceResource(
+	// 			new rendering::SurfaceSW(*surface_copy, true)
+	// 			);
+	// 		layer->changed();
+	// 		applied = true;
+	// 	}
+
+	// 	// add to history
+	// 	StrokeData stroke_data;
+	// 	stroke_data.layer = layer;
+	// 	stroke_data.points = std::move(points);
+	// 	stroke_data.brush = std::move(brush_);
+	// 	stroke_data.checkpoint_surface = std::move(temp_checkpoint);
+	// 	stroke_data.before_tl = original_tl;
+	// 	stroke_data.before_br = original_br;
+	// 	strokes_history[layer->get_canvas()].push_back(std::move(stroke_data));
+	// 	stroke_index = strokes_history[layer->get_canvas()].size() - 1;
+	// 	break;
+	// }
+	}
+	// store surface before applying stroke
+	// synfig::Surface before_surface;
+	// if (layer->rendering_surface) {
+	// 	rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+	// 	if (lock && lock->get_surface().is_valid())
+	// 		before_surface = lock->get_surface();
+	// }
+
+	// // apply stroke
+	// if (!stroke.is_prepared())
+	// 	stroke.prepare();
+	// stroke.apply();
+
+	// // check if surface changed
+	// bool surfaces_are_equal = false;
+	// if (layer->rendering_surface) {
+	// 	rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
+	// 	if (lock && lock->get_surface().is_valid() && before_surface.is_valid()) {
+	// 		auto after = rendering::Surface::Handle(new rendering::SurfaceSW(const_cast<Surface&>(lock->get_surface()), false));
+	// 		auto before = rendering::Surface::Handle(new rendering::SurfaceSW(before_surface, false));
+	// 		surfaces_are_equal = after->equals_to(before);
+	// 	}
+	// }
+
+	// // if no changes detected don't register the action
+	// if (surfaces_are_equal) {
+	// 	stroke.undo();
+	// 	applied = true;
+	// 	throw Error(Error::TYPE_UNABLE, "");
+	// }
+
+	if (get_canvas_interface()) {
+		get_canvas_interface()->signal_layer_param_changed()(layer, "rendering_surface");
+	}
+	// if (!applied)
+		layer->add_surface_modification_id(id);
+	// applied = !applied;
+}
+
+void
+Action::BitmapLayerFill::undo()
+{
+	// if (applied) {
+	// 	stroke.undo();
+	// 	if (get_canvas_interface()) {
+	// 		get_canvas_interface()->signal_layer_param_changed()(layer, "rendering_surface");
+	// 	}
+	// 	if (applied)
+	// 		layer->add_surface_modification_id(id);
+	// 	applied = !applied;
+	// }
+}
+
+void
+Action::BitmapLayerFill::set_undo_mode(UndoMode mode)
+{
+	undo_mode = mode;
 }

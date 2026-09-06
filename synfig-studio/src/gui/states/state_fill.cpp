@@ -153,16 +153,108 @@ StateFill_Context::event_refresh_handler(const Smach::event& /*x*/)
 	canvas_view->get_work_area()->queue_render();
 	return Smach::RESULT_ACCEPT;
 }
+#include <synfigapp/actions/layerpaint.h>
+#include <synfig/layers/layer_switch.h>
+#include <gui/ducktransform_matrix.h>
+bool
+build_transform_stack(
+	synfig::Canvas::Handle canvas,
+	synfig::Layer::Handle layer,
+	CanvasView::Handle canvas_view,
+	synfig::TransformStack& transform_stack )
+{
+	int count = 0;
+	for (const auto& i : *canvas) {
+
+		if (i == layer)
+			return true;
+
+		if (i->active()) {
+			synfig::Transform::Handle trans(i->get_transform());
+			if (trans) {
+				transform_stack.push(trans);
+				count++;
+			}
+		}
+
+		// If this is a paste canvas layer, then we need to
+		// descend into it
+		if (synfig::Layer_PasteCanvas::Handle layer_pastecanvas = synfig::Layer_PasteCanvas::Handle::cast_dynamic(i)) {
+			transform_stack.push_back(
+				new studio::Transform_Matrix(
+					layer_pastecanvas->get_guid(),
+					layer_pastecanvas->get_summary_transformation().get_matrix()
+					)
+				);
+
+			if (build_transform_stack(layer_pastecanvas->get_sub_canvas(), layer, canvas_view, transform_stack)) {
+				return true;
+			}
+			transform_stack.pop();
+		}
+	}
+
+	while (count-- > 0) {
+		transform_stack.pop();
+	}
+	return false;
+}
 
 Smach::event_result
 StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 {
-	synfig::info("STATE FILL: Received layer clicked Event");
 	const EventLayerClick& event(*reinterpret_cast<const EventLayerClick*>(&x));
 
 	if(!event.layer)
 	{
 		get_canvas_view()->get_ui_interface()->warning(_("No layer here"));
+		return Smach::RESULT_ACCEPT;
+	}
+
+	synfig::Layer_Bitmap::Handle layer_bitmap;
+	if (auto layer_switch = dynamic_cast<synfig::Layer_Switch*>(event.layer.get())) {
+		layer_bitmap = synfig::Layer_Bitmap::Handle::cast_dynamic(layer_switch->get_current_layer());
+	} else {
+		layer_bitmap = synfig::Layer_Bitmap::Handle::cast_dynamic(event.layer);
+	}
+
+	if (layer_bitmap) {
+		synfig::warning("é bitmpa");
+		int undo_mode = synfigapp::Main::settings().get_value("pref.brush_undo_mode", 1);
+		synfigapp::Action::BitmapLayerFill::Handle action = new synfigapp::Action::BitmapLayerFill();
+
+		bool ok;
+
+		ok = action->set_param("layer", synfig::Layer::Handle(layer_bitmap.get()));
+		synfig::warning("definiu camada: %i", ok);
+		// const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
+		synfig::TransformStack transform;
+		build_transform_stack(get_canvas(), layer_bitmap, get_canvas_view(), transform);
+		synfig::Point pos(transform.unperform(event.pos));
+		const synfig::Vector tl = layer_bitmap->get_param("tl").get(synfig::Point());
+		const synfig::Vector br = layer_bitmap->get_param("br").get(synfig::Point());
+		synfig::warning("pos: %f , %f \t tl: %f , %f \t br: %f , %f", pos[0], pos[1], tl[0], tl[1], br[0], br[1]);
+		pos = (pos - tl).divide_coords(br - tl);
+		synfig::warning("\tpos: %f , %f", pos[0], pos[1]);
+		// float surface_x = ((pos[0] - tl[0]) / (br[0] - tl[0])) * overlay_surface.get_w();
+		// float surface_y = ((pos[1] - tl[1]) / (br[1] - tl[1])) * overlay_surface.get_h();
+		pos[0] *= layer_bitmap->rendering_surface->get_width();
+		pos[1] *= layer_bitmap->rendering_surface->get_height();
+		synfig::warning("\t\tpos: %f , %f \t w: %i \t h: %i", pos[0], pos[1], layer_bitmap->rendering_surface->get_width(), layer_bitmap->rendering_surface->get_height());
+
+		ok = action->set_param("point", synfig::ValueBase(pos));
+		synfig::warning("definiu ponto: %i", ok);
+		ok = action->set_param("color", synfig::ValueBase(synfigapp::Main::get_fill_color()));
+		synfig::warning("definiu cor: %i", ok);
+		action->set_undo_mode(static_cast<synfigapp::Action::BitmapLayerFill::UndoMode>(undo_mode));
+		synfig::warning("definiu modo desfazer");
+
+		ok = action->set_param("canvas", get_canvas());
+		synfig::warning("definiu canvas: %i", ok);
+		ok = action->set_param("canvas_interface", get_canvas_interface());
+		synfig::warning("definiu canvas_interface: %i", ok);
+		get_canvas_interface()->get_instance()->perform_action(action);
+		synfig::warning("realizou ação");
 		return Smach::RESULT_ACCEPT;
 	}
 
@@ -175,25 +267,6 @@ StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 		get_canvas_view()->get_ui_interface()->warning(_("Unable to set layer color"));
 		return Smach::RESULT_ERROR;
 	}
-	/*
-	assert(action);
 
-	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",get_canvas_interface());
-	action->set_param("value_desc",value_desc);
-	action->set_param("time",get_canvas_interface()->get_time());
-	//action->set_param("layer",event.layer);
-	//if(!action->set_param("param",String("color")))
-	//	synfig::error("LayerParamConnect didn't like \"param\"");
-	if(!action->set_param("new_value",ValueBase(synfigapp::Main::get_fill_color())))
-		synfig::error("LayerParamConnect didn't like \"fill_color\"");
-
-	if(!get_canvas_interface()->get_instance()->perform_action(action))
-	{
-		get_canvas_view()->get_ui_interface()->warning(_("Unable to set layer color"));
-		return Smach::RESULT_ERROR;
-	}
-	get_canvas_view()->get_ui_interface()->task(_("Idle"));
-	*/
 	return Smach::RESULT_ACCEPT;
 }

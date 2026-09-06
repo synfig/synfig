@@ -130,6 +130,53 @@ public:
 	ACTION_MODULE_EXT
 };
 
+class BitmapLayerFill :
+	public Undoable,
+	public CanvasSpecific
+{
+public:
+	enum class UndoMode {
+		REDRAW,
+		CHECKPOINTING,
+		SURFACE_SAVING
+	};
+
+	typedef etl::handle<BitmapLayerFill> Handle;
+	typedef etl::loose_handle<BitmapLayerFill> LooseHandle;
+
+private:
+	synfig::GUID id;
+
+	// params
+	synfig::Layer_Bitmap::Handle layer;
+	synfig::PointInt flood_point;
+	synfig::Color color;
+	UndoMode undo_mode;
+
+	// state
+	synfig::Surface original_surface;
+	std::unique_ptr<synfig::Surface> final_surface;
+	bool prepared;
+
+	void fill(synfig::Surface& surface);
+
+public:
+	BitmapLayerFill();
+
+	static ParamVocab get_param_vocab();
+	static bool is_candidate(const ParamList& x);
+
+	bool set_param(const synfig::String& name, const Param& param) override;
+	bool is_ready() const override;
+
+	void perform() override;
+	void undo() override;
+
+	void set_undo_mode(UndoMode mode);
+
+	ACTION_MODULE_EXT
+};
+
 }; // END of namespace Action
 }; // END of namespace synfigapp
 
