@@ -1310,7 +1310,7 @@ StateBrush_Context::find_or_create_layer()
 		initial_surface->clear();
 		layer->rendering_surface = new rendering::SurfaceResource(
 			new rendering::SurfaceSW(*initial_surface, true));
-		layer->add_surface_modification_id(GUID::hasher("brush_created"));
+		layer->add_surface_modification_id(synfig::GUID::hasher("brush_created"));
 		// generate name based on description
 		String description, filename, filename_param;
 		get_canvas_interface()
