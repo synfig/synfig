@@ -218,15 +218,10 @@ StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 		layer_bitmap = synfig::Layer_Bitmap::Handle::cast_dynamic(event.layer);
 	}
 
-	if (layer_bitmap) {
-		synfig::warning("é bitmpa");
-		int undo_mode = synfigapp::Main::settings().get_value("pref.brush_undo_mode", 1);
+	if (layer_bitmap && layer_bitmap->rendering_surface) {
 		synfigapp::Action::BitmapLayerFill::Handle action = new synfigapp::Action::BitmapLayerFill();
 
-		bool ok;
-
-		ok = action->set_param("layer", synfig::Layer::Handle(layer_bitmap.get()));
-		synfig::warning("definiu camada: %i", ok);
+		action->set_param("layer", synfig::Layer::Handle(layer_bitmap.get()));
 		// const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
 		synfig::TransformStack transform;
 		build_transform_stack(get_canvas(), layer_bitmap, get_canvas_view(), transform);
@@ -242,19 +237,12 @@ StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 		pos[1] *= layer_bitmap->rendering_surface->get_height();
 		synfig::warning("\t\tpos: %f , %f \t w: %i \t h: %i", pos[0], pos[1], layer_bitmap->rendering_surface->get_width(), layer_bitmap->rendering_surface->get_height());
 
-		ok = action->set_param("point", synfig::ValueBase(pos));
-		synfig::warning("definiu ponto: %i", ok);
-		ok = action->set_param("color", synfig::ValueBase(synfigapp::Main::get_fill_color()));
-		synfig::warning("definiu cor: %i", ok);
-		action->set_undo_mode(static_cast<synfigapp::Action::BitmapLayerFill::UndoMode>(undo_mode));
-		synfig::warning("definiu modo desfazer");
+		action->set_param("point", synfig::ValueBase(pos));
+		action->set_param("color", synfig::ValueBase(synfigapp::Main::get_fill_color()));
 
-		ok = action->set_param("canvas", get_canvas());
-		synfig::warning("definiu canvas: %i", ok);
-		ok = action->set_param("canvas_interface", get_canvas_interface());
-		synfig::warning("definiu canvas_interface: %i", ok);
+		action->set_param("canvas", get_canvas());
+		action->set_param("canvas_interface", get_canvas_interface());
 		get_canvas_interface()->get_instance()->perform_action(action);
-		synfig::warning("realizou ação");
 		return Smach::RESULT_ACCEPT;
 	}
 

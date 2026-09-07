@@ -567,13 +567,12 @@ Action::BitmapLayerFill::fill(synfig::Surface& surface)
 	// };
 	struct ColorChecker {
 		const Color target_color;
-		const synfig::Surface& surface;
-		synfig::surface<bool> visited;
+		const Surface& surface;
+		Color::value_type tolerance;
 
-		ColorChecker(const Color c, const synfig::Surface& s)
-			: target_color(c), surface(s)
+		ColorChecker(const Color c, const Surface& s, Color::value_type tolerance)
+			: target_color(c), surface(s), tolerance(tolerance)
 		{
-			visited.set_wh(surface.get_w(), surface.get_h());
 		}
 
 		bool inside(int x, int y) const {
@@ -589,8 +588,7 @@ Action::BitmapLayerFill::fill(synfig::Surface& surface)
 			const Color::value_type r = (target_color.get_r() + color.get_r()) / 2. * 255;
 
 			const Color::value_type dist = sqrt(255*((2+r/256)*dR*dR + 4*dG*dG + (2 + (255-r)/256)*dB*dB));
-			return dist < 5;
-			return target_color == surface[y][x];
+			return dist < tolerance && std::fabs(color.get_alpha() - target_color.get_alpha()) < tolerance/255.;
 		}
 
 		// bool paint(int x, int y) {
@@ -599,7 +597,7 @@ Action::BitmapLayerFill::fill(synfig::Surface& surface)
 
 	};
 
-	const ColorChecker color_checker(target_color, surface);
+	const ColorChecker color_checker(target_color, surface, tolerance);
 
 	struct Span {
 		int x1;
@@ -613,6 +611,27 @@ Action::BitmapLayerFill::fill(synfig::Surface& surface)
 	queue.push_back({flood_x, flood_x, flood_y, 1});
 	queue.push_back({flood_x, flood_x, flood_y - 1, 1});
 
+	std::vector<PointInt> border_pixels;
+	auto insert_new_border_pixel = [&border_pixels, surface](int x, int y) {
+		if (x < 0 || x >= surface.get_w())
+			return;
+		if (y < 0 || y >= surface.get_h())
+			return;
+		for (const auto& p : border_pixels) {
+			if (p[0] == x && p[1] == y)
+				return;
+		}
+		border_pixels.push_back({x, y});
+	};
+
+	auto paint_pixel = [&surface](int x, int y, const Color& color) {
+		surface[y][x] = color;
+		// Color& surface_color = surface[y][x];
+		// Color::value_type a = surface_color.get_a();
+		// surface_color = color;
+		// surface_color.set_a(a);
+	};
+
 	while (!queue.empty()) {
 		Span s = queue.back();
 		queue.pop_back();
@@ -620,39 +639,87 @@ Action::BitmapLayerFill::fill(synfig::Surface& surface)
 		int x = s.x1;
 		if (color_checker.inside(x, s.y)) {
 			while (color_checker.inside(x - 1, s.y)) {
-				// surface[s.y][x - 1] = color;
-				Color& surface_color = surface[s.y][x - 1];
-				Color::value_type a = surface_color.get_a();
-				surface_color = color;
-				surface_color.set_a(a);
+				paint_pixel(x-1, s.y, color);
 				x = x - 1;
 			}
+			insert_new_border_pixel(x-1, s.y);
 			if (x < s.x1)
 				queue.push_back({x, s.x1 - 1, s.y - s.dy, -s.dy});
 		}
+		insert_new_border_pixel(x, s.y);
 		while (s.x1 <= s.x2) {
 			while (color_checker.inside(s.x1, s.y)) {
-				Color& surface_color = surface[s.y][s.x1];
-				Color::value_type a = surface_color.get_a();
-				surface_color = color;
-				surface_color.set_a(a);
+				paint_pixel(s.x1, s.y, color);
 				s.x1 += 1;
 			}
+			insert_new_border_pixel(s.x1, s.y);
 			if (s.x1 > x)
 				queue.push_back({x, s.x1 - 1, s.y + s.dy, s.dy});
 			if (s.x1 - 1 > s.x2)
 				queue.push_back({s.x2 + 1, s.x1 - 1, s.y - s.dy, -s.dy});
 			s.x1 += 1;
-			while (s.x1 <= s.x2 && !color_checker.inside(s.x1, s.y))
+			while (s.x1 <= s.x2 && !color_checker.inside(s.x1, s.y)) {
+				insert_new_border_pixel(s.x1, s.y);
 				s.x1 += 1;
+			}
 			x = s.x1;
+		}
+	}
+
+	if (antialiasing) {
+		size_t n = 0;
+		for (const auto& b : border_pixels) {
+			const int x = b[0];
+			const int y = b[1];
+			if (surface[y][x] == color)
+				continue;
+			Color surrounding_color;
+			Real sn = 0;
+			if (x - 1 >= 0) {
+				surrounding_color += surface[y][x-1];
+				++sn;
+				if (y - 1 >= 0) {
+					surrounding_color += surface[y-1][x-1];
+					++sn;
+				}
+				if (y + 1 < surface.get_h()) {
+					surrounding_color += surface[y+1][x-1];
+					++sn;
+				}
+			}
+			if (x + 1 <= surface.get_w()) {
+				surrounding_color += surface[y][x+1];
+				++sn;
+				if (y - 1 >= 0) {
+					surrounding_color += surface[y-1][x+1];
+					++sn;
+				}
+				if (y + 1 < surface.get_h()) {
+					surrounding_color += surface[y+1][x+1];
+					++sn;
+				}
+			}
+			if (y - 1 >= 0) {
+				surrounding_color += surface[y-1][x];
+				++sn;
+			}
+			if (y + 1 < surface.get_h()) {
+				surrounding_color += surface[y+1][x];
+				++sn;
+			}
+			surrounding_color /= 2 * sn;
+			surrounding_color += surface[y][x] / 2.;
+
+			surface[b[1]][b[0]] = surrounding_color;
+
+			n++;
 		}
 	}
 }
 
 Action::BitmapLayerFill::BitmapLayerFill()
-	: undo_mode(UndoMode::CHECKPOINTING),
-	  prepared(false)
+	: tolerance(5),
+	  antialiasing(true)
 {
 }
 
@@ -674,6 +741,16 @@ Action::BitmapLayerFill::get_param_vocab()
 	ret.push_back(ParamDesc("color", Param::TYPE_VALUE)
 		.set_local_name(_("Color"))
 		.set_desc(_("Fill color to flood"))
+	);
+
+	ret.push_back(ParamDesc("tolerance", Param::TYPE_REAL)
+		.set_local_name(_("Tolerance"))
+		.set_desc(_("How much color difference to accept (from 0 to 255)"))
+	);
+
+	ret.push_back(ParamDesc("antialiasing", Param::TYPE_BOOL)
+		.set_local_name(_("Antialiasing"))
+		.set_desc(_("Try to smooth the border pixel colors"))
 	);
 
 	return ret;
@@ -712,7 +789,6 @@ Action::BitmapLayerFill::set_param(const synfig::String& name, const Action::Par
 			auto point = value.get(Point());
 			flood_point[0] = point[0];
 			flood_point[1] = point[1];
-fprintf(stderr, "flood point: %i , %i\n", flood_point[0], flood_point[1]);
 			return true;
 		}
 		return false;
@@ -727,13 +803,25 @@ fprintf(stderr, "flood point: %i , %i\n", flood_point[0], flood_point[1]);
 		return false;
 	}
 
+	if (name == "tolerance" && param.get_type() == Param::TYPE_REAL) {
+		if (param.get_real() < 0)
+			return false;
+		tolerance = param.get_real();
+		return true;
+	}
+
+	if (name == "antialiasing" && param.get_type() == Param::TYPE_BOOL) {
+		antialiasing = param.get_bool();
+		return true;
+	}
+
 	return CanvasSpecific::set_param(name, param);
 }
 
 bool
 Action::BitmapLayerFill::is_ready() const
 {
-	return layer && color.is_valid() && /*flood_point.is_valid() &&*/ CanvasSpecific::is_ready();
+	return layer && layer->rendering_surface && color.is_valid() && /*flood_point.is_valid() &&*/ CanvasSpecific::is_ready();
 }
 
 void
@@ -754,20 +842,11 @@ Action::BitmapLayerFill::perform()
 				}
 			}
 		}
-		if (!final_surface || !final_surface->is_valid()) {
-			rendering::SurfaceResource::LockRead<rendering::SurfaceSW> lock(layer->rendering_surface);
-			if (lock && lock->get_surface().is_valid()) {
-				final_surface = std::unique_ptr<synfig::Surface>(new synfig::Surface(lock->get_surface()));
-				fill(*final_surface);
-			}
-		}
 
 		rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(layer->rendering_surface);
 		if (lock && lock->get_surface().is_valid()) {
 			synfig::Surface& surface = lock->get_surface();
-			layer->rendering_surface = new rendering::SurfaceResource(
-				new rendering::SurfaceSW(*final_surface, true)
-				);
+			fill(surface);
 		}
 
 		layer->changed();
@@ -909,19 +988,17 @@ Action::BitmapLayerFill::perform()
 void
 Action::BitmapLayerFill::undo()
 {
-	// if (applied) {
-	// 	stroke.undo();
-	// 	if (get_canvas_interface()) {
-	// 		get_canvas_interface()->signal_layer_param_changed()(layer, "rendering_surface");
-	// 	}
-	// 	if (applied)
-	// 		layer->add_surface_modification_id(id);
-	// 	applied = !applied;
-	// }
-}
+	if (!original_surface.is_valid())
+		return;
 
-void
-Action::BitmapLayerFill::set_undo_mode(UndoMode mode)
-{
-	undo_mode = mode;
+	rendering::SurfaceResource::LockWrite<rendering::SurfaceSW> lock(layer->rendering_surface);
+	if (lock && lock->get_surface().is_valid()) {
+		synfig::Surface& surface = lock->get_surface();
+		surface = original_surface;
+
+		layer->changed();
+		if (get_canvas_interface())
+			get_canvas_interface()->signal_layer_param_changed()(layer, "rendering_surface");
+		layer->add_surface_modification_id(id);
+	}
 }

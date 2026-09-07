@@ -135,12 +135,6 @@ class BitmapLayerFill :
 	public CanvasSpecific
 {
 public:
-	enum class UndoMode {
-		REDRAW,
-		CHECKPOINTING,
-		SURFACE_SAVING
-	};
-
 	typedef etl::handle<BitmapLayerFill> Handle;
 	typedef etl::loose_handle<BitmapLayerFill> LooseHandle;
 
@@ -151,12 +145,11 @@ private:
 	synfig::Layer_Bitmap::Handle layer;
 	synfig::PointInt flood_point;
 	synfig::Color color;
-	UndoMode undo_mode;
+	synfig::Real tolerance;
+	bool antialiasing;
 
 	// state
 	synfig::Surface original_surface;
-	std::unique_ptr<synfig::Surface> final_surface;
-	bool prepared;
 
 	void fill(synfig::Surface& surface);
 
@@ -171,8 +164,6 @@ public:
 
 	void perform() override;
 	void undo() override;
-
-	void set_undo_mode(UndoMode mode);
 
 	ACTION_MODULE_EXT
 };
