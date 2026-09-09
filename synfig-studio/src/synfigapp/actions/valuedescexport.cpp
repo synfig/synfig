@@ -49,6 +49,8 @@
 
 #include <synfigapp/localization.h>
 
+#include <synfig/layers/layer_pastecanvas.h>
+
 #endif
 
 using namespace synfig;
@@ -159,7 +161,7 @@ Action::ValueDescExport::is_ready()const
 	return Action::CanvasSpecific::is_ready();
 }
 
-void Action::ValueDescExport::scan_canvas(synfig::Canvas::Handle prev_canvas, synfig::Canvas::Handle new_canvas, synfig::Canvas::Handle canvas)
+void Action::ValueDescExport::scan_canvas(synfig::Canvas::Handle prev_canvas, synfig::Canvas::Handle new_canvas, synfig::Canvas::Handle canvas, bool recursive)
 {
 	{ // scan children
 		std::list<Canvas::Handle> &children = canvas->children();
@@ -168,8 +170,18 @@ void Action::ValueDescExport::scan_canvas(synfig::Canvas::Handle prev_canvas, sy
 	}
 
 	{ // scan layers
-		for (IndependentContext i = canvas->get_independent_context(); *i; ++i)
-			scan_layer(prev_canvas, new_canvas, *i);
+		for(IndependentContext i = canvas->get_independent_context(); *i; i++){
+			if(recursive && etl::handle<Layer_PasteCanvas>::cast_dynamic(*i)){
+				etl::handle<synfig::Layer_PasteCanvas> p = etl::handle<Layer_PasteCanvas>::cast_dynamic(*i);
+				scan_layer(prev_canvas, new_canvas, *i);
+				synfig::Canvas::Handle sub_canvas = p->get_sub_canvas();
+				if (sub_canvas){
+					for(IndependentContext j = sub_canvas->get_independent_context(); *j; j++)
+							scan_layer(prev_canvas, new_canvas, *j);
+				}
+			} else
+				scan_layer(prev_canvas, new_canvas, *i);
+		}
 	}
 
 	{ // scan values
@@ -269,7 +281,7 @@ Action::ValueDescExport::prepare()
 
 			// scan all layers and canvases and relink value nodes
 			scan_canvas(prev_canvas, canvas, get_canvas());
-			scan_canvas(prev_canvas, canvas, canvas);
+			scan_canvas(prev_canvas, canvas, canvas, true);
 		} else {
 			canvas->rend_desc()=get_canvas()->rend_desc();
 		}
