@@ -117,20 +117,35 @@ Blur_Layer::get_param(const String &param)const
 Color
 Blur_Layer::get_color(Context context, const Point &pos)const
 {
-	synfig::Point size=param_size.get(Point());
-	int type=param_type.get(int());
-  	size *= rendering::software::Blur::get_size_amplifier((rendering::Blur::Type)type)
-  	      * ::Blur::get_size_amplifier(type);
-	
-	Point blurpos = Blur(size,type)(pos);
+	synfig::Point size = param_size.get(Point());
+	int type = param_type.get(int());
+	size *= rendering::software::Blur::get_size_amplifier((rendering::Blur::Type)type)
+	      * ::Blur::get_size_amplifier(type);
 
-	if(get_amount()==1.0 && get_blend_method()==Color::BLEND_STRAIGHT)
-		return context.get_color(blurpos);
+	const int steps = 3;
+	Color accum;
+	int count = 0;
 
-	if(get_amount()==0.0)
+	for (int y = 0; y < steps; ++y)
+	{
+		for (int x = 0; x < steps; ++x)
+		{
+			Real dx = size[0] * ((Real)x / (steps - 1) - 0.5);
+			Real dy = size[1] * ((Real)y / (steps - 1) - 0.5);
+			accum += context.get_color(pos + Point(dx, dy));
+			++count;
+		}
+	}
+
+	Color result = accum / count;
+
+	if (get_amount() == 1.0 && get_blend_method() == Color::BLEND_STRAIGHT)
+		return result;
+
+	if (get_amount() == 0.0)
 		return context.get_color(pos);
 
-	return Color::blend(context.get_color(blurpos),context.get_color(pos),get_amount(),get_blend_method());
+	return Color::blend(result, context.get_color(pos), get_amount(), get_blend_method());
 }
 
 Layer::Vocab
