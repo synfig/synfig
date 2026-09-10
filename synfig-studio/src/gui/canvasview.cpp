@@ -833,8 +833,10 @@ CanvasView::create_time_bar()
 	widget_interpolation->show();
 	widget_interpolation->signal_changed().connect(sigc::mem_fun(*this, &CanvasView::on_interpolation_changed));
 
-	synfigapp::Main::signal_interpolation_changed().connect(sigc::mem_fun(*this, &CanvasView::interpolation_refresh));
-	synfigapp::Main::set_interpolation(INTERPOLATION_CLAMPED); // Clamped by default.
+	// Retrieve the stored interpolation value from preferences
+	Waypoint::Interpolation stored_interpolation = synfigapp::Main::get_interpolation();
+	
+	widget_interpolation->set_value(stored_interpolation);
 	interpolation_refresh();
 
 	//Setup the Animation Mode Button and the Keyframe Lock button
@@ -918,11 +920,13 @@ CanvasView::create_time_bar()
 
 	//Setup the KeyFrameDial widget
 	keyframedial = Gtk::manage(new KeyFrameDial());
-	keyframedial->signal_toggle_keyframe_past().connect(sigc::mem_fun(*this, &CanvasView::toggle_past_keyframe_button));
-	keyframedial->signal_toggle_keyframe_future().connect(sigc::mem_fun(*this, &CanvasView::toggle_future_keyframe_button));
-	keyframedial->set_margin_start(4);
-	keyframedial->set_margin_end(4);
-	keyframedial->show();
+    keyframedial->set_past_toggle(App::default_keyframedial_past);
+    keyframedial->set_future_toggle(App::default_keyframedial_future);
+    keyframedial->signal_toggle_keyframe_past().connect(sigc::mem_fun(*this, &CanvasView::toggle_past_keyframe_button));
+    keyframedial->signal_toggle_keyframe_future().connect(sigc::mem_fun(*this, &CanvasView::toggle_future_keyframe_button));
+    keyframedial->set_margin_start(4);
+    keyframedial->set_margin_end(4);
+    keyframedial->show();
 
 	//Adjust both widgets to be the same as the
 	int header_height = 0;
@@ -2101,7 +2105,8 @@ CanvasView::on_mode_changed(CanvasInterface::Mode mode)
 		animatebutton->set_active(false);
 	}
 	//Keyframe lock icons
-	keyframedial->on_mode_changed(mode);
+	keyframedial->set_past_toggle(mode & MODE_ANIMATE_PAST);
+    keyframedial->set_future_toggle(mode & MODE_ANIMATE_FUTURE);
 
 	work_area->queue_draw();
 	toggling_animate_mode_=false;
