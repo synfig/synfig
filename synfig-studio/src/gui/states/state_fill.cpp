@@ -34,17 +34,20 @@
 
 #include <gui/states/state_fill.h>
 
+#include <synfig/general.h>
+#include <synfig/layers/layer_switch.h>
+
+#include <synfigapp/actions/layerfill.h>
+#include <synfigapp/main.h>
+
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/docks/dock_toolbox.h>
+#include <gui/ducktransform_matrix.h>
 #include <gui/event_layerclick.h>
 #include <gui/localization.h>
 #include <gui/states/state_normal.h>
 #include <gui/workarea.h>
-
-#include <synfig/general.h>
-
-#include <synfigapp/main.h>
 
 #endif
 
@@ -153,99 +156,63 @@ StateFill_Context::event_refresh_handler(const Smach::event& /*x*/)
 	canvas_view->get_work_area()->queue_render();
 	return Smach::RESULT_ACCEPT;
 }
-#include <synfigapp/actions/layerpaint.h>
-#include <synfig/layers/layer_switch.h>
-#include <gui/ducktransform_matrix.h>
-bool
-build_transform_stack(
-	synfig::Canvas::Handle canvas,
-	synfig::Layer::Handle layer,
-	CanvasView::Handle canvas_view,
-	synfig::TransformStack& transform_stack )
-{
-	int count = 0;
-	for (const auto& i : *canvas) {
-
-		if (i == layer)
-			return true;
-
-		if (i->active()) {
-			synfig::Transform::Handle trans(i->get_transform());
-			if (trans) {
-				transform_stack.push(trans);
-				count++;
-			}
-		}
-
-		// If this is a paste canvas layer, then we need to
-		// descend into it
-		if (synfig::Layer_PasteCanvas::Handle layer_pastecanvas = synfig::Layer_PasteCanvas::Handle::cast_dynamic(i)) {
-			transform_stack.push_back(
-				new studio::Transform_Matrix(
-					layer_pastecanvas->get_guid(),
-					layer_pastecanvas->get_summary_transformation().get_matrix()
-					)
-				);
-
-			if (build_transform_stack(layer_pastecanvas->get_sub_canvas(), layer, canvas_view, transform_stack)) {
-				return true;
-			}
-			transform_stack.pop();
-		}
-	}
-
-	while (count-- > 0) {
-		transform_stack.pop();
-	}
-	return false;
-}
 
 Smach::event_result
 StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 {
 	const EventLayerClick& event(*reinterpret_cast<const EventLayerClick*>(&x));
 
-	if(!event.layer)
-	{
-		get_canvas_view()->get_ui_interface()->warning(_("No layer here"));
-		return Smach::RESULT_ACCEPT;
+	synfig::Layer::Handle target_layer = event.layer;
+	if (!event.layer) {
+		// Trying to get a layer when the clicked point is fully transparent
+		target_layer = get_canvas_view()->get_selection_manager()->get_selected_layer();
+		if (target_layer && !target_layer->active())
+			target_layer = nullptr;
 	}
 
 	synfig::Layer_Bitmap::Handle layer_bitmap;
-	if (auto layer_switch = dynamic_cast<synfig::Layer_Switch*>(event.layer.get())) {
+	synfig::Transform::Handle extra_transformation = nullptr;
+
+	if (auto layer_switch = dynamic_cast<synfig::Layer_Switch*>(target_layer.get())) {
 		layer_bitmap = synfig::Layer_Bitmap::Handle::cast_dynamic(layer_switch->get_current_layer());
+		if (layer_bitmap) {
+			extra_transformation = new Transform_Matrix(
+				layer_switch->get_guid(),
+				layer_switch->get_summary_transformation().get_matrix()
+			);
+		}
 	} else {
-		layer_bitmap = synfig::Layer_Bitmap::Handle::cast_dynamic(event.layer);
+		layer_bitmap = synfig::Layer_Bitmap::Handle::cast_dynamic(target_layer);
+	}
+
+	if (!layer_bitmap && !event.layer) {
+		get_canvas_view()->get_ui_interface()->warning(_("No layer here"));
+		return Smach::RESULT_ACCEPT;
 	}
 
 	if (layer_bitmap && layer_bitmap->rendering_surface) {
 		synfigapp::Action::BitmapLayerFill::Handle action = new synfigapp::Action::BitmapLayerFill();
 
 		action->set_param("layer", synfig::Layer::Handle(layer_bitmap.get()));
-		// const synfig::TransformStack& transform(get_work_area()->get_curr_transform_stack());
-		synfig::TransformStack transform;
-		build_transform_stack(get_canvas(), layer_bitmap, get_canvas_view(), transform);
-		synfig::Point pos(transform.unperform(event.pos));
+
+		synfig::TransformStack transform(get_work_area()->get_curr_transform_stack());
+		transform.push(extra_transformation);
+
 		const synfig::Vector tl = layer_bitmap->get_param("tl").get(synfig::Point());
 		const synfig::Vector br = layer_bitmap->get_param("br").get(synfig::Point());
-		synfig::warning("pos: %f , %f \t tl: %f , %f \t br: %f , %f", pos[0], pos[1], tl[0], tl[1], br[0], br[1]);
+		synfig::Point pos(transform.unperform(event.pos));
 		pos = (pos - tl).divide_coords(br - tl);
-		synfig::warning("\tpos: %f , %f", pos[0], pos[1]);
-		// float surface_x = ((pos[0] - tl[0]) / (br[0] - tl[0])) * overlay_surface.get_w();
-		// float surface_y = ((pos[1] - tl[1]) / (br[1] - tl[1])) * overlay_surface.get_h();
 		pos[0] *= layer_bitmap->rendering_surface->get_width();
 		pos[1] *= layer_bitmap->rendering_surface->get_height();
-		synfig::warning("\t\tpos: %f , %f \t w: %i \t h: %i", pos[0], pos[1], layer_bitmap->rendering_surface->get_width(), layer_bitmap->rendering_surface->get_height());
 
 		action->set_param("point", synfig::ValueBase(pos));
 		action->set_param("color", synfig::ValueBase(synfigapp::Main::get_fill_color()));
-
 		action->set_param("canvas", get_canvas());
 		action->set_param("canvas_interface", get_canvas_interface());
 		get_canvas_interface()->get_instance()->perform_action(action);
+
 		return Smach::RESULT_ACCEPT;
 	}
-
 
 	//synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
 	synfigapp::ValueDesc value_desc(event.layer,"color");

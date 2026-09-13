@@ -130,44 +130,6 @@ public:
 	ACTION_MODULE_EXT
 };
 
-class BitmapLayerFill :
-	public Undoable,
-	public CanvasSpecific
-{
-public:
-	typedef etl::handle<BitmapLayerFill> Handle;
-	typedef etl::loose_handle<BitmapLayerFill> LooseHandle;
-
-private:
-	synfig::GUID id;
-
-	// params
-	synfig::Layer_Bitmap::Handle layer;
-	synfig::PointInt flood_point;
-	synfig::Color color;
-	synfig::Real tolerance;
-	bool antialiasing;
-
-	// state
-	synfig::Surface original_surface;
-
-	void fill(synfig::Surface& surface);
-
-public:
-	BitmapLayerFill();
-
-	static ParamVocab get_param_vocab();
-	static bool is_candidate(const ParamList& x);
-
-	bool set_param(const synfig::String& name, const Param& param) override;
-	bool is_ready() const override;
-
-	void perform() override;
-	void undo() override;
-
-	ACTION_MODULE_EXT
-};
-
 }; // END of namespace Action
 }; // END of namespace synfigapp
 

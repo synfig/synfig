@@ -16,6 +16,7 @@ LAYER_ACTION_HH = \
 	actions/layerencapsulatefilter.h \
 	actions/layerencapsulateswitch.h \
 	actions/layerextract.h \
+	actions/layerfill.h \
 	actions/layerfit.h \
 	actions/layerlower.h \
 	actions/layermove.h \
@@ -46,6 +47,7 @@ LAYER_ACTION_CC = \
 	actions/layerencapsulatefilter.cpp \
 	actions/layerencapsulateswitch.cpp \
 	actions/layerextract.cpp \
+	actions/layerfill.cpp \
 	actions/layerfit.cpp \
 	actions/layerlower.cpp \
 	actions/layermove.cpp \
