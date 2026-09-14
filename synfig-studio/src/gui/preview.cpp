@@ -40,7 +40,6 @@
 #include <gdkmm/general.h>
 
 #include <gtkmm/alignment.h>
-#include <gtkmm/stock.h>
 
 #include <gui/app.h>
 #include <gui/asyncrenderer.h>

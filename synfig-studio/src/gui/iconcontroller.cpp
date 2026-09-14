@@ -39,9 +39,9 @@
 
 #include "iconcontroller.h"
 
-#include <gtkmm/button.h>
-#include <gtkmm/stock.h>
+#include <gtkmm/icontheme.h>
 #include <gtkmm/window.h>
+
 #include <gui/localization.h>
 #include <synfig/general.h>
 #include <synfig/valuenodes/valuenode_const.h>
@@ -51,7 +51,6 @@
 #include <synfig/pair.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 
-#include <gtkmm/icontheme.h>
 
 #endif
 
@@ -299,29 +298,11 @@ static const std::map<std::string, std::string> layer_icon_names = {
 
 IconController::IconController()
 {
-	icon_factory=Gtk::IconFactory::create();
 }
 
 IconController::~IconController()
 {
 	_tree_pixbuf_table_value_type.clear();
-
-	icon_factory->remove_default();
-}
-
-void
-IconController::init_icon(const synfig::String& name, const synfig::filesystem::Path& iconfile, const synfig::String& desc)
-{
-	Gtk::StockItem stockitem(Gtk::StockID("synfig-" + name), desc);
-	Gtk::Stock::add(stockitem);
-	Glib::RefPtr<Gtk::IconSet> icon_set = Gtk::IconSet::create();
-	Gtk::IconSource icon_source;
-	icon_source.set_direction_wildcarded();
-	icon_source.set_state_wildcarded();
-	icon_source.set_size_wildcarded();
-	icon_source.set_filename(iconfile.u8string());
-	icon_set->add_source(icon_source);
-	icon_factory->add(stockitem.get_stock_id(), icon_set);
 }
 
 void
@@ -333,12 +314,6 @@ IconController::init_icons(const synfig::filesystem::Path& path_to_icons)
 	} catch(...) {
 		synfig::warning(_("Unable to open %s%s"), u8path.c_str(), "/synfig_icon." IMAGE_EXT);
 	}
-
-
-	for (const auto& item : known_icon_list)
-		init_icon(item.first, u8path + '/' + item.second.first + "." IMAGE_EXT, _(item.second.second));
-
-	icon_factory->add_default();
 
 	Gtk::IconSize::register_new("synfig-tiny_icon", 8, 8);
 	Gtk::IconSize::register_new("synfig-small_icon",12,12);

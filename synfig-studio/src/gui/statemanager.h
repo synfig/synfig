@@ -25,15 +25,18 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STATEMANAGER_H
-#define __SYNFIG_STATEMANAGER_H
+#ifndef SYNFIG_STUDIO_STATEMANAGER_H
+#define SYNFIG_STUDIO_STATEMANAGER_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/radioaction.h>
+#include <map>
+#include <string>
+#include <vector>
+
+#include <giomm/simpleactiongroup.h>
 
 #include <gui/smach.h>
-#include <vector>
 
 /* === M A C R O S ========================================================= */
 
@@ -41,28 +44,38 @@
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
-typedef unsigned int guint;
-
 namespace studio {
-	class StateManager
+
+class StateManager
 {
 private:
-	Glib::RefPtr<Gtk::ActionGroup> state_group;
-	Gtk::RadioAction::Group radio_action_group;
+	Glib::RefPtr<Gio::SimpleActionGroup> state_group_;
+	Glib::RefPtr<Gio::SimpleAction> action_set_tool_;
 
-	guint merge_id;
-	std::vector<guint> merge_id_list;
+	struct StateInfo {
+		const Smach::state_base* state;
+		Glib::RefPtr<Gio::SimpleAction> action;
+	};
+	std::map<std::string, StateInfo> state_book_;
 
-	void change_state_(const Glib::RefPtr<Gtk::RadioAction>& current, const Smach::state_base* state);
+	void on_change_state_(const Glib::VariantBase& vb_state_name);
+	void change_state(const std::string& state);
+
+	sigc::signal<void, const Smach::state_base*> signal_state_registered_;
+	sigc::signal<void, const Smach::state_base*> signal_state_selected_;
 
 public:
 	StateManager();
-
 	~StateManager();
 
-	void add_state(const Smach::state_base *state);
+	void register_state(const Smach::state_base* state);
 
-	Glib::RefPtr<Gtk::ActionGroup> get_action_group();
+	Glib::RefPtr<Gio::SimpleActionGroup> get_action_group() const;
+	std::vector<std::string> get_state_names() const;
+
+	sigc::signal<void, const Smach::state_base*>& signal_state_registered() { return signal_state_registered_; };
+
+	sigc::signal<void, const Smach::state_base*>& signal_state_selected() { return signal_state_selected_; };
 };
 
 }; // END of namespace studio

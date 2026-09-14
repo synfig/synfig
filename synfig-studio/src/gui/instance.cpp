@@ -47,8 +47,8 @@
 #include <gtkmm/imagemenuitem.h>
 #include <gtkmm/menuitem.h>
 #include <gtkmm/separatormenuitem.h>
-#include <gtkmm/stock.h>
 
+#include <gui/actionwidgethelper.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/docks/dock_toolbox.h>
@@ -540,9 +540,9 @@ studio::Instance::save()
 	if (!has_real_filename())
 	{
 		if (dialog_save_as())
-			return STATUS_OK;
+			return Status::STATUS_OK;
 		else
-			return STATUS_CANCEL;
+			return Status::STATUS_CANCEL;
 	}
 
 	if (!save_as(get_canvas()->get_file_name()))
@@ -553,10 +553,10 @@ studio::Instance::save()
 				msg.c_str(),
 				"details",
 				_("Close"));
-		return STATUS_ERROR;
+		return Status::STATUS_ERROR;
 	}
 
-	return STATUS_OK;
+	return Status::STATUS_OK;
 }
 
 // the filename will be set to "Synfig Animation 1" or some such when first created
@@ -913,8 +913,10 @@ Instance::safe_close()
 
 			if(answer == synfigapp::UIInterface::RESPONSE_YES){
 				enum Status status = save();
-				if (status == STATUS_OK) break;
-				else if (status == STATUS_CANCEL) return false;
+				if (status == Status::STATUS_OK)
+					break;
+				else if (status == Status::STATUS_CANCEL)
+					return false;
 			}
 			if(answer==synfigapp::UIInterface::RESPONSE_NO)
 				break;
@@ -928,42 +930,28 @@ Instance::safe_close()
 }
 
 void
-Instance::add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category)const
+Instance::add_actions_to_group(const Glib::RefPtr<Gio::SimpleActionGroup>& action_group, const synfigapp::Action::ParamList& param_list, synfigapp::Action::Category category) const
 {
 	synfigapp::Action::CandidateList candidate_list;
-	synfigapp::Action::CandidateList::iterator iter;
 
-	candidate_list=compile_candidate_list(param_list,category);
+	candidate_list = synfigapp::Action::compile_visible_candidate_list(param_list, category);
 
 	candidate_list.sort();
 
-	// if(candidate_list.empty())
-	// 	synfig::warning("%s:%d Action CandidateList is empty!", __FILE__, __LINE__);
-
-	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
-	{
-		std::string icon_name(get_action_icon_name(*iter));
-
-		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
-		{
-			action_group->add(Gtk::Action::create_with_icon_name(
-				"action-"+iter->name,
-				icon_name,
-				iter->local_name,iter->local_name
-			),
+	for (const auto& action : candidate_list) {
+		const std::string icon_name(get_action_icon_name(action));
+		action_group->add_action("action-" + action.name,
+			sigc::bind(
 				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(
-							*const_cast<studio::Instance*>(this),
-							&studio::Instance::process_action
-						),
-						param_list
+					sigc::mem_fun(
+						*const_cast<studio::Instance*>(this),
+						&studio::Instance::process_action
 					),
-					iter->name
-				)
-			);
-			ui_info+=strprintf("<menuitem action='action-%s' />",iter->name.c_str());
-		}
+					param_list
+				),
+				action.name
+			)
+		);
 	}
 }
 
@@ -971,115 +959,81 @@ void
 Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list,synfigapp::Action::Category category)const
 {
 	synfigapp::Action::CandidateList candidate_list;
-	synfigapp::Action::CandidateList::iterator iter;
 
-	candidate_list=compile_candidate_list(param_list,category);
+	candidate_list = synfigapp::Action::compile_visible_candidate_list(param_list, category);
 
 	candidate_list.sort();
 
 	if(candidate_list.empty())
 		synfig::warning("%s:%d Action CandidateList is empty!", __FILE__, __LINE__);
 
-	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
-	{
-		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
-		{
-			bool is_item_already_in_menu = false;
-			std::vector<Gtk::Widget*> children = menu->get_children();
-			for (const Gtk::Widget* child : children) {
-				if (const Gtk::MenuItem* menu_item = dynamic_cast<const Gtk::MenuItem*>(child)) {
-					if (menu_item->get_label() == iter->local_name) {
-						is_item_already_in_menu = true;
-						break;
-					}
+	for (const auto& action : candidate_list) {
+		bool is_item_already_in_menu = false;
+		std::vector<Gtk::Widget*> children = menu->get_children();
+		for (const Gtk::Widget* child : children) {
+			if (const Gtk::MenuItem* menu_item = dynamic_cast<const Gtk::MenuItem*>(child)) {
+				if (menu_item->get_label() == action.local_name) {
+					is_item_already_in_menu = true;
+					break;
 				}
 			}
-			// Maybe the action supports multiple ducks or layers and is already listed in menu
-			if (is_item_already_in_menu)
-				continue;
-
-			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
-				*Gtk::manage(create_image_from_icon(get_action_icon_name(*iter), Gtk::ICON_SIZE_MENU)),
-				iter->local_name ));
-
-			item->signal_activate().connect(
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(
-							*const_cast<studio::Instance*>(this),
-							&studio::Instance::process_action ),
-						param_list ),
-					iter->name ));
-			item->show_all();
-			menu->append(*item);
 		}
+		// Maybe the action supports multiple ducks or layers and is already listed in menu
+		if (is_item_already_in_menu)
+			continue;
+
+		Gtk::MenuItem* item = Gtk::manage(new Gtk::ImageMenuItem(
+			*Gtk::manage(create_image_from_icon(get_action_icon_name(action), Gtk::ICON_SIZE_MENU)),
+			action.local_name ));
+
+		item->signal_activate().connect(
+			sigc::bind(
+				sigc::bind(
+					sigc::mem_fun(
+						*const_cast<studio::Instance*>(this),
+						&studio::Instance::process_action ),
+					param_list ),
+				action.name ));
+		item->show_all();
+		menu->append(*item);
 	}
 }
 
 void
-Instance::add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list,const synfigapp::Action::ParamList &param_list2,synfigapp::Action::Category category)const
+Instance::add_actions_to_menu(const std::string& action_group_name, const Glib::RefPtr<Gio::Menu>& menu, const synfigapp::Action::ParamList& param_list, synfigapp::Action::Category category) const
 {
+	const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
+
 	synfigapp::Action::CandidateList candidate_list;
-	synfigapp::Action::CandidateList candidate_list2;
 
-	synfigapp::Action::CandidateList::iterator iter;
-
-	candidate_list=compile_candidate_list(param_list,category);
-	candidate_list2=compile_candidate_list(param_list2,category);
+	candidate_list = synfigapp::Action::compile_visible_candidate_list(param_list, category);
 
 	candidate_list.sort();
 
 	if(candidate_list.empty())
 		synfig::warning("%s:%d Action CandidateList is empty!", __FILE__, __LINE__);
-	if(candidate_list2.empty())
-		synfig::warning("%s:%d Action CandidateList2 is empty!", __FILE__, __LINE__);
 
-	// Separate out the candidate lists so that there are no conflicts
-	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
-	{
-		synfigapp::Action::CandidateList::iterator iter2(candidate_list2.find(iter->name));
-		if(iter2!=candidate_list2.end())
-			candidate_list2.erase(iter2);
-	}
-
-	for(iter=candidate_list2.begin();iter!=candidate_list2.end();++iter)
-	{
-		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
-		{
-			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
-				*Gtk::manage(create_image_from_icon(get_action_icon_name(*iter), Gtk::ICON_SIZE_MENU)),
-				iter->local_name ));
-			item->signal_activate().connect(
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(
-							*const_cast<studio::Instance*>(this),
-							&studio::Instance::process_action ),
-						param_list2 ),
-					iter->name ));
-			item->show_all();
-			menu->append(*item);
+	for (const auto& action : candidate_list) {
+		bool is_item_already_in_menu = false;
+		for (int i = 0; i < menu->get_n_items(); ++i) {
+			auto v_action = menu->get_item_attribute(i, Gio::MENU_ATTRIBUTE_LABEL, Glib::VARIANT_TYPE_STRING);
+			auto detailed_action_name = Glib::VariantBase::cast_dynamic<Glib::Variant<std::string>>(v_action).get();
+			if (detailed_action_name == action.local_name) {
+				is_item_already_in_menu = true;
+				break;
+			}
 		}
-	}
+		// Maybe the action supports multiple ducks or layers and is already listed in menu
+		if (is_item_already_in_menu)
+			continue;
 
-	for(iter=candidate_list.begin();iter!=candidate_list.end();++iter)
-	{
-		if(!(iter->category&synfigapp::Action::CATEGORY_HIDDEN))
-		{
-			Gtk::MenuItem *item = Gtk::manage(new Gtk::ImageMenuItem(
-				*Gtk::manage(create_image_from_icon(get_action_icon_name(*iter), Gtk::ICON_SIZE_MENU)),
-				iter->local_name ));
-			item->signal_activate().connect(
-				sigc::bind(
-					sigc::bind(
-						sigc::mem_fun(
-							*const_cast<studio::Instance*>(this),
-							&studio::Instance::process_action ),
-						param_list ),
-					iter->name ));
-			item->show_all();
-			menu->append(*item);
-		}
+		auto menu_item = ActionWidgetHelper::create_menu_item_for_synfigapp_action(action_group_name, action.name);
+		// auto menu_item = Gio::MenuItem::create(action.local_name, action_group_name + ".action-" + action.name);
+		// const std::string icon_name = get_action_icon_name(action);
+		// if (!icon_name.empty() && icon_name != "image-missing") {
+		// 	menu_item->set_icon(Gio::ThemedIcon::create(icon_name + symbolic_suffix));
+		// }
+		menu->append_item(menu_item);
 	}
 }
 
@@ -1193,23 +1147,9 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 
 	Gtk::MenuItem* item = nullptr;
 
-	synfigapp::Action::ParamList param_list,param_list2;
+	synfigapp::Action::ParamList param_list;
 	param_list=canvas_interface->generate_param_list(value_desc);
 	param_list.add("origin",location);
-
-#ifdef BLINEPOINT_MENU_IS_VERTEX_MENU
-	if(value_desc.get_value_type()==type_bline_point && value_desc.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node()))
-	{
-		param_list2=canvas_interface->generate_param_list(
-			synfigapp::ValueDesc(
-				ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
-				,ValueNode_Composite::Handle::cast_dynamic(value_desc.get_value_node())
-                                                           ->get_link_index_from_name("point")
-			)
-		);
-		param_list2.add("origin",location);
-	}
-#endif	// BLINEPOINT_MENU_IS_VERTEX_MENU
 
 	// Populate the convert menu by looping through
 	// the ValueNode book and find the ones that are
@@ -1328,10 +1268,7 @@ Instance::make_param_menu(Gtk::Menu *menu,synfig::Canvas::Handle canvas, synfiga
 		param_list.add("active_bone", canvas_view->get_work_area()->get_active_bone_value_node());
 	}
 
-	if(param_list2.empty())
-		add_actions_to_menu(&parammenu, param_list,categories);
-	else
-		add_actions_to_menu(&parammenu, param_list2,param_list,categories);
+	add_actions_to_menu(&parammenu, param_list, categories);
 
 	if((value_desc2.get_value_type()==type_bline_point || value_desc2.get_value_type()==type_width_point)
 	 && value_desc2.is_value_node() && ValueNode_Composite::Handle::cast_dynamic(value_desc2.get_value_node()))
@@ -1735,115 +1672,92 @@ Instance::gather_uri(std::map<synfig::String, synfig::String> &x, const synfigap
 }
 
 void
-Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfig::Layer::Handle &layer) const
+Instance::add_special_layer_actions_to_menu(const Glib::RefPtr<Gio::Menu>& menu, const synfig::Layer::Handle& layer) const
 {
-	add_special_layer_actions_to_menu(menu, synfigapp::SelectionManager::LayerList(1, layer));
-}
+	const std::string action_group_name = "layer";
+	const std::string symbolic_suffix = ""; // App::use-symbolic-icons ? "-symbolic" : "";
 
-void
-Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info, const synfig::Layer::Handle &layer) const
-{
-	add_special_layer_actions_to_group(action_group, ui_info, synfigapp::SelectionManager::LayerList(1, layer));
-}
-
-void
-Instance::add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::SelectionManager::LayerList &layers) const
-{
 	// Open files with external apps
 	std::map<String, String> uris;
-	gather_uri(uris, layers);
-	for (auto i = uris.cbegin(); i != uris.cend(); ++i) {
-		String label;
-		Gtk::Action::SlotActivate func;
-		// check if layer is image
-		if (is_img(i->second)) {
-			label = _("Edit image in external tool...");
-			func = sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second);
-		} else {
-			label = strprintf(_("Open file '%s'"), i->first.c_str());
-			func = sigc::bind(sigc::ptr_fun(&App::open_uri), i->second);
-		}
-		Gtk::MenuItem *item = manage(new Gtk::ImageMenuItem(Gtk::Stock::OPEN));
-		item->set_label(label);
-		item->signal_activate().connect(func);
-		item->show();
-		menu->append(*item);
-	}
-
-	// Vectorizer
-	if (layers.size() == 1) {
-		Layer_Bitmap::Handle layer_bitmap;
-
-		if (auto reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layers.front())) {
-			//the layer selected is a switch group
-			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(reference_layer->get_current_layer());
-		} else {
-			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layers.front());
-		}
-
-		if (layer_bitmap) {
-			Gtk::MenuItem *item2 = manage(new Gtk::ImageMenuItem(Gtk::Stock::CONVERT));
-			item2->set_label( (String(_("Convert to Vector"))).c_str() );
-			item2->signal_activate().connect(
-				sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), layer_bitmap, layers.front()) );
-			item2->show();
-			menu->append(*item2);
-		}
-	}
-}
-
-// called whenever we right click any layer under layers panel
-// arguments - action_group: the current group of actions on the right click menu, layers: layerlist(because we can select multiple layer and then right click) 
-void
-Instance::add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info, const synfigapp::SelectionManager::LayerList &layers) const
-{
-	// Open files with external apps
-	std::map<String, String> uris;
-	gather_uri(uris, layers);
-	int index = 0;
-	for (auto i = uris.cbegin(); i != uris.cend(); ++i, ++index) {
-		String action_name = strprintf("special-action-open-file-%d", index);
+	gather_uri(uris, {layer});
+	for (const auto& uri : uris) {
+		String action_name = strprintf("special-action-open-file(\"%s\")", uri.second.c_str());
 		String local_name;
-		Gtk::Action::SlotActivate func;
+		sigc::slot<void> func;
 		//if the import layer is type image
-		if (is_img(i->second)) {
+		if (is_img(uri.second)) {
 			local_name = _("Edit image in external tool...");
-			func = sigc::bind(sigc::ptr_fun(&App::open_img_in_external), i->second);
 		} else {
-			local_name = strprintf(_("Open file '%s'"), i->first.c_str());
-			func = sigc::bind(sigc::ptr_fun(&App::open_uri), i->second);
+			local_name = strprintf(_("Open file '%s'"), uri.first.c_str());
 		}
-
-		action_group->add(
-			Gtk::Action::create(
-				action_name,
-				Gtk::Stock::OPEN,
-				local_name, local_name ),
-			func );
-		ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
+		// ActionWidgetHelper::create_action_menu_item()
+		auto menu_item = Gio::MenuItem::create(local_name, action_group_name + "." + action_name);
+		menu_item->set_icon(Gio::ThemedIcon::create("document-open" + symbolic_suffix));
+		menu->append_item(menu_item);
 	}
 
 	// Vectorizer
-	if (layers.size() == 1)	{
-		String local_name = _("Convert to Vector");
-		String action_name = strprintf("special-action-open-file-vectorizer-%d", index);
+	{
 		Layer_Bitmap::Handle layer_bitmap;
 
-		if (auto reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layers.front())) {
+		if (auto reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layer)) {
 			//the layer selected is a switch group
 			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(reference_layer->get_current_layer());
 		} else {
-			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layers.front());
+			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layer);
 		}
 
 		if (layer_bitmap) {
-			action_group->add(
-				Gtk::Action::create(
-					action_name,
-					Gtk::Stock::CONVERT,
-					local_name, local_name ),
-				sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), layer_bitmap, layers.front()) );
-			ui_info += strprintf("<menuitem action='%s' />", action_name.c_str());
+			const String local_name = _("Convert to Vector");
+			const String action_name = strprintf("special-action-open-vectorizer");
+
+			auto menu_item = Gio::MenuItem::create(local_name, action_group_name + "." + action_name);
+			// Gtk::StockID STOCK_ID Gtk::Stock::CONVERT
+			menu_item->set_icon(Gio::ThemedIcon::create("gtk-convert" + symbolic_suffix));
+			menu->append_item(menu_item);
+		}
+	}
+}
+
+void
+Instance::add_special_layer_actions_to_group(
+	const Glib::RefPtr<Gio::SimpleActionGroup>& action_group,
+	const synfig::Layer::Handle& layer) const
+{
+	if (!layer)
+		return;
+
+	// Open files with external apps
+	std::set<String> uris;
+	gather_uri(uris, layer);
+	if (!uris.empty()) {
+		auto action = Gio::SimpleAction::create("special-action-open-file", Glib::VARIANT_TYPE_STRING);
+		auto on_open_file = [] (const Glib::VariantBase& v) {
+			const std::string filename = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(v).get();
+			if (is_img(filename)) {
+				App::open_img_in_external(filename);
+			} else {
+				App::open_uri(filename);
+			}
+		};
+		action->signal_activate().connect(on_open_file);
+		action_group->add_action(action);
+	}
+
+	// Vectorizer
+	{
+		Layer_Bitmap::Handle layer_bitmap;
+		if (auto reference_layer = etl::handle<Layer_Switch>::cast_dynamic(layer)) {
+			//the layer selected is a switch group
+			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(reference_layer->get_current_layer());
+		} else {
+			layer_bitmap = Layer_Bitmap::Handle::cast_dynamic(layer);
+		}
+
+		if (layer_bitmap) {
+			// sadly is not an action with parameter because I don't know how to use Layer_Bitmap::Handle as Glib::Variant
+			const String action_name = strprintf("special-action-open-vectorizer");
+			action_group->add_action(action_name, sigc::bind(sigc::ptr_fun(&App::open_vectorizerpopup), layer_bitmap, layer));
 		}
 	}
 }

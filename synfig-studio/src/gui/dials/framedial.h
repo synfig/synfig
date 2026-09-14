@@ -50,48 +50,48 @@ namespace studio
 class FrameDial : public Gtk::Grid
 {
 private:
-	Gtk::Button *seek_begin;
-	Gtk::Button *seek_prev_keyframe;
-	Gtk::Button *seek_prev_frame;
-	Gtk::Button *play;
-	Gtk::Button *pause;
-	Gtk::Button *seek_next_frame;
-	Gtk::Button *seek_next_keyframe;
-	Gtk::Button *seek_end;
-	Widget_Time *end_time;
-	Gtk::ToggleButton *repeat;
-	Gtk::Button *bound_lower;
-	Gtk::ToggleButton *bounds_enable;
-	Gtk::Button *bound_upper;
+	Gtk::Button seek_begin;
+	Gtk::Button seek_prev_keyframe;
+	Gtk::Button seek_prev_frame;
+	Gtk::Button play;
+	Gtk::Button pause;
+	Gtk::Button seek_next_frame;
+	Gtk::Button seek_next_keyframe;
+	Gtk::Button seek_end;
+	Widget_Time end_time;
+	Gtk::ToggleButton repeat;
+	Gtk::Button bound_lower;
+	Gtk::ToggleButton bounds_enable;
+	Gtk::Button bound_upper;
 
 	sigc::signal<void, bool> signal_repeat_;
 	sigc::signal<void, bool> signal_bounds_enable_;
 
-	void init_button(Gtk::Button &button, const std::string& icon_name, const std::string& tooltip);
 	void create_separator();
-	Gtk::Button* create_button(const std::string& icon_name, const std::string& tooltip, bool separator = false);
-	Gtk::ToggleButton* create_toggle(const std::string& icon_name, const std::string& tooltip, bool separator = false);
 
 	void on_repeat_toggled();
 	void on_bounds_toggled();
-	Widget_Time* create_end_time_entry(const char *tooltip);
+	void init_end_time_entry(Widget_Time& end_time);
 
 public:
-	FrameDial();
+	/**
+	 * @param action_prefix if empty, it doesn't use Gio::Actions. In this case, rely on the signal_*() methods
+	 */
+	FrameDial(const std::string& action_prefix);
 
-	Glib::SignalProxy0<void> signal_seek_begin()         { return seek_begin->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_prev_keyframe() { return seek_prev_keyframe->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_prev_frame()    { return seek_prev_frame->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_play()               { return play->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_pause()              { return pause->signal_clicked();}
-	Glib::SignalProxy0<void> signal_seek_next_frame()    { return seek_next_frame->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_next_keyframe() { return seek_next_keyframe->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_seek_end()           { return seek_end->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_end_time_changed()   { return end_time->signal_activate(); }
+	Glib::SignalProxy0<void> signal_seek_begin()         { return seek_begin.signal_clicked(); }
+	Glib::SignalProxy0<void> signal_seek_prev_keyframe() { return seek_prev_keyframe.signal_clicked(); }
+	Glib::SignalProxy0<void> signal_seek_prev_frame()    { return seek_prev_frame.signal_clicked(); }
+	Glib::SignalProxy0<void> signal_play()               { return play.signal_clicked(); }
+	Glib::SignalProxy0<void> signal_pause()              { return pause.signal_clicked();}
+	Glib::SignalProxy0<void> signal_seek_next_frame()    { return seek_next_frame.signal_clicked(); }
+	Glib::SignalProxy0<void> signal_seek_next_keyframe() { return seek_next_keyframe.signal_clicked(); }
+	Glib::SignalProxy0<void> signal_seek_end()           { return seek_end.signal_clicked(); }
+	Glib::SignalProxy0<void> signal_end_time_changed()   { return end_time.signal_activate(); }
 	sigc::signal<void, bool> signal_repeat()             { return signal_repeat_; }
 	sigc::signal<void, bool> signal_bounds_enable()      { return signal_bounds_enable_; }
-	Glib::SignalProxy0<void> signal_bound_lower()        { return bound_lower->signal_clicked(); }
-	Glib::SignalProxy0<void> signal_bound_upper()        { return bound_upper->signal_clicked(); }
+	Glib::SignalProxy0<void> signal_bound_lower()        { return bound_lower.signal_clicked(); }
+	Glib::SignalProxy0<void> signal_bound_upper()        { return bound_upper.signal_clicked(); }
 
 	void toggle_play_pause_button(bool is_playing);
 	void toggle_repeat(bool enable);

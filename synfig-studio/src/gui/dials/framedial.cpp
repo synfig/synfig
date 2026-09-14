@@ -39,6 +39,9 @@
 
 #include <gtkmm/separator.h>
 
+#include <gui/actiondatabase.h>
+#include <gui/actionwidgethelper.h>
+#include <gui/app.h>
 #include <gui/localization.h>
 
 #endif
@@ -53,37 +56,104 @@ using namespace studio;
 
 /* === P R O C E D U R E S ================================================= */
 
+static void
+init_button(Gtk::Button& button, const std::string& action)
+{
+	ActionWidgetHelper::init_icon_only_button(button, action);
+	button.set_relief(Gtk::RELIEF_NONE);
+}
+
+static void
+init_button(Gtk::Button& button, const std::string& action, const std::string& icon, const std::string& tooltip)
+{
+	ActionWidgetHelper::init_button(button, action, icon, "", tooltip);
+	button.set_relief(Gtk::RELIEF_NONE);
+}
+
 /* === M E T H O D S ======================================================= */
 
-FrameDial::FrameDial():
-	seek_begin         (create_button("animate_seek_begin_icon"         , _("Seek to begin")            )),
-	seek_prev_keyframe (create_button("animate_seek_prev_keyframe_icon" , _("Seek to previous keyframe"))),
-	seek_prev_frame    (create_button("animate_seek_prev_frame_icon"    , _("Seek to previous frame")   )),
-	play               (create_button("animate_play_icon"               , _("Play")                     )),
-	pause              (create_button("animate_pause_icon"              , _("Pause")                    )),
-	seek_next_frame    (create_button("animate_seek_next_frame_icon"    , _("Seek to next frame")       )),
-	seek_next_keyframe (create_button("animate_seek_next_keyframe_icon" , _("Seek to next keyframe")    )),
-	seek_end           (create_button("animate_seek_end_icon"           , _("Seek to end")              )),
-	end_time           (create_end_time_entry(                              _("End Time")                 )),
-	repeat             (create_toggle("animate_loop_icon"               , _("Loop")                     , true)),
-	bound_lower        (create_button("animate_bound_lower_icon"        , _("Set lower playback bound") , true)),
-	bounds_enable      (create_toggle("animate_bounds_icon"             , _("Enable playback bounds")   )),
-	bound_upper        (create_button("animate_bound_upper_icon"        , _("Set upper playback bound") ))
+FrameDial::FrameDial(const std::string& action_prefix)
 {
-	repeat->signal_toggled().connect(
-		sigc::mem_fun(*this, &FrameDial::on_repeat_toggled) );
-	bounds_enable->signal_toggled().connect(
-		sigc::mem_fun(*this, &FrameDial::on_bounds_toggled) );
+	const std::string action_seek_begin          = action_prefix.empty() ? "" : action_prefix + "." + "seek-begin";
+	const std::string action_seek_prev_keyframe  = action_prefix.empty() ? "" : action_prefix + "." + "jump-prev-keyframe";
+	const std::string action_seek_prev_frame     = action_prefix.empty() ? "" : action_prefix + "." + "seek-prev-frame";
+	const std::string action_play                = action_prefix.empty() ? "" : action_prefix + "." + "play";
+	const std::string action_pause               = action_prefix.empty() ? "" : action_prefix + "." + "pause";
+	const std::string action_seek_next_frame     = action_prefix.empty() ? "" : action_prefix + "." + "seek-next-frame";
+	const std::string action_seek_next_keyframe  = action_prefix.empty() ? "" : action_prefix + "." + "jump-next-keyframe";
+	const std::string action_seek_end            = action_prefix.empty() ? "" : action_prefix + "." + "seek-end";
+	const std::string action_repeat              = action_prefix.empty() ? "" : action_prefix + "." + "toggle-animation-loop";
+	const std::string action_bound_lower         = action_prefix.empty() ? "" : action_prefix + "." + "set-lower-bound";
+	const std::string action_toggle_bound        = action_prefix.empty() ? "" : action_prefix + "." + "toggle-animation-bounds";
+	const std::string action_bound_upper         = action_prefix.empty() ? "" : action_prefix + "." + "set-upper-bound";
+
+	if (App::get_action_database()->has(action_seek_begin)) {
+		init_button(seek_begin, action_seek_begin);
+		init_button(seek_prev_keyframe, action_seek_prev_keyframe);
+		init_button(seek_prev_frame, action_seek_prev_frame);
+		init_button(play, action_play);
+		init_button(pause, action_pause);
+		init_button(seek_next_frame, action_seek_next_frame);
+		init_button(seek_next_keyframe, action_seek_next_keyframe);
+		init_button(seek_end, action_seek_end);
+		// init_end_time_entry(end_time);
+		// create_separator();
+		init_button(repeat, action_repeat);
+		// create_separator();
+		init_button(bound_lower, action_bound_lower);
+		init_button(bounds_enable, action_toggle_bound);
+		init_button(bound_upper, action_bound_upper);
+	} else {
+		init_button(seek_begin, action_seek_begin, "animate_seek_begin_icon", _("Seek to begin"));
+		init_button(seek_prev_keyframe, action_seek_prev_keyframe, "animate_seek_prev_keyframe_icon" , _("Seek to previous keyframe"));
+		init_button(seek_prev_frame, action_seek_prev_frame, "animate_seek_prev_frame_icon", _("Seek to previous frame"));
+		init_button(play, action_play, "animate_play_icon", _("Play"));
+		init_button(pause, action_pause, "animate_pause_icon", _("Pause"));
+		init_button(seek_next_frame, action_seek_next_frame, "animate_seek_next_frame_icon", _("Seek to next frame"));
+		init_button(seek_next_keyframe, action_seek_next_keyframe, "animate_seek_next_keyframe_icon", _("Seek to next keyframe"));
+		init_button(seek_end, action_seek_end, "animate_seek_end_icon", _("Seek to end"));
+		// init_end_time_entry(end_time);
+		// create_separator();
+		init_button(repeat, action_repeat, "animate_loop_icon", _("Loop"));
+		// create_separator();
+		init_button(bound_lower, action_bound_lower, "animate_bound_lower_icon", _("Set lower playback bound"));
+		init_button(bounds_enable, action_toggle_bound, "animate_bounds_icon", _("Enable playback bounds"));
+		init_button(bound_upper, action_bound_upper, "animate_bound_upper_icon", _("Set upper playback bound"));
+
+		repeat.signal_toggled().connect(
+			sigc::mem_fun(*this, &FrameDial::on_repeat_toggled) );
+		bounds_enable.signal_toggled().connect(
+			sigc::mem_fun(*this, &FrameDial::on_bounds_toggled) );
+	}
+
+	seek_begin.set_relief(Gtk::RELIEF_NONE);
+	add(seek_begin);
+	add(seek_prev_keyframe);
+	add(seek_prev_frame);
+	add(play);
+	add(pause);
+	add(seek_next_frame);
+	add(seek_next_keyframe);
+	add(seek_end);
+	init_end_time_entry(end_time);
+	create_separator();
+	add(repeat);
+	create_separator();
+	add(bound_lower);
+	add(bounds_enable);
+	add(bound_upper);
+
+	show_all();
 	toggle_play_pause_button(false);
 }
 
 void
 FrameDial::on_repeat_toggled()
-	{ signal_repeat()(repeat->get_active()); }
+	{ signal_repeat()(repeat.get_active()); }
 
 void
 FrameDial::on_bounds_toggled()
-	{ signal_bounds_enable()(bounds_enable->get_active()); }
+	{ signal_bounds_enable()(bounds_enable.get_active()); }
 
 void
 FrameDial::create_separator()
@@ -94,79 +164,49 @@ FrameDial::create_separator()
 }
 
 void
-FrameDial::init_button(Gtk::Button& button, const std::string& icon_name, const std::string& tooltip)
+FrameDial::init_end_time_entry(Widget_Time& end_time)
 {
-	button.set_image_from_icon_name(icon_name);
-	button.set_tooltip_text(tooltip);
-	button.set_relief(Gtk::RELIEF_NONE);
-	button.show();
-	add(button);
-}
-
-Gtk::Button*
-FrameDial::create_button(const std::string& icon_name, const std::string& tooltip, bool separator)
-{
-	if (separator) create_separator();
-	Gtk::Button *button = manage(new class Gtk::Button());
-	init_button(*button, icon_name, tooltip);
-	return button;
-}
-
-Gtk::ToggleButton*
-FrameDial::create_toggle(const std::string& icon_name, const std::string& tooltip, bool separator)
-{
-	if (separator) create_separator();
-	Gtk::ToggleButton *toggle = manage(new class Gtk::ToggleButton());
-	init_button(*toggle, icon_name, tooltip);
-	return toggle;
-}
-
-Widget_Time*
-FrameDial::create_end_time_entry(const char *tooltip)
-{
-	end_time = manage(new Widget_Time());
-	end_time->set_width_chars(6);
-	end_time->set_tooltip_text(tooltip);
-	end_time->show();
-	add(*end_time);
-	return end_time;
+	end_time.set_width_chars(6);
+	end_time.set_tooltip_text(_("End Time"));
+	end_time.show();
+	add(end_time);
 }
 
 void
 FrameDial::toggle_play_pause_button(bool is_playing)
 {
 	if (is_playing) {
-		play->hide();
-		pause->show();
+		play.hide();
+		pause.show();
 	} else {
-		pause->hide();
-		play->show();
+		pause.hide();
+		play.show();
 	}
 }
 
 void
 FrameDial::toggle_repeat(bool enable)
-	{ repeat->set_active(enable); }
+	{ repeat.set_active(enable); }
 
 void
 FrameDial::toggle_bounds_enable(bool enable)
-	{ bounds_enable->set_active(enable); }
+	{ bounds_enable.set_active(enable); }
 
 void
 FrameDial::set_end_time(float fps, float value)
 {
-	end_time->set_fps(fps);
-	end_time->set_value(value);
+	end_time.set_fps(fps);
+	end_time.set_value(value);
 }
 
 float
 FrameDial::get_end_time()
 {
-	return end_time->get_value();
+	return end_time.get_value();
 }
 
 void
 FrameDial::on_end_time_widget_changed()
 {
-	end_time->set_position(-1);
+	end_time.set_position(-1);
 }

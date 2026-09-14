@@ -35,6 +35,10 @@
 #endif
 
 #include "toggleducksdial.h"
+
+#include <gui/actiondatabase.h>
+#include <gui/actionwidgethelper.h>
+#include <gui/app.h>
 #include <gui/localization.h>
 
 #endif
@@ -50,23 +54,30 @@ using namespace studio;
 /* === P R O C E D U R E S ================================================= */
 
 /* === M E T H O D S ======================================================= */
-static void
-init_label_button(Gtk::ToggleToolButton &button, const std::string& icon_name, const std::string& label, const std::string& tooltip)
-{
-	button.set_label(label);
-	button.set_tooltip_text(tooltip);
-	button.set_icon_name(icon_name);
-	button.show();
-}
 
-ToggleDucksDial::ToggleDucksDial(const Gtk::IconSize &size)
+ToggleDucksDial::ToggleDucksDial(const std::string& action_prefix)
 {
-	init_label_button(ducks_position, "duck_position_icon", _("Position handles"), _("Toggle position handles"));
-	init_label_button(ducks_vertex,   "duck_vertex_icon",   _("Vertex handles"),   _("Toggle vertex handles"));
-	init_label_button(ducks_tangent,  "duck_tangent_icon",  _("Tangent handles"),  _("Toggle tangent handles"));
-	init_label_button(ducks_radius,   "duck_radius_icon",   _("Radius handles"),   _("Toggle radius handles"));
-	init_label_button(ducks_width,    "duck_width_icon",    _("Width handles"),    _("Toggle width handles"));
-	init_label_button(ducks_angle,    "duck_angle_icon",    _("Angle handles"),    _("Toggle angle handles"));
+	const std::string action_position_duck = action_prefix.empty() ? "" : action_prefix + "." + "mask-position-ducks";
+	const std::string action_vertex_duck   = action_prefix.empty() ? "" : action_prefix + "." + "mask-vertex-ducks";
+	const std::string action_tangent_duck  = action_prefix.empty() ? "" : action_prefix + "." + "mask-tangent-ducks";
+	const std::string action_radius_duck   = action_prefix.empty() ? "" : action_prefix + "." + "mask-radius-ducks";
+	const std::string action_width_duck    = action_prefix.empty() ? "" : action_prefix + "." + "mask-width-ducks";
+	const std::string action_angle_duck    = action_prefix.empty() ? "" : action_prefix + "." + "mask-angle-ducks";
+	if (App::get_action_database()->has(action_position_duck)) {
+		ActionWidgetHelper::init_icon_only_toolbutton(ducks_position, action_position_duck);
+		ActionWidgetHelper::init_icon_only_toolbutton(ducks_vertex,   action_vertex_duck);
+		ActionWidgetHelper::init_icon_only_toolbutton(ducks_tangent,  action_tangent_duck);
+		ActionWidgetHelper::init_icon_only_toolbutton(ducks_radius,   action_radius_duck);
+		ActionWidgetHelper::init_icon_only_toolbutton(ducks_width,    action_width_duck);
+		ActionWidgetHelper::init_icon_only_toolbutton(ducks_angle,    action_angle_duck);
+	} else {
+		ActionWidgetHelper::init_toolbutton(ducks_position, action_position_duck, "duck_position_icon", _("Position handles"), _("Toggle position handles"));
+		ActionWidgetHelper::init_toolbutton(ducks_vertex,   action_vertex_duck,   "duck_vertex_icon",   _("Vertex handles"),   _("Toggle vertex handles"));
+		ActionWidgetHelper::init_toolbutton(ducks_tangent,  action_tangent_duck,  "duck_tangent_icon",  _("Tangent handles"),  _("Toggle tangent handles"));
+		ActionWidgetHelper::init_toolbutton(ducks_radius,   action_radius_duck,   "duck_radius_icon",   _("Radius handles"),   _("Toggle radius handles"));
+		ActionWidgetHelper::init_toolbutton(ducks_width,    action_width_duck,    "duck_width_icon",    _("Width handles"),    _("Toggle width handles"));
+		ActionWidgetHelper::init_toolbutton(ducks_angle,    action_angle_duck,    "duck_angle_icon",    _("Angle handles"),    _("Toggle angle handles"));
+	}
 }
 
 void
