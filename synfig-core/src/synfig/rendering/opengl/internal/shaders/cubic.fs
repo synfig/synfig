@@ -1,9 +1,10 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/predeclarations.h
-**	\brief Predeclarations
+/*!	\file synfig/rendering/opengl/internal/glsl/solid.fs
+**	\brief Solid Color Fragment Shader
 **
 **	\legal
 **	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -23,33 +24,13 @@
 */
 /* ========================================================================= */
 
-/* === S T A R T =========================================================== */
+#version 330 core
 
-#ifndef __SYNFIG_RENDERING_GL_PREDECLARATIONS_H
-#define __SYNFIG_RENDERING_GL_PREDECLARATIONS_H
+uniform vec4 color;
 
-/* === H E A D E R S ======================================================= */
+layout (location = 0) out vec4 out_color;
 
-/* === M A C R O S ========================================================= */
-
-/* === T Y P E D E F S ===================================================== */
-
-/* === C L A S S E S & S T R U C T S ======================================= */
-
-namespace synfig
+void main()
 {
-namespace rendering
-{
-namespace gl
-{
-
-typedef unsigned int Identifier;
-class Environment;
-
-}; /* end namespace gl */
-}; /* end namespace rendering */
-}; /* end namespace synfig */
-
-/* -- E N D ----------------------------------------------------------------- */
-
-#endif
+	out_color = color;
+}

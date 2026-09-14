@@ -1,9 +1,9 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/misc.h
-**	\brief Misc Header
+/*!	\file synfig/rendering/opengl/internal/framebuffer.h
+**	\brief Framebuffer Header
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -25,17 +25,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_RENDERING_GL_MISC_H
-#define __SYNFIG_RENDERING_GL_MISC_H
+#ifndef __SYNFIG_RENDERING_GL_FRAMEBUFFER_H
+#define __SYNFIG_RENDERING_GL_FRAMEBUFFER_H
 
 /* === H E A D E R S ======================================================= */
+#include "synfig/color/color.h"
 
-#include <list>
-#include <vector>
-
-#include <synfig/color.h>
-
-#include "context.h"
+#include "headers.h"
+#include <cassert>
 
 /* === M A C R O S ========================================================= */
 
@@ -50,18 +47,41 @@ namespace rendering
 namespace gl
 {
 
-class Misc
+class Framebuffer
 {
 public:
-	Context &context;
+	// remember to call glViewport once to set appropiate viewport settings
+	bool from_pixels(int width, int height, const Color* pixels = nullptr);
+
+    bool from_dims(int width, int height, bool hasStencil = false);
+	
+	void use_write(bool clear = true);
+	void use_read(int tex);
+
+	void unuse();
+
+	void clear();
+
+	void reset();
+
+	// TODO: move texture data to a PBO before this function is called so that gpu can transfer in background
+	const Color* get_pixels() const;
+
+	bool is_valid() const { return valid; }
+
+    int get_w() const { assert(valid); return width; }
+    int get_h() const { assert(valid); return height; }
+
+    GLuint get_id() const { assert(valid); return id; }
 
 private:
+	GLuint id, texId, activeTexSlot, stencilId = -1;
 
-public:
-	Misc(Context &context);
-	~Misc();
+	int width, height;
 
-	void clear(const Color &color);
+	bool valid = false;
+	bool is_writing = false;
+	bool is_reading = false;
 };
 
 }; /* end namespace gl */
