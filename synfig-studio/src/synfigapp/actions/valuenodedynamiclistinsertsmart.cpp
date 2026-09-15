@@ -70,14 +70,14 @@ ACTION_SET_VERSION(Action::ValueNodeDynamicListInsertSmartKeepShape,"0.0");
 
 /* === M E T H O D S ======================================================= */
 ///////////// VALUENODEDYNAMICLISTINSERTITEMSMART
-Action::ValueNodeDynamicListInsertSmart::ValueNodeDynamicListInsertSmart()
-	: time(0), origin(0.5f), index(0), keep_shape(false)
+Action::ValueNodeDynamicListInsertSmartBase::ValueNodeDynamicListInsertSmartBase(bool keep_shape)
+	: time(0), origin(0.5f), index(0), keep_shape(keep_shape)
 {
 	set_dirty(true);
 }
 
 Action::ParamVocab
-Action::ValueNodeDynamicListInsertSmart::get_param_vocab()
+Action::ValueNodeDynamicListInsertSmartBase::get_param_vocab()
 {
 	ParamVocab ret(Action::CanvasSpecific::get_param_vocab());
 
@@ -114,7 +114,7 @@ Action::ValueNodeDynamicListInsertSmart::is_candidate(const ParamList &x)
 }
 
 bool
-Action::ValueNodeDynamicListInsertSmart::set_param(const synfig::String& name, const Action::Param &param)
+Action::ValueNodeDynamicListInsertSmartBase::set_param(const synfig::String& name, const Action::Param &param)
 {
 	if(name=="value_desc" && param.get_type()==Param::TYPE_VALUEDESC)
 	{
@@ -156,7 +156,7 @@ Action::ValueNodeDynamicListInsertSmart::set_param(const synfig::String& name, c
 }
 
 bool
-Action::ValueNodeDynamicListInsertSmart::is_ready()const
+Action::ValueNodeDynamicListInsertSmartBase::is_ready()const
 {
 	if(!value_node)
 		return false;
@@ -164,7 +164,7 @@ Action::ValueNodeDynamicListInsertSmart::is_ready()const
 }
 
 void
-Action::ValueNodeDynamicListInsertSmart::prepare()
+Action::ValueNodeDynamicListInsertSmartBase::prepare()
 {
 	//clear();
 	// HACK
@@ -174,7 +174,7 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 	// If we are in animate editing mode
 	if(get_edit_mode()&MODE_ANIMATE)
 	{
-		int index(ValueNodeDynamicListInsertSmart::index);
+		int index(ValueNodeDynamicListInsertSmartBase::index);
 
 		// In this case we need to first determine if there is
 		// a currently disabled item in the list that we can
@@ -431,10 +431,16 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 	}
 }
 
-///////////// VALUENODEDYNAMICLISTINSERTITEMSMARTKEEPSHAPE
-Action::ValueNodeDynamicListInsertSmartKeepShape::ValueNodeDynamicListInsertSmartKeepShape()
+///////////// VALUENODEDYNAMICLISTINSERTITEMSMART
+ValueNodeDynamicListInsertSmart::ValueNodeDynamicListInsertSmart()
+	: ValueNodeDynamicListInsertSmartBase(false)
 {
-	keep_shape=true;
+}
+
+///////////// VALUENODEDYNAMICLISTINSERTITEMSMARTKEEPSHAPE
+ValueNodeDynamicListInsertSmartKeepShape::ValueNodeDynamicListInsertSmartKeepShape()
+	: ValueNodeDynamicListInsertSmartBase(true)
+{
 }
 
 bool
@@ -448,15 +454,19 @@ ValueNodeDynamicListInsertSmartKeepShape::is_candidate(const ParamList& x)
 
 	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
 
+	ValueNode_DynamicList::Handle list;
+
 	if (value_desc.parent_is_value_node()) {
 		// We need a Dynamic List parent.
-		if (auto list = ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node()))
-			return list->get_contained_type() == type_bline_point;
-	}
-	if (value_desc.is_value_node()) {
+		list = ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_parent_value_node());
+	} else if (value_desc.is_value_node()) {
 		// Or a Dynamic List value node
-		if (auto list = ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_value_node()))
-			return list->get_contained_type() == type_bline_point;
+		list = ValueNode_DynamicList::Handle::cast_dynamic(value_desc.get_value_node());
 	}
-	return false;
+
+	if (!list)
+		return false;
+
+	const std::vector<const Type*> shape_types {&type_bline_point, &type_width_point};
+	return std::find(shape_types.begin(), shape_types.end(), &list->get_contained_type()) != shape_types.end();
 }

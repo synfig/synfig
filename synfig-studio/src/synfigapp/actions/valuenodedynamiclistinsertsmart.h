@@ -47,9 +47,7 @@ class Instance;
 
 namespace Action {
 
-class ValueNodeDynamicListInsertSmartKeepShape;
-
-class ValueNodeDynamicListInsertSmart :
+class ValueNodeDynamicListInsertSmartBase :
 	public Super
 {
 private:
@@ -58,26 +56,32 @@ private:
 	synfig::Time time;
 	synfig::Real origin;
 	int index;
-private:
 	bool keep_shape;
 
 public:
-	friend class ValueNodeDynamicListInsertSmartKeepShape;
-	ValueNodeDynamicListInsertSmart();
+	ValueNodeDynamicListInsertSmartBase(bool keep_shape);
 
 	static ParamVocab get_param_vocab();
-	static bool is_candidate(const ParamList &x);
 
-	virtual bool set_param(const synfig::String& name, const Param &);
-	virtual bool is_ready()const;
+	bool set_param(const synfig::String& name, const Param &) override;
+	bool is_ready()const override;
 
-	virtual void prepare();
+	void prepare() override;
+};
+
+class ValueNodeDynamicListInsertSmart :
+	public ValueNodeDynamicListInsertSmartBase
+{
+public:
+	ValueNodeDynamicListInsertSmart();
+
+	static bool is_candidate(const ParamList& x);
 
 	ACTION_MODULE_EXT
 };
 
 class ValueNodeDynamicListInsertSmartKeepShape :
-	public ValueNodeDynamicListInsertSmart
+	public ValueNodeDynamicListInsertSmartBase
 {
 public:
 	ValueNodeDynamicListInsertSmartKeepShape();
