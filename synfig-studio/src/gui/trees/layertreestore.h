@@ -233,7 +233,7 @@ public:
 
 	void refresh();
 
-	void refresh_row(Gtk::TreeModel::Row &row);
+	void refresh_row(const Gtk::TreeModel::Row& row);
 
 	void set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &handle);
 	void set_row_ghost(Gtk::TreeRow &row, const synfig::String &label, int depth);

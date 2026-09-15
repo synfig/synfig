@@ -672,7 +672,10 @@ Layer::set_hit_locked(bool x)
 {
 	if (hit_locked_ != x) {
 		hit_locked_ = x;
-//		signal_status_changed_();
+
+		Node::on_changed();
+		// status is supposed to be related to "active" property
+		// signal_status_changed_();
 	}
 }
 

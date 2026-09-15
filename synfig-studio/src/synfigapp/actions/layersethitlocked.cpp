@@ -185,10 +185,9 @@ Action::LayerSetHitLocked::undo()
 	if (new_state == old_state) {
 		set_dirty(false);
 		return;
-	} else {
-		set_dirty();
 	}
 
+	set_dirty();
 	layer->set_hit_locked(old_state);
 
 	if (get_canvas_interface())

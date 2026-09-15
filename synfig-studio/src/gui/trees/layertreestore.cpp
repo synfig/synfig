@@ -821,7 +821,7 @@ LayerTreeStore::refresh()
 }
 
 void
-LayerTreeStore::refresh_row(Gtk::TreeModel::Row &row)
+LayerTreeStore::refresh_row(const Gtk::TreeModel::Row& row)
 {
 	RecordType record_type = row[model.record_type];
 	Layer::Handle layer = row[model.layer];
@@ -1087,7 +1087,13 @@ LayerTreeStore::on_layer_hit_locked_changed(synfig::Layer::Handle handle, bool /
 {
 	Gtk::TreeModel::Children::iterator iter;
 	if (find_layer_row(handle, iter)) {
-		(*iter)[model.hit_locked] = handle->is_hit_locked();
+		(*iter)[model.layer] = handle;
+		// This code below is not sufficient to update cellrenderer looks when undoing
+		//   (ctrl-z) hit-locked changes.
+		//   So we change the model.layer as above.
+		// if ((*iter)[model.hit_locked] != handle->is_hit_locked()) {
+		// 	(*iter)[model.hit_locked] = handle->is_hit_locked();
+		// }
 	} else {
 		synfig::warning("Couldn't find layer to be selectable or not. Rebuilding index...");
 		rebuild();
