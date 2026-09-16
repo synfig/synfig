@@ -496,7 +496,9 @@ LayerActionManager::copy()
 
 	while(!layer_list.empty())
 	{
-		clipboard_.push_back(layer_list.front()->clone(0, guid));
+		synfig::Layer::Handle cloned_layer = layer_list.front()->clone(0, guid);
+		disconnect_bones_if_skeleton_not_selected(cloned_layer, layer_tree_->get_selected_layers());
+		clipboard_.push_back(cloned_layer);
 		layer_list.pop_front();
 	}
 
@@ -788,6 +790,59 @@ LayerActionManager::export_value_nodes(Canvas::Handle canvas, const ValueNodeRep
 			}
 
 			exported_ids.insert(modified_id);
+		}
+	}
+}
+
+void
+LayerActionManager::disconnect_bones_if_skeleton_not_selected(synfig::Layer::Handle layer, const synfigapp::SelectionManager::LayerList& selected_layers) const {
+
+	std::set<synfig::Layer::Handle> selected_skeletons;
+	for (const auto& selected_layer : selected_layers) {
+		if (synfig::Layer_Skeleton::Handle::cast_dynamic(selected_layer)) {
+			selected_skeletons.insert(selected_layer);
+		}
+	}
+
+	synfig::Canvas::Handle canvas = canvas_interface_->get_canvas();
+	std::map<synfig::String, synfig::Layer::Handle> bone_to_skeleton_map;
+	for (auto& canvas_layer : *canvas) {
+		if (auto skeleton_layer = synfig::Layer_Skeleton::Handle::cast_dynamic(canvas_layer)) {
+			synfig::ValueBase bones_param = skeleton_layer->get_param("bones");
+			std::vector<synfig::Bone> bone_list = bones_param.get_list_of(synfig::Bone());
+			for (const auto& skeleton_bone : bone_list) {
+				bone_to_skeleton_map[skeleton_bone.get_name()] = skeleton_layer;
+			}
+		}
+	}
+
+	// check each dynamic parameter for bone references
+	auto param_list = layer->dynamic_param_list();
+	for (auto& param_pair : param_list) {
+		synfig::ValueNode::Handle value_node = param_pair.second;
+
+		// get all bones referenced by this parameter
+		auto referenced_bones = synfig::ValueNode_Bone::get_bones_referenced_by(value_node);
+
+		bool should_disconnect = false;
+		for (const auto& bone : referenced_bones) {
+
+			// find which skeleton layer contains this bone
+			synfig::Layer::Handle bone_skeleton = nullptr;
+			auto it = bone_to_skeleton_map.find(bone->get_bone_name(synfig::Time()));
+			if (it != bone_to_skeleton_map.end()) {
+				bone_skeleton = it->second;
+			}
+
+			// if the skeleton containing this bone is not selected disconnect
+			if (selected_skeletons.find(bone_skeleton) == selected_skeletons.end()) {
+				should_disconnect = true;
+				break;
+			}
+		}
+
+		if (should_disconnect) {
+			layer->disconnect_dynamic_param(param_pair.first);
 		}
 	}
 }
