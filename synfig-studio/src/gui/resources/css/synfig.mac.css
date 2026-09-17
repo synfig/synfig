@@ -7,3 +7,8 @@
 	box-shadow: none;
 	margin    : 0;
 }
+
+#parameters_panel {
+    font-size: 11pt;
+    font-weight: 300;
+}
