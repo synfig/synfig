@@ -30,6 +30,7 @@
 #include <synfig/rendering/primitive/contour.h>
 #include "lyr_freetype.h"
 #include "text_processing.h"
+#include "fontloader.h"
 #include <synfig/rendering/common/task/tasktransformation.h>
 #include <random>
 #include <algorithm>
@@ -1110,11 +1111,15 @@ Layer_TextGroup::sync_glyphs()
 		return;
 	std::string text = param_text.get(std::string());
 
-	FT_Face face = Layer_Freetype::load_font_static(
+	filesystem::Path canvas_path;
+	if (get_canvas())
+		canvas_path = get_canvas()->get_file_path();
+
+	FontLoader::LoadedFont loaded = FontLoader::load_font(
 		param_family.get(std::string()), param_style.get(int()),
-		param_weight.get(int()),
-		get_canvas() ? get_canvas()->get_file_path()
-					 : synfig::filesystem::Path());
+		param_weight.get(int()), canvas_path);
+
+	FT_Face face = loaded.face;
 
 	Canvas::Handle canvas = get_sub_canvas();
 	if (!canvas)
@@ -1144,9 +1149,9 @@ Layer_TextGroup::sync_glyphs()
 
 	auto lines = synfig::text_processing::fetch_text_lines(
 		text, param_direction.get(int()));
-#if HAVE_HARFBUZZ
-	hb_font_t* font = Layer_Freetype::get_cached_hb_font(face);
 
+#if HAVE_HARFBUZZ
+	hb_font_t* font = loaded.font;
 	if (!font)
 	{
 		while (!canvas->empty())

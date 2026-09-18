@@ -83,6 +83,8 @@ private:
 	hb_font_t *font;
 #endif
 
+	std::vector<synfig::TextLine> lines;
+
 	bool font_path_from_canvas;
 
 	bool old_version;
@@ -96,7 +98,6 @@ public:
 	Layer_Freetype();
 	~Layer_Freetype() override = default;
 
-	std::vector<synfig::TextLine> lines;	
 	void on_canvas_set() override;
 
 	bool set_simple_shape_param(const synfig::String & param, const synfig::ValueBase &value);
@@ -111,12 +112,6 @@ public:
 	bool set_version(const synfig::String &ver) override { if (ver=="0.1") old_version=true; return true; }
 	void reset_version() override {old_version=false;}
 
-	static FT_Face load_font_static(const std::string& family,int style,int weight,const synfig::filesystem::Path &canvas_path);    
-
-#if HAVE_HARFBUZZ
-static hb_font_t* get_cached_hb_font(FT_Face face);
-#endif
-	
 protected:
 	synfig::rendering::Task::Handle build_composite_task_vfunc(synfig::ContextParams) const override;
 
