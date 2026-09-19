@@ -445,7 +445,7 @@ namespace {
 				if (w > horizonw) {
 					const Real k = 1/w;
 					const Vector p(v[0]*k, v[1]*k);
-					if (found) out_bounds.rect.expand(p);
+					if (found) out_bounds.rect.expand_to(p);
 						  else out_bounds.rect.set_point(p);
 					found = true;
 					if (w < minw) minw = w;
@@ -461,7 +461,7 @@ namespace {
 					const Real horizonw_div = 1/horizonw;
 					for(int i = 0; i < 2; ++i) {
 						Vector3 v = norm_matrix*Vector3(line[i][0], line[i][1], 1);
-						out_bounds.rect.expand( Vector(v[0]*horizonw_div, v[1]*horizonw_div) );
+						out_bounds.rect.expand_to( Vector(v[0]*horizonw_div, v[1]*horizonw_div) );
 					}
 					minw = horizonw;
 				}
@@ -597,8 +597,8 @@ namespace {
 				Rect layer_rect(layer_corners[0]);
 				Rect layer_rect_orig(layer_corners_orig[0]);
 				for(int j = 1; j < corners_count; ++j) {
-					layer_rect.expand(layer_corners[j]);
-					layer_rect_orig.expand(layer_corners_orig[j]);
+					layer_rect.expand_to(layer_corners[j]);
+					layer_rect_orig.expand_to(layer_corners_orig[j]);
 				}
 				if (!layer_rect.valid() || !layer_rect_orig.valid())
 					continue;

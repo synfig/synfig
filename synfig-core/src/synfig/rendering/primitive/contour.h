@@ -204,20 +204,20 @@ public:
 	static Rect line_bounds(
 		const Vector &p0,
 		const Vector &p1 )
-	{ return Rect(p0).expand(p1); }
+	{ return Rect(p0).expand_to(p1); }
 
 	static Rect conic_bounds(
 		const Vector &p0,
 		const Vector &p1,
 		const Vector &pp0 )
-	{ return Rect(p0).expand(p1).expand(pp0); }
+	{ return Rect(p0).expand_to(p1).expand_to(pp0); }
 
 	static Rect cubic_bounds(
 		const Vector &p0,
 		const Vector &p1,
 		const Vector &pp0,
 		const Vector &pp1 )
-	{ return Rect(p0).expand(p1).expand(pp0).expand(pp1); }
+	{ return Rect(p0).expand_to(p1).expand_to(pp0).expand_to(pp1); }
 	
 	static bool check_is_inside(int intersections, WindingStyle winding_style = WINDING_NON_ZERO, bool invert = false);
 	bool is_inside(int intersections) const
