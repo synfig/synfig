@@ -43,8 +43,6 @@ src/gui/dialogs/dialog_preview.cpp
 src/gui/dialogs/dialog_preview.h
 src/gui/dialogs/dialog_setup.cpp
 src/gui/dialogs/dialog_setup.h
-src/gui/dialogs/dialog_soundselect.cpp
-src/gui/dialogs/dialog_soundselect.h
 src/gui/dialogs/dialog_spritesheetparam.cpp
 src/gui/dialogs/dialog_targetparam.cpp
 src/gui/dialogs/dialog_targetparam.h
