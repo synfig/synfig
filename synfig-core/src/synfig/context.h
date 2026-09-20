@@ -104,6 +104,8 @@ public:
 	Real z_range_blur;
 	//! Force set_time (to current time mark) at every rendering
 	bool force_set_time;
+	/** */
+	bool ignore_hit_locked;
 
 	explicit ContextParams(bool render_excluded_contexts = false):
 	render_excluded_contexts(render_excluded_contexts),
@@ -111,7 +113,9 @@ public:
 	z_range_position(0.0),
 	z_range_depth(0.0),
 	z_range_blur(0.0),
-	force_set_time(false){ }
+	force_set_time(false),
+	ignore_hit_locked(false)
+	{ }
 };
 
 /*!	\class Context
