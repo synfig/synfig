@@ -148,6 +148,8 @@ class GUID;
 class Canvas;
 class SoundProcessor;
 
+class CanvasBrokenUseIdMap;
+
 /*!	\class Canvas
 **	\brief Canvas is a list of Layers. It is the base class for a Synfig
 * document.
@@ -502,16 +504,16 @@ public:
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::Handle find_value_node(const String &id, bool might_fail);
+	ValueNode::Handle find_value_node(const String &id, bool might_fail, const Type& expected_type = type_nil, CanvasBrokenUseIdMap* broken_links = nullptr);
 
 	//! \internal \writeme
-	ValueNode::Handle surefind_value_node(const String &id);
+	ValueNode::Handle surefind_value_node(const String &id, const Type& expected_type = type_nil, CanvasBrokenUseIdMap* broken_links = nullptr);
 
 	//! Finds the ValueNode in the Canvas with the given \a id
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::ConstHandle find_value_node(const String &id, bool might_fail)const;
+	ValueNode::ConstHandle find_value_node(const String &id, bool might_fail, const Type& expected_type = type_nil, CanvasBrokenUseIdMap* broken_links = nullptr) const;
 
 	//! Adds a Value node by its Id.
 	/*! Throws an error if the Id is not
@@ -526,26 +528,26 @@ public:
 	void remove_value_node(ValueNode::Handle x, bool might_fail);
 
 	//! Removes a Value Node from the Canvas by its Id
-	void remove_value_node(const String &id, bool might_fail) { remove_value_node(find_value_node(id, might_fail), might_fail); }
+	void remove_value_node(const String &id, bool might_fail) { remove_value_node(find_value_node(id, might_fail, type_nil), might_fail); }
 
 	//! Finds a child Canvas in the Canvas with the given \a name
 	/*!	\return If found, returns a handle to the child Canvas.
 	**		If not found, it creates a new Canvas and returns it
 	**		If an error occurs, it returns an empty handle
 	*/
-	Handle surefind_canvas(const String &id,String &warnings);
+	Handle surefind_canvas(const String &id,String &warnings, CanvasBrokenUseIdMap* broken_links = nullptr);
 
 	//! Finds a child Canvas in the Canvas with the given \a id
 	/*!	\return If found, returns a handle to the child Canvas.
 	**		Otherwise, returns an empty handle.
 	*/
-	Handle find_canvas(const String &id, String &warnings);
+	Handle find_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap* broken_links = nullptr);
 
 	//! Finds a child Canvas in the Canvas with the given \a id
 	/*!	\return If found, returns a handle to the child Canvas.
 	**		Otherwise, returns an empty handle.
 	*/
-	ConstHandle find_canvas(const String &id, String &warnings)const;
+	ConstHandle find_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap* broken_links = nullptr)const;
 
 	//! Returns the file path from the file name
 	String get_file_path()const;
