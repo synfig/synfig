@@ -169,6 +169,7 @@ Action::LayerCopy::prepare()
 		new_layer->add_to_group(layer->get_group());
 		new_layer->set_active(layer->active());
 		new_layer->set_exclude_from_rendering(layer->get_exclude_from_rendering());
+		new_layer->set_hit_locked(layer->is_hit_locked());
 		new_layer->set_param_list(layer->get_param_list());
 		new_layer->set_description(description);
 

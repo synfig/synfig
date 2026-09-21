@@ -80,6 +80,8 @@ Layer::Handle
 Layer_Composite::basic_hit_check(synfig::Context context, const synfig::Point &point, bool& check_myself_first) const
 {
 	check_myself_first = false;
+	if (!context.get_params().ignore_hit_locked && is_hit_locked())
+		return context.hit_check(point);
 
 	// if we have a zero amount
 	if (get_amount() == 0.0)
@@ -93,9 +95,25 @@ Layer_Composite::basic_hit_check(synfig::Context context, const synfig::Point &p
 		return tmp;
 
 	// if we're using an 'onto' blend method and the click missed the context
-	if (Color::is_onto(get_blend_method()) && !(tmp = context.hit_check(point)))
-		// then it misses everything
-		return nullptr;
+	if (Color::is_onto(get_blend_method())) {
+		// we check if there is a context - with or without hit_locked
+		//   we should be able to select the 'onto' layer if a context exists, but it is hit-locked.
+
+		tmp = context.hit_check(point);
+
+		if (!tmp && !context.get_params().ignore_hit_locked) {
+			ContextParams params(context.get_params());
+			// No context or is it hit_locked?
+			params.ignore_hit_locked = true;
+			Context context_ignoring_hit_locked(context, params);
+			// we check first if there would be a visible context, but just hit_locked
+			if (!context_ignoring_hit_locked.hit_check(point)) {
+				// if no context even ignoring hit-locked status, then it misses everything
+				return nullptr;
+			}
+			// otherwise, we allow to click on the 'onto' layer itself
+		}
+	}
 
 	// otherwise the click may hit us: caller function must check if point does hit me or not
 	check_myself_first = true;
