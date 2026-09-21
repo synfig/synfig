@@ -127,7 +127,7 @@ public:
 	static void move_to(SplitParams<T> &params, const Vector &p1)
 	{
 		if (params.prev_point)
-			params.out_bounds.expand(p1);
+			params.out_bounds.expand_to(p1);
 		else
 			params.out_bounds = Rect(p1);
 
@@ -150,13 +150,13 @@ public:
 			move_to(params, *params.prev_point);
 		} else
 		if (params.prev_type == LINE) {
-			params.line_bounds = params.line_bounds.expand(p1);
+			params.line_bounds = params.line_bounds.expand_to(p1);
 			if ( !rect_intersect(params.bounds, params.line_bounds)
 			  || ( params.line_bounds.maxx - params.line_bounds.minx <= params.min_line_size[0]
 				&& params.line_bounds.maxy - params.line_bounds.miny <= params.min_line_size[0] ))
 			{
 				*params.prev_point = p1;
-				params.out_bounds.expand(p1);
+				params.out_bounds.expand_to(p1);
 				return;
 			}
 		}
@@ -164,7 +164,7 @@ public:
 		params.prev_type = LINE;
 		params.line_bounds = Rect(*params.prev_point, p1);
 		params.prev_point = &line_to(params.out_contour, p1);
-		params.out_bounds.expand(p1);
+		params.out_bounds.expand_to(p1);
 	}
 
 	template<typename T>
@@ -564,15 +564,15 @@ Contour::calc_bounds() const
 	for(ChunkList::const_iterator i = chunks.begin(); i != chunks.end(); ++i)
 		switch(i->type) {
 		case CUBIC:
-			bounds.expand(i->pp1);
+			bounds.expand_to(i->pp1);
 			fallthrough__;
 		case CONIC:
-			bounds.expand(i->pp0);
+			bounds.expand_to(i->pp0);
 			fallthrough__;
 		case CLOSE:
 		case MOVE:
 		case LINE:
-			bounds.expand(i->p1);
+			bounds.expand_to(i->p1);
 			fallthrough__;
 		default:
 			break;
@@ -588,15 +588,15 @@ Contour::calc_bounds(const Matrix &transform_matrix) const
 	for(ChunkList::const_iterator i = chunks.begin(); i != chunks.end(); ++i)
 		switch(i->type) {
 		case CUBIC:
-			bounds.expand( transform_matrix.get_transformed(i->pp1) );
+			bounds.expand_to( transform_matrix.get_transformed(i->pp1) );
 			fallthrough__;
 		case CONIC:
-			bounds.expand( transform_matrix.get_transformed(i->pp0) );
+			bounds.expand_to( transform_matrix.get_transformed(i->pp0) );
 			fallthrough__;
 		case CLOSE:
 		case MOVE:
 		case LINE:
-			bounds.expand( transform_matrix.get_transformed(i->p1) );
+			bounds.expand_to( transform_matrix.get_transformed(i->p1) );
 			fallthrough__;
 		default:
 			break;
