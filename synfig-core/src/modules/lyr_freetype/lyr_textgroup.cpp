@@ -412,18 +412,29 @@ Layer_GlyphShape::build_composite_task_vfunc(ContextParams context_params) const
 		task = translate;
 	}
 
-	if (rotation != Angle::zero() || scale != Vector(1.0, 1.0))
+	if (scale != Vector(1.0, 1.0))
 	{
-		Vector pivot;
-		Matrix matrix =
-			Matrix().set_translate(pivot) * Matrix().set_rotate(rotation) *
-			Matrix().set_scale(scale) * Matrix().set_translate(-pivot);
+		auto scale_task = new rendering::TaskTransformationAffine();
+		scale_task->transformation->matrix = Matrix().set_scale(scale);
+		scale_task->sub_task() = task;
+		task = scale_task;
+	}
 
-		rendering::TaskTransformationAffine::Handle task_transform(
-			new rendering::TaskTransformationAffine());
-		task_transform->transformation->matrix = matrix;
-		task_transform->sub_task() = task;
-		task = task_transform;
+	if (rotation != Angle::zero())
+	{
+		Rect bounds = get_bounding_rect();
+		Vector center = (bounds.get_min() + bounds.get_max()) * 0.5;
+
+		Matrix matrix =
+        	Matrix().set_translate(center) *
+        	Matrix().set_rotate(rotation) *
+        	Matrix().set_translate(-center);
+
+    	rendering::TaskTransformationAffine::Handle rotate_task(
+        	new rendering::TaskTransformationAffine());
+		rotate_task->transformation->matrix = matrix;
+		rotate_task->sub_task() = task;
+		task = rotate_task;
 	}
 	return task;
 }
