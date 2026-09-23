@@ -196,6 +196,7 @@ public:
 	Smach::event_result event_refresh_tool_options(const Smach::event& x);
 	void refresh_tool_options();
 	Smach::event_result event_layer_click(const Smach::event& x);
+	Smach::event_result event_layer_selection_changed_handler(const Smach::event& x);
 
 
 };	// END of class StateNormal_Context
@@ -218,6 +219,7 @@ StateNormal::StateNormal():
 	insert(event_def(EVENT_WORKAREA_KEY_DOWN,&StateNormal_Context::event_key_down_handler));
 	insert(event_def(EVENT_WORKAREA_KEY_UP,&StateNormal_Context::event_key_up_handler));
 	insert(event_def(EVENT_WORKAREA_LAYER_CLICKED,&StateNormal_Context::event_layer_click));
+	insert(event_def(EVENT_LAYER_SELECTION_CHANGED,&StateNormal_Context::event_layer_selection_changed_handler));
 
 }
 
@@ -786,6 +788,21 @@ StateNormal_Context::event_layer_click(const Smach::event& x)
 	default:
 		return Smach::RESULT_OK;
 	}
+}
+
+Smach::event_result
+StateNormal_Context::event_layer_selection_changed_handler(const Smach::event& /*x*/)
+{
+	if (canvas_view_ && canvas_view_->get_selection_manager()) {
+		if (canvas_view_->get_selection_manager()->get_selected_layer_count() == 1) {
+			synfig::Layer::Handle layer = canvas_view_->get_selection_manager()->get_selected_layer();
+			if (layer && layer->get_name() == "free_form_deform") {
+				App::dock_toolbox->change_state("ffd", true);
+				return Smach::RESULT_ACCEPT;
+			}
+		}
+	}
+	return Smach::RESULT_OK;
 }
 
 Smach::event_result

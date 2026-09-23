@@ -6,6 +6,7 @@ STATES_HH = \
 	states/state_lasso.h \
 	states/state_eyedrop.h \
 	states/state_fill.h \
+	states/state_ffd.h \
 	states/state_gradient.h \
 	states/state_mirror.h \
 	states/state_normal.h \
@@ -30,6 +31,7 @@ STATES_CC = \
 	states/state_lasso.cpp \
 	states/state_eyedrop.cpp \
 	states/state_fill.cpp \
+	states/state_ffd.cpp \
 	states/state_gradient.cpp \
 	states/state_mirror.cpp \
 	states/state_normal.cpp \

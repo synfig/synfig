@@ -47,6 +47,7 @@
 #include <synfig/color.h>
 #include <synfig/guidset.h>
 #include <synfig/handle.h>
+#include <synfig/rendering/primitive/mesh.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -250,6 +251,21 @@ private:
 	//Duck::Handle selected_duck;
 
 	void connect_signals(const Duck::Handle &duck, const synfigapp::ValueDesc& value_desc, CanvasView &canvas_view);
+
+	//! Draw the FFD control overlay (grid lines or triangle mesh edges) for the given set of ducks.
+	void draw_ffd_overlay(
+		const std::vector<Duck::Handle>& ducks,
+		int ffd_mode, int cols, int rows,
+		synfig::Real cull_threshold,
+		const std::vector<synfig::Point>& source_pts,
+		const std::vector<synfig::rendering::Mesh::Triangle>& explicit_tris = std::vector<synfig::rendering::Mesh::Triangle>());
+
+	bool get_ffd_overlay_config(
+		const synfigapp::ValueDesc& value_desc,
+		int& ffd_mode, int& cols, int& rows,
+		synfig::Real& ffd_cull_threshold,
+		std::vector<synfig::Point>& source_pts,
+		std::vector<synfig::rendering::Mesh::Triangle>& explicit_tris) const;
 
 	double calculate_distance_from_guide(const Guide& guide, const synfig::Point& point)const;
 
@@ -519,6 +535,8 @@ public:
 	void unselect_all_ducks();
 
 	void clear_ducks();
+
+	void clear_beziers();
 
 	bool save_sketch(const synfig::filesystem::Path& filename) const;
 	bool load_sketch(const synfig::filesystem::Path& filename);
