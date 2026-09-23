@@ -40,6 +40,7 @@
 
 #include <synfig/module.h>
 #include "lyr_freetype.h"
+#include "lyr_textgroup.h"
 #include <iostream>
 
 #include <ft2build.h>
@@ -88,5 +89,7 @@ MODULE_INVENTORY_BEGIN(liblyr_freetype)
 	BEGIN_LAYERS
 		LAYER(Layer_Freetype)
 		LAYER_ALIAS(Layer_Freetype,"Text")
+		LAYER(Layer_GlyphShape)
+		LAYER(Layer_TextGroup)
 	END_LAYERS
 MODULE_INVENTORY_END

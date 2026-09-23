@@ -44,7 +44,13 @@
 #include <gui/localization.h>
 
 #include <synfig/general.h>
+#include <synfig/animshare.h>
 #include <synfig/valuenodes/valuenode_bone.h>
+#include <synfig/valuenodes/valuenode_animsharelist.h>
+#include <synfig/valuenodes/valuenode_composite.h>
+
+#include <synfigapp/actions/valuenodedynamiclistremovesmart.h>
+#include <synfigapp/actions/valuenodedynamiclistremove.h>
 
 #include <synfigapp/action_system.h>
 
@@ -257,11 +263,62 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
 			}
 			else
 			{
-				canvas_interface()->change_value((*iter)[model.value_desc],x.get());
+				synfigapp::ValueDesc value_desc((*iter)[model.value_desc]);
+
+    				// Clearing the Parameter child of an AnimShare entry removes
+    				// the entire entry instead of leaving an empty row behind.
+    				if (value_desc.parent_is_value_node())
+					{
+    					auto parent = synfig::ValueNode_Composite::Handle::cast_dynamic(
+            				value_desc.get_parent_value_node());
+
+    					if (parent &&
+        					parent->get_type() == synfig::type_anim_share &&
+        					x.get().get_type() == synfig::type_string &&
+        					x.get().get(synfig::String()).empty())
+    					{
+        					auto anim_share = parent->find_first_parent_of_type<
+            					synfig::ValueNode_AnimShareList>();
+
+        					if (!anim_share) return;
+
+        					int index = -1;
+
+        					for (int i = 0; i < anim_share->link_count(); ++i)
+        					{
+            					if (anim_share->get_link(i).get() == parent.get())
+            					{
+                					index = i;
+                					break;
+            					}
+        					}
+
+        					if (index < 0)
+            					return;
+
+        					synfigapp::Action::Handle action =
+            					synfigapp::Action::ValueNodeDynamicListRemove::create();
+
+        					action->set_param("canvas",canvas_interface()->get_canvas());
+        					action->set_param("canvas_interface",canvas_interface());
+     						action->set_param("value_desc",synfigapp::ValueDesc(anim_share, index));
+
+        					if (!action->is_ready())
+            					return;
+
+        					if (!canvas_interface()->get_instance()->perform_action(action))
+            					return;
+
+        					return;
+    					}
+					}
+
+
+    				canvas_interface()->change_value(value_desc, x.get());
+				return;
+				}
 			}
-			return;
-		}
-		else
+			else
 /*
 		if(column==model.active.index())
 		{

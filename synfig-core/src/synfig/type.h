@@ -71,6 +71,7 @@ class Matrix3;
 class BoneWeightPair;
 class WidthPoint;
 class DashItem;
+class AnimShare;
 class ValueBase;
 class Canvas;
 class Vector;
@@ -101,6 +102,7 @@ namespace types_namespace
 	SYNFIG_DECLARE_TYPE_ALIAS(BoneWeightPair)
 	SYNFIG_DECLARE_TYPE_ALIAS(WidthPoint)
 	SYNFIG_DECLARE_TYPE_ALIAS(DashItem)
+	SYNFIG_DECLARE_TYPE_ALIAS(AnimShare)
 	SYNFIG_DECLARE_TYPE_ALIAS(std::vector<ValueBase>)
 	SYNFIG_DECLARE_TYPE_ALIAS(etl::loose_handle<Canvas>)
 	SYNFIG_DECLARE_TYPE_ALIAS(etl::handle<Canvas>)

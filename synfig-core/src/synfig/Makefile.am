@@ -34,6 +34,7 @@ IMPORTERSOURCES = \
 
 
 VALUEHEADERS = \
+	animshare.h \
 	blinepoint.h \
 	widthpoint.h \
 	dashitem.h \
@@ -46,6 +47,7 @@ VALUEHEADERS = \
 	value.h
 
 VALUESOURCES = \
+	animshare.cpp \
 	blinepoint.cpp \
 	widthpoint.cpp \
 	dashitem.cpp \

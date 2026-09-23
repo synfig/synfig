@@ -37,6 +37,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
+#include "text_processing.h"
 
 #if HAVE_HARFBUZZ
 #include <hb.h>
@@ -81,16 +82,8 @@ private:
 #if HAVE_HARFBUZZ
 	hb_font_t *font;
 #endif
-	struct TextSpan
-	{
-		std::vector<uint32_t> codepoints;
-#if HAVE_HARFBUZZ
-		hb_script_t script;
-#endif
-	};
 
-	typedef std::vector<TextSpan> TextLine;
-	std::vector<TextLine> lines;
+	std::vector<synfig::TextLine> lines;
 
 	bool font_path_from_canvas;
 
@@ -138,13 +131,7 @@ private:
 
 	void on_param_text_changed();
 
-	static std::vector<TextLine> fetch_text_lines(const std::string& text, int direction);
-
-	static void convert_outline_to_contours(const FT_OutlineGlyphRec* glyph, synfig::rendering::Contour::ChunkList& chunks);
-
-	static void shift_contour_chunks(synfig::rendering::Contour::ChunkList &chunks, const synfig::Vector &offset);
-
-	synfig::Point world_to_contour(const synfig::Point& p) const;
+    synfig::Point world_to_contour(const synfig::Point& p) const;
 	synfig::Point contour_to_world(const synfig::Point& p) const;
 
 	enum SyncFlags {
