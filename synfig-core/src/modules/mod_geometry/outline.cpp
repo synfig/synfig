@@ -117,7 +117,12 @@ Outline::sync_vfunc()
 	const BLinePoint blank;
 	const int wire_segments = 64;
 	const int contour_segments = 32;
-	
+
+	// Used for tip generation
+	const double EPSILON = 1.0e-12;
+	const Real ROUND_END_FACTOR = 4.0;
+	const int TIP_SAMPLES = 50;
+
 	const Real width  = param_width.get(Real());
 	const Real expand = param_expand.get(Real());
 	const bool sharp_cusps = param_sharp_cusps.get(bool());
@@ -125,8 +130,6 @@ Outline::sync_vfunc()
 	const bool round_tip[] = {
 		param_round_tip[0].get(bool()),
 		param_round_tip[1].get(bool()) };
-	const Real round_tip_k0 = 0.5*sqrt(2);
-	const Real round_tip_k1 = sqrt(2) - 1;
 
 	try {
 		const bool loop = param_bline.get_loop();
@@ -139,6 +142,29 @@ Outline::sync_vfunc()
 		}
 		const ValueBase::List &bline = bline_segment.is_valid() ? bline_segment.get_list() : param_bline.get_list();
 
+		std::vector<BLinePoint> points;
+		for (const auto & i : bline)
+			points.push_back(i.get(blank));
+
+		for (size_t i = 0; i < points.size(); ++i) {
+
+			// Check if tangent points backwards (opposite to the line segment)
+			// Backward tangents cause the mesh to fold and break (artifacts)
+			// We ignore the backward direction and force it to point forward
+			if (i > 0 || loop) {
+				size_t prev_idx = (i == 0) ? points.size() - 1 : i - 1;
+				Vector chord = points[i].get_vertex() - points[prev_idx].get_vertex();
+				if (points[i].get_tangent1() * chord < 0)
+					points[i].set_tangent1(chord.norm() * points[i].get_tangent1().mag());
+			}
+
+			if (i < points.size() - 1 || loop) {
+				size_t next_idx = (i == points.size() - 1) ? 0 : i + 1;
+				Vector chord = points[next_idx].get_vertex() - points[i].get_vertex();
+				if (points[i].get_tangent2() * chord < 0)
+					points[i].set_tangent2(chord.norm() * points[i].get_tangent2().mag());
+			}
+		}
 		// retrieve the parent canvas grow value
 		Real gv = exp(get_outline_grow_mark());
 		
@@ -146,9 +172,10 @@ Outline::sync_vfunc()
 		rendering::Contour contour;
 		
 		Real w = 0, w0 = 0;
-		for(ValueBase::List::const_iterator i = bline.begin(); i != bline.end(); ++i) {
-			const BLinePoint &point = i->get(blank);
-			
+		// Draw body only (no tips)
+		for (auto i = points.begin(); i != points.end(); ++i) {
+			const BLinePoint &point = *i;
+
 			bend.add(
 				point.get_vertex(),
 				point.get_tangent1(),
@@ -159,25 +186,15 @@ Outline::sync_vfunc()
 			Real length = bend.length1();
 			
 			w = gv*(point.get_width()*width*0.5 + expand);
-			
-			if (i == bline.begin()) {
+
+			if (i == points.begin()) {
 				w0 = w;
 				if (loop) {
 					contour.move_to( Vector(-w, 0) );
 					contour.line_to( Vector(-w, w) );
 				} else {
-					if (round_tip[0]) {
-						contour.move_to( Vector(-w, 0) );
-						contour.conic_to(
-							Vector(-round_tip_k0*w, round_tip_k0*w),
-							Vector(-w, round_tip_k1*w) );
-						contour.conic_to(
-							Vector(0, w),
-							Vector(-round_tip_k1*w, w) );
-					} else {
-						contour.move_to( Vector(0, 0) );
-						contour.line_to( Vector(0, w) );
-					}
+					contour.move_to( Vector(0, 0) );
+					contour.line_to( Vector(0, w) );
 				}
 			}
 
@@ -193,20 +210,51 @@ Outline::sync_vfunc()
 		} else {
 			bend.tails();
 			Real length = bend.length1();
-			if (round_tip[1]) {
-				contour.conic_to(
-					Vector(length + round_tip_k0*w, round_tip_k0*w),
-					Vector(length + round_tip_k1*w, w) );
-				contour.conic_to(
-					Vector(length + w, 0),
-					Vector(length + w, round_tip_k1*w) );
-			} else {
-				contour.line_to( Vector(length, 0) );
-			}
+			contour.line_to( Vector(length, 0) );
 		}
 		
 		contour.close_mirrored_vert();
 		bend.bend(shape_contour(), contour, Matrix(), contour_segments);
+
+		// Append round tips using hermite curves for accuracy
+		if (!loop && points.size() >= 2) {
+			auto draw_tip = [&](Vector pos, Vector tangent, Real tip_w, bool start_tip) {
+				if (tangent.mag_squared() < EPSILON)
+					return;
+				tangent = tangent.norm();
+				if(start_tip)
+					tangent = -tangent;
+
+				hermite<Vector> curve(
+					pos + tangent.perp() * tip_w, pos - tangent.perp() * tip_w,
+					tangent * tip_w * ROUND_END_FACTOR, -tangent * tip_w * ROUND_END_FACTOR);
+
+				shape_contour().move_to(curve(0.0f));
+
+				for (int i = 1; i <= TIP_SAMPLES; ++i) {
+					shape_contour().line_to(curve(static_cast<float>(i) / TIP_SAMPLES));
+				}
+
+				shape_contour().line_to(curve(1.0f));
+				shape_contour().close();
+			};
+
+			if (round_tip[0]) {
+				Vector tangent = points.front().get_tangent2();
+				if (tangent.mag_squared() < EPSILON)
+					tangent = points[1].get_vertex() - points.front().get_vertex();
+				draw_tip(points.front().get_vertex(), tangent, gv*(points.front().get_width()*width*0.5+expand), true);
+			}
+
+			if (round_tip[1]) {
+				Vector tangent = points.back().get_tangent1();
+				if (tangent.mag_squared() < EPSILON)
+					tangent = points.back().get_vertex() - points[points.size()-2].get_vertex();
+				draw_tip(points.back().get_vertex(), tangent, gv*(points.back().get_width()*width*0.5+expand), false);
+			}
+
+		}
+
 	} catch (...) { synfig::error("Outline::sync(): Exception thrown"); throw; }
 }
 
