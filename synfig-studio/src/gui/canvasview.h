@@ -329,8 +329,6 @@ private:
 	//!Keyframe list slider
 	Widget_Keyframe_List *widget_kf_list;
 
-	std::list<sigc::connection> duck_changed_connections;
-
 	//! Menu members
 	Gtk::Menu parammenu;
 
@@ -689,7 +687,7 @@ protected:
 	*/
 public:
 	static studio::CanvasView::Handle create(etl::loose_handle<Instance> instance, synfig::Canvas::Handle canvas);
-	static std::list<int>& get_pixel_sizes();
+	static const std::vector<int>& get_pixel_sizes();
 
 private:
 	#ifdef WITH_JACK
