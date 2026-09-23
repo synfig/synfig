@@ -35,7 +35,7 @@
 #include <gui/dialogs/dialog_guide.h>
 
 #include <gui/localization.h>
-
+#include <synfig/distance.h>
 #include <gtkmm/box.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/grid.h>
@@ -61,6 +61,8 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	canvas(canvas),
 	current_work_area(work_area),
 	angle_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
+	x_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
+	y_adjustment(Gtk::Adjustment::create(0,-2000000000,2000000000,1,1,0)),
 	degrees(true)
 {
 	this->set_resizable(false);
@@ -96,8 +98,45 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	guideGrid->attach(*angle_widget      , 1, 0, 1, 1);
 	guideGrid->attach(angle_type_picker  , 2, 0, 1, 1);
 
+	distance_system_picker.append("0", _("Units"));
+	distance_system_picker.append("1", _("Pixels"));
+	distance_system_picker.append("2", _("Points"));
+	distance_system_picker.append("3", _("Inches"));
+	distance_system_picker.append("4", _("Meters"));
+	distance_system_picker.append("5", _("Millimeters"));
+	distance_system_picker.append("6", _("Centimeters"));
+	distance_system_picker.set_active(0);
+	distance_system_picker.signal_changed().connect(sigc::mem_fun(*this, &Dialog_Guide::set_distance_system));
+
+	Gtk::Frame* pivotFrame = manage(new Gtk::Frame(_("Set Pivot Position (px)")));
+	pivotFrame->set_shadow_type(Gtk::SHADOW_NONE);
+	(static_cast<Gtk::Label*>(pivotFrame->get_label_widget()))->set_markup(_("<b>Set Pivot Position</b>"));
+	pivotFrame->set_margin_bottom(5);
+	pivotFrame->set_margin_top(5);
+	pivotFrame->set_margin_left(5);
+
+	auto posGrid = manage(new Gtk::Grid());
+	posGrid->get_style_context()->add_class("dialog-secondary-content");
+	posGrid->set_row_spacing(6);
+	posGrid->set_column_spacing(8);
+	
+	Gtk::Label* xPosLabel = manage(new Gtk::Label(_("_X:"), true));
+	Gtk::Label* yPosLabel = manage(new Gtk::Label(_("_Y:"), true));
+	x_widget = new Widget_Distance();
+	x_widget->show();
+	y_widget = new Widget_Distance();
+	y_widget->show();
+	
+	posGrid->attach(*xPosLabel, 0, 0, 1, 1);
+	posGrid->attach(*x_widget, 1, 0, 1, 1);
+	posGrid->attach(*yPosLabel, 0, 1, 1, 1);
+	posGrid->attach(*y_widget, 1, 1, 1, 1);
+	posGrid->attach(distance_system_picker, 2, 0, 1, 1);
+
 	guide_box->add(*angleFrame);
 	guide_box->add(*guideGrid);
+	guide_box->add(*pivotFrame);
+	guide_box->add(*posGrid);
 	guide_box->set_margin_bottom(5);
 
 	//Box end
@@ -137,6 +176,16 @@ Dialog_Guide::on_ok_or_apply_pressed(bool ok)
 		curr_guide->angle = synfig::Angle::rad(angle_widget->get_value());
 	}
 
+	const synfig::RendDesc& rend_desc(canvas->rend_desc());
+	Distance x_cord(x_widget->get_value(), prev_system);
+	Distance y_cord(y_widget->get_value(), prev_system);
+
+	x_cord.convert(Distance::SYSTEM_UNITS, rend_desc);
+	y_cord.convert(Distance::SYSTEM_UNITS, rend_desc);
+
+	curr_guide->point[0] = x_cord;
+	curr_guide->point[1] = y_cord;
+	
 	if (ok)
 		hide();
 	else
@@ -154,10 +203,36 @@ Dialog_Guide::set_angle_type()
 }
 
 void
+Dialog_Guide::set_distance_system()
+{
+	const synfig::RendDesc& rend_desc(canvas->rend_desc());
+	curr_system = (synfig::Distance::System) stratoi(distance_system_picker.get_active_id());
+	Distance x_cord(x_widget->get_value(), prev_system);
+	Distance y_cord(y_widget->get_value(), prev_system);
+	x_cord.convert(curr_system, rend_desc);
+	y_cord.convert(curr_system, rend_desc);
+	x_widget->set_value(x_cord);
+	y_widget->set_value(y_cord); 
+	prev_system = (synfig::Distance::System) stratoi(distance_system_picker.get_active_id());
+}
+
+void
 Dialog_Guide::init_widget_values()
 {
 	if(degrees)
 		angle_widget->set_value(synfig::Angle::deg(curr_guide->angle).get());
 	else
 		angle_widget->set_value(curr_guide->angle.get());
+
+	const synfig::RendDesc& rend_desc(canvas->rend_desc());
+	prev_system = App::distance_system;
+	distance_system_picker.set_active(prev_system);
+	Distance x_cord(curr_guide->point[0], Distance::SYSTEM_UNITS);
+	Distance y_cord(curr_guide->point[1], Distance::SYSTEM_UNITS);
+
+	x_cord.convert(prev_system, rend_desc);
+	y_cord.convert(prev_system, rend_desc);
+
+	x_widget->set_value(x_cord);
+	y_widget->set_value(y_cord);
 }
