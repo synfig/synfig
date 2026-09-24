@@ -432,7 +432,21 @@ LayerTree::select_layer(synfig::Layer::Handle layer)
 
 		layer_tree_view().scroll_to_row(path);
 		layer_tree_view().get_selection()->select(iter);
-		layer_tree_view().set_cursor(path);
+
+		// ensure the TreeView cursor will be on one of the selected items.
+		// Example case it wouldn't be (reported by Svarov):
+		//  1. Create 3 Circe layers
+		//  2. Group 2 of them via button in Layers Panel
+		//  3. Press Enter key to rename it
+		//  4. Type something and you will see that a layer below actually gets renamed
+		// Here we ensure the cursor will be on the first selected item
+		Gtk::TreePath cursor_path;
+		Gtk::TreeViewColumn* cursor_column;
+		layer_tree_view().get_cursor(cursor_path, cursor_column);
+		if (cursor_path) {
+			if (!layer_tree_view().get_selection()->is_selected(cursor_path))
+				layer_tree_view().set_cursor(path);
+		}
 	}
 }
 
