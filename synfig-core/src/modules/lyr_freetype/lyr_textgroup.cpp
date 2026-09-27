@@ -946,10 +946,10 @@ Layer_TextGroup::rebuild_shared_entries_from_valuenode(
 
     for (const auto& entry : list_node->list)
     {
-        if (!entry.value_node)
+        if (!entry)
             continue;
 
-        ValueBase value = (*entry.value_node)(Time(0));
+        ValueBase value = (*entry)(Time(0));
 
         if (value.get_type() != type_anim_share)
             continue;

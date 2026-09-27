@@ -44,7 +44,7 @@ REGISTER_VALUENODE(ValueNode_AnimShareList, RELEASE_VERSION_1_4_0,
 /* === M E T H O D S ======================================================= */
 
 ValueNode_AnimShareList::ValueNode_AnimShareList()
-    : ValueNode_DynamicList(type_anim_share) {}
+    : ValueNode_StaticList(type_anim_share) {}
 
 ValueNode_AnimShareList::~ValueNode_AnimShareList() {}
 
@@ -54,8 +54,6 @@ ValueNode_AnimShareList::create(const ValueBase &value,
   // if the parameter is not a list type, return null
   if (value.get_type() != type_list)
     return nullptr;
-
-  std::vector<ValueBase> list = value.get_list();
 
   ValueNode_AnimShareList *value_node(new ValueNode_AnimShareList());
 
@@ -80,21 +78,16 @@ ValueNode_AnimShareList::create(const ValueBase &value,
 }
 
 ValueNode_AnimShareList::ListEntry
-ValueNode_AnimShareList::create_list_entry(int index, Time time,
+ValueNode_AnimShareList::create_list_entry(int /*index*/, Time /*time*/,
                                            Real /*origin*/) {
-  ValueNode_AnimShareList::ListEntry ret;
   synfig::AnimShare inserted;
-  int new_index;
-  if (link_count()) {
-    new_index = find_prev_valid_entry(index, time);
-    ret.index = new_index;
-  } else {
-    ret.index = index;
-  }
-  ret.set_parent_value_node(this);
-  ret.value_node = ValueNode_Composite::create(inserted);
-  ret.value_node->set_parent_canvas(get_parent_canvas());
-  return ret;
+
+  ValueNode::Handle value_node =
+      ValueNode_Composite::create(inserted);
+
+  value_node->set_parent_canvas(get_parent_canvas());
+
+  return value_node;
 }
 
 ValueBase ValueNode_AnimShareList::operator()(Time t) const {
@@ -103,21 +96,14 @@ ValueBase ValueNode_AnimShareList::operator()(Time t) const {
 
   std::vector<AnimShare> ret_list;
 
-  std::vector<ListEntry>::const_iterator iter;
-  bool rising;
-
   AnimShare curr;
 
-  for (iter = list.begin(); iter != list.end(); ++iter) {
+  for (const auto& value_node : list) {
+    if (!value_node)
+      continue;
 
-    float amount(iter->amount_at_time(t, &rising));
-    assert(amount >= 0.0f);
-    assert(amount <= 1.0f);
-
-    curr = (*iter->value_node)(t).get(curr);
-
-    if (amount > 1.0f - 0.0000001f)
-      ret_list.push_back(curr);
+    curr = (*value_node)(t).get(curr);
+    ret_list.push_back(curr);
   }
 
   return ValueBase(ret_list, get_loop());
@@ -135,9 +121,10 @@ LinkableValueNode *ValueNode_AnimShareList::create_new() const {
 bool ValueNode_AnimShareList::check_type(Type & type) {
   return type == type_list;
 }
+
 void ValueNode_AnimShareList::clear() {
   while (!list.empty()) {
-    ValueNode::Handle value_node = list.front().value_node;
+    ValueNode::Handle value_node = list.front();
 
     if (!value_node) {
       list.erase(list.begin());

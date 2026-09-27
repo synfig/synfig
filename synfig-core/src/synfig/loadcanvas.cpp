@@ -2299,7 +2299,7 @@ CanvasParser::parse_linkable_value_node(xmlpp::Element *element,Canvas::Handle c
 ValueNode_StaticList::Handle
 CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 {
-	assert(element->get_name()=="static_list");
+	assert(element->get_name()=="static_list" || element->get_name()=="animsharelist");
 
 	if(!element->get_attribute("type"))
 	{
@@ -2317,7 +2317,10 @@ CanvasParser::parse_static_list(xmlpp::Element *element,Canvas::Handle canvas)
 
 	ValueNode_StaticList::Handle value_node;
 
-	value_node=ValueNode_StaticList::create_on_canvas(type);
+	if (element->get_name() == "animsharelist")
+        value_node = ValueNode_StaticList::Handle::cast_dynamic(ValueNode_AnimShareList::create());
+    else
+		value_node=ValueNode_StaticList::create_on_canvas(type);
 
 	if(!value_node)
 	{
@@ -2402,7 +2405,6 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 		element->get_name()=="bline" ||
 		element->get_name()=="wplist" ||
 		element->get_name()=="dilist" ||
-		element->get_name()=="animsharelist" ||
 		element->get_name()=="average" ||
 		element->get_name()=="weighted_average" );
 
@@ -2442,10 +2444,6 @@ CanvasParser::parse_dynamic_list(xmlpp::Element *element,Canvas::Handle canvas)
 	else if(element->get_name()=="dilist")
 	{
 		value_node = ValueNode_DIList::create();
-	}
-	else if(element->get_name()=="animsharelist")
-	{
-	    value_node = ValueNode_AnimShareList::create();
 	}
 	else if(element->get_name()=="weighted_average")
 	{
@@ -2743,8 +2741,8 @@ CanvasParser::parse_value_node(xmlpp::Element *element,Canvas::Handle canvas)
 	else
 	if(element->get_name()=="animsharelist")
 	{
-    	DEBUG_LOG("SYNFIG_DEBUG_LOAD_CANVAS", "%s:%d parse_value_node calls parse_dynamic_list for animsharelist\n",__FILE__, __LINE__);
-    	value_node=parse_dynamic_list(element,canvas);
+    	DEBUG_LOG("SYNFIG_DEBUG_LOAD_CANVAS", "%s:%d parse_value_node calls parse_static_list for animsharelist\n",__FILE__, __LINE__);
+    	value_node=parse_static_list(element,canvas);
 	}
 	else
 	if(element->get_name()=="weighted_average" || element->get_name()=="average") // This is not a typo. The dynamic list parser will parse a weighted_average.

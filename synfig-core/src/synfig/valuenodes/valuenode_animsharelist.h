@@ -18,7 +18,7 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include "valuenode_dynamiclist.h"
+#include "valuenode_staticlist.h"
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
@@ -27,7 +27,7 @@ namespace synfig {
 /*! \class ValueNode_AnimShareList
 **	\brief This class implements a list of AnimShare items
 */
-class ValueNode_AnimShareList : public ValueNode_DynamicList {
+class ValueNode_AnimShareList : public ValueNode_StaticList {
   ValueNode_AnimShareList();
 
 public:

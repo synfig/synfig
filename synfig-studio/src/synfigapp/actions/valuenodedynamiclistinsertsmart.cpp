@@ -171,30 +171,6 @@ Action::ValueNodeDynamicListInsertSmart::prepare()
 	// HACK
 	if(!first_time())
 		return;
-	const ValueNode_AnimShareList::Handle anim_share_list =
-    ValueNode_AnimShareList::Handle::cast_dynamic(value_node);
-
-	// AnimShareList membership is structural, never animated.
-    if (anim_share_list)
-    {
-        Action::Handle action(Action::create("ValueNodeDynamicListInsert"));
-
-        if (!action)
-            throw Error(_("Unable to find action (bug)"));
-
-        action->set_param("canvas", get_canvas());
-        action->set_param("canvas_interface", get_canvas_interface());
-        action->set_param("time", time);
-        action->set_param("origin", origin);
-        action->set_param("value_desc", ValueDesc(value_node, index));
-
-        if (!action->is_ready())
-            throw Error(Error::TYPE_NOTREADY);
-
-        add_action(action);
-        return;
-    }
-
 
 	// If we are in animate editing mode
 	if(get_edit_mode()&MODE_ANIMATE)

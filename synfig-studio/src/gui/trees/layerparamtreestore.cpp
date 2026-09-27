@@ -49,8 +49,8 @@
 #include <synfig/valuenodes/valuenode_animsharelist.h>
 #include <synfig/valuenodes/valuenode_composite.h>
 
-#include <synfigapp/actions/valuenodedynamiclistremovesmart.h>
-#include <synfigapp/actions/valuenodedynamiclistremove.h>
+#include <synfigapp/actions/valuenodestaticlistremovesmart.h>
+#include <synfigapp/actions/valuenodestaticlistremove.h>
 
 #include <synfigapp/action_system.h>
 
@@ -297,7 +297,7 @@ LayerParamTreeStore::set_value_impl(const Gtk::TreeModel::iterator& iter, int co
             					return;
 
         					synfigapp::Action::Handle action =
-            					synfigapp::Action::ValueNodeDynamicListRemove::create();
+            					synfigapp::Action::ValueNodeStaticListRemove::create();
 
         					action->set_param("canvas",canvas_interface()->get_canvas());
         					action->set_param("canvas_interface",canvas_interface());
