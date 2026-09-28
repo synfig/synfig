@@ -59,6 +59,7 @@
 #include "layers/layer_polygon.h"
 #include "layers/layer_skeleton.h"
 #include "layers/layer_skeletondeformation.h"
+#include "layers/layer_freeformdeform.h"
 #include "layers/layer_solidcolor.h"
 #include "layers/layer_sound.h"
 #include "layers/layer_switch.h"
@@ -143,6 +144,7 @@ Layer::subsys_init()
 	INCLUDE_LAYER(Layer_Duplicate);
 	INCLUDE_LAYER(Layer_Skeleton);
 	INCLUDE_LAYER(Layer_SkeletonDeformation);
+	INCLUDE_LAYER(Layer_FreeFormDeform);
 	INCLUDE_LAYER(Layer_Sound);
 
 #undef LAYER_ALIAS

@@ -94,6 +94,7 @@ static const std::map<std::string, std::pair<const char*, const char*>> known_ic
 	{"polygon", {"tool_polyline_icon", N_("Polygon Tool")}},
 	{"bline", {"tool_spline_icon", N_("Spline Tool")}},
 	{"bone", {"tool_skeleton_icon", N_("Skeleton Tool")}},
+	{"ffd", {"tool_ffd_icon", N_("FFD Tool")}},
 	{"eyedrop", {"tool_eyedrop_icon", N_("Eyedropper Tool")}},
 	{"fill", {"tool_fill_icon", N_("Fill Tool")}},
 	{"draw", {"tool_draw_icon", N_("Draw Tool")}},
@@ -232,6 +233,7 @@ static const std::map<std::string, std::string> layer_icon_names = {
 	{"radial_blur",   "layer_blur_radial_icon"},
 	// Distortion Layers
 	{"curve_warp",           "layer_distortion_curvewarp_icon"},
+	{"free_form_deform",     "layer_distortion_free_form_deform_icon"},
 	{"inside_out",           "layer_distortion_insideout_icon"},
 	{"noise_distort",        "layer_distortion_noise_icon"},
 	{"skeleton_deformation", "layer_distortion_skeletondeformation_icon"},

@@ -117,6 +117,7 @@
 #include <gui/states/state_draw.h>
 #include <gui/states/state_eyedrop.h>
 #include <gui/states/state_fill.h>
+#include <gui/states/state_ffd.h>
 #include <gui/states/state_gradient.h>
 #include <gui/states/state_lasso.h>
 #include <gui/states/state_mirror.h>
@@ -1793,6 +1794,9 @@ void App::init(const synfig::String& rootpath)
 
 		/* skeleton tool*/
 		state_manager->add_state(&state_bone);
+
+		/* ffd tool */
+		state_manager->add_state(&state_ffd);
 
 		/* other */
 		state_manager->add_state(&state_text);

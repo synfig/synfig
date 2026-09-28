@@ -55,6 +55,7 @@
 #include <synfig/curve_helper.h>
 #include <synfig/layers/layer_filtergroup.h>
 #include <synfig/layers/layer_pastecanvas.h>
+#include <synfig/layers/layer_freeformdeform.h>
 #include <synfig/pair.h>
 #include <synfig/paramdesc.h>
 #include <synfig/segment.h>
@@ -150,6 +151,14 @@ Duckmatic::clear_ducks()
 
 	if(show_persistent_strokes)
 		stroke_list_=persistent_stroke_list_;
+
+	signal_duck_selection_changed_();
+}
+
+void
+Duckmatic::clear_beziers()
+{
+	bezier_list_.clear();
 }
 
 
@@ -1128,6 +1137,149 @@ Duckmatic::on_duck_changed(const studio::Duck &duck,const synfigapp::ValueDesc& 
 	}
 
 	return canvas_interface->change_value(value_desc,value,lock_animation);
+}
+
+void
+Duckmatic::draw_ffd_overlay(
+	const std::vector<Duck::Handle>& ducks,
+	int ffd_mode, int cols, int rows,
+	synfig::Real cull_threshold,
+	const std::vector<synfig::Point>& source_pts,
+	const std::vector<synfig::rendering::Mesh::Triangle>& explicit_tris)
+
+
+{
+	if (ffd_mode == 0 && (int)ducks.size() == cols * rows && cols >= 2 && rows >= 2)
+	{
+		// --- GRID MODE: draw horizontal and vertical wires ---
+		for (int y = 0; y < rows; ++y) {
+			for (int x = 0; x < cols; ++x) {
+				Duck::Handle d = ducks[y * cols + x];
+				if (!d) continue;
+
+				if (x > 0) {
+					Duck::Handle left = ducks[y * cols + (x - 1)];
+					if (left) {
+						Bezier::Handle b(new Bezier());
+						b->p1 = b->c1 = left;
+						b->p2 = b->c2 = d;
+						add_bezier(b);
+					}
+				}
+				if (y > 0) {
+					Duck::Handle top = ducks[(y - 1) * cols + x];
+					if (top) {
+						Bezier::Handle b(new Bezier());
+						b->p1 = b->c1 = top;
+						b->p2 = b->c2 = d;
+						add_bezier(b);
+					}
+				}
+			}
+		}
+	}
+	else if (ffd_mode == 1 && ducks.size() >= 3)
+	{
+		// --- CUSTOM MESH MODE: triangulate, cull, draw edges ---
+		std::vector<synfig::Point> pts;
+		std::vector<int> pts_to_ducks;
+		pts.reserve(ducks.size());
+		pts_to_ducks.reserve(ducks.size());
+		for (size_t i = 0; i < ducks.size(); ++i) {
+			if (ducks[i]) {
+				pts.push_back(ducks[i]->get_point());
+				pts_to_ducks.push_back(i);
+			}
+		}
+
+		std::vector<synfig::rendering::Mesh::Triangle> tris;
+		bool mapped_to_ducks = false;
+
+		if (!explicit_tris.empty()) {
+			tris = explicit_tris;
+			mapped_to_ducks = true;
+		} else if (source_pts.size() == pts.size()) {
+			tris = synfig::Layer_FreeFormDeform::triangulate(source_pts);
+			tris = synfig::Layer_FreeFormDeform::cull_triangles(tris, source_pts, cull_threshold);
+		} else {
+			tris = synfig::Layer_FreeFormDeform::triangulate(pts);
+			tris = synfig::Layer_FreeFormDeform::cull_triangles(tris, pts, cull_threshold);
+		}
+
+
+		std::set<std::pair<int, int>> drawn_edges;
+		for (const auto& tri : tris) {
+			auto add_edge = [&](int i1, int i2) {
+				if (!mapped_to_ducks) {
+					if (i1 < 0 || i2 < 0 || i1 >= (int)pts.size() || i2 >= (int)pts.size())
+						return;
+					i1 = pts_to_ducks[i1];
+					i2 = pts_to_ducks[i2];
+				}
+				if (i1 < 0 || i2 < 0 || i1 >= (int)ducks.size() || i2 >= (int)ducks.size() || i1 == i2)
+					return;
+				if (!ducks[i1] || !ducks[i2])
+					return;
+				std::pair<int, int> edge(std::min(i1, i2), std::max(i1, i2));
+				if (!drawn_edges.insert(edge).second)
+					return;
+				Bezier::Handle b(new Bezier());
+				b->p1 = b->c1 = ducks[i1];
+				b->p2 = b->c2 = ducks[i2];
+				add_bezier(b);
+			};
+			add_edge(tri.vertices[0], tri.vertices[1]);
+			add_edge(tri.vertices[1], tri.vertices[2]);
+			add_edge(tri.vertices[2], tri.vertices[0]);
+		}
+	}
+}
+
+bool
+Duckmatic::get_ffd_overlay_config(
+	const synfigapp::ValueDesc& value_desc,
+	int& ffd_mode, int& cols, int& rows,
+	synfig::Real& ffd_cull_threshold,
+	std::vector<synfig::Point>& source_pts,
+	std::vector<synfig::rendering::Mesh::Triangle>& explicit_tris) const
+{
+	bool is_ffd = false;
+	if (value_desc.parent_is_layer()) {
+		Layer::Handle layer = value_desc.get_layer();
+		if (layer && layer->get_name() == "free_form_deform" && value_desc.get_param_name() == "control_points") {
+			is_ffd = true;
+			ffd_mode = layer->get_param("mesh_mode").get(int());
+			cols = layer->get_param("grid_size_x").get(int());
+			rows = layer->get_param("grid_size_y").get(int());
+			ffd_cull_threshold = layer->get_param("cull_threshold").get(synfig::Real());
+			if (ffd_mode == 1) {
+				synfig::ValueBase source_points_vb = layer->get_param("source_points");
+				if (source_points_vb.get_type() == synfig::type_list) {
+					const synfig::ValueBase::List &source_list = source_points_vb.get_list();
+					for(auto i = source_list.begin(); i != source_list.end(); ++i) {
+						if (i->can_get(synfig::Point())) source_pts.push_back(i->get(synfig::Point()));
+					}
+				}
+
+				synfig::ValueBase tris_vb = layer->get_param("triangles");
+				if (tris_vb.get_type() == synfig::type_list) {
+					const auto& tris_list = tris_vb.get_list();
+					if (!tris_list.empty() && tris_list.size() % 3 == 0) {
+						for (size_t k = 0; k < tris_list.size(); k += 3) {
+							if (tris_list[k].can_get(int()) && tris_list[k+1].can_get(int()) && tris_list[k+2].can_get(int())) {
+								synfig::rendering::Mesh::Triangle tri;
+								tri.vertices[0] = tris_list[k].get(int());
+								tri.vertices[1] = tris_list[k+1].get(int());
+								tri.vertices[2] = tris_list[k+2].get(int());
+								explicit_tris.push_back(tri);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	return is_ffd;
 }
 
 void
@@ -2545,9 +2697,17 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 			synfig::Type &contained_type(value_node->get_contained_type());
 			if (contained_type == type_vector)
 			{
+				int ffd_mode = 0;
+				int cols = 0, rows = 0;
+				synfig::Real ffd_cull_threshold = 0.0;
+				std::vector<synfig::Point> source_pts;
+				std::vector<synfig::rendering::Mesh::Triangle> explicit_tris;
+				bool is_ffd = get_ffd_overlay_config(value_desc, ffd_mode, cols, rows, ffd_cull_threshold, source_pts, explicit_tris);
+
 				Bezier bezier;
 				Duck::Handle first_duck, duck;
 				int first = -1;
+				std::vector<Duck::Handle> ducks;
 				for(i=0;i<value_node->link_count();i++)
 				{
 					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
@@ -2575,11 +2735,39 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 //							last_duck()->set_origin(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()).get(synfig::Point()));
 					}
 					duck->set_type(Duck::TYPE_VERTEX);
-					bezier.p1=bezier.p2;bezier.c1=bezier.c2;
-					bezier.p2=bezier.c2=duck;
+					ducks.push_back(duck);
 
-					if (first != i)
+					if (!is_ffd)
 					{
+						bezier.p1=bezier.p2;bezier.c1=bezier.c2;
+						bezier.p2=bezier.c2=duck;
+
+						if (first != i)
+						{
+							Bezier::Handle bezier_(new Bezier());
+							bezier_->p1=bezier.p1; bezier_->c1=bezier.c1;
+							bezier_->p2=bezier.p2; bezier_->c2=bezier.c2;
+							add_bezier(bezier_);
+							last_bezier()->signal_user_click(2).connect(
+								sigc::bind(sigc::mem_fun(*canvas_view, &studio::CanvasView::popup_param_menu_bezier), synfigapp::ValueDesc(value_node,i)));
+						}
+					}
+				}
+
+				if (is_ffd)
+				{
+					draw_ffd_overlay(ducks, ffd_mode, cols, rows, ffd_cull_threshold, source_pts, explicit_tris);
+				}
+
+				else
+				{
+					if (value_node->get_loop() && first != -1 && first_duck != duck)
+					{
+						duck = first_duck;
+
+						bezier.p1=bezier.p2;bezier.c1=bezier.c2;
+						bezier.p2=bezier.c2=duck;
+
 						Bezier::Handle bezier_(new Bezier());
 						bezier_->p1=bezier.p1;
 						bezier_->c1=bezier.c1;
@@ -2591,29 +2779,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 								sigc::mem_fun(
 									*canvas_view,
 									&studio::CanvasView::popup_param_menu_bezier),
-								synfigapp::ValueDesc(value_node,i)));
+								synfigapp::ValueDesc(value_node,first)));
 					}
-				}
-
-				if (value_node->get_loop() && first != -1 && first_duck != duck)
-				{
-					duck = first_duck;
-
-					bezier.p1=bezier.p2;bezier.c1=bezier.c2;
-					bezier.p2=bezier.c2=duck;
-
-					Bezier::Handle bezier_(new Bezier());
-					bezier_->p1=bezier.p1;
-					bezier_->c1=bezier.c1;
-					bezier_->p2=bezier.p2;
-					bezier_->c2=bezier.c2;
-					add_bezier(bezier_);
-					last_bezier()->signal_user_click(2).connect(
-						sigc::bind(
-							sigc::mem_fun(
-								*canvas_view,
-								&studio::CanvasView::popup_param_menu_bezier),
-							synfigapp::ValueDesc(value_node,first)));
 				}
 			}
 			else
@@ -2784,13 +2951,24 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 
 			if(value_node->get_contained_type()==type_vector)
 			{
+				int ffd_mode = 0;
+				int cols = 0, rows = 0;
+				synfig::Real ffd_cull_threshold = 0.0;
+				std::vector<synfig::Point> source_pts;
+				std::vector<synfig::rendering::Mesh::Triangle> explicit_tris;
+				bool is_ffd = get_ffd_overlay_config(value_desc, ffd_mode, cols, rows, ffd_cull_threshold, source_pts, explicit_tris);
+
 				Bezier bezier;
 				Duck::Handle first_duck, duck;
 				int first = -1;
+				std::vector<Duck::Handle> ducks;
 				for(i=0;i<value_node->link_count();i++)
 				{
 					if(!value_node->list[i].status_at_time(get_time()))
+					{
+						ducks.push_back(Duck::Handle()); // maintain grid structure
 						continue;
+					}
 					if(!add_to_ducks(synfigapp::ValueDesc(value_node,i),canvas_view,transform_stack))
 						return false;
 					duck = last_duck();
@@ -2816,13 +2994,47 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 //							last_duck()->set_origin(synfigapp::ValueDesc(value_desc.get_layer(),param_desc->get_origin()).get_value(get_time()).get(synfig::Point()));
 					}
 					duck->set_type(Duck::TYPE_VERTEX);
-					bezier.p1 = bezier.p2;
-					bezier.c1 = bezier.c2;
-					bezier.p2 = duck;
-					bezier.c2 = duck;
+					ducks.push_back(duck);
 
-					if (first != i)
+					if (!is_ffd)
 					{
+						bezier.p1 = bezier.p2;
+						bezier.c1 = bezier.c2;
+						bezier.p2 = duck;
+						bezier.c2 = duck;
+
+						if (first != i)
+						{
+							Bezier::Handle bezier_(new Bezier());
+							bezier_->p1=bezier.p1;
+							bezier_->c1=bezier.c1;
+							bezier_->p2=bezier.p2;
+							bezier_->c2=bezier.c2;
+							add_bezier(bezier_);
+							last_bezier()->signal_user_click(2).connect(
+								sigc::bind(
+									sigc::mem_fun(
+										*canvas_view,
+										&studio::CanvasView::popup_param_menu_bezier),
+									synfigapp::ValueDesc(value_node,i)));
+						}
+					}
+				}
+				if (is_ffd)
+				{
+					draw_ffd_overlay(ducks, ffd_mode, cols, rows, ffd_cull_threshold, source_pts, explicit_tris);
+				}
+
+				else
+				{
+					if (value_node->get_loop() && first != -1 && first_duck != duck)
+					{
+						duck = first_duck;
+
+						bezier.p1=bezier.p2;
+						bezier.c1=bezier.c2;
+						bezier.p2=bezier.c2=duck;
+
 						Bezier::Handle bezier_(new Bezier());
 						bezier_->p1=bezier.p1;
 						bezier_->c1=bezier.c1;
@@ -2834,31 +3046,8 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 								sigc::mem_fun(
 									*canvas_view,
 									&studio::CanvasView::popup_param_menu_bezier),
-								synfigapp::ValueDesc(value_node,i)));
+								synfigapp::ValueDesc(value_node,first)));
 					}
-				}
-
-				if (value_node->get_loop() && first != -1 && first_duck != duck)
-				{
-					duck = first_duck;
-
-					bezier.p1 = bezier.p2;
-					bezier.c1 = bezier.c2;
-					bezier.p2 = duck;
-					bezier.c2 = duck;
-
-					Bezier::Handle bezier_(new Bezier());
-					bezier_->p1 = bezier.p1;
-					bezier_->c1 = bezier.c1;
-					bezier_->p2 = bezier.p2;
-					bezier_->c2 = bezier.c2;
-					add_bezier(bezier_);
-					last_bezier()->signal_user_click(2).connect(
-						sigc::bind(
-							sigc::mem_fun(
-								*canvas_view,
-								&studio::CanvasView::popup_param_menu_bezier),
-							synfigapp::ValueDesc(value_node,first)));
 				}
 			}
 			else if(value_node->get_contained_type()==type_segment)
