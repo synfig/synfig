@@ -168,6 +168,8 @@ private:
 	 void push(const std::string& property, const std::string& value);
 };
 
+typedef std::vector<std::string> StringList;
+
 class Svg_parser
 {
 		//this is inkscape oriented in some cases
@@ -186,6 +188,7 @@ private:
 		//urls
 		std::list<LinearGradient> lg;
 		std::list<RadialGradient> rg;
+		std::map<String, std::pair<const xmlpp::Element*, Style>> clippath_library;
 
 public:
 		explicit Svg_parser(const Gamma &gamma = Gamma());
@@ -199,15 +202,15 @@ private:
 		//parser headers
 		void parser_svg(const xmlpp::Node* node);
 		void parser_canvas(const xmlpp::Node* node);
-		void parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx_parent);
+		void parser_graphics(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx_parent, const StringList& applied_clip_paths);
 
 		bool parser_rxry_property(const Style &style, double width_reference, double height_reference, double &rx, double &ry);
 
 		/* === LAYER PARSERS ============================== */
-		void parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx);
+		void parser_layer(const xmlpp::Node* node, xmlpp::Element* root, Style style, const SVGMatrix& mtx, const StringList& applied_clip_paths);
 		void parser_rect(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style);
 		void parser_circle(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style);
-		void parser_text(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style, const SVGMatrix& mtx_parent);
+		void parser_text(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& style, const SVGMatrix& mtx_parent, const StringList& applied_clip_paths);
 		/* === CONVERT TO PATH PARSERS ==================== */
 		std::list<BLine> parser_path_polygon(const Glib::ustring& polygon_points, const SVGMatrix& mtx);
 		std::list<BLine> parser_path_d(const String& path_d, const SVGMatrix& mtx);
@@ -224,6 +227,7 @@ private:
 		void parser_defs(const xmlpp::Node* node);
 		void parser_linearGradient(const xmlpp::Node* node);
 		void parser_radialGradient(const xmlpp::Node* node);
+		void parser_clipPath(const xmlpp::Node* node, Style style);
 
 		/* === BUILDS ===================================== */
 		void build_region(xmlpp::Node* root, Style style, const std::list<BLine>& k, const String& desc);
@@ -235,6 +239,7 @@ private:
 		void build_radialGradient(xmlpp::Element* root, const RadialGradient& data, const SVGMatrix& mtx);
 		void build_stop_color(xmlpp::Element* root, const std::list<ColorStop>& stops);
 		Color adjustGamma(float r,float g,float b,float a);
+		void build_clip_path(xmlpp::Element* root, const std::string& clip_path_value, const SVGMatrix& mtx, StringList applied_clip_paths);
 
 		void build_gamma(xmlpp::Element* root,float gamma);
 		void build_rotate(xmlpp::Element* root,float dx,float dy,float angle);
@@ -254,6 +259,7 @@ private:
 		void build_color(xmlpp::Element* root,float r,float g,float b,float a);
 		void build_string(xmlpp::Element* root, const String& name, const String& value);
 		xmlpp::Element* initializeGroupLayerNode(xmlpp::Element* root, const String& name);
+		xmlpp::Element* initializeClipNode(xmlpp::Element* root, const String& name);
 
 		/* === COORDINATES & TRANSFORMATIONS ============== */
 
