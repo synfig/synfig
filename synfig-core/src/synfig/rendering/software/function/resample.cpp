@@ -216,9 +216,9 @@ namespace {
 					transformation.get_transformed(Vector( Real(src_bounds.maxx), Real(src_bounds.maxy) )) };
 
 				Rect boundsf(   corners[0] );
-				boundsf.expand( corners[1] );
-				boundsf.expand( corners[2] );
-				boundsf.expand( corners[3] );
+				boundsf.expand_to( corners[1] );
+				boundsf.expand_to( corners[2] );
+				boundsf.expand_to( corners[3] );
 
 				RectInt bounds( (int)approximate_floor(boundsf.minx) - 1,
 								(int)approximate_floor(boundsf.miny) - 1,
@@ -254,9 +254,9 @@ namespace {
 							back_transformation.get_transformed(Vector( Real(bounds.maxx), Real(bounds.maxy) )) };
 
 						Rect sub_boundsf(   sub_corners[0] );
-						sub_boundsf.expand( sub_corners[1] );
-						sub_boundsf.expand( sub_corners[2] );
-						sub_boundsf.expand( sub_corners[3] );
+						sub_boundsf.expand_to( sub_corners[1] );
+						sub_boundsf.expand_to( sub_corners[2] );
+						sub_boundsf.expand_to( sub_corners[3] );
 
 						RectInt sub_bounds(
 							(int)approximate_floor(sub_boundsf.minx) - 1,

@@ -370,17 +370,17 @@ public:
 		// vertical borders
 		for (int iy = target_rect.miny; iy < target_rect.maxy; ++iy, p[1] += dy[1]) {
 			Point tmp = internal.transform(p);
-			sub_source_rect.expand(tmp);
+			sub_source_rect.expand_to(tmp);
 			tmp = internal.transform(Point(p[0] + dx[0]*(Real)tw, p[1]));
-			sub_source_rect.expand(tmp);
+			sub_source_rect.expand_to(tmp);
 		}
 
 		// horizontal borders
 		for (int ix = target_rect.minx; ix < target_rect.maxx; ++ix, p[0] += dx[0]) {
 			Point tmp = internal.transform(p);
-			sub_source_rect.expand(tmp);
+			sub_source_rect.expand_to(tmp);
 			tmp = internal.transform(Point(p[0], p[1] - dy[1]*(Real)th));
-			sub_source_rect.expand(tmp);
+			sub_source_rect.expand_to(tmp);
 		}
 
 		return sub_source_rect;

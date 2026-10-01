@@ -131,7 +131,7 @@ public:
 	}
 
 	Rect bounds() const
-		{ return Rect(p0).expand(p1).expand(pp0()).expand(pp1()); }
+		{ return Rect(p0).expand_to(p1).expand_to(pp0()).expand_to(pp1()); }
 
 	int bends(int index, Real *l) const
 		{ return bends(l, p0[index], p1[index], t0[index], t1[index]); }
@@ -280,7 +280,7 @@ public:
 	}
 	
 	Rect bounds() const
-		{ return Rect(p0).expand(p1).expand(pp0).expand(pp1); }
+		{ return Rect(p0).expand_to(p1).expand_to(pp0).expand_to(pp1); }
 
 	int bends(int index, Real *l) const
 		{ return bends(l, p0[index], p1[index], pp0[index], pp1[index]); }

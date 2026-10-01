@@ -680,8 +680,8 @@ int intersect_scurve(const CIntersect::SCurve &b, const Point &p)
 	//approve only if to the right of rect around 2 end points
 	{
 		Rect 	r;
-		r.set_point(b.b[0][0],b.b[0][1]);
-		r.expand(b.b[3][0],b.b[3][1]);
+		r.set_point(b.b[0]);
+		r.expand_to(b.b[3]);
 
 		if(p[0] >= r.maxx && p[1] <= r.maxy && p[1] >= r.miny)
 		{

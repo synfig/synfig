@@ -122,9 +122,9 @@ public:
 
 	void add_cubic(Point dest, Point p1, Point p2)
 	{
-		aabb.expand(p1[0], p1[1]);
-		aabb.expand(p2[0], p2[1]);
-		aabb.expand(dest[0], dest[1]);
+		aabb.expand_to(p1);
+		aabb.expand_to(p2);
+		aabb.expand_to(dest);
 
 		pointlist.push_back(p1);
 		pointlist.push_back(p2);
@@ -135,8 +135,8 @@ public:
 
 	void add_conic(Point dest, Point p1)
 	{
-		aabb.expand(p1[0], p1[1]);
-		aabb.expand(dest[0], dest[1]);
+		aabb.expand_to(p1);
+		aabb.expand_to(dest);
 
 		pointlist.push_back(p1);
 		pointlist.push_back(dest);
@@ -437,9 +437,9 @@ Intersector::move_to(const Point &p)
 	close();
 	close_pos = cur_pos = p;
 	if (invalid_aabb) {
-		aabb.set_point(p[0], p[1]);
+		aabb.set_point(p);
 		invalid_aabb = false;
-	} else aabb.expand(p[0], p[1]);
+	} else aabb.expand_to(p);
 	previous_primitive_type = TYPE_NONE;
 }
 
@@ -457,10 +457,10 @@ Intersector::line_to(const Point &p)
 	}
 	// add to the last segment, because it works
 	segs.back().pointlist.push_back(p);
-	segs.back().aabb.expand(p[0], p[1]);
+	segs.back().aabb.expand_to(p);
 
 	cur_pos = p;
-	aabb.expand(cur_pos[0], cur_pos[1]); // expand the entire thing's bounding box
+	aabb.expand_to(cur_pos); // expand the entire thing's bounding box
 	flags |= NotClosed;
 	previous_primitive_type = TYPE_LINE;
 }
@@ -476,8 +476,8 @@ Intersector::conic_to(const Point &p, const Point &p1)
 	curves.back().add_conic(p, p1);
 
 	cur_pos = p;
-	aabb.expand(p[0], p[1]);
-	aabb.expand(p1[0], p1[1]);
+	aabb.expand_to(p);
+	aabb.expand_to(p1);
 	flags |= NotClosed;
 	previous_primitive_type = TYPE_CURVE;
 }
@@ -493,9 +493,9 @@ Intersector::cubic_to(const Point &p, const Point &p1, const Point &p2)
 	curves.back().add_cubic(p, p1, p2);
 
 	cur_pos = p;
-	aabb.expand(p[0], p[1]);
-	aabb.expand(p1[0], p1[1]);
-	aabb.expand(p2[0], p2[1]);
+	aabb.expand_to(p);
+	aabb.expand_to(p1);
+	aabb.expand_to(p2);
 	flags |= NotClosed;
 	previous_primitive_type = TYPE_CURVE;
 }

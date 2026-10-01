@@ -101,8 +101,8 @@ TransformStack::perform(const synfig::Rect& x)const
 
 	std::swap(min[1],max[1]);
 	ret
-		.expand(perform(min))
-		.expand(perform(max))
+		.expand_to(perform(min))
+		.expand_to(perform(max))
 	;
 	return ret;
 }
@@ -116,8 +116,8 @@ TransformStack::unperform(const synfig::Rect& x)const
 
 	std::swap(min[1],max[1]);
 	ret
-		.expand(unperform(min))
-		.expand(unperform(max))
+		.expand_to(unperform(min))
+		.expand_to(unperform(max))
 	;
 	return ret;
 }
@@ -135,8 +135,8 @@ Transform::perform(const synfig::Rect& x)const
 
 	std::swap(min[1],max[1]);
 	ret
-		.expand(perform(min))
-		.expand(perform(max))
+		.expand_to(perform(min))
+		.expand_to(perform(max))
 	;
 	return ret;
 }
@@ -154,8 +154,8 @@ Transform::unperform(const synfig::Rect& x)const
 
 	std::swap(min[1],max[1]);
 	ret
-		.expand(unperform(min))
-		.expand(unperform(max))
+		.expand_to(unperform(min))
+		.expand_to(unperform(max))
 	;
 	return ret;
 }
