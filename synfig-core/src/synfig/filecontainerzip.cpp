@@ -38,7 +38,7 @@
 #include <stdint.h>
 #include <cstddef>
 
-#include <libxml++/libxml++.h>
+#include <synfig/xmlpp_compat.h>
 #include <glib/gstdio.h>
 
 #include "smartfile.h"
@@ -291,10 +291,9 @@ unsigned int FileContainerZip::crc32(unsigned int previous_crc, const void *buff
 String FileContainerZip::encode_history(const FileContainerZip::HistoryRecord &history_record)
 {
 	xmlpp::Document document;
-	document.
-		create_root_node("history")->
-		add_child("prev_storage_size")->
-		set_child_text(strprintf("%lld", history_record.prev_storage_size));
+	xmlpp::Element* history_node = document.create_root_node("history");
+	set_first_child_text(add_child_element(history_node, "prev_storage_size"),
+	                    strprintf("%lld", history_record.prev_storage_size));
 	return document.write_to_string_formatted();
 }
 

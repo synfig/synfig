@@ -354,14 +354,23 @@ PKG_CHECK_MODULES(GIOMM, [giomm-2.4 >= 2.18.2],[
 	AC_MSG_ERROR([ ** You need to install giomm-2.4 version 2.18.2 or higher.])
 ])
 
-PKG_CHECK_MODULES(LIBXMLPP, libxml++-2.6,[
-	CONFIG_DEPS="$CONFIG_DEPS libxml++-2.6"
-	LIBXMLPP_CFLAGS=SUPPRESS_WARNINGS($LIBXMLPP_CFLAGS)
+dnl libxml++ 5.0 is preferred, but 2.6 and 1.0 are still supported as fallbacks.
+dnl They use different pkg-config module names, and libxml++ 5.0 needs a C++17
+dnl compiler, so the standard has to be raised once the module is known. The
+dnl last -std flag wins, which is why appending here is enough.
+PKG_CHECK_MODULES(LIBXMLPP, libxml++-5.0,[
+	CONFIG_DEPS="$CONFIG_DEPS libxml++-5.0"
+	CXXFLAGS="$CXXFLAGS -std=gnu++17"
 ],[
-	PKG_CHECK_MODULES(LIBXMLPP, libxml++-1.0,[
-		CONFIG_DEPS="$CONFIG_DEPS libxml++-1.0"
+	PKG_CHECK_MODULES(LIBXMLPP, libxml++-2.6,[
+		CONFIG_DEPS="$CONFIG_DEPS libxml++-2.6"
+		LIBXMLPP_CFLAGS=SUPPRESS_WARNINGS($LIBXMLPP_CFLAGS)
 	],[
-		AC_MSG_ERROR([ ** You need to install libxml++, either version 2.6 or 1.0.])
+		PKG_CHECK_MODULES(LIBXMLPP, libxml++-1.0,[
+			CONFIG_DEPS="$CONFIG_DEPS libxml++-1.0"
+		],[
+			AC_MSG_ERROR([ ** You need to install libxml++, either version 5.0, 2.6 or 1.0.])
+		])
 	])
 ])
 
