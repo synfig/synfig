@@ -98,6 +98,9 @@ class studio::StateBone_Context : public sigc::trackable
 
 	Point clickOrigin;
 
+	/** Store last layer disabled by this tool */
+	Layer::Handle last_disabled_layer;
+
 	// Toolbox settings
 	synfigapp::Settings& settings;
 
@@ -425,9 +428,13 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	if(Layer_SkeletonDeformation::Handle::cast_dynamic(layer)){
 		get_work_area()->set_type_mask((get_work_area()->get_type_mask() - Duck::TYPE_TANGENT) | (Duck::TYPE_WIDTH | Duck::TYPE_WIDTHPOINT_POSITION));
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
-		layer->disable();
-		get_canvas_interface()->signal_layer_status_changed()(layer,false);
 		update_tool_options(SKELETON_DEFORMATION_TYPE);
+		// disable Skeleton Deformation layer so its bones are visible in their rest pose
+		if (layer->active()) {
+			layer->disable();
+			last_disabled_layer = layer;
+			get_canvas_interface()->signal_layer_status_changed()(layer, false);
+		}
 	}else{
 		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH-Duck::TYPE_WIDTHPOINT_POSITION);
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
@@ -511,10 +518,10 @@ StateBone_Context::~StateBone_Context()
 	get_work_area()->set_type_mask(prev_type_mask);
 	get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 
-	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
-	if(Layer_SkeletonDeformation::Handle::cast_dynamic(layer)){
-		layer->enable();
-		get_canvas_interface()->signal_layer_status_changed()(layer,true);
+	if (last_disabled_layer) {
+		last_disabled_layer->enable();
+		last_disabled_layer = nullptr;
+		get_canvas_interface()->signal_layer_status_changed()(last_disabled_layer, true);
 	}
 
 	// Restore layer clicking
@@ -800,14 +807,23 @@ StateBone_Context::event_layer_selection_changed_handler(const Smach::event& /*x
 	}
 
 
+	if (last_disabled_layer && layer != last_disabled_layer) {
+		last_disabled_layer->enable();
+		get_canvas_interface()->signal_layer_status_changed()(last_disabled_layer, true);
+		last_disabled_layer = nullptr;
+	}
+
 	if(skel_layer){
 		update_tool_options(SKELETON_TYPE);
 		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH-Duck::TYPE_WIDTHPOINT_POSITION);
 	}else if(deform_layer){
 		update_tool_options(SKELETON_DEFORMATION_TYPE);
 		get_work_area()->set_type_mask(get_work_area()->get_type_mask() - (Duck::TYPE_TANGENT | Duck::TYPE_WIDTH | Duck::TYPE_WIDTHPOINT_POSITION));
-		layer->disable();
-		get_canvas_interface()->signal_layer_status_changed()(layer,false);
+		if (layer->active()) {
+			layer->disable();
+			last_disabled_layer = layer;
+			get_canvas_interface()->signal_layer_status_changed()(layer, false);
+		}
 	}else{
 		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH-Duck::TYPE_WIDTHPOINT_POSITION);
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
