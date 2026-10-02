@@ -60,6 +60,7 @@
 
 #include "shade.h"
 #include "bevel.h"
+#include "bevel_deprecated.h"
 
 #include "perspective.h"
 #include "timeloop.h"
@@ -100,6 +101,7 @@ MODULE_INVENTORY_BEGIN(liblyr_std)
 		LAYER(Twirl)
 		LAYER(Layer_Shade)
 		LAYER(Layer_Bevel)
+		LAYER(Layer_BevelDeprecated)
 		LAYER(Layer_TimeLoop)
 		LAYER(Layer_Stroboscope)
 		LAYER(Layer_SphereDistort)
