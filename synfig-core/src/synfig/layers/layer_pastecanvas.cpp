@@ -380,10 +380,15 @@ Layer_PasteCanvas::hit_check(synfig::Context context, const synfig::Point &pos)c
 
 	CanvasBase queue;
 	Context subcontext = build_context_queue(context, queue);
-	if (subcontext.get_color(target_pos).get_a() >= 0.25)
-		return param_children_lock.get(bool(true))
-			 ? const_cast<Layer_PasteCanvas*>(this)
-			 : subcontext.hit_check(target_pos);
+	if (subcontext.get_color(target_pos).get_a() >= 0.25) {
+		if (param_children_lock.get(bool(true))) {
+			return const_cast<Layer_PasteCanvas*>(this);
+		} else {
+			layer = subcontext.hit_check(target_pos);
+			if (layer && !layer->is_hit_locked())
+				return layer;
+		}
+	}
 	return context.hit_check(pos);
 }
 

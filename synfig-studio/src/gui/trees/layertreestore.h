@@ -72,6 +72,7 @@ public:
 
 		Gtk::TreeModelColumn<bool>						active;
 		Gtk::TreeModelColumn<bool>						exclude_from_rendering;
+		Gtk::TreeModelColumn<bool>						hit_locked;
 		Gtk::TreeModelColumn<Pango::Style>				style;
 		Gtk::TreeModelColumn<Pango::Weight>				weight;
 		Gtk::TreeModelColumn<Pango::Underline>			underline;
@@ -98,6 +99,7 @@ public:
 			add(tooltip);
 			add(active);
 			add(exclude_from_rendering);
+			add(hit_locked);
 			add(style);
 			add(weight);
 			add(underline);
@@ -184,6 +186,8 @@ private:
 
 	void on_layer_exclude_from_rendering_changed(synfig::Layer::Handle handle,bool);
 
+	void on_layer_hit_locked_changed(synfig::Layer::Handle handle, bool);
+
 	void on_layer_z_range_changed(synfig::Layer::Handle handle,bool);
 
 	void on_layer_lowered(synfig::Layer::Handle handle);
@@ -229,7 +233,7 @@ public:
 
 	void refresh();
 
-	void refresh_row(Gtk::TreeModel::Row &row);
+	void refresh_row(const Gtk::TreeModel::Row& row);
 
 	void set_row_layer(Gtk::TreeRow &row, const synfig::Layer::Handle &handle);
 	void set_row_ghost(Gtk::TreeRow &row, const synfig::String &label, int depth);
