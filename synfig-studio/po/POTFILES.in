@@ -388,6 +388,8 @@ src/synfigapp/actions/layerencapsulateswitch.cpp
 src/synfigapp/actions/layerencapsulateswitch.h
 src/synfigapp/actions/layerextract.cpp
 src/synfigapp/actions/layerextract.h
+src/synfigapp/actions/layerfill.cpp
+src/synfigapp/actions/layerfill.h
 src/synfigapp/actions/layerfit.cpp
 src/synfigapp/actions/layerfit.h
 src/synfigapp/actions/layerlower.cpp
