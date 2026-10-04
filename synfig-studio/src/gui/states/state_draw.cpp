@@ -743,6 +743,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
+	App::dialog_tool_options->set_primary_focus_widget(&id_entry);
 
 	// Hide all tangent and width ducks
 	get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
