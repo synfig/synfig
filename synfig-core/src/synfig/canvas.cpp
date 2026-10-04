@@ -55,8 +55,6 @@
 
 using namespace synfig;
 
-
-
 /* === M A C R O S ========================================================= */
 
 //#define DEBUG_SET_TIME_MEASURE
@@ -750,10 +748,10 @@ Canvas::surefind_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap
 			external_canvas=externals_[file_name];
 		else
 		{
-			String errors;
-			external_canvas=open_canvas_as(get_identifier().file_system->get_identifier(file_name), file_name, errors, warnings, broken_links);
+			LoadingIssues issues;
+			external_canvas=open_canvas_as(get_identifier().file_system->get_identifier(file_name), file_name, issues);
 			if(!external_canvas)
-				throw std::runtime_error(errors);
+				throw std::runtime_error(issues.errors);
 			externals_[file_name]=external_canvas;
 		}
 
@@ -836,10 +834,10 @@ Canvas::find_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap* br
 			external_canvas=externals_[file_name];
 		else
 		{
-			String errors, warnings;
-			external_canvas=open_canvas_as(get_identifier().file_system->get_identifier(file_name), file_name, errors, warnings, broken_links);
+			LoadingIssues issues;
+			external_canvas=open_canvas_as(get_identifier().file_system->get_identifier(file_name), file_name, issues);
 			if(!external_canvas)
-				throw std::runtime_error(errors);
+				throw std::runtime_error(issues.errors);
 			externals_[file_name]=external_canvas;
 		}
 

@@ -402,12 +402,11 @@ Dialog_CanvasDependencies::on_replace_button_pressed(const synfig::filesystem::P
 				if (!file_system)
 					throw strprintf(_("Unable to open container:\n%s\n"), full_filename.c_str()) + "\n\n";
 
-				synfig::String errors;
-				synfig::String warnings;
+				LoadingIssues issues;
 
-				Canvas::Handle new_canvas(synfig::open_canvas_as(file_system->get_identifier(CanvasFileNaming::project_file(full_filename)), full_filename, errors, warnings));
+				Canvas::Handle new_canvas(synfig::open_canvas_as(file_system->get_identifier(CanvasFileNaming::project_file(full_filename)), full_filename, issues));
 				if (!new_canvas)
-					throw String(_("Unable to open this composition")) + ":\n\n" + errors;
+					throw String(_("Unable to open this composition")) + ":\n\n" + issues.errors;
 
 				canvas_interface->change_value(synfigapp::ValueDesc(layer, param_name), new_canvas);
 				canvas->register_external_canvas(full_filename, new_canvas);

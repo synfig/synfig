@@ -160,14 +160,14 @@ static void _canvas_file_name_changed(Canvas *x)
 }
 
 Canvas::Handle
-synfig::open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings, CanvasBrokenUseIdMap *broken_links)
+synfig::open_canvas_as(const FileSystem::Identifier& identifier, const String& as, LoadingIssues& issues)
 {
 	String filename = FileSystem::fix_slashes(as);
 	if (CanvasParser::loading_.count(identifier))
 	{
 		String warning(strprintf(_("cannot load '%s' recursively"), identifier.filename.u8_str()));
 		synfig::warning(warning);
-		warnings = "  * " + warning + "\n";
+		issues.warnings = "  * " + warning + "\n";
 		Canvas::Handle canvas(Canvas::create());
 		canvas->set_identifier(identifier);
 		canvas->set_file_name(filename);
@@ -184,27 +184,27 @@ synfig::open_canvas_as(const FileSystem::Identifier &identifier, const String &a
 	try
 	{
 		CanvasParser::loading_.insert(identifier);
-		if (broken_links)
-			parser.set_broken_use_ids(*broken_links);
-		canvas=parser.parse_from_file_as(identifier,filename,errors);
+		if (issues.broken_links)
+			parser.set_broken_use_ids(*issues.broken_links);
+		canvas = parser.parse_from_file_as(identifier, filename, issues.errors);
 	}
 	catch (...)
 	{
 		CanvasParser::loading_.erase(identifier);
-		if (broken_links)
-			*broken_links = parser.get_broken_use_ids();
+		if (issues.broken_links)
+			*issues.broken_links = parser.get_broken_use_ids();
 		throw;
 	}
 
 	CanvasParser::loading_.erase(identifier);
-	if (broken_links)
-		*broken_links = parser.get_broken_use_ids();
+	if (issues.broken_links)
+		*issues.broken_links = parser.get_broken_use_ids();
 
-	warnings = parser.get_warnings_text();
+	issues.warnings = parser.get_warnings_text();
 
 	if(parser.error_count())
 	{
-		errors = parser.get_errors_text();
+		issues.errors = parser.get_errors_text();
 		return Canvas::Handle();
 	}
 
@@ -3674,13 +3674,13 @@ CanvasParser::parse_as(xmlpp::Element* node,String &errors)
 }
 //extern
 Canvas::Handle
-synfig::open_canvas(xmlpp::Element* node,String &errors,String &warnings){
+synfig::open_canvas(xmlpp::Element* node, LoadingIssues& issues){
 	Canvas::Handle canvas;
 	CanvasParser parser;
 	parser.set_allow_errors(true);
 	try
 	{
-		canvas=parser.parse_as(node,errors);
+		canvas = parser.parse_as(node, issues.errors);
 	}
 	catch (...)
 	{
@@ -3688,11 +3688,11 @@ synfig::open_canvas(xmlpp::Element* node,String &errors,String &warnings){
 		throw;
 	}
 
-	warnings = parser.get_warnings_text();
+	issues.warnings = parser.get_warnings_text();
 
 	if(parser.error_count())
 	{
-		errors = parser.get_errors_text();
+		issues.errors = parser.get_errors_text();
 		return Canvas::Handle();
 	}
 	return canvas;
