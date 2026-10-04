@@ -3662,7 +3662,10 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 	try
 	{
 		OneMoment one_moment;
-		String errors, warnings;
+
+		CanvasBrokenUseIdMap broken_links;
+		LoadingIssues issues;
+		issues.broken_links = &broken_links;
 
 		// try open container
 		FileSystem::Handle container = CanvasFileNaming::make_filesystem_container(filename.u8string(), truncate_storage_size);
@@ -3678,11 +3681,10 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 		// file to open inside canvas file-system
 		String canvas_filename = CanvasFileNaming::project_file(filename.u8string());
 
-		CanvasBrokenUseIdMap broken_links;
 		Canvas::Handle canvas;
 
 		do {
-			canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename.u8string(), errors, warnings, &broken_links);
+			canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename.u8string(), issues);
 			if (canvas && get_instance(canvas)) {
 				get_instance(canvas)->find_canvas_view(canvas)->present();
 				info("%s is already open", canvas_filename.c_str());
@@ -3704,19 +3706,19 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 							}
 						}
 					}
-					throw (String)strprintf(_("Unable to load \"%s\":\n\n"), filename.u8_str()) + errors;
+					throw (String)strprintf(_("Unable to load \"%s\":\n\n"), filename.u8_str()) + issues.errors;
 				}
 
 				// Set new pixel ratio
 				canvas->rend_desc().set_pixel_ratio(canvas->rend_desc().get_w(), canvas->rend_desc().get_h());
 
-				if (!warnings.empty())
+				if (!issues.warnings.empty())
 					dialog_message_1b(
 						"WARNING",
 						_("Warning"),
 						"details",
 						_("Close"),
-						warnings);
+						issues.warnings);
 
 				if (filename.u8string().find(custom_filename_prefix) != 0)
 					add_recent_file(filename);
@@ -3776,7 +3778,7 @@ App::open_from_temporary_filesystem(const filesystem::Path& temporary_filename)
 	try
 	{
 		OneMoment one_moment;
-		String errors, warnings;
+		LoadingIssues issues;
 
 		// try open temporary container
 		FileSystemTemporary::Handle file_system_temporary(new FileSystemTemporary(""));
@@ -3802,7 +3804,7 @@ App::open_from_temporary_filesystem(const filesystem::Path& temporary_filename)
 		// file to open inside canvas file system
 		String canvas_filename = CanvasFileNaming::project_file(canvas_file_system);
 
-		Canvas::Handle canvas(open_canvas_as(canvas_file_system->get_identifier(canvas_filename), as, errors, warnings));
+		Canvas::Handle canvas(open_canvas_as(canvas_file_system->get_identifier(canvas_filename), as, issues));
 		if(canvas && get_instance(canvas))
 		{
 			get_instance(canvas)->find_canvas_view(canvas)->present();
@@ -3812,12 +3814,12 @@ App::open_from_temporary_filesystem(const filesystem::Path& temporary_filename)
 		else
 		{
 			if(!canvas)
-				throw (String)strprintf(_("Unable to load \"%s\":\n\n"), temporary_filename.u8_str()) + errors;
+				throw (String)strprintf(_("Unable to load \"%s\":\n\n"), temporary_filename.u8_str()) + issues.errors;
 
-			if (warnings != "")
+			if (issues.warnings != "")
 				dialog_message_1b(
 						"WARNING",
-						strprintf("%s:\n\n%s", _("Warning"), warnings.c_str()),
+						strprintf("%s:\n\n%s", _("Warning"), issues.warnings.c_str()),
 						"details",
 						_("Close"));
 
@@ -3986,32 +3988,32 @@ App::open_from_plugin(const filesystem::Path& filename, const std::string& impor
 
 	if ( result ) {
 		OneMoment one_moment;
-		String errors, warnings;
+		LoadingIssues issues;
 
 		// try open container
 		FileSystem::Handle container = CanvasFileNaming::make_filesystem_container(tmp_filename.u8string(), 0);
 		if ( !container ) {
-			errors += strprintf(_("Unable to open container \"%s\"\n\n"), tmp_filename.u8_str());
+			issues.errors += strprintf(_("Unable to open container \"%s\"\n\n"), tmp_filename.u8_str());
 		} else {
 			FileSystem::Handle canvas_file_system = CanvasFileNaming::make_filesystem(container);
 			canvas_file_system = wrap_into_temporary_filesystem(canvas_file_system, tmp_filename.u8string(), filename.u8string(), 0);
 			String canvas_filename = CanvasFileNaming::project_file(tmp_filename.u8string());
-			Canvas::Handle canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), filename.u8string(), errors, warnings);
+			Canvas::Handle canvas = open_canvas_as(canvas_file_system->get_identifier(canvas_filename), filename.u8string(), issues);
 			if ( !canvas )
 			{
-				errors += strprintf(_("Unable to load \"%s\":\n\n"), filename.u8_str());
+				issues.errors += strprintf(_("Unable to load \"%s\":\n\n"), filename.u8_str());
 			}
 			else
 			{
 				if ( !get_instance(canvas) )
 				{
-					if (warnings != "")
-						dialog_message_1b("WARNING", _("Warning"), "details", _("Close"), warnings);
+					if (issues.warnings != "")
+						dialog_message_1b("WARNING", _("Warning"), "details", _("Close"), issues.warnings);
 
 					etl::handle<Instance> instance(Instance::create(canvas, container));
 
 					if ( !instance ) {
-						errors += strprintf(_("Unable to create instance for \"%s\""), filename.u8_str());
+						issues.errors += strprintf(_("Unable to create instance for \"%s\""), filename.u8_str());
 					}
 					one_moment.hide();
 				}
@@ -4021,8 +4023,8 @@ App::open_from_plugin(const filesystem::Path& filename, const std::string& impor
 			}
 		}
 
-		if ( !errors.empty() )
-			dialog_message_1b("ERROR", errors, "details", _("Close"));
+		if ( !issues.errors.empty() )
+			dialog_message_1b("ERROR", issues.errors, "details", _("Close"));
 	}
 
 	FileSystemNative::instance()->remove_recursive(tmp_filename);

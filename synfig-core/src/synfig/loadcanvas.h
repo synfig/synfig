@@ -331,12 +331,19 @@ private:
 
 /* === E X T E R N S ======================================================= */
 
+struct LoadingIssues
+{
+	String errors;
+	String warnings;
+	CanvasBrokenUseIdMap* broken_links = nullptr;
+};
+
 //!	Loads a canvas from current xmlpp Element
 /*!	\return	The Canvas's handle on success, an empty handle on failure */
-extern Canvas::Handle open_canvas(xmlpp::Element* node,String &errors,String &warnings);
+extern Canvas::Handle open_canvas(xmlpp::Element* node, LoadingIssues& issues);
 //!	Loads a canvas from \a filename and its absolute path
 /*!	\return	The Canvas's handle on success, an empty handle on failure */
-extern Canvas::Handle open_canvas_as(const FileSystem::Identifier &identifier, const String &as, String &errors, String &warnings, CanvasBrokenUseIdMap*broken_links = nullptr);
+extern Canvas::Handle open_canvas_as(const FileSystem::Identifier& identifier, const String& as, LoadingIssues& issues);
 
 //! Returns the Open Canvases Map.
 //! \see open_canvas_map_
