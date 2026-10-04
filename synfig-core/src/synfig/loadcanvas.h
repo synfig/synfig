@@ -56,8 +56,6 @@ namespace xmlpp { class Node; class Element; };
 
 namespace synfig {
 
-
-
 struct CanvasMissingId
 {
 	std::string id;
@@ -78,9 +76,10 @@ struct BrokenUseIdInfo
 	CanvasMissingIdList missing_items;
 };
 
-//! Map to fix broken links due to missing files
-//! (original_file_path, (new_file_path, [(valuenode_id, value_type), ...]))
-//! If new_file_path is null, there is no replacement file path to that item
+/** Map to fix broken links due to missing files
+ *  (original_file_path, (new_file_path, [(valuenode_id, value_type), ...]))
+ *  If new_file_path is null, there is no replacement file path to that item
+ */
 struct CanvasBrokenUseIdMap : private std::map<filesystem::Path, BrokenUseIdInfo>
 {
 	bool
@@ -169,6 +168,9 @@ private:
 	//
 	bool in_bones_section;
 
+	/** maps a missing external file to another existent one.
+	 *  User maybe moved or renamed the files without taking care of this one.
+	 */
 	CanvasBrokenUseIdMap filepath_fix_map;
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
@@ -210,9 +212,9 @@ public:
 	//! Gets warning text string
 	const synfig::String& get_warnings_text()const { return warnings_text; }
 
-	//! Gets the list of the broken use id due to missing files
+	/** Gets the list of the broken "use" attribute ID values due to missing files */
 	const CanvasBrokenUseIdMap& get_broken_use_ids() const;
-	//! Sets the map of (missing file, replacement file)
+	/** Sets the map of (missing file, replacement file) that fixes load of "use" attribute content */
 	void set_broken_use_ids(const CanvasBrokenUseIdMap& map);
 
 	//! Register a canvas in the canvas map
@@ -317,11 +319,13 @@ private:
 	//! Static option for ValueBase parsing function
 	bool parse_static(xmlpp::Element *node);
 
-	//! Replace file path in use_id with the correspondent one in filepath_fix_map
-	//! \return true if replacement was done or use_id does not refer to an external canvas file
+	/** Replace file path in use_id with the correspondent one in filepath_fix_map
+	 * \return true if replacement was done or use_id does not refer to an external canvas file
+	 */
 	bool fix_broken_use_id(const filesystem::Path& canvas_path, std::string& use_id) const;
-	//! Register file path in use_id as broken
-	//! \return true if use_id refers to an external canvas file.
+	/** Register file path in use_id as broken
+	 * \return true if use_id refers to an external canvas file.
+	 */
 	bool register_broken_use_id(const std::string& use_id, const std::string& type);
 }; // END of CanvasParser
 
