@@ -67,7 +67,8 @@ private:
 	synfig::ValueBase param_dash_offset;
 	//! Parameter: (bool)
 	synfig::ValueBase param_dash_enabled;
-
+	//! Parameter: (bool)
+	synfig::ValueBase param_use_vertex_widths;
 public:
 	enum CuspType
 	{
@@ -85,6 +86,7 @@ public:
 
 	//! Connects the parameter to another Value Node. Implementation for this layer
 	virtual bool connect_dynamic_param(const synfig::String& param, synfig::ValueNode::LooseHandle x );
+	bool get_use_vertex_widths() const;
 
 private:
 	bool connect_bline_to_wplist(synfig::ValueNode::LooseHandle x);
