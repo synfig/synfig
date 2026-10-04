@@ -551,10 +551,42 @@ bool SelectDragHelper<T>::process_button_press_event(GdkEventButton* event)
 			if (found) {
 				auto already_selection_it = std::find(selected_items.begin(), selected_items.end(), pointed_item);
 				bool is_already_selected = already_selection_it != selected_items.end();
+				bool has_shift_modifier = (event->state & GDK_SHIFT_MASK) == GDK_SHIFT_MASK;
+				bool has_ctrl_modifier = (event->state & GDK_CONTROL_MASK) == GDK_CONTROL_MASK;
 				bool using_key_modifiers = (event->state & (GDK_CONTROL_MASK|GDK_SHIFT_MASK)) != 0;
-				if (using_key_modifiers && box_selection_enabled && multiple_selection_enabled) {
-					pointer_state = POINTER_SELECTING;
+				
+				// When clicking on an item with modifiers, handle them directly
+				// Don't enter box selection mode - that's only for empty space clicks
+				if (using_key_modifiers && multiple_selection_enabled) {
+					if (has_shift_modifier) {
+						// SHIFT+Click: Add to selection
+						if (!is_already_selected) {
+							selected_items.push_back(pointed_item);
+							signal_selection_changed().emit();
+						}
+					} else if (has_ctrl_modifier) {
+						// CTRL+Click: Toggle selection status
+						if (is_already_selected) {
+							selected_items.erase(already_selection_it);
+						} else {
+							selected_items.push_back(pointed_item);
+						}
+						signal_selection_changed().emit();
+					}
+					
+					// Allow dragging the now-selected items
+					if (drag_enabled && !selected_items.empty()) {
+						// Find the pointed item in selection and drag it
+						auto drag_item_it = std::find(selected_items.begin(), selected_items.end(), pointed_item);
+						if (drag_item_it != selected_items.end()) {
+							start_dragging(&*drag_item_it);
+							dragging_started_by_key = false;
+							pointer_state = POINTER_DRAGGING;
+						}
+					}
 				} else {
+					// Normal click without modifiers or fallback when multi-select is disabled
+					// clear selection and select only this item
 					T* pointed_item_ptr = nullptr;
 					if (is_already_selected) {
 						pointed_item_ptr = &*already_selection_it;
