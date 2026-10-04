@@ -125,6 +125,9 @@ private:
 	//! Fast box-blur
 	static void blur_box(const Params &params);
 
+	//! Solid expansion using a rectangular maximum filter
+	static void blur_solid(const Params &params);
+
 	//! Blur using infinite impulse response filter (gaussian only)
 	static void blur_iir(const Params &params);
 

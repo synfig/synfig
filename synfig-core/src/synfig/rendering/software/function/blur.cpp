@@ -110,6 +110,8 @@ software::Blur::get_size_amplifier(rendering::Blur::Type type)
 			return BlurTemplates::amplifier_cross<Real>();
 		case rendering::Blur::DISC:
 			return BlurTemplates::amplifier_disk<Real>();
+		case rendering::Blur::SOLID:
+			return 0.5;
 		case rendering::Blur::FASTGAUSSIAN:
 			return BlurTemplates::amplifier_fastgauss<Real>();
 		case rendering::Blur::GAUSSIAN:
@@ -139,6 +141,8 @@ software::Blur::get_extra_size(rendering::Blur::Type type)
 			return BlurTemplates::amplifier_cross<Real>();
 		case rendering::Blur::DISC:
 			return BlurTemplates::amplifier_disk<Real>();
+		case rendering::Blur::SOLID:
+			return 0.5;
 		case rendering::Blur::FASTGAUSSIAN:
 			return fast_gauss_size;
 		case rendering::Blur::GAUSSIAN:
@@ -546,6 +550,81 @@ software::Blur::blur_box(const Params &params)
 		params.blend_method,
 		params.amount );
 }
+
+static void
+max_filter(
+	const Array<ColorReal, 1> &array,
+	int radius,
+	std::vector<ColorReal> &input,
+	std::deque<int> &maximums )
+{
+	if (radius <= 0 || array.count <= 1)
+		return;
+
+	input.resize(array.count);
+	for (int i = 0; i < array.count; ++i)
+		input[i] = array[i];
+
+	maximums.clear();
+	int right = -1;
+	for (int i = 0; i < array.count; ++i)
+	{
+		const int next_right = std::min(array.count - 1, i + radius);
+		while (right < next_right)
+		{
+			++right;
+			while (!maximums.empty() && input[maximums.back()] <= input[right])
+				maximums.pop_back();
+			maximums.push_back(right);
+		}
+
+		const int left = std::max(0, i - radius);
+		while (maximums.front() < left)
+			maximums.pop_front();
+		array[i] = input[maximums.front()];
+	}
+}
+
+void
+software::Blur::blur_solid(const Params &params)
+{
+	const int channels = 4;
+	const int rows = params.src_rect.get_size()[1];
+	const int cols = params.src_rect.get_size()[0];
+
+	std::vector<ColorReal> surface(rows*cols*channels);
+	Array<ColorReal, 3> arr_surface(&surface.front());
+	arr_surface
+		.set_dim(rows, cols*channels)
+		.set_dim(cols, channels)
+		.set_dim(channels, 1);
+	BlurTemplates::surface_read(arr_surface, *params.src, VectorInt(0, 0), params.src_rect);
+
+	Array<ColorReal, 3> arr_surface_rows(arr_surface.reorder(2, 0, 1));
+	Array<ColorReal, 3> arr_surface_cols(arr_surface_rows.reorder(0, 2, 1));
+	const int radius_x = (int)round(params.amplified_size[0]);
+	const int radius_y = (int)round(params.amplified_size[1]);
+	std::vector<ColorReal> input;
+	std::deque<int> maximums;
+
+	for (Array<ColorReal, 3>::Iterator channel(arr_surface_rows); channel; ++channel)
+		for (Array<ColorReal, 2>::Iterator row(*channel); row; ++row)
+			max_filter(*row, radius_x, input, maximums);
+
+	for (Array<ColorReal, 3>::Iterator channel(arr_surface_cols); channel; ++channel)
+		for (Array<ColorReal, 2>::Iterator column(*channel); column; ++column)
+			max_filter(*column, radius_y, input, maximums);
+
+	BlurTemplates::surface_write(
+		*params.dest,
+		arr_surface,
+		params.dest_rect,
+		params.src_offset - params.src_rect.get_min(),
+		params.blend,
+		params.blend_method,
+		params.amount );
+}
+
 /*
 software::Blur::IIRCoefficients
 software::Blur::get_iir_coefficients(Real radius)
@@ -715,6 +794,9 @@ void
 software::Blur::blur(Params params)
 {
 	if (!params.validate()) return;
+
+	if (params.type == rendering::Blur::SOLID)
+		{ blur_solid(params); return; }
 
 	if ( params.type == rendering::Blur::BOX
 	  || params.type == rendering::Blur::CROSS )

@@ -34,6 +34,7 @@
 #	include <config.h>
 #endif
 
+#include <algorithm>
 #include <cstring>
 
 #include "shade.h"
@@ -152,17 +153,35 @@ Layer_Shade::get_color(Context context, const Point &pos)const
 	Vector origin=param_origin.get(Vector());
 	bool invert=param_invert.get(bool());
 	
-	Point blurpos = Blur(size,type)(pos);
-
 	if(get_amount()==0.0)
 		return context.get_color(pos);
 
 	Color shade(color);
-
-	if(!invert)
-		shade.set_a(context.get_color(blurpos-origin).get_a());
+	if (type == rendering::Blur::SOLID)
+	{
+		ColorReal alpha = 0.0;
+		const int samples = 8;
+		for (int y = -samples/2; y <= samples/2; ++y)
+			for (int x = -samples/2; x <= samples/2; ++x)
+			{
+				const Vector offset(
+					size[0]*(Real)x/samples,
+					size[1]*(Real)y/samples );
+				ColorReal sample_alpha = context.get_color(pos - origin + offset).get_a();
+				if (invert)
+					sample_alpha = 1.0 - sample_alpha;
+				alpha = std::max(alpha, sample_alpha);
+			}
+		shade.set_a(alpha);
+	}
 	else
-		shade.set_a(1.0f-context.get_color(blurpos-origin).get_a());
+	{
+		Point blurpos = Blur(size,type)(pos);
+		if(!invert)
+			shade.set_a(context.get_color(blurpos-origin).get_a());
+		else
+			shade.set_a(1.0f-context.get_color(blurpos-origin).get_a());
+	}
 
 	return Color::blend(shade,context.get_color(pos),get_amount(),get_blend_method());
 }
@@ -195,6 +214,7 @@ Layer_Shade::get_param_vocab(void)const
 		.add_enum_value(Blur::CROSS,"cross",_("Cross-Hatch Blur"))
 		.add_enum_value(Blur::GAUSSIAN,"gaussian",_("Gaussian Blur"))
 		.add_enum_value(Blur::DISC,"disc",_("Disc Blur"))
+		.add_enum_value(rendering::Blur::SOLID,"solid",_("Solid"))
 	);
 
 	ret.push_back(ParamDesc("invert")
