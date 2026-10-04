@@ -39,8 +39,8 @@
 #include <synfig/localization.h>
 #include "type.h"
 #include <glibmm.h>
-
-#include <ltdl.h>
+#include <gmodule.h>
+#include <giomm/file.h>
 
 #endif
 
@@ -48,10 +48,18 @@
 
 /* === G L O B A L S ======================================================= */
 
+std::vector<Glib::ustring> modules_paths_;
+
 /* === P R O C E D U R E S ================================================= */
+static void
+add_mod_dir(const Glib::ustring& dir)
+{
+	modules_paths_.emplace_back(dir);
+}
 
 static void add_search_dir(const std::string& dir) {
-	lt_dladdsearchdir(dir.c_str());
+	//modules_paths_.emplace_back(dir);
+	add_mod_dir(dir);
 #ifdef _MSC_VER
 	const std::string path = Glib::getenv("PATH");
 	std::string new_path = path + ";" + dir;
@@ -62,13 +70,6 @@ static void add_search_dir(const std::string& dir) {
 bool
 synfig::Module::subsys_init(const std::string& prefix)
 {
-	if(lt_dlinit())
-	{
-		error(_("Errors on lt_dlinit()"));
-		error(lt_dlerror());
-		return false;
-	}
-
 	// user's synfig library path
 #ifdef _WIN32
 	std::string localappdata = Glib::getenv("%LOCALAPPDATA%");
@@ -105,7 +106,6 @@ synfig::Module::subsys_init(const std::string& prefix)
 bool
 synfig::Module::subsys_stop()
 {
-	lt_dlexit();
 	return true;
 }
 
@@ -133,23 +133,32 @@ synfig::Module::Register(Module::Handle mod)
 	book()[mod->Name()]=mod;
 }
 
+static GModule*
+load_module(const std::string& module_name)
+{
+	for (const auto& path : modules_paths_) {
+		Glib::RefPtr<Gio::File> mod_folder = Gio::File::create_for_path(path);
+		if (!mod_folder || mod_folder->query_file_type() != Gio::FILE_TYPE_DIRECTORY) continue;
+		for (const auto& prefix : {"lib", ""}) {
+			auto mod_filename = Glib::build_filename(mod_folder->get_path(), prefix + module_name);
+
+			GModule* module = g_module_open(mod_filename.c_str(), G_MODULE_BIND_LAZY);
+			if (module) return module;
+		}
+	}
+	return nullptr;
+}
+
 bool
 synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 {
-	// reset error string
-	lt_dlerror();
-
-	lt_dlhandle module;
-
 	if(callback)callback->task(strprintf(_("Attempting to register \"%s\""),module_name.c_str()));
 
-	module=lt_dlopenext((std::string("lib")+module_name).c_str());
-	if(!module)module=lt_dlopenext(module_name.c_str());
-	Type::initialize_all();
+	GModule* module = load_module(module_name);
 
 	if(!module)
 	{
-		if(callback)callback->warning(strprintf(_("Unable to find module \"%s\" (%s)"), module_name.c_str(), lt_dlerror()));
+		if(callback)callback->warning(strprintf(_("Unable to find module \"%s\" (%s)"), module_name.c_str(), g_module_error()));
 		return false;
 	}
 
@@ -161,30 +170,27 @@ synfig::Module::Register(const String &module_name, ProgressCallback *callback)
 	const std::vector<const char*> symbol_prefixes = {"", "lib", "_lib", "_"};
 	for (const char * symbol_prefix : symbol_prefixes)
 	{
-		constructor=(Module::constructor_type )lt_dlsym(module,(symbol_prefix+module_name+"_LTX_new_instance").c_str());
-		if (constructor)
+		if (g_module_symbol(module,(symbol_prefix+module_name+"_LTX_new_instance").c_str(), (gpointer*)&constructor))
 			break;
 	}
 
-	if(constructor)
+	if(!constructor)
 	{
-		mod=etl::handle<Module>((*constructor)(callback));
-	}
-	else
-	{
-		if(callback)callback->error(strprintf(_("Unable to find entrypoint in module \"%s\" (%s)"),module_name.c_str(),lt_dlerror()));
+		if(callback)callback->error(strprintf(_("Unable to find entrypoint in module \"%s\" (%s)"),module_name.c_str(), g_module_error()));
 		return false;
 	}
 
-	if(mod)
-	{
-		Register(mod);
-	}
-	else
+	mod=etl::handle<Module>((*constructor)(callback));
+
+	if(!mod)
 	{
 		if(callback)callback->error(_("Entrypoint did not return a module."));
 		return false;
-    }
+	}
+
+	Register(mod);
+
+	Type::initialize_all();
 
 	if(callback)callback->task(strprintf(_("Success for \"%s\""),module_name.c_str()));
 

@@ -60,7 +60,7 @@ public:
 private:
 	// Info for animations
 	/** number of repetitions. Zero means infinity */
-	ssize_t animation_repetitions_;
+	size_t animation_repetitions_;
 	/** Initial time of each frame */
 	std::vector<synfig::Time> frame_time_list_;
 	/** Total duration of an animation cycle */
