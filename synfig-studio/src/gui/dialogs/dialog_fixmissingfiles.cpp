@@ -87,10 +87,10 @@ load_canvas_file(const synfig::filesystem::Path& filename)
 	synfig::String canvas_filename = synfig::CanvasFileNaming::project_file(filename.u8string());
 
 	synfig::CanvasBrokenUseIdMap broken_links;
-	synfig::String errors;
-	synfig::String warnings;
+	synfig::LoadingIssues issues;
+	issues.broken_links = &broken_links;
 
-	auto canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename.u8string(), errors, warnings, &broken_links);
+	auto canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename.u8string(), issues);
 
 	return canvas;
 }
