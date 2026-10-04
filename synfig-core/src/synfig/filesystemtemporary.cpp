@@ -37,7 +37,7 @@
 #include <fcntl.h> // for open(), close(), remove()
 #include <sys/stat.h> // for S_IWRITE
 
-#include <libxml++/libxml++.h>
+#include <synfig/xmlpp_compat.h>
 
 #include "general.h"
 #include "guid.h"
@@ -496,20 +496,20 @@ FileSystemTemporary::save_temporary() const
 	xmlpp::Document document;
 	xmlpp::Element *root = document.create_root_node("temporary-file-system");
 
-	xmlpp::Element *meta_node = root->add_child("meta");
+	xmlpp::Element *meta_node = add_child_element(root, "meta");
 	for (std::map<String, String>::const_iterator i = meta.begin(); i != meta.end(); ++i) {
-		xmlpp::Element *entry = meta_node->add_child("entry");
-		entry->add_child("key")->set_child_text(i->first);
-		entry->add_child("value")->set_child_text(i->second);
+		xmlpp::Element *entry = add_child_element(meta_node, "entry");
+		set_first_child_text(add_child_element(entry, "key"), i->first);
+		set_first_child_text(add_child_element(entry, "value"), i->second);
 	}
 
-	xmlpp::Element *files_node = root->add_child("files");
+	xmlpp::Element *files_node = add_child_element(root, "files");
 	for (FileMap::const_iterator i = files.begin(); i != files.end(); ++i) {
-		xmlpp::Element *entry = files_node->add_child("entry");
-		entry->add_child("name")->set_child_text(i->second.name);
-		entry->add_child("tmp-basename")->set_child_text(i->second.tmp_filename.filename().u8string());
-		entry->add_child("is-directory")->set_child_text(i->second.is_directory ? "true" : "false");
-		entry->add_child("is-removed")->set_child_text(i->second.is_removed ? "true" : "false");
+		xmlpp::Element *entry = add_child_element(files_node, "entry");
+		set_first_child_text(add_child_element(entry, "name"), i->second.name);
+		set_first_child_text(add_child_element(entry, "tmp-basename"), i->second.tmp_filename.filename().u8string());
+		set_first_child_text(add_child_element(entry, "is-directory"), i->second.is_directory ? "true" : "false");
+		set_first_child_text(add_child_element(entry, "is-removed"), i->second.is_removed ? "true" : "false");
 	}
 
 	create_temporary_directory();
