@@ -280,6 +280,12 @@ Canvas::clear() noexcept
 	changed();
 }
 
+void
+Canvas::clear_parent()
+{
+    parent_ = nullptr;
+}
+
 bool
 Canvas::empty() const noexcept
 {
