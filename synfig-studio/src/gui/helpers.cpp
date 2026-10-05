@@ -35,6 +35,11 @@
 #include "helpers.h"
 
 #include <glibmm/main.h>
+#include <gtkmm/action.h>
+#include <gtkmm/bin.h>
+#include <gtkmm/widget.h>
+#include <gtkmm/accelmap.h>
+#include <gtkmm/tooltip.h>
 #include <gtk/gtk.h>
 
 #endif
@@ -151,3 +156,70 @@ ConfigureAdjustment::emit_changed()
 void
 ConfigureAdjustment::emit_value_changed()
 { if (is_old_gtk_adjustment()) adjustment->value_changed(); }
+
+void
+studio::setup_tooltip_with_accel(Gtk::Widget* widget, const std::function<std::string()>& get_base_tooltip, const std::string& accel_path)
+{
+	if (!widget) return;
+	auto handler = [get_base_tooltip, accel_path](int, int, bool, const Glib::RefPtr<Gtk::Tooltip>& tooltip) -> bool {
+		std::string text = get_base_tooltip ? get_base_tooltip() : "";
+		Gtk::AccelKey key;
+		if (!accel_path.empty() && Gtk::AccelMap::lookup_entry(accel_path, key) && key.get_key() != 0) {
+			gchar* accel_text = gtk_accelerator_get_label(key.get_key(), (GdkModifierType)key.get_mod());
+			if (accel_text) {
+				if (*accel_text) {
+					text += " (";
+					text += accel_text;
+					text += ")";
+				}
+				g_free(accel_text);
+			}
+		}
+		if (!text.empty()) {
+			tooltip->set_text(text);
+			return true;
+		}
+		return false;
+	};
+
+	widget->property_has_tooltip() = true;
+	widget->signal_query_tooltip().connect(handler);
+
+	if (Gtk::Bin* bin = dynamic_cast<Gtk::Bin*>(widget)) {
+		if (Gtk::Widget* child = bin->get_child()) {
+			child->property_has_tooltip() = true;
+			child->signal_query_tooltip().connect(handler);
+		}
+	}
+}
+
+void
+studio::setup_tooltip_with_accel(Gtk::Widget* widget, const std::string& base_tooltip, const std::string& accel_path)
+{
+	setup_tooltip_with_accel(widget, [base_tooltip]() { return base_tooltip; }, accel_path);
+}
+
+void
+studio::setup_tooltip_with_accel(Gtk::Widget* widget, const Glib::RefPtr<Gtk::Action>& action)
+{
+	if (!widget || !action) return;
+	std::string accel_path = action->get_accel_path();
+	if (accel_path.empty()) {
+		const std::string name = action->get_name();
+		Gtk::AccelKey key;
+		const std::string candidates[] = {
+			"<Actions>/action_group_dock_history/" + name,
+			"<Actions>/canvasview/" + name,
+			"<Actions>/mainwindow/" + name,
+			"<Actions>/action_group_layer_action_manager/" + name,
+			"<Actions>/action_group_state_manager/" + name
+		};
+		for (const auto& c : candidates) {
+			if (Gtk::AccelMap::lookup_entry(c, key) && key.get_key() != 0) {
+				accel_path = c;
+				break;
+			}
+		}
+	}
+	setup_tooltip_with_accel(widget, [action]() { return action->get_tooltip(); }, accel_path);
+}
