@@ -55,6 +55,7 @@ public:
 
 	void set_value(const std::string &data);
 	std::string get_value() const;
+	void set_share_params(const synfigapp::ValueDesc &x);
 
 protected:
 	void refresh();
