@@ -5,6 +5,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Modified 2026-10-05: map nested copied layers using LayerDuplicate traversal.
 **
 **	This file is part of Synfig.
 **
@@ -600,8 +601,29 @@ LayerActionManager::paste()
 		layer=src_layer->clone(canvas, guid);
 		layer_selection.push_back(layer);
 
-		// Store mapping for skeleton fix
-		cloned_layer_map[src_layer] = layer;
+		// As in LayerDuplicate, include layers inside the copied groups.
+		std::list<Layer::Handle> src_layer_list;
+		TraverseLayerCallback add_src_layer = [&src_layer_list] (Layer::LooseHandle layer, const TraverseLayerStatus&) {
+			src_layer_list.push_back(layer);
+		};
+		traverse_layers(src_layer, add_src_layer);
+
+		std::list<Layer::Handle> cloned_layer_list;
+		TraverseLayerCallback add_cloned_layer = [&cloned_layer_list] (Layer::LooseHandle layer, const TraverseLayerStatus&) {
+			cloned_layer_list.push_back(layer);
+		};
+		traverse_layers(layer, add_cloned_layer);
+
+		if (src_layer_list.size() != cloned_layer_list.size()) {
+			error(_("Internal error: copied layer trees have different sizes"));
+			return;
+		}
+
+		// The traversal order of a layer and its clone is deterministic.
+		for (const Layer::Handle& cloned_layer : cloned_layer_list) {
+			cloned_layer_map[src_layer_list.front()] = cloned_layer;
+			src_layer_list.pop_front();
+		}
 
 		replace_exported_value_nodes(layer, valuenode_replacements);
 
