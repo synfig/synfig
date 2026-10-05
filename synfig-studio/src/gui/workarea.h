@@ -90,7 +90,8 @@ public:
 		DRAG_BOX,
 		DRAG_BEZIER,
 		DRAG_ZOOM_WINDOW,
-		DRAG_ROTATE_WINDOW
+		DRAG_ROTATE_WINDOW,
+		DRAG_BONE
 	};
 
 	/*! \class WorkArea::PushState
@@ -103,6 +104,7 @@ public:
 		const Type type_mask;
 		const bool allow_duck_clicks;
 		const bool allow_bezier_clicks;
+		const bool allow_bone_clicks;
 		const bool allow_layer_clicks;
 		PushState(WorkArea &workarea);
 		~PushState();
@@ -233,6 +235,7 @@ private:
 
 	bool allow_duck_clicks;
 	bool allow_bezier_clicks;
+	bool allow_bone_clicks;
 	bool allow_layer_clicks;
 
 	etl::handle<LockDucks> lock_ducks;
@@ -316,6 +319,9 @@ public:
 
 	bool get_allow_bezier_clicks() { return allow_bezier_clicks; }
 	void set_allow_bezier_clicks(bool value) { allow_bezier_clicks=value; }
+
+	bool get_allow_bone_clicks() { return allow_bone_clicks; }
+	void set_allow_bone_clicks(bool value) { allow_bone_clicks=value; }
 
 	void insert_renderer(const etl::handle<WorkAreaRenderer> &x);
 	void insert_renderer(const etl::handle<WorkAreaRenderer> &x,int priority);
