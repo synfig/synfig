@@ -88,6 +88,7 @@ WorkArea::PushState::PushState(WorkArea &workarea):
 	type_mask(workarea.get_type_mask()),
 	allow_duck_clicks(workarea.get_allow_duck_clicks()),
 	allow_bezier_clicks(workarea.get_allow_bezier_clicks()),
+	allow_bone_clicks(workarea.get_allow_bone_clicks()),
 	allow_layer_clicks(workarea.get_allow_layer_clicks()) { }
 
 WorkArea::PushState::~PushState()
@@ -96,6 +97,7 @@ WorkArea::PushState::~PushState()
 	workarea.get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 	workarea.set_allow_duck_clicks(allow_duck_clicks);
 	workarea.set_allow_bezier_clicks(allow_bezier_clicks);
+	workarea.set_allow_bone_clicks(allow_bone_clicks);
 	workarea.set_allow_layer_clicks(allow_layer_clicks);
 }
 
@@ -155,6 +157,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	background_rendering(false),
 	allow_duck_clicks(true),
 	allow_bezier_clicks(true),
+	allow_bone_clicks(true),
 	allow_layer_clicks(true),
 	solid_lines(true),
 	timecode_width(0),
@@ -1224,6 +1227,11 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			else
 				selected_bezier=0;
 
+			if(allow_bone_clicks)
+				selected_bone=find_bone(mouse_pos,radius);
+			else
+				selected_bone=0;
+
 			if (duck) {
 				if (!duck->get_editable(get_alternative_mode()))
 					return true;
@@ -1274,6 +1282,22 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				return true;
 			} else
 			if (canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MOUSE_BUTTON_DOWN,BUTTON_LEFT,mouse_pos,pressure,modifier))==Smach::RESULT_OK) {
+				if (selected_bone) {
+					set_drag_mode(DRAG_BONE);
+					drag_point=mouse_pos;
+					if (!(modifier & (GDK_SHIFT_MASK | GDK_CONTROL_MASK)))
+						clear_selected_ducks();
+					select_duck(selected_bone->origin);
+					select_duck(selected_bone->tip);
+					select_duck(selected_bone->angle);
+
+					bool is_alt = (modifier & GDK_MOD1_MASK) || (modifier & GDK_MOD3_MASK) || (modifier & GDK_MOD4_MASK) || (modifier & GDK_MOD5_MASK);
+					start_bone_drag(mouse_pos, is_alt);
+					set_cursor(is_alt ? Gdk::FLEUR : Gdk::EXCHANGE);
+					if (selected_bone->bone_node)
+						get_canvas_view()->canvas_interface()->signal_active_bone_changed().emit(selected_bone->bone_node);
+					return true;
+				}
 				if (selected_bezier) {
 					synfig::Point distance_1 = selected_bezier->p1->get_trans_point() - mouse_pos;
 					synfig::Point distance_2 = selected_bezier->p2->get_trans_point() - mouse_pos;
@@ -1318,6 +1342,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				return true;
 			}
 			selected_bezier=0;
+			selected_bone=0;
 			break;
 		}
 		case 2:	{ // Attempt to drag and move the window
@@ -1325,6 +1350,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			if (Duck::Handle duck = find_duck(mouse_pos, radius))
 				duck->signal_user_click(1)();
+			else
+			if (Bone::Handle bone = find_bone(mouse_pos, radius))
+				bone->signal_user_click(1)();
 			else
 			if(Bezier::Handle bezier = find_bezier(mouse_pos, radius, &bezier_click_pos))
 				bezier->signal_user_click(1)(bezier_click_pos);
@@ -1348,6 +1376,11 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 					duck->signal_user_click(2)();
 				else
 					canvas_view->get_smach().process_event(EventMouse(EVENT_WORKAREA_MULTIPLE_DUCKS_CLICKED,BUTTON_RIGHT,mouse_pos,pressure,modifier,duck));
+				return true;
+			}
+
+			if (Bone::Handle bone = find_bone(mouse_pos, radius)) {
+				bone->signal_user_click(2)();
 				return true;
 			}
 
@@ -1457,6 +1490,18 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			translate_selected_bezier(mouse_pos);
 			drawing_area->queue_draw();
 	        break;
+		}
+		case DRAG_BONE: {
+			if (canvas_view->get_cancel_status()) {
+				set_drag_mode(DRAG_NONE);
+				reset_cursor();
+				canvas_view->queue_rebuild_ducks();
+				return true;
+			}
+			set_axis_lock(event->motion.state & GDK_SHIFT_MASK);
+			translate_selected_bone(mouse_pos);
+			drawing_area->queue_draw();
+			break;
 		}
 		case DRAG_BOX: {
 			curr_point=mouse_pos;
@@ -1571,6 +1616,33 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 			}
 
 			//queue_draw();
+			clicked_duck = 0;
+			ret = true;
+			break;
+		}
+		case DRAG_BONE: {
+			bool is_translate = is_bone_drag_translate_mode();
+			synfigapp::Action::PassiveGrouper grouper(instance.get(), is_translate ? _("Move Bone") : _("Rotate Bone"));
+
+			LockDucks lock(get_canvas_view());
+			set_drag_mode(DRAG_NONE);
+			set_axis_lock(false);
+			reset_cursor();
+
+			if (!end_bone_drag()) {
+				// Clicked without moving: select bone ducks and activate bone
+				if (selected_bone && selected_bone->is_valid()) {
+					if (!(modifier & (GDK_SHIFT_MASK | GDK_CONTROL_MASK)))
+						clear_selected_ducks();
+					select_duck(selected_bone->origin);
+					select_duck(selected_bone->tip);
+					select_duck(selected_bone->angle);
+
+					if (selected_bone->bone_node)
+						get_canvas_view()->canvas_interface()->signal_active_bone_changed().emit(selected_bone->bone_node);
+				}
+			}
+
 			clicked_duck = 0;
 			ret = true;
 			break;
@@ -2230,8 +2302,9 @@ WorkArea::set_selected_value_node(synfig::ValueNode::LooseHandle x)
 void
 WorkArea::cancel_drag_on_mBtn_press()
 {
-	if (get_drag_mode() == DRAG_DUCK || get_drag_mode() == DRAG_BEZIER) {
+	if (get_drag_mode() == DRAG_DUCK || get_drag_mode() == DRAG_BEZIER || get_drag_mode() == DRAG_BONE) {
 		set_drag_mode(DRAG_NONE);
+		reset_cursor();
 		canvas_view->queue_rebuild_ducks();
 	}
 }
