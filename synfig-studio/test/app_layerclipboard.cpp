@@ -340,11 +340,13 @@ static void test_pasted_bones_move_follower_after_undo_and_redo()
 	auto root = bone_at(pasted.front(), 0);
 	ASSERT(root->set_link("origin", ValueNode_Const::create(Vector(20, 30))))
 	Vector after = (*link)(0).get(Vector());
+	const Vector translation = after - before;
 	std::cerr.precision(17);
-	std::cerr << "Follower translation: " << after[0] - before[0] << ", " << after[1] - before[1] << '\n';
+	std::cerr << "Follower translation: " << translation[0] << ", " << translation[1] << '\n';
 	// Transformation matrix decomposition uses float-valued Angle.
-	ASSERT_APPROX_EQUAL_MICRO(20.0, after[0] - before[0])
-	ASSERT_APPROX_EQUAL_MICRO(30.0, after[1] - before[1])
+	// Pass a computed value: the assertion macro does not parenthesize its arguments.
+	ASSERT_APPROX_EQUAL_MICRO(20.0, translation[0])
+	ASSERT_APPROX_EQUAL_MICRO(30.0, translation[1])
 	Vector unchanged = (*original_link)(0).get(Vector());
 	ASSERT_APPROX_EQUAL(original_position[0], unchanged[0])
 	ASSERT_APPROX_EQUAL(original_position[1], unchanged[1])
