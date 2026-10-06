@@ -44,6 +44,7 @@
 #include "valuedescconnect.h"
 
 #include <synfigapp/canvasinterface.h>
+#include <synfigapp/layerclipboard.h>
 #include <synfig/valuenodes/valuenode_const.h>
 #include <synfig/context.h>
 
@@ -254,7 +255,7 @@ Action::ValueDescExport::prepare()
 		Canvas::Handle prev_canvas = canvas;
 
 		// clone canvas (all code that clones a canvas has this comment)
-		if (canvas) canvas=canvas->clone(synfig::GUID(), true);
+		if (canvas) canvas=canvas->clone(guid, true);
 
 		if (external)
 		{
@@ -267,10 +268,13 @@ Action::ValueDescExport::prepare()
 					canvas->add_value_node(new_node, (*i)->get_id());
 			}
 
+			relink_cloned_bones(std::list<Layer::Handle>(prev_canvas->begin(), prev_canvas->end()), guid);
+
 			// scan all layers and canvases and relink value nodes
 			scan_canvas(prev_canvas, canvas, get_canvas());
 			scan_canvas(prev_canvas, canvas, canvas);
 		} else {
+			relink_cloned_bones(std::list<Layer::Handle>(prev_canvas->begin(), prev_canvas->end()), guid);
 			canvas->rend_desc()=get_canvas()->rend_desc();
 		}
 

@@ -49,6 +49,7 @@
 #include <synfig/synfig_iterations.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfigapp/selectionmanager.h>
+#include <synfigapp/layerclipboard.h>
 
 #endif
 
@@ -494,11 +495,7 @@ LayerActionManager::copy()
 	clipboard_.clear();
 	synfig::GUID guid;
 
-	while(!layer_list.empty())
-	{
-		clipboard_.push_back(layer_list.front()->clone(0, guid));
-		layer_list.pop_front();
-	}
+	clipboard_ = synfigapp::clone_layers_for_clipboard(layer_list, nullptr, guid);
 
 	action_paste_->set_sensitive(!clipboard_.empty());
 
@@ -534,9 +531,10 @@ LayerActionManager::paste()
 
 	synfigapp::SelectionManager::LayerList layer_selection;
 
-	for(std::list<synfig::Layer::Handle>::iterator iter=clipboard_.begin();iter!=clipboard_.end();++iter)
+	auto pasted_layers = synfigapp::clone_layers_for_clipboard(clipboard_, canvas, guid);
+	for(std::list<synfig::Layer::Handle>::iterator iter=pasted_layers.begin();iter!=pasted_layers.end();++iter)
 	{
-		layer=(*iter)->clone(canvas, guid);
+		layer=*iter;
 		layer_selection.push_back(layer);
 
 		replace_exported_value_nodes(layer, valuenode_replacements);
