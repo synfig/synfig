@@ -62,6 +62,8 @@ class Grid_SoundWave : public Gtk::Grid {
 	Gtk::ComboBoxText channel_combo;
 	Gtk::Label label_delay;
 	Widget_Time delay_widget;
+	Gtk::CheckButton play_sample_check;
+	Gtk::CheckButton current_file_only_check;
 
 	std::mutex mutex;
 
@@ -110,6 +112,15 @@ public:
 		}
 	}
 
+	bool get_playaudio() const {
+		return play_sample_check.get_active();
+	}
+
+	bool get_current_file_only() const {
+		return current_file_only_check.get_active();
+	}
+
+
 private:
 	void setup_accessor_widgets() {
 		file_combo.show();
@@ -131,12 +142,22 @@ private:
 		delay_widget.show();
 		delay_widget.signal_value_changed().connect(sigc::mem_fun(*this, &Grid_SoundWave::on_delay_changed));
 
+		play_sample_check.show();
+		play_sample_check.set_label(_("Play audio"));
+		play_sample_check.set_tooltip_text(_("Play the current audio frame on time change"));
+
+		current_file_only_check.show();
+		current_file_only_check.set_label(_("Current file only"));
+		current_file_only_check.set_tooltip_text(_("Play the audio frame for the current file only or for the entire canvas composition"));
+
 		file_settings_box.set_orientation(Gtk::ORIENTATION_HORIZONTAL);
 		file_settings_box.set_homogeneous(false);
 		file_settings_box.set_spacing(2);
 		file_settings_box.pack_start(channel_combo, false, false);
 		file_settings_box.pack_start(label_delay, false, false);
 		file_settings_box.pack_start(delay_widget, false, false);
+		file_settings_box.pack_start(play_sample_check, false, false);
+		file_settings_box.pack_start(current_file_only_check, false, false);
 		file_settings_box.hide();
 
 		file_box.set_orientation(Gtk::ORIENTATION_HORIZONTAL);
@@ -507,6 +528,8 @@ void Dock_SoundWave::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_vi
 		grid.remove(*widget);
 	}
 
+	connection_time_changed.disconnect();
+
 	if( !canvas_view ) {
 		widget_kf_list.set_time_model( etl::handle<TimeModel>() );
 		widget_kf_list.set_canvas_interface( etl::loose_handle<synfigapp::CanvasInterface>() );
@@ -543,6 +566,23 @@ void Dock_SoundWave::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_vi
 		std::vector< Gtk::TargetEntry > targets;
 		drag_dest_set(targets);
 		drag_dest_add_uri_targets();
+
+		connection_time_changed = canvas_view->time_model()->signal_time_changed().connect([&, canvas_view]() {
+			if (current_grid_sound->get_playaudio()) {
+				sound_processor.set_playing(false);
+				sound_processor.clear();
+				if (current_grid_sound->get_current_file_only()) {
+					const synfig::SoundProcessor::PlayOptions play_options(current_grid_sound->get_widget_sound().get_delay(), 1.0);
+					const synfig::SoundProcessor::Sound sound(current_grid_sound->get_widget_sound().get_filename().u8string());
+					sound_processor.addSound(play_options, sound);
+				} else {
+					canvas_view->canvas_interface()->get_canvas()->fill_sound_processor(sound_processor);
+				}
+				sound_processor.set_position(canvas_view->get_time());
+				sound_processor.set_playing(true);
+				Glib::signal_timeout().connect(sigc::bind_return<bool>(sigc::bind(sigc::mem_fun(sound_processor, &synfig::SoundProcessor::set_playing), false), false), canvas_view->time_model()->get_frame_duration() * 1000);
+			}
+		});
 	}
 
 }
