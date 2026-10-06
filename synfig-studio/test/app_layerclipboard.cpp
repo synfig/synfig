@@ -21,15 +21,15 @@ using namespace synfig;
 
 struct SkeletonFixture
 {
-	Canvas::Handle canvas = Canvas::create();
+	Canvas::Handle canvas;
 	Layer::Handle skeleton = Layer::create("skeleton");
 	Layer::Handle follower = Layer::create("circle");
 	ValueNode_StaticList::Handle bones;
 	ValueNode_Bone::Handle root, child, tip;
 
 	explicit SkeletonFixture(Canvas::Handle owner = Canvas::create())
+		: canvas(owner)
 	{
-		canvas = owner;
 		std::vector<Bone> values(3);
 		for (size_t i = 0; i < values.size(); ++i) {
 			values[i].set_name("clipboard bone " + std::to_string(i));
