@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #include "test_base.h"
 #include <synfig/canvas.h>
+#include <synfig/layer.h>
 #include <synfig/blinepoint.h>
 #include <synfig/valuenodes/valuenode_bline.h>
 #include <synfig/valuenodes/valuenode_composite.h>
@@ -8,6 +9,8 @@
 #include <synfig/valuenodes/valuenode_animated.h>
 #include <synfig/valuenodes/valuenode_bonelink.h>
 #include <synfig/valuenodes/valuenode_staticlist.h>
+#include <synfig/valuenodes/valuenode_const.h>
+#include <synfigapp/action.h>
 #include <synfigapp/main.h>
 #include <synfigapp/layerclipboard.h>
 #include <synfigapp/canvasinterface.h>
