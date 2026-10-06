@@ -1,0 +1,32 @@
+name: Skeleton copy verification
+on:
+  push:
+    branches: [verification/skeleton-copy, bounty/skeleton-copy]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Install build and GTK dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake ninja-build gettext intltool shared-mime-info libltdl-dev libpng-dev libfftw3-dev libfreetype-dev libfribidi-dev libfontconfig-dev libxml2-dev libtiff-dev libmlt-dev libmlt++-dev libmlt-data libgl1-mesa-dev imagemagick libsdl2-dev libmng-dev libjack-jackd2-dev libgtkmm-3.0-dev libglibmm-2.4-dev libsigc++-2.0-dev libxml++2.6-dev libmagick++-dev libxslt1-dev python3-lxml xvfb dbus-x11 at-spi2-core
+      - name: Configure complete application and tests
+        run: cmake -S . -B build -G Ninja -DENABLE_TESTS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$PWD/build/install"
+      - name: Build complete application
+        run: cmake --build build --parallel 2
+      - name: Run original regression suite
+        run: xvfb-run -a dbus-run-session -- ctest --test-dir build --output-on-failure
+      - name: Preserve regression evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: skeleton-copy-evidence
+          path: build/Testing/Temporary/LastTest.log
+          retention-days: 14
