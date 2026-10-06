@@ -35,6 +35,8 @@
 #	include <config.h>
 #endif
 
+#include <sstream>
+
 #include <synfig/general.h>
 
 #include <synfig/canvasfilenaming.h>
@@ -985,6 +987,7 @@ CanvasInterface::import_sequence(
 		// create layers and assign them with LayerEncapsulateSwitch action
 		Layer::Handle first_imported_layer;
 		rendering::Surface::Handle prev_surface;
+		String prev_svg_content;
 		int layers_count = 0;
 		for (const auto& filename : filenames) {
 			synfig::info("Attempting to import '%s' into sequence", filename.u8_str());
@@ -999,7 +1002,8 @@ CanvasInterface::import_sequence(
 				continue;
 			}
 			
-			if(!Importer::book().count(ext))
+			bool is_svg = (ext == "svg");
+			if (!is_svg && !Importer::book().count(ext))
 			{
 				errors += synfig::strprintf(_("Cannot import file of type '%s': %s\n"), ext.c_str(), filename.u8_str());
 				continue;
@@ -1008,38 +1012,104 @@ CanvasInterface::import_sequence(
 			String short_filename = CanvasFileNaming::make_short_filename(get_canvas()->get_file_name(), filename.u8string());
 			
 			try {
-				Layer::Handle layer = add_layer_to("Import", get_canvas());
+				Layer::Handle layer;
+				if (is_svg) {
+					layer = add_layer_to("group", get_canvas());
+					Layer::Handle aux_layer = add_layer_to("svg_layer", get_canvas());
+					if (aux_layer) {
+						aux_layer->set_param("filename", ValueBase(short_filename));
+						ValueBase canvas_val = aux_layer->get_param("canvas");
+						Canvas::Handle sub_canvas = canvas_val.get(Canvas::Handle());
+						if (!sub_canvas) {
+							errors += synfig::strprintf(_("Failed to parse SVG file: %s\n"), filename.u8_str());
+							Action::Handle r_action(Action::LayerRemove::create());
+							if (r_action) {
+								r_action->set_param("canvas", get_canvas());
+								r_action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
+								r_action->set_param("layer", aux_layer);
+								if (r_action->is_ready())
+									get_instance()->perform_action(r_action);
+							}
+							Action::Handle r_layer(Action::LayerRemove::create());
+							if (r_layer) {
+								r_layer->set_param("canvas", get_canvas());
+								r_layer->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
+								r_layer->set_param("layer", layer);
+								if (r_layer->is_ready())
+									get_instance()->perform_action(r_layer);
+							}
+							continue;
+						}
+						layer->set_param("canvas", canvas_val);
+						layer->set_param("children_lock", ValueBase(true));
+
+						Action::Handle r_action(Action::LayerRemove::create());
+						if (r_action) {
+							r_action->set_param("canvas", get_canvas());
+							r_action->set_param("canvas_interface", etl::loose_handle<CanvasInterface>(this));
+							r_action->set_param("layer", aux_layer);
+							if (r_action->is_ready())
+								get_instance()->perform_action(r_action);
+						}
+					}
+				} else {
+					layer = add_layer_to("Import", get_canvas());
+					if (!layer)
+						throw int();
+					if (!layer->set_param("filename", ValueBase(short_filename)))
+						throw int();
+				}
+
 				if (!layer)
-					throw int();
-				if (!layer->set_param("filename", ValueBase(short_filename)))
 					throw int();
 
 				bool is_layer_equal_previous_one = false;
 
 				if (remove_dups) {
-					// Gets the surface of current imported image
-					auto curr_layer = Layer_Bitmap::Handle::cast_dynamic(layer);
-					if (!curr_layer)
-						throw int();
-					rendering::SurfaceResource::LockRead<rendering::SurfaceSW> cur_lock(curr_layer->rendering_surface);
-					if (!cur_lock)
-						throw int();
-					rendering::Surface::Handle cur_surface = cur_lock.get_handle();
-
-					// Finally checks if it is equal to previous imported frame
-					if (prev_surface && cur_surface && cur_surface->equals_to(prev_surface)) {
-						is_layer_equal_previous_one = true;
-						d_action->set_param("layer", layer);
-						synfig::info("\tEquals to previous sequence item");
+					if (is_svg) {
+						String current_content;
+						auto id = get_canvas()->get_file_system()->get_identifier(
+							CanvasFileNaming::make_full_filename(get_canvas()->get_file_name(), short_filename)
+						);
+						auto stream = id.get_read_stream();
+						if (stream) {
+							std::stringstream ss;
+							ss << stream->rdbuf();
+							current_content = ss.str();
+						}
+						if (!current_content.empty() && current_content == prev_svg_content) {
+							is_layer_equal_previous_one = true;
+							d_action->set_param("layer", layer);
+							synfig::info("\tEquals to previous sequence item (SVG)");
+						} else {
+							prev_svg_content = current_content;
+						}
 					} else {
-						prev_surface = cur_surface;
+						// Gets the surface of current imported image
+						auto curr_layer = Layer_Bitmap::Handle::cast_dynamic(layer);
+						if (!curr_layer)
+							throw int();
+						rendering::SurfaceResource::LockRead<rendering::SurfaceSW> cur_lock(curr_layer->rendering_surface);
+						if (!cur_lock)
+							throw int();
+						rendering::Surface::Handle cur_surface = cur_lock.get_handle();
+
+						// Finally checks if it is equal to previous imported frame
+						if (prev_surface && cur_surface && cur_surface->equals_to(prev_surface)) {
+							is_layer_equal_previous_one = true;
+							d_action->set_param("layer", layer);
+							synfig::info("\tEquals to previous sequence item");
+						} else {
+							prev_surface = cur_surface;
+						}
 					}
 				}
 				// Do add the new layer and the waypoint to it
 				if (!is_layer_equal_previous_one) {
 					if (!first_imported_layer)
 						first_imported_layer = layer;
-					update_layer_size(get_canvas()->rend_desc(), layer, resize_image);
+					if (!is_svg)
+						update_layer_size(get_canvas()->rend_desc(), layer, resize_image);
 					layer->monitor(filename);
 					String desc = filename.filename().u8string();
 					layer->set_description(desc);
