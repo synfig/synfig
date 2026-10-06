@@ -189,13 +189,15 @@ static void test_embedded_group_keeps_internal_skeleton_links()
 
 static void test_regular_layers_keep_values_and_selection_order()
 {
-	auto circle = Layer::create("circle");
-	auto rectangle = Layer::create("rectangle");
+	Layer::Handle circle = Layer::create("circle");
+	Layer::Handle rectangle = Layer::create("rectangle");
 	ASSERT(circle->set_param("radius", Real(5.5)))
 	auto clipboard = copy_layers({rectangle, circle}, nullptr);
 	auto pasted = copy_layers(clipboard, Canvas::create());
 	ASSERT_EQUAL("rectangle", pasted.front()->get_name())
 	ASSERT_EQUAL("circle", pasted.back()->get_name())
+	ASSERT_APPROX_EQUAL(5.5, clipboard.back()->get_param("radius").get(Real()))
+	ASSERT_APPROX_EQUAL(5.5, pasted.back()->get_param("radius").get(Real()))
 	ASSERT(circle->set_param("radius", Real(9.0)))
 	ASSERT_APPROX_EQUAL(5.5, pasted.back()->get_param("radius").get(Real()))
 	ASSERT(pasted.back() != circle && pasted.back() != clipboard.back())
@@ -288,8 +290,11 @@ static void test_linked_spline_follows_copied_skeleton()
 	auto after = (*copied_bline)(0).get_list();
 	for (int i = 0; i < 3; ++i) {
 		Vector change = after[i].get(BLinePoint()).get_vertex() - before[i].get(BLinePoint()).get_vertex();
-		ASSERT_APPROX_EQUAL(7.0, change[0])
-		ASSERT_APPROX_EQUAL(11.0, change[1])
+		std::cerr.precision(17);
+		std::cerr << "Spline vertex " << i << " translation: " << change[0] << ", " << change[1] << '\n';
+		// Transformation matrix decomposition uses float-valued Angle.
+		ASSERT_APPROX_EQUAL_MICRO(7.0, change[0])
+		ASSERT_APPROX_EQUAL_MICRO(11.0, change[1])
 	}
 	ASSERT(parent_of(source.tip) == source.child)
 }
@@ -335,8 +340,11 @@ static void test_pasted_bones_move_follower_after_undo_and_redo()
 	auto root = bone_at(pasted.front(), 0);
 	ASSERT(root->set_link("origin", ValueNode_Const::create(Vector(20, 30))))
 	Vector after = (*link)(0).get(Vector());
-	ASSERT_APPROX_EQUAL(20.0, after[0] - before[0])
-	ASSERT_APPROX_EQUAL(30.0, after[1] - before[1])
+	std::cerr.precision(17);
+	std::cerr << "Follower translation: " << after[0] - before[0] << ", " << after[1] - before[1] << '\n';
+	// Transformation matrix decomposition uses float-valued Angle.
+	ASSERT_APPROX_EQUAL_MICRO(20.0, after[0] - before[0])
+	ASSERT_APPROX_EQUAL_MICRO(30.0, after[1] - before[1])
 	Vector unchanged = (*original_link)(0).get(Vector());
 	ASSERT_APPROX_EQUAL(original_position[0], unchanged[0])
 	ASSERT_APPROX_EQUAL(original_position[1], unchanged[1])
