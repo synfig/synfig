@@ -202,7 +202,19 @@ static void check_embed_imported_canvas(bool export_nodes)
 	ASSERT(instance->undo())
 	ASSERT(group->get_param("canvas").get(Canvas::Handle()) == imported.canvas)
 	ASSERT(instance->redo())
-	ASSERT(group->get_param("canvas").get(Canvas::Handle()) == embedded)
+	auto redone = group->get_param("canvas").get(Canvas::Handle());
+	ASSERT(redone && redone != imported.canvas)
+	auto redone_link = redone->back()->dynamic_param_list().at("origin");
+	auto redone_tip = bone_at(redone->front(), 2);
+	ASSERT((*ValueNode_BoneLink::Handle::cast_dynamic(redone_link)->get_link("bone"))(0).get(ValueNode_Bone::Handle()) == redone_tip)
+	ASSERT(parent_of(redone_tip) == bone_at(redone->front(), 1))
+	// Redo rebuilds the canvas. A retained previous copy must not share bones.
+	ASSERT(redone_tip != tip)
+	Vector before = (*redone_link)(0).get(Vector());
+	ASSERT(bone_at(embedded->front(), 0)->set_link("origin", ValueNode_Const::create(Vector(4, 8))))
+	Vector after = (*redone_link)(0).get(Vector());
+	ASSERT_APPROX_EQUAL(before[0], after[0])
+	ASSERT_APPROX_EQUAL(before[1], after[1])
 	ASSERT(parent_of(imported.tip) == imported.child)
 }
 

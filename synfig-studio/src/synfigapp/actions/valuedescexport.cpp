@@ -254,6 +254,9 @@ Action::ValueDescExport::prepare()
 		bool external = !canvas->parent();
 		Canvas::Handle prev_canvas = canvas;
 
+		// prepare() also runs on redo. Each new canvas copy needs its own
+		// clone namespace, shared by its layers and exported value nodes.
+		guid = synfig::GUID();
 		// clone canvas (all code that clones a canvas has this comment)
 		if (canvas) canvas=canvas->clone(guid, true);
 
