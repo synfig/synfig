@@ -523,7 +523,7 @@ LayerActionManager::paste()
 
 	ValueNodeReplacementMap valuenode_replacements;
 
-	bool user_accepted = query_user_about_foreign_exported_value_nodes(canvas, valuenode_replacements);
+	bool user_accepted = query_user_about_foreign_exported_value_nodes(canvas, valuenode_replacements, guid);
 	if (!user_accepted)
 		return;
 	if (!valuenode_replacements.empty())
@@ -681,7 +681,7 @@ LayerActionManager::amount_dec()
 	}
 }
 
-bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::Handle canvas, ValueNodeReplacementMap& valuenode_replacements) const
+bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::Handle canvas, ValueNodeReplacementMap& valuenode_replacements, const GUID& guid) const
 {
 	std::vector<ValueNode::LooseHandle> foreign_exported_valuenode_list;
 
@@ -719,7 +719,7 @@ bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::H
 				if (link_to_local_canvas) {
 					valuenode_replacements[foreign_value_node] = std::pair<ValueNode::Handle, std::string>(local_canvas_value_node, "");
 				} else {
-					ValueNode::Handle cloned_value_node = foreign_value_node->clone(canvas);// TODO Use paste guid?!
+					ValueNode::Handle cloned_value_node = foreign_value_node->clone(canvas, guid);
 					valuenode_replacements[foreign_value_node] = std::pair<ValueNode::Handle, std::string>(cloned_value_node, modified_id);
 				}
 			}

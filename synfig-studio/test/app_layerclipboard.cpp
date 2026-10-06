@@ -46,7 +46,7 @@ struct SkeletonFixture
 		// Set the actual node links, rather than a detached vector of Bone values.
 		ASSERT(child->set_link("parent", ValueNode_Const::create(root)))
 		ASSERT(tip->set_link("parent", ValueNode_Const::create(child)))
-		ASSERT(skeleton->connect_dynamic_param("bones", bones))
+		ASSERT(skeleton->connect_dynamic_param("bones", bones.get()))
 		canvas->push_back(skeleton);
 		auto link = ValueNode_BoneLink::create(Vector(3, 5));
 		ASSERT(link->set_link("bone", ValueNode_Const::create(tip)))
@@ -139,6 +139,33 @@ static void test_animated_follower_and_repeated_pastes()
 	ASSERT(bone_at(first.back(), 0) != bone_at(second.back(), 0))
 	ASSERT((*animated)(0.0).get(ValueNode_Bone::Handle()) == source.root)
 	ASSERT((*animated)(1.0).get(ValueNode_Bone::Handle()) == source.tip)
+}
+
+static void test_foreign_exported_nodes_copied_with_paste_guid()
+{
+	SkeletonFixture source;
+	auto original_link = source.follower->dynamic_param_list().at("origin");
+	source.canvas->add_value_node(source.bones, "bones");
+	source.canvas->add_value_node(original_link, "follower");
+	auto clipboard = copy_layers({source.skeleton, source.follower}, nullptr);
+	auto destination = Canvas::create();
+	GUID guid;
+	// The paste-options choice to copy exported nodes is resolved before
+	// cloning layers. Both operations must use the same paste GUID.
+	auto copied_bones = source.bones->clone(destination, guid);
+	auto copied_link = original_link->clone(destination, guid);
+	destination->add_value_node(copied_bones, "bones");
+	destination->add_value_node(copied_link, "follower");
+	auto pasted = synfigapp::clone_layers_for_clipboard(clipboard, destination, guid);
+	ASSERT(pasted.front()->connect_dynamic_param("bones", copied_bones))
+	ASSERT(pasted.back()->connect_dynamic_param("origin", copied_link))
+	auto tip = bone_at(pasted.front(), 2);
+	auto link = ValueNode_BoneLink::Handle::cast_dynamic(copied_link);
+	ASSERT((*link->get_link("bone"))(0).get(ValueNode_Bone::Handle()) == tip)
+	ASSERT(parent_of(tip) == bone_at(pasted.front(), 1))
+	ASSERT(tip != source.tip)
+	ASSERT((*ValueNode_BoneLink::Handle::cast_dynamic(original_link)->get_link("bone"))(0).get(ValueNode_Bone::Handle()) == source.tip)
+	ASSERT(parent_of(source.tip) == source.child)
 }
 
 static void test_embedded_group_keeps_internal_skeleton_links()
@@ -245,7 +272,7 @@ static void test_linked_spline_follows_copied_skeleton()
 		ASSERT(point->set_link("point", link))
 	}
 	auto region = Layer::create("region");
-	ASSERT(region->connect_dynamic_param("bline", bline))
+	ASSERT(region->connect_dynamic_param("bline", bline.get()))
 	source.canvas->push_back(region);
 	auto clipboard = copy_layers({region, source.skeleton}, nullptr);
 	auto pasted = copy_layers(clipboard, Canvas::create());
@@ -328,6 +355,7 @@ int main(int, const char* argv[])
 		TEST_FUNCTION(test_paste_keeps_follower_on_pasted_skeleton)
 		TEST_FUNCTION(test_unselected_bones_and_exported_nodes_remain_shared)
 		TEST_FUNCTION(test_animated_follower_and_repeated_pastes)
+		TEST_FUNCTION(test_foreign_exported_nodes_copied_with_paste_guid)
 		TEST_FUNCTION(test_embedded_group_keeps_internal_skeleton_links)
 		TEST_FUNCTION(test_regular_layers_keep_values_and_selection_order)
 		TEST_FUNCTION(test_embed_imported_canvas_preserves_bone_links)
