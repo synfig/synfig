@@ -19,6 +19,10 @@ jobs:
           sudo apt-get install -y build-essential cmake ninja-build gettext intltool shared-mime-info libltdl-dev libpng-dev libfftw3-dev libfreetype-dev libfribidi-dev libfontconfig-dev libxml2-dev libtiff-dev libmlt-dev libmlt++-dev libmlt-data libgl1-mesa-dev imagemagick libsdl2-dev libmng-dev libjack-jackd2-dev libgtkmm-3.0-dev libglibmm-2.4-dev libsigc++-2.0-dev libxml++2.6-dev libmagick++-dev libxslt1-dev python3-lxml xvfb dbus-x11 at-spi2-core
       - name: Configure complete application and tests
         run: cmake -S . -B build -G Ninja -DENABLE_TESTS=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="$PWD/build/install"
+      - name: Build clipboard regression and runtime modules
+        run: cmake --build build --target test_app_layerclipboard synfig_bin --parallel 2
+      - name: Run focused clipboard regression
+        run: xvfb-run -a dbus-run-session -- ctest --test-dir build -R '^test_app_layerclipboard$' --output-on-failure
       - name: Build complete application
         run: cmake --build build --parallel 2
       - name: Run original regression suite
