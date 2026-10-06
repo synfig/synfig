@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 #include "test_base.h"
 #include <synfig/canvas.h>
+#include <synfig/blinepoint.h>
+#include <synfig/valuenodes/valuenode_bline.h>
+#include <synfig/valuenodes/valuenode_composite.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfig/valuenodes/valuenode_animated.h>
 #include <synfig/valuenodes/valuenode_bonelink.h>
@@ -168,10 +171,14 @@ static void test_regular_layers_keep_values_and_selection_order()
 	ASSERT(pasted.back() != circle && pasted.back() != clipboard.back())
 }
 
-static void test_embed_imported_canvas_preserves_bone_links()
+static void check_embed_imported_canvas(bool export_nodes)
 {
 	SkeletonFixture imported;
 	imported.canvas->set_file_name("imported-skeleton.sif");
+	if (export_nodes) {
+		imported.canvas->add_value_node(imported.bones, "imported_bones");
+		imported.canvas->add_value_node(imported.follower->dynamic_param_list().at("origin"), "imported_follower");
+	}
 	auto document = Canvas::create();
 	auto group = Layer::create("group");
 	ASSERT(group->set_param("canvas", imported.canvas))
@@ -194,6 +201,55 @@ static void test_embed_imported_canvas_preserves_bone_links()
 	ASSERT(instance->redo())
 	ASSERT(group->get_param("canvas").get(Canvas::Handle()) == embedded)
 	ASSERT(parent_of(imported.tip) == imported.child)
+}
+
+static void test_embed_imported_canvas_preserves_bone_links()
+{
+	check_embed_imported_canvas(false);
+}
+
+static void test_embed_imported_canvas_with_exported_nodes()
+{
+	check_embed_imported_canvas(true);
+}
+
+static void test_linked_spline_follows_copied_skeleton()
+{
+	SkeletonFixture source;
+	std::vector<BLinePoint> points(3);
+	for (size_t i = 0; i < points.size(); ++i)
+		points[i].set_vertex(Vector(i, i + 1));
+	ValueBase value;
+	value.set_list_of(points);
+	ValueNode_BLine::Handle bline = ValueNode_BLine::create(value, source.canvas);
+	for (int i = 0; i < 3; ++i) {
+		auto point = ValueNode_Composite::Handle::cast_dynamic(bline->get_link(i));
+		ASSERT(point)
+		auto link = ValueNode_BoneLink::create(points[i].get_vertex());
+		ASSERT(link->set_link("bone", ValueNode_Const::create(bone_at(source.skeleton, i))))
+		ASSERT(point->set_link("point", link))
+	}
+	auto region = Layer::create("region");
+	ASSERT(region->connect_dynamic_param("bline", bline))
+	source.canvas->push_back(region);
+	auto clipboard = copy_layers({region, source.skeleton}, nullptr);
+	auto pasted = copy_layers(clipboard, Canvas::create());
+	auto copied_bline = ValueNode_BLine::Handle::cast_dynamic(pasted.front()->dynamic_param_list().at("bline"));
+	ASSERT(copied_bline)
+	for (int i = 0; i < 3; ++i) {
+		auto point = ValueNode_Composite::Handle::cast_dynamic(copied_bline->get_link(i));
+		auto link = ValueNode_BoneLink::Handle::cast_dynamic(point->get_link("point"));
+		ASSERT((*link->get_link("bone"))(0).get(ValueNode_Bone::Handle()) == bone_at(pasted.back(), i))
+	}
+	auto before = (*copied_bline)(0).get_list();
+	ASSERT(bone_at(pasted.back(), 0)->set_link("origin", ValueNode_Const::create(Vector(7, 11))))
+	auto after = (*copied_bline)(0).get_list();
+	for (int i = 0; i < 3; ++i) {
+		Vector change = after[i].get(BLinePoint()).get_vertex() - before[i].get(BLinePoint()).get_vertex();
+		ASSERT_APPROX_EQUAL(7.0, change[0])
+		ASSERT_APPROX_EQUAL(11.0, change[1])
+	}
+	ASSERT(parent_of(source.tip) == source.child)
 }
 
 static void test_pasted_bones_move_follower_after_undo_and_redo()
@@ -260,6 +316,8 @@ int main(int, const char* argv[])
 		TEST_FUNCTION(test_embedded_group_keeps_internal_skeleton_links)
 		TEST_FUNCTION(test_regular_layers_keep_values_and_selection_order)
 		TEST_FUNCTION(test_embed_imported_canvas_preserves_bone_links)
+		TEST_FUNCTION(test_embed_imported_canvas_with_exported_nodes)
+		TEST_FUNCTION(test_linked_spline_follows_copied_skeleton)
 		TEST_FUNCTION(test_pasted_bones_move_follower_after_undo_and_redo)
 	TEST_SUITE_END();
 	return tst_exit_status;
