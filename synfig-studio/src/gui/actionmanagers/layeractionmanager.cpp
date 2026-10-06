@@ -5,6 +5,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2007, 2008 Chris Moore
+**	Modified 2026-10-05: map nested copied layers using LayerDuplicate traversal.
 **
 **	This file is part of Synfig.
 **
@@ -149,6 +150,64 @@ replace_exported_value_nodes(Layer::LooseHandle layer, const std::map<ValueNode:
 		return nullptr;
 	};
 	replace_value_nodes(layer, get_correspondent_clone);
+}
+
+/// Get value nodes that are special cases when duplicating (skeleton bones)
+/// \param layer where to search for special value nodes
+/// \param canvas the target canvas for paste
+/// \param src_layer_canvas the canvas of layer that is being pasted
+static std::vector<ValueNode::RHandle>
+get_special_layer_valuenodes(synfig::Layer::Handle layer, synfig::Canvas::Handle canvas, synfig::Canvas::Handle src_layer_canvas)
+{
+	std::vector<ValueNode::RHandle> valuenodes;
+	if (layer->get_name() == "duplicate") {
+		const auto& dynamic_params = layer->dynamic_param_list();
+		auto index_param = dynamic_params.find("index");
+		if (index_param != dynamic_params.end())
+			valuenodes.push_back(index_param->second);
+	} else if (layer->get_name() == "skeleton") {
+		if (layer->get_canvas() != src_layer_canvas) {
+			// Needed for updating cloned skeleton layer bone names
+			layer->set_time(canvas->get_independent_context(), canvas->get_time());
+		}
+
+		ValueBase param_bones = layer->get_param("bones");
+		if (!param_bones.is_valid()) {
+			error(_("Skeleton layer without 'bones' parameter!"));
+		} else {
+			std::vector<Bone> bone_list = param_bones.get_list_of(Bone());
+			const size_t num_bones = bone_list.size();
+
+			ValueNode_Bone::Handle ref_bone = ValueNode_Bone::create(Bone(), src_layer_canvas);
+			for (size_t i = 0; i < num_bones; i++) {
+				ValueNode_Bone::LooseHandle bone_vn = ref_bone->find(bone_list[i].get_name());
+				if (bone_vn) {
+					valuenodes.push_back(bone_vn.get());
+				}
+			}
+		}
+	}
+	return valuenodes;
+}
+
+/// Fix skeleton bone links in cloned layers
+static void
+replace_skeleton_valuenodes(const std::map<synfig::Layer::Handle,synfig::Layer::Handle>& cloned_layer_map, const std::map<synfig::ValueNode::RHandle, synfig::ValueNode::RHandle>& cloned_valuenode_map)
+{
+	if (cloned_valuenode_map.empty())
+		return;
+
+	for (const auto& layer_pair : cloned_layer_map) {
+		auto cloned_layer = layer_pair.second;
+		replace_value_nodes(cloned_layer,
+							[&cloned_valuenode_map](ValueNode::LooseHandle vn) -> ValueNode::LooseHandle {
+			auto found = cloned_valuenode_map.find(vn);
+			if (found == cloned_valuenode_map.end()) {
+				return nullptr;
+			}
+			return found->second;
+		});
+	}
 }
 
 // COPIED FROM synfigapp/actions/layerduplicate.cpp
@@ -534,10 +593,40 @@ LayerActionManager::paste()
 
 	synfigapp::SelectionManager::LayerList layer_selection;
 
+	// Maps for skeleton bone link fix: pair(original layer, cloned layer)
+	std::map<synfig::Layer::Handle,synfig::Layer::Handle> cloned_layer_map;
+	// pair(original special valuenode, cloned special valuenode)
+	std::map<synfig::ValueNode::RHandle, synfig::ValueNode::RHandle> cloned_valuenode_map;
+
 	for(std::list<synfig::Layer::Handle>::iterator iter=clipboard_.begin();iter!=clipboard_.end();++iter)
 	{
-		layer=(*iter)->clone(canvas, guid);
+		Layer::Handle src_layer = *iter;
+		layer=src_layer->clone(canvas, guid);
 		layer_selection.push_back(layer);
+
+		// As in LayerDuplicate, include layers inside the copied groups.
+		std::list<Layer::Handle> src_layer_list;
+		TraverseLayerCallback add_src_layer = [&src_layer_list] (Layer::LooseHandle layer, const TraverseLayerStatus&) {
+			src_layer_list.push_back(layer);
+		};
+		traverse_layers(src_layer, add_src_layer);
+
+		std::list<Layer::Handle> cloned_layer_list;
+		TraverseLayerCallback add_cloned_layer = [&cloned_layer_list] (Layer::LooseHandle layer, const TraverseLayerStatus&) {
+			cloned_layer_list.push_back(layer);
+		};
+		traverse_layers(layer, add_cloned_layer);
+
+		if (src_layer_list.size() != cloned_layer_list.size()) {
+			error(_("Internal error: copied layer trees have different sizes"));
+			return;
+		}
+
+		// The traversal order of a layer and its clone is deterministic.
+		for (const Layer::Handle& cloned_layer : cloned_layer_list) {
+			cloned_layer_map[src_layer_list.front()] = cloned_layer;
+			src_layer_list.pop_front();
+		}
 
 		replace_exported_value_nodes(layer, valuenode_replacements);
 
@@ -600,6 +689,28 @@ LayerActionManager::paste()
 		int index = 1;
 		export_dup_nodes(layer, canvas, index);
 	}
+
+	// Fix skeleton bone links in pasted layers
+	// Collect special valuenodes for all layer pairs
+	for (const auto& layer_pair : cloned_layer_map) {
+		Canvas::LooseHandle src_layer_canvas = layer_pair.first->get_canvas();
+		std::vector<ValueNode::RHandle> src_valuenodes = get_special_layer_valuenodes(layer_pair.first, canvas, src_layer_canvas);
+		std::vector<ValueNode::RHandle> cloned_valuenodes = get_special_layer_valuenodes(layer_pair.second, canvas, src_layer_canvas);
+		const size_t num_valuenodes = src_valuenodes.size();
+		if (num_valuenodes != cloned_valuenodes.size()) {
+			error(_("Internal error: get_special_valuenodes doesn't return same number of valuenodes: %zu x %zu"),
+			      num_valuenodes, cloned_valuenodes.size());
+			continue;
+		}
+
+		for (size_t i = 0; i < num_valuenodes; i++) {
+			if (src_valuenodes[i] != cloned_valuenodes[i])
+				cloned_valuenode_map[src_valuenodes[i]] = cloned_valuenodes[i];
+		}
+	}
+	// Apply the skeleton bone link fixes
+	replace_skeleton_valuenodes(cloned_layer_map, cloned_valuenode_map);
+
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
 }
