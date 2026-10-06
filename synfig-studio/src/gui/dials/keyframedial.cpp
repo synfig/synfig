@@ -36,6 +36,9 @@
 
 #include "keyframedial.h"
 
+#include <gui/actiondatabase.h>
+#include <gui/actionwidgethelper.h>
+#include <gui/app.h>
 #include <gui/localization.h>
 
 #endif
@@ -52,51 +55,50 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-static Gtk::ToggleButton*
-create_toggle_button(const std::string& icon_name, const std::string& tooltip)
-{
-	Gtk::ToggleButton *button = manage(new class Gtk::ToggleButton());
-	button->set_tooltip_text(tooltip);
-	button->set_image_from_icon_name(icon_name);
-	button->set_relief(Gtk::RELIEF_NONE);
-	button->set_active();
-	button->show();
-
-	return button;
-}
-
-void KeyFrameDial::on_mode_changed(synfigapp::EditMode mode)
+void
+KeyFrameDial::on_mode_changed(synfigapp::EditMode mode)
 {
 	if (mode & synfigapp::EditMode::MODE_ANIMATE_FUTURE)
 	{
-		toggle_keyframe_future->set_image_from_icon_name("keyframe_lock_future_on_icon");
-		toggle_keyframe_future->set_tooltip_text(_("Unlock future keyframes"));
-		toggle_keyframe_future->set_active(true);
+		toggle_keyframe_future.set_image_from_icon_name("keyframe_lock_future_on_icon");
+		toggle_keyframe_future.set_tooltip_text(_("Unlock future keyframes"));
+		toggle_keyframe_future.set_active(true);
 	}
 	else
 	{
-		toggle_keyframe_future->set_image_from_icon_name("keyframe_lock_future_off_icon");
-		toggle_keyframe_future->set_tooltip_text(_("Lock future keyframes"));
-		toggle_keyframe_future->set_active(false);
+		toggle_keyframe_future.set_image_from_icon_name("keyframe_lock_future_off_icon");
+		toggle_keyframe_future.set_tooltip_text(_("Lock future keyframes"));
+		toggle_keyframe_future.set_active(false);
 	}
 
 	if (mode & synfigapp::EditMode::MODE_ANIMATE_PAST)
 	{
-		toggle_keyframe_past->set_image_from_icon_name("keyframe_lock_past_on_icon");
-		toggle_keyframe_past->set_tooltip_text(_("Unlock past keyframes"));
-		toggle_keyframe_past->set_active(true);
+		toggle_keyframe_past.set_image_from_icon_name("keyframe_lock_past_on_icon");
+		toggle_keyframe_past.set_tooltip_text(_("Unlock past keyframes"));
+		toggle_keyframe_past.set_active(true);
 	}
 	else
 	{
-		toggle_keyframe_past->set_image_from_icon_name("keyframe_lock_past_off_icon");
-		toggle_keyframe_past->set_tooltip_text(_("Lock past keyframes"));
-		toggle_keyframe_past->set_active(false);
+		toggle_keyframe_past.set_image_from_icon_name("keyframe_lock_past_off_icon");
+		toggle_keyframe_past.set_tooltip_text(_("Lock past keyframes"));
+		toggle_keyframe_past.set_active(false);
 	}
 }
-KeyFrameDial::KeyFrameDial(): Gtk::Box(Gtk::Orientation::ORIENTATION_HORIZONTAL, 1)
+
+KeyFrameDial::KeyFrameDial(const std::string& action_prefix)
+	: Gtk::Box(Gtk::Orientation::ORIENTATION_HORIZONTAL, 1)
 {
-	toggle_keyframe_past = create_toggle_button("keyframe_lock_past_on_icon",_("Unlock past keyframe"));
-	toggle_keyframe_future = create_toggle_button("keyframe_lock_future_on_icon",_("Unlock future keyframe"));
-	add(*toggle_keyframe_past);
-	add(*toggle_keyframe_future);
+	const std::string action_lock_past_kf   = action_prefix.empty() ? "" : action_prefix + "." + "toggle-keyframe-lock-past";
+	const std::string action_lock_future_kf = action_prefix.empty() ? "" : action_prefix + "." + "toggle-keyframe-lock-future";
+	if (App::get_action_database()->has(action_lock_past_kf)) {
+		ActionWidgetHelper::init_icon_only_button(toggle_keyframe_past,   action_lock_past_kf);
+		ActionWidgetHelper::init_icon_only_button(toggle_keyframe_future, action_lock_future_kf);
+	} else {
+		fprintf(stderr, "usando nao acao\n");
+		ActionWidgetHelper::init_button(toggle_keyframe_past,   action_lock_past_kf,   "keyframe_lock_past_on_icon", "", _("When a parameter is changed, waypoints will be created in the immediately preceding keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode."));
+		ActionWidgetHelper::init_button(toggle_keyframe_future, action_lock_future_kf, "keyframe_lock_future_on_icon", "", _("When a parameter is changed, waypoints will be created in the immediately following keyframe with previous value before changing.\nThe setting has no effect unless the canvas is in animate editing mode."));
+	}
+
+	add(toggle_keyframe_past);
+	add(toggle_keyframe_future);
 }

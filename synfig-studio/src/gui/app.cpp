@@ -56,7 +56,6 @@
 #include <glibmm/shell.h>
 #include <glibmm/spawn.h>
 
-#include <gtkmm/accelmap.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/cssprovider.h>
 #include <gtkmm/dialog.h>
@@ -68,7 +67,6 @@
 #if GTK_CHECK_VERSION(3, 20, 0)
 #include <gtkmm/shortcutswindow.h>
 #endif
-#include <gtkmm/stock.h>
 #include <gtkmm/textview.h>
 #include <gtkmm/scrolledwindow.h>
 
@@ -131,6 +129,8 @@
 #include <gui/states/state_text.h>
 #include <gui/states/state_width.h>
 #include <gui/states/state_zoom.h>
+
+#include <gui/actiondatabase.h>
 
 #include <gui/widgets/widget_enum.h>
 
@@ -217,8 +217,6 @@ const std::list<synfig::filesystem::Path>& App::get_recent_files() { return rece
 int	 App::Busy::count;
 bool App::shutdown_in_progress;
 
-Glib::RefPtr<studio::UIManager>	App::ui_manager_;
-
 int        App::jack_locks_ = 0;
 synfig::Distance::System  App::distance_system;
 
@@ -291,10 +289,21 @@ synfig::Color studio::App::default_background_layer_color =
 String        studio::App::default_background_layer_image = "undefined";
 synfig::Color studio::App::preview_background_color =
 	synfig::Color(0.742187, 0.742187, 0.742187, 1.000000);  //X11 Gray
+
 bool studio::App::enable_preview_defaults = false;
 float studio::App::preview_quality = 0.5f;
 int studio::App::preview_fps = 12;
 String studio::App::preview_zoom_level = "fit";
+
+Glib::RefPtr<Gio::Menu> studio::App::menu_recent_files;
+Glib::RefPtr<Gio::Menu> studio::App::menu_add_layer;
+Glib::RefPtr<Gio::Menu> studio::App::menu_selected_layers;
+Glib::RefPtr<Gio::Menu> studio::App::menu_keyframe;
+Glib::RefPtr<Gio::Menu> studio::App::menu_plugins;
+Glib::RefPtr<Gio::Menu> studio::App::menu_window_custom_workspaces;
+Glib::RefPtr<Gio::Menu> studio::App::menu_window_docks;
+Glib::RefPtr<Gio::Menu> studio::App::menu_window_canvases;
+Glib::RefPtr<Gio::Menu> studio::App::menu_tools;
 
 bool   studio::App::enable_mainwin_menubar = true;
 bool   studio::App::enable_mainwin_toolbar = true;
@@ -313,6 +322,56 @@ SoundProcessor *App::sound_render_done = nullptr;
 bool App::use_render_done_sound = true;
 
 static StateManager* state_manager;
+
+static ActionDatabase* action_database = nullptr;
+
+static const std::string accelerators_filename{"accelerators"};
+
+
+static const ActionDatabase::EntryList app_action_db =
+{
+	{"app.new",            N_("New"),            {"<Primary>n"}, "action_doc_new_icon", N_("Create a new document")},
+	{"app.open",           N_("Open"),           {"<Primary>o"}, "action_doc_open_icon", N_("Open an existing document")},
+	{"app.quit",           N_("Quit"),           {"<Primary>q"}, "application-exit", N_("Quit application")},
+	{"app.preferences",    N_("Preferences..."), {},             "application-preferences"},
+	{"app.help",           N_("Help"),           {"F1"},         "help-contents"},
+#if GTK_CHECK_VERSION(3, 20, 0)
+	{"app.help-shortcuts", N_("Keyboard Shortcuts"),         {}, ""},
+#endif
+	{"app.help-tutorials", N_("Tutorials"),                  {}, ""},
+	{"app.help-reference", N_("Reference"),                  {}, ""},
+	{"app.help-faq",       N_("Frequently Asked Questions"), {}, "help-faq"},
+	{"app.help-support",   N_("Get Support"),                {}, ""},
+	{"app.about",          N_("About Synfig Studio"),        {}, "help-about"},
+};
+
+static void
+init_app_actions()
+{
+	Glib::RefPtr<Gio::ActionMap> action_map = App::instance();
+	action_map->add_action("new", sigc::hide_return(sigc::ptr_fun(&App::new_instance)));
+	action_map->add_action("open", sigc::hide_return(sigc::bind(sigc::ptr_fun(&App::dialog_open), synfig::filesystem::Path{})));
+	action_map->add_action("quit", sigc::hide_return(sigc::ptr_fun(&App::quit)));
+	action_map->add_action("preferences", sigc::ptr_fun(&App::show_setup));
+	action_map->add_action("help", sigc::ptr_fun(App::dialog_help));
+#if GTK_CHECK_VERSION(3, 20, 0)
+	action_map->add_action("help-shortcuts", sigc::ptr_fun(App::window_shortcuts));
+#endif
+	action_map->add_action("help-tutorials", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://synfig.readthedocs.io/en/latest/tutorials.html")));
+	action_map->add_action("help-reference", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://wiki.synfig.org/Category:Reference")));
+	action_map->add_action("help-faq", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://wiki.synfig.org/FAQ")));
+	action_map->add_action("help-support", sigc::bind(sigc::ptr_fun(&App::open_uri), _("https://forums.synfig.org/")));
+	action_map->add_action("about", sigc::ptr_fun(App::dialog_about));
+
+	auto open_recent_slot = [](const Glib::VariantBase& v) {
+		Glib::Variant<Glib::ustring> filename = Glib::VariantBase::cast_dynamic<Glib::Variant<Glib::ustring>>(v);
+		App::open_recent(synfig::filesystem::Path(filename.get()));
+	};
+	action_map->add_action_with_parameter("open-recent-file", Glib::VARIANT_TYPE_STRING, open_recent_slot);
+
+	for (const auto& entry : app_action_db)
+		App::get_action_database()->add(entry);
+}
 
 static bool
 really_delete_widget(Gtk::Widget *widget)
@@ -924,556 +983,8 @@ public:
 
 App::Preferences App::_preferences;
 
-static void add_ui_from_string(const std::string& ui_info) {
-	try	{
-		App::ui_manager()->add_ui_from_string(ui_info);
-	} catch(const Glib::Error& ex) {
-		synfig::error("building menus and toolbars failed: " + ex.what() + "\n\n" + ui_info);
-	}
-}
+/* === M E T H O D S ======================================================= */
 
-void
-init_ui_manager()
-{
-	Glib::RefPtr<Gtk::ActionGroup> menus_action_group = Gtk::ActionGroup::create("menus");
-
-	Glib::RefPtr<Gtk::ActionGroup> actions_action_group = Gtk::ActionGroup::create("actions");
-
-	menus_action_group->add( Gtk::Action::create("menu-file",            _("_File")));
-	menus_action_group->add( Gtk::Action::create("menu-open-recent",     _("Open Recent")));
-
-	menus_action_group->add( Gtk::Action::create("menu-edit",            _("_Edit")));
-
-	menus_action_group->add( Gtk::Action::create("menu-view",            _("_View")));
-	menus_action_group->add( Gtk::Action::create("menu-duck-mask",       _("Show/Hide Handles")));
-	menus_action_group->add( Gtk::Action::create("menu-lowres-pixel",    _("Low-Res Pixel Size")));
-
-	menus_action_group->add( Gtk::Action::create("menu-canvas",          _("_Canvas")));
-
-	menus_action_group->add( Gtk::Action::create("menu-layer",           _("_Layer")));
-	menus_action_group->add( Gtk::Action::create("menu-layer-new",       _("New Layer")));
-	menus_action_group->add( Gtk::Action::create("menu-toolbox",         _("Toolbox")));
-	menus_action_group->add( Gtk::Action::create("menu-plugins",         _("Plug-Ins")));
-
-	menus_action_group->add( Gtk::Action::create("menu-window",          _("_Window")));
-
-	menus_action_group->add( Gtk::Action::create("menu-workspace",       _("Work_space")));
-
-	menus_action_group->add( Gtk::Action::create("menu-help",            _("_Help")));
-
-	menus_action_group->add(Gtk::Action::create("menu-keyframe",          _("Keyframe")));
-
-	menus_action_group->add( Gtk::Action::create("menu-navigation",      _("_Navigation")));
-
-	// Add the synfigapp actions (layer panel toolbar items, etc...)
-	synfigapp::Action::Book::iterator iter;
-	for(iter=synfigapp::Action::book().begin();iter!=synfigapp::Action::book().end();++iter)
-	{
-		actions_action_group->add(Gtk::Action::create_with_icon_name(
-			"action-"+iter->second.name,
-			get_action_icon_name(iter->second),
-			iter->second.local_name,iter->second.local_name
-		));
-	}
-
-// predefined actions to initial menu items, so that there is all menu items listing
-// even there is no any canvas instance existed, for example, when app just opened.
-// the menu items (action names) should be named consistently with those in canvasview.cpp and others.
-#define DEFINE_ACTION(x,stock) { Glib::RefPtr<Gtk::Action> action( Gtk::Action::create(x, stock) ); actions_action_group->add(action); }
-
-// actions in File menu
-DEFINE_ACTION("new",            Gtk::StockID("synfig-new"))
-DEFINE_ACTION("open",           Gtk::StockID("synfig-open"))
-DEFINE_ACTION("save",           Gtk::StockID("synfig-save"))
-DEFINE_ACTION("save-as",        Gtk::StockID("synfig-save_as"))
-DEFINE_ACTION("save-all",       Gtk::StockID("synfig-save_all"))
-DEFINE_ACTION("export",         Gtk::StockID("synfig-export"))
-DEFINE_ACTION("revert",         Gtk::Stock::REVERT_TO_SAVED)
-DEFINE_ACTION("import",         _("Import..."))
-DEFINE_ACTION("import-sequence",_("Import Sequence..."))
-DEFINE_ACTION("render",         _("Render..."))
-DEFINE_ACTION("preview",        _("Preview..."))
-DEFINE_ACTION("close-document", _("Close Document"))
-DEFINE_ACTION("show-dependencies", _("View Document Dependencies..."))
-DEFINE_ACTION("quit",           Gtk::Stock::QUIT)
-
-// actions in Edit menu
-DEFINE_ACTION("undo",                     Gtk::StockID("synfig-undo"))
-DEFINE_ACTION("redo",                     Gtk::StockID("synfig-redo"))
-DEFINE_ACTION("copy",                     Gtk::Stock::COPY)
-DEFINE_ACTION("cut",                      Gtk::Stock::CUT)
-DEFINE_ACTION("paste",                    Gtk::Stock::PASTE)
-DEFINE_ACTION("select-all-ducks",         _("Select All Handles"))
-DEFINE_ACTION("unselect-all-ducks",       _("Unselect All Handles"))
-DEFINE_ACTION("select-all-layers",        _("Select All Layers"))
-DEFINE_ACTION("unselect-all-layers",      _("Unselect All Layers"))
-DEFINE_ACTION("select-parent-layer",      _("Select Parent Layer"))
-DEFINE_ACTION("input-devices",            _("Input Devices..."))
-DEFINE_ACTION("preferences",              _("Preferences..."))
-
-// actions in View menu
-DEFINE_ACTION("toggle-mainwin-menubar",   _("Menubar"))
-DEFINE_ACTION("toggle-mainwin-toolbar",   _("Toolbar"))
-
-DEFINE_ACTION("mask-none-ducks",                _("Toggle None/Last visible Handles"))
-DEFINE_ACTION("mask-position-ducks",            _("Show Position Handles"))
-DEFINE_ACTION("mask-vertex-ducks",              _("Show Vertex Handles"))
-DEFINE_ACTION("mask-tangent-ducks",             _("Show Tangent Handles"))
-DEFINE_ACTION("mask-radius-ducks",              _("Show Radius Handles"))
-DEFINE_ACTION("mask-width-ducks",               _("Show Width Handles"))
-DEFINE_ACTION("mask-widthpoint-position-ducks", _("Show WidthPoints Position Handles"))
-DEFINE_ACTION("mask-angle-ducks",               _("Show Angle Handles"))
-DEFINE_ACTION("mask-bone-setup-ducks",          _("Show Bone Setup Handles"))
-DEFINE_ACTION("mask-bone-recursive-ducks",      _("Show Recursive Scale Bone Handles"))
-DEFINE_ACTION("mask-bone-ducks",                _("Next Bone Handles"))
-
-for (std::list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); ++iter)
-DEFINE_ACTION(strprintf("lowres-pixel-%d", *iter), strprintf(_("Set Low-Res pixel size to %d"), *iter))
-
-DEFINE_ACTION("toggle-rulers-show",  _("Toggle Rulers Show"))
-DEFINE_ACTION("toggle-grid-show",  _("Toggle Grid Show"))
-DEFINE_ACTION("toggle-grid-snap",  _("Toggle Grid Snap"))
-DEFINE_ACTION("toggle-guide-show", _("Toggle Guide Show"))
-DEFINE_ACTION("toggle-guide-snap", _("Toggle Guide Snap"))
-DEFINE_ACTION("toggle-low-res",    _("Toggle Low-Res"))
-
-DEFINE_ACTION("decrease-low-res-pixel-size", _("Decrease Low-Res Pixel Size"))
-DEFINE_ACTION("increase-low-res-pixel-size", _("Increase Low-Res Pixel Size"))
-DEFINE_ACTION("toggle-background-rendering", _("Toggle Background Rendering"))
-DEFINE_ACTION("toggle-onion-skin",           _("Toggle Onion Skin"))
-DEFINE_ACTION("toggle-onion-skin-keyframes", _("Toggle Onion Skin on Keyframes"))
-DEFINE_ACTION("toggle-keyframe-lock-past",   _("Toggle Keyframe Lock Past"))
-DEFINE_ACTION("toggle-keyframe-lock-future", _("Toggle Keyframe Lock Future"))
-DEFINE_ACTION("canvas-zoom-in",              Gtk::StockID("gtk-zoom-in"))
-DEFINE_ACTION("canvas-zoom-out",             Gtk::StockID("gtk-zoom-out"))
-DEFINE_ACTION("canvas-zoom-fit",             Gtk::StockID("gtk-zoom-fit"))
-DEFINE_ACTION("canvas-zoom-100",             Gtk::StockID("gtk-zoom-100"))
-DEFINE_ACTION("time-zoom-in",                Gtk::StockID("gtk-zoom-in"))
-DEFINE_ACTION("time-zoom-out",               Gtk::StockID("gtk-zoom-out"))
-
-// actions in Navigation menu
-DEFINE_ACTION("play", _("Play"))
-// the stop is not a normal stop but a pause. So use "Pause" in UI, including TEXT and
-// icon. the internal code is still using stop.
-DEFINE_ACTION("pause", _("Pause"))
-
-DEFINE_ACTION("jump-next-keyframe", _("Seek to Next Keyframe"))
-DEFINE_ACTION("jump-prev-keyframe", _("Seek to previous Keyframe"))
-DEFINE_ACTION("seek-next-frame",    _("Seek to Next Frame"))
-DEFINE_ACTION("seek-prev-frame",    _("Seek to Previous Frame"))
-DEFINE_ACTION("seek-next-second",   _("Seek Forward"))
-DEFINE_ACTION("seek-prev-second",   _("Seek Backward"))
-DEFINE_ACTION("seek-begin",         _("Seek to Begin"))
-DEFINE_ACTION("seek-end",           _("Seek to End"))
-DEFINE_ACTION("canvas-zoom-in-2",   Gtk::StockID("gtk-zoom-in"))
-DEFINE_ACTION("canvas-zoom-out-2",  Gtk::StockID("gtk-zoom-out"))
-DEFINE_ACTION("canvas-zoom-fit-2",  Gtk::StockID("gtk-zoom-fit"))
-
-// actions in Canvas menu
-DEFINE_ACTION("properties",     _("Properties..."))
-DEFINE_ACTION("options",        _("Options..."))
-DEFINE_ACTION("resize-canvas",  _("Resize..."))
-
-// actions in Layer menu
-DEFINE_ACTION("amount-inc", _("Increase Layer Amount"))
-DEFINE_ACTION("amount-dec", _("Decrease Layer Amount"))
-
-// actions in Window menu
-DEFINE_ACTION("workspace-compositing", _("Compositing"))
-DEFINE_ACTION("workspace-default",     _("Default"))
-DEFINE_ACTION("workspace-animating",   _("Animating"))
-DEFINE_ACTION("save-workspace",        _("Save workspace..."))
-DEFINE_ACTION("dialog-flipbook",       _("Preview Dialog"))
-DEFINE_ACTION("panel-toolbox",         _("Toolbox"))
-DEFINE_ACTION("panel-tool_options",    _("Tool Options"))
-DEFINE_ACTION("panel-history",         _("History"))
-DEFINE_ACTION("panel-canvases",        _("Canvas Browser"))
-DEFINE_ACTION("panel-keyframes",       _("Keyframes"))
-DEFINE_ACTION("panel-layers",          _("Layers"))
-DEFINE_ACTION("panel-params",          _("Parameters"))
-DEFINE_ACTION("panel-meta_data",       _("Canvas MetaData"))
-DEFINE_ACTION("panel-children",        _("Library"))
-DEFINE_ACTION("panel-info",            _("Info"))
-DEFINE_ACTION("panel-navigator",       _("Navigator"))
-DEFINE_ACTION("panel-timetrack-old",   _("Timetrack (old)"))
-DEFINE_ACTION("panel-curves",          _("Graphs"))
-DEFINE_ACTION("panel-groups",          _("Sets"))
-DEFINE_ACTION("panel-pal_edit",        _("Palette Editor"))
-DEFINE_ACTION("panel-soundwave",       _("Sound"))
-DEFINE_ACTION("panel-timetrack",       _("Timetrack"))
-
-// actions in Help menu
-DEFINE_ACTION("help",           Gtk::Stock::HELP)
-#if GTK_CHECK_VERSION(3, 20, 0)
-DEFINE_ACTION("help-shortcuts", Gtk::Stock::INFO)
-#endif
-DEFINE_ACTION("help-tutorials", Gtk::Stock::HELP)
-DEFINE_ACTION("help-reference", Gtk::Stock::HELP)
-DEFINE_ACTION("help-faq",       Gtk::Stock::HELP)
-DEFINE_ACTION("help-support",   Gtk::Stock::HELP)
-DEFINE_ACTION("about",          Gtk::StockID("synfig-about"))
-
-// actions: Keyframe
-DEFINE_ACTION("keyframe-properties", _("Properties"))
-
-// actions: move to tab
-for (int i = 1; i <= 8; ++i) {
-	const std::string tab = std::to_string(i);
-	DEFINE_ACTION("switch-to-tab-" + tab, strprintf(_("Switch to Tab %i"), i))
-}
-DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
-
-//Layout the actions in the main menu (caret menu, right click on canvas menu) and toolbar:
-	Glib::ustring ui_info_menu =
-"	<menu action='menu-file'>"
-"		<menuitem action='new' />"
-"		<menuitem action='open' />"
-"		<menu action='menu-open-recent' />"
-"		<separator name='sep-file1'/>"
-"		<menuitem action='save' />"
-"		<menuitem action='save-as' />"
-"		<menuitem action='save-all' />"
-"		<menuitem action='export' />"
-"		<menuitem action='revert' />"
-"		<separator name='sep-file2'/>"
-"		<menuitem action='import' />"
-"		<menuitem action='import-sequence' />"
-"		<menuitem action='show-dependencies' />"
-"		<separator name='sep-file4'/>"
-"		<menuitem action='preview' />"
-"		<menuitem action='render' />"
-"		<separator name='sep-file5'/>"
-"		<menuitem action='close-document' />"
-"		<separator name='sep-file6'/>"
-"		<menuitem action='quit' />"
-"	</menu>"
-"	<menu action='menu-edit'>"
-"		<menuitem action='undo'/>"
-"		<menuitem action='redo'/>"
-"		<separator name='sep-edit1'/>"
-"		<menuitem action='cut'/>"
-"		<menuitem action='copy'/>"
-"		<menuitem action='paste'/>"
-"		<separator name='sep-edit2'/>"
-"		<menuitem action='select-all-layers'/>"
-"		<menuitem action='unselect-all-layers'/>"
-"		<menuitem action='select-all-ducks'/>"
-"		<menuitem action='unselect-all-ducks'/>"
-"		<menuitem action='select-parent-layer'/>"
-"		<separator name='sep-edit3'/>"
-"		<menuitem action='input-devices' />"
-"		<menuitem action='preferences' />"
-"	</menu>"
-"	<menu action='menu-view'>"
-"		<menuitem action='toggle-mainwin-menubar' />"
-"		<menuitem action='toggle-mainwin-toolbar' />"
-"		<separator />"
-"		<menu action='menu-duck-mask'>"
-"			<menuitem action='mask-none-ducks' />"
-"			<menuitem action='mask-position-ducks' />"
-"			<menuitem action='mask-vertex-ducks' />"
-"			<menuitem action='mask-tangent-ducks' />"
-"			<menuitem action='mask-radius-ducks' />"
-"			<menuitem action='mask-width-ducks' />"
-"			<menuitem action='mask-widthpoint-position-ducks' />"
-"			<menuitem action='mask-angle-ducks' />"
-"			<menuitem action='mask-bone-setup-ducks' />"
-"			<menuitem action='mask-bone-recursive-ducks' />"
-"			<menuitem action='mask-bone-ducks' />"
-"		</menu>"
-"		<menu action='menu-lowres-pixel'>"
-"			<menuitem action='decrease-low-res-pixel-size'/>"
-"			<menuitem action='increase-low-res-pixel-size'/>"
-"			<separator name='pixel-size-separator'/>"
-;
-
-	for (std::list<int>::iterator iter = CanvasView::get_pixel_sizes().begin(); iter != CanvasView::get_pixel_sizes().end(); ++iter)
-		ui_info_menu += strprintf("			<menuitem action='lowres-pixel-%d' />", *iter);
-
-	ui_info_menu +=
-"		</menu>"
-"		<separator name='sep-view1'/>"
-"		<menuitem action='toggle-rulers-show'/>"
-"		<menuitem action='toggle-grid-show'/>"
-"		<menuitem action='toggle-grid-snap'/>"
-"		<menuitem action='toggle-guide-show'/>"
-"		<menuitem action='toggle-guide-snap'/>"
-"		<menuitem action='toggle-low-res'/>"
-"		<menuitem action='toggle-background-rendering'/>"
-"		<menuitem action='toggle-onion-skin'/>"
-"		<menuitem action='toggle-onion-skin-keyframes'/>"
-"		<menuitem action='toggle-keyframe-lock-past'/>"
-"		<menuitem action='toggle-keyframe-lock-future'/>"
-"		<separator name='sep-view2'/>"
-"		<menuitem action='canvas-zoom-in'/>"
-"		<menuitem action='canvas-zoom-out'/>"
-"		<menuitem action='canvas-zoom-fit'/>"
-"		<menuitem action='canvas-zoom-100'/>"
-"		<separator name='sep-view3'/>"
-"		<menuitem action='time-zoom-in'/>"
-"		<menuitem action='time-zoom-out'/>"
-"	</menu>"
-"	<menu action='menu-canvas'>"
-"		<menuitem action='properties'/>"
-"		<menuitem action='options'/>"
-"		<menuitem action='resize-canvas'/>"
-"	</menu>"
-"	<menu action='menu-toolbox'>"
-"	</menu>"
-"	<menu action='menu-layer'>"
-"		<menu action='menu-layer-new'></menu>"
-"		<menuitem action='amount-inc'/>"
-"		<menuitem action='amount-dec'/>"
-"	</menu>"
-"	<menu action='menu-plugins'>"
-;
-
-	for ( const auto& plugin : studio::App::plugin_manager.plugins() ) {
-		// TODO: (Plugins) Arrange menu items into groups
-
-		DEFINE_ACTION(plugin.id, plugin.name.get())
-		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
-	}
-
-	ui_info_menu +=
-"	</menu>"
-"	<menu action='menu-window'>"
-"		<menu action='menu-workspace'>"
-"			<menuitem action='workspace-default' />"
-"			<menuitem action='workspace-compositing' />"
-"			<menuitem action='workspace-animating' />"
-"		</menu>"
-"		<separator />"
-"		<menuitem action='dialog-flipbook'/>"
-"		<menuitem action='panel-toolbox' />"
-"		<menuitem action='panel-tool_options' />"
-"		<menuitem action='panel-history' />"
-"		<menuitem action='panel-canvases' />"
-"		<menuitem action='panel-keyframes' />"
-"		<menuitem action='panel-layers' />"
-"		<menuitem action='panel-params' />"
-"		<menuitem action='panel-meta_data' />"
-"		<menuitem action='panel-children' />"
-"		<menuitem action='panel-info' />"
-"		<menuitem action='panel-navigator' />"
-"		<menuitem action='panel-timetrack-old' />"
-"		<menuitem action='panel-timetrack' />"
-"		<menuitem action='panel-curves' />"
-"		<menuitem action='panel-groups' />"
-"		<menuitem action='panel-pal_edit' />"
-"		<menuitem action='panel-soundwave' />"
-"		<separator />"
-// opened documents will be listed here below the above separator.
-"	</menu>"
-"	<menu action='menu-help'>"
-"		<menuitem action='help'/>"
-"		<separator name='sep-help1'/>";
-#if GTK_CHECK_VERSION(3, 20, 0)
-	ui_info_menu +=
-"		<menuitem action='help-shortcuts'/>";
-#endif
-	ui_info_menu +=
-"		<menuitem action='help-tutorials'/>"
-"		<menuitem action='help-reference'/>"
-"		<menuitem action='help-faq'/>"
-"		<separator name='sep-help2'/>"
-"		<menuitem action='help-support'/>"
-"		<separator name='sep-help3'/>"
-"		<menuitem action='about'/>"
-"	</menu>";
-
-	Glib::ustring ui_info_main_tool =
-"		<toolitem action='new'/>"
-"		<toolitem action='open'/>"
-"		<toolitem action='save'/>"
-"		<toolitem action='save-as'/>"
-"		<toolitem action='save-all'/>"
-"		<separator />"
-"		<toolitem action='undo'/>"
-"		<toolitem action='redo'/>"
-"		<separator />"
-"		<toolitem action='render'/>"
-"		<toolitem action='preview'/>";
-
-	Glib::ustring hidden_ui_info_menu =
-"	<menu action='menu-navigation'>"
-"		<menuitem action='play'/>"
-"		<menuitem action='pause'/>"
-"		<separator name='sep-view1'/>"
-"		<menuitem action='jump-prev-keyframe'/>"
-"		<menuitem action='jump-next-keyframe'/>"
-"		<menuitem action='seek-prev-frame'/>"
-"		<menuitem action='seek-next-frame'/>"
-"		<menuitem action='seek-prev-second'/>"
-"		<menuitem action='seek-next-second'/>"
-"		<menuitem action='seek-begin'/>"
-"		<menuitem action='seek-end'/>"
-"		<menu action='switch-to-tab-1' />"
-"		<menu action='switch-to-tab-2' />"
-"		<menu action='switch-to-tab-3' />"
-"		<menu action='switch-to-tab-4' />"
-"		<menu action='switch-to-tab-5' />"
-"		<menu action='switch-to-tab-6' />"
-"		<menu action='switch-to-tab-7' />"
-"		<menu action='switch-to-tab-8' />"
-"		<menu action='switch-to-rightmost-tab' />"
-"	</menu>";
-
-	hidden_ui_info_menu +=
-"	<menu action='menu-view'>"
-"		<menuitem action='canvas-zoom-in-2'/>"
-"		<menuitem action='canvas-zoom-out-2'/>"
-"		<menuitem action='canvas-zoom-fit-2'/>"
-"	</menu>";
-
-	Glib::ustring ui_info =
-"<ui>"
-"   <popup name='menu-toolbox' action='menu-toolbox'>"
-"	<menu action='menu-file'>"
-"	</menu>"
-"	</popup>"
-"	<popup name='menu-main' action='menu-main'>" + ui_info_menu + "</popup>"
-"	<menubar name='menubar-main' action='menubar-main'>" + ui_info_menu + "</menubar>"
-"	<toolbar name='toolbar-main'>" + ui_info_main_tool + "</toolbar>"
-"</ui>";
-
-	Glib::ustring hidden_ui_info =
-"<ui>"
-"	<menubar name='menubar-hidden' action='menubar-hidden'>" + hidden_ui_info_menu + "</menubar>"
-"</ui>";
-
-	#undef DEFINE_ACTION
-
-	actions_action_group->set_sensitive(false);
-	App::ui_manager()->set_add_tearoffs(false);
-	App::ui_manager()->insert_action_group(menus_action_group,1);
-	App::ui_manager()->insert_action_group(actions_action_group,1);
-	add_ui_from_string(ui_info);
-	add_ui_from_string(hidden_ui_info);
-
-	auto default_accel_map = App::get_default_accel_map();
-	for (const auto& accel_item : default_accel_map) {
-		Gtk::AccelKey accel_key(accel_item.first, accel_item.second);
-		if (accel_key.get_key() == 0)
-			synfig::warning(_("Invalid accelerator: %s (for action: %s)"), accel_item.first, accel_item.second);
-		Gtk::AccelMap::add_entry(accel_key.get_path(), accel_key.get_key(), accel_key.get_mod());
-	}
-}
-
-const std::map<const char*, const char*>&
-App::get_default_accel_map()
-{
-	// Add default keyboard accelerators
-	static const std::map<const char*, const char*> default_accel_map = {
-		// Toolbox
-		{"s",             "<Actions>/action_group_state_manager/set-state-normal"},
-		{"m",             "<Actions>/action_group_state_manager/set-state-smooth_move"},
-		{"l",             "<Actions>/action_group_state_manager/set-state-scale"},
-		{"a",             "<Actions>/action_group_state_manager/set-state-rotate"},
-		{"i",             "<Actions>/action_group_state_manager/set-state-mirror"},
-		{"e",             "<Actions>/action_group_state_manager/set-state-circle"},
-		{"r",             "<Actions>/action_group_state_manager/set-state-rectangle"},
-		{"asterisk",      "<Actions>/action_group_state_manager/set-state-star"},
-		{"g",             "<Actions>/action_group_state_manager/set-state-gradient"},
-		{"o",             "<Actions>/action_group_state_manager/set-state-polygon"},
-		{"b",             "<Actions>/action_group_state_manager/set-state-bline"},
-		{"n",             "<Actions>/action_group_state_manager/set-state-bone"},
-		{"t",             "<Actions>/action_group_state_manager/set-state-text"},
-		{"u",             "<Actions>/action_group_state_manager/set-state-fill"},
-		{"d",             "<Actions>/action_group_state_manager/set-state-eyedrop"},
-		{"c",             "<Actions>/action_group_state_manager/set-state-lasso"},
-		{"z",             "<Actions>/action_group_state_manager/set-state-zoom"},
-		{"p",             "<Actions>/action_group_state_manager/set-state-draw"},
-		{"k",             "<Actions>/action_group_state_manager/set-state-sketch"},
-		{"w",             "<Actions>/action_group_state_manager/set-state-width"},
-		{"h",             "<Actions>/action_group_state_manager/set-state-brush"},
-
-		// Classic edit
-		{"<Primary>x",              "<Actions>/action_group_layer_action_manager/cut"},
-		{"<Primary>c",              "<Actions>/action_group_layer_action_manager/copy"},
-		{"<Primary>v",              "<Actions>/action_group_layer_action_manager/paste"},
-
-		// Everything else
-		{"<Primary>q",              "<Actions>/mainwindow/quit"},
-		{"<Control>a",              "<Actions>/canvasview/select-all-ducks"},
-		{"<Control>d",              "<Actions>/canvasview/unselect-all-ducks"},
-		{"<Control><Shift>a",       "<Actions>/canvasview/select-all-layers"},
-		{"<Control><Shift>d",       "<Actions>/canvasview/unselect-all-layers"},
-		{"<Mod1>Page_Up",           "<Actions>/canvasview/select-parent-layer"},
-		{"F9",                      "<Actions>/canvasview/render"},
-		{"F11",                     "<Actions>/canvasview/preview"},
-		{"F8",                      "<Actions>/canvasview/properties"},
-		{"F12",                     "<Actions>/canvasview/options"},
-		{"<control>i",              "<Actions>/canvasview/import"},
-		{"numbersign",              "<Actions>/canvasview/toggle-grid-show"},
-		{"<Control>l",              "<Actions>/canvasview/toggle-grid-snap"},
-		{"<Control>n",              "<Actions>/mainwindow/new"},
-		{"<Control>o",              "<Actions>/mainwindow/open"},
-		{"<Control>e",              "<Actions>/mainwindow/save-all"},
-		{"<Primary>1",              "<Actions>/mainwindow/switch-to-tab-1"},
-		{"<Primary>2",              "<Actions>/mainwindow/switch-to-tab-2"},
-		{"<Primary>3",              "<Actions>/mainwindow/switch-to-tab-3"},
-		{"<Primary>4",              "<Actions>/mainwindow/switch-to-tab-4"},
-		{"<Primary>5",              "<Actions>/mainwindow/switch-to-tab-5"},
-		{"<Primary>6",              "<Actions>/mainwindow/switch-to-tab-6"},
-		{"<Primary>7",              "<Actions>/mainwindow/switch-to-tab-7"},
-		{"<Primary>8",              "<Actions>/mainwindow/switch-to-tab-8"},
-		{"<Primary>9",              "<Actions>/mainwindow/switch-to-rightmost-tab"},
-		{"<Control>s",              "<Actions>/canvasview/save"},
-		{"<Control><Shift>s",       "<Actions>/canvasview/save-as"},
-		{"<Control>grave",          "<Actions>/canvasview/toggle-low-res"},
-		{"<Mod1>0",                 "<Actions>/canvasview/mask-none-ducks"},
-		{"<Mod1>1",                 "<Actions>/canvasview/mask-position-ducks"},
-		{"<Mod1>2",                 "<Actions>/canvasview/mask-vertex-ducks"},
-		{"<Mod1>3",                 "<Actions>/canvasview/mask-tangent-ducks"},
-		{"<Mod1>4",                 "<Actions>/canvasview/mask-radius-ducks"},
-		{"<Mod1>5",                 "<Actions>/canvasview/mask-width-ducks"},
-		{"<Mod1>6",                 "<Actions>/canvasview/mask-angle-ducks"},
-		{"<Mod1>7",                 "<Actions>/canvasview/mask-bone-setup-ducks"},
-		{"<Mod1>8",                 "<Actions>/canvasview/mask-bone-recursive-ducks"},
-		{"<Mod1>9",                 "<Actions>/canvasview/mask-bone-ducks"},
-		{"<Mod1>5",                 "<Actions>/canvasview/mask-widthpoint-position-ducks"},
-		{"<Shift>Page_Up",          "<Actions>/action_group_layer_action_manager/action-LayerRaise"},
-		{"<Shift>Page_Down",        "<Actions>/action_group_layer_action_manager/action-LayerLower"},
-		{"<Primary>z",              "<Actions>/action_group_dock_history/undo"},
-#ifdef _WIN32
-		{"<Control>y",              "<Actions>/action_group_dock_history/redo"},
-#else
-		{"<Primary><Shift>z",       "<Actions>/action_group_dock_history/redo"},
-#endif
-		{"Delete",                  "<Actions>/action_group_layer_action_manager/action-LayerRemove"},
-		{"<Control>parenleft" ,     "<Actions>/canvasview/decrease-low-res-pixel-size"},
-		{"<Control>parenright" ,    "<Actions>/canvasview/increase-low-res-pixel-size"},
-		{"<Primary>g",              "<Actions>/action_group_layer_action_manager/action-LayerEncapsulate"},
-		{"<Primary>u",              "<Actions>/action_group_layer_action_manager/action-LayerDuplicate"},
-		{"<Control><Mod1>parenleft",  "<Actions>/action_group_layer_action_manager/amount-dec"},
-		{"<Control><Mod1>parenright", "<Actions>/action_group_layer_action_manager/amount-inc"},
-		{"equal",                   "<Actions>/canvasview/canvas-zoom-in"},
-		{"minus",                   "<Actions>/canvasview/canvas-zoom-out"},
-		{"0",                       "<Actions>/canvasview/canvas-zoom-fit"},
-		{"<Control>plus",           "<Actions>/canvasview/time-zoom-in"},
-		{"<Control>underscore",     "<Actions>/canvasview/time-zoom-out"},
-		{"bracketleft",             "<Actions>/canvasview/jump-prev-keyframe"},
-		{"bracketright",            "<Actions>/canvasview/jump-next-keyframe"},
-		{"comma",                   "<Actions>/canvasview/seek-prev-frame"},
-		{"period",                  "<Actions>/canvasview/seek-next-frame"},
-		{"<Shift>less",             "<Actions>/canvasview/seek-prev-second"},
-		{"<Shift>greater",          "<Actions>/canvasview/seek-next-second"},
-		{"<Control><Shift>less",    "<Actions>/canvasview/seek-begin"},
-		{"<Control><Shift>greater", "<Actions>/canvasview/seek-end"},
-		{"<Mod1>o",                 "<Actions>/canvasview/toggle-onion-skin"},
-		{"<Control>equal",          "<Actions>/canvasview/canvas-zoom-in-2" },
-		{"<Control>minus",          "<Actions>/canvasview/canvas-zoom-out-2"},
-		{"<Control>0",              "<Actions>/canvasview/canvas-zoom-fit-2"},
-		{"space",                   "<Actions>/canvasview/play"},
-		{"<Shift>space",            "<Actions>/canvasview/pause"},
-		{"<Control>space",          "<Actions>/canvasview/animate"},
-		{"<Control>Left",           "<Actions>/canvasview/toggle-keyframe-lock-past"},
-		{"<Control>Right",          "<Actions>/canvasview/toggle-keyframe-lock-future"},
-	};
-
-	return default_accel_map;
-}
 Glib::RefPtr<App> App::instance() {
 	static Glib::RefPtr<studio::App> app_reference = Glib::RefPtr<App>(new App());
 	return app_reference;
@@ -1613,6 +1124,32 @@ void App::init(const synfig::String& rootpath)
 	init_icon_themes();
 	init_icons(path_to_icons);
 
+	auto builder = Gtk::Builder::create();
+	try
+	{
+		builder->add_from_file(ResourceHelper::get_ui_path("studio_menubar.xml"));
+	}
+	catch (const Glib::Error& ex)
+	{
+		std::cerr << "Building menus failed: " << ex.what();
+	}
+
+	auto object = builder->get_object("studio_menubar");
+	auto gmenu = Glib::RefPtr<Gio::Menu>::cast_dynamic(object);
+	if (!gmenu) {
+		g_warning("GMenu not found");
+	} else {
+		set_menubar(gmenu);
+		menu_recent_files = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-recent-files"));
+		menu_plugins = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-plugins"));
+		menu_add_layer = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-layer-new"));
+		menu_selected_layers = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("selected-layer-actions"));
+		menu_tools = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-tools"));
+		menu_window_custom_workspaces = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-custom-workspaces"));
+		menu_window_docks = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-docks"));
+		menu_window_canvases = Glib::RefPtr<Gio::Menu>::cast_dynamic(builder->get_object("menu-window-canvases"));
+	}
+
 	try
 	{
 		// Try to load settings early to get access to some important
@@ -1645,9 +1182,8 @@ void App::init(const synfig::String& rootpath)
 		plugin_manager.load_dir(path_to_plugins);
 		plugin_manager.load_dir(path_to_user_plugins.u8string());
 
-		studio_init_cb.task(_("Init UI Manager..."));
-		App::ui_manager_=studio::UIManager::create();
-		init_ui_manager();
+		action_database = new ActionDatabase();
+		init_app_actions();
 
 		studio_init_cb.task(_("Init Dock Manager..."));
 		dock_manager=new studio::DockManager();
@@ -1657,7 +1193,6 @@ void App::init(const synfig::String& rootpath)
 
 		studio_init_cb.task(_("Init Main Window..."));
 		main_window=new studio::MainWindow(App::instance());
-		main_window->add_accel_group(App::ui_manager_->get_accel_group());
 
 		studio_init_cb.task(_("Init Toolbox..."));
 		dock_toolbox=new studio::Dock_Toolbox();
@@ -1770,35 +1305,35 @@ void App::init(const synfig::String& rootpath)
 		// are displayed in toolbox labels
 		studio_init_cb.task(_("Init Tools..."));
 		/* editing tools */
-		state_manager->add_state(&state_normal);
-		state_manager->add_state(&state_smooth_move);
-		state_manager->add_state(&state_scale);
-		state_manager->add_state(&state_rotate);
-		state_manager->add_state(&state_mirror);
+		state_manager->register_state(&state_normal);
+		state_manager->register_state(&state_smooth_move);
+		state_manager->register_state(&state_scale);
+		state_manager->register_state(&state_rotate);
+		state_manager->register_state(&state_mirror);
 
 		/* geometry */
-		state_manager->add_state(&state_circle);
-		state_manager->add_state(&state_rectangle);
-		state_manager->add_state(&state_star);
-		if(!getenv("SYNFIG_DISABLE_POLYGON")) state_manager->add_state(&state_polygon); // Enabled - for working without ducks
-		state_manager->add_state(&state_gradient);
+		state_manager->register_state(&state_circle);
+		state_manager->register_state(&state_rectangle);
+		state_manager->register_state(&state_star);
+		if(!getenv("SYNFIG_DISABLE_POLYGON")) state_manager->register_state(&state_polygon); // Enabled - for working without ducks
+		state_manager->register_state(&state_gradient);
 
 		/* bline tools */
-		state_manager->add_state(&state_bline);
-		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->add_state(&state_draw ); // Enabled for now.  Let's see whether they're good enough yet.
-		state_manager->add_state(&state_lasso);
-		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->add_state(&state_width); // Enabled since 0.61.09
-		state_manager->add_state(&state_fill);
-		state_manager->add_state(&state_eyedrop);
+		state_manager->register_state(&state_bline);
+		if(!getenv("SYNFIG_DISABLE_DRAW"   )) state_manager->register_state(&state_draw ); // Enabled for now.  Let's see whether they're good enough yet.
+		state_manager->register_state(&state_lasso);
+		if(!getenv("SYNFIG_DISABLE_WIDTH"  )) state_manager->register_state(&state_width); // Enabled since 0.61.09
+		state_manager->register_state(&state_fill);
+		state_manager->register_state(&state_eyedrop);
 
 		/* skeleton tool*/
-		state_manager->add_state(&state_bone);
+		state_manager->register_state(&state_bone);
 
 		/* other */
-		state_manager->add_state(&state_text);
-		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->add_state(&state_sketch);
-		if(!getenv("SYNFIG_DISABLE_BRUSH"  ) && App::enable_experimental_features) state_manager->add_state(&state_brush);
-		state_manager->add_state(&state_zoom);
+		state_manager->register_state(&state_text);
+		if(!getenv("SYNFIG_DISABLE_SKETCH" )) state_manager->register_state(&state_sketch);
+		if(!getenv("SYNFIG_DISABLE_BRUSH"  ) && App::enable_experimental_features) state_manager->register_state(&state_brush);
+		state_manager->register_state(&state_zoom);
 
 
 		device_tracker->load_preferences();
@@ -1892,6 +1427,12 @@ void App::init(const synfig::String& rootpath)
 
 StateManager* App::get_state_manager() { return state_manager; }
 
+ActionDatabase*
+App::get_action_database()
+{
+	return action_database;
+}
+
 void
 App::on_shutdown()
 {
@@ -1907,6 +1448,8 @@ App::on_shutdown()
 	// Unload all of the modules
 	for(;!module_list_.empty();module_list_.pop_back())
 		module_list_.back()->stop();
+
+	delete action_database;
 
 	delete state_manager;
 
@@ -2043,10 +1586,6 @@ App::save_settings()
 	{
 		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
 		{
-			filesystem::Path filename = get_config_file("accelrc");
-			Gtk::AccelMap::save(filename.u8string());
-		}
-		{
 			filesystem::Path filename = get_config_file("language");
 
 			std::ofstream file(filename.c_str());
@@ -2103,32 +1642,19 @@ App::load_settings(const synfig::String& key_filter)
 void
 App::load_accel_map()
 {
-	try
-	{
-		synfig::ChangeLocale change_locale(LC_NUMERIC, "C");
-		{
-			filesystem::Path filename = get_config_file("accelrc");
-			Gtk::AccelMap::load(filename.u8string());
-		}
-	}
-	catch(...)
-	{
-		synfig::warning("Caught exception when attempting to load accel map settings.");
-	}
+	UserAcceleratorList list;
+	list.restore_to_defaults(*App::get_action_database());
+	list.load_from_file(get_config_file(accelerators_filename), false);
+	list.apply(App::instance(), *App::get_action_database());
 }
 
 void
 App::save_accel_map()
 {
-	try
-	{
-		filesystem::Path filename = get_config_file("accelrc");
-		Gtk::AccelMap::save(filename.u8string());
-	}
-	catch(...)
-	{
-		synfig::warning("Caught exception when attempting to save accel map settings.");
-	}
+	// only save those accelerators customized by user, i.e., without default values
+	UserAcceleratorList list;
+	list.accels = UserAcceleratorList::get_custom_accels_only(App::instance(), *App::get_action_database());
+	list.save_to_file(get_config_file(accelerators_filename));
 }
 
 void
@@ -3079,8 +2605,8 @@ App::dialog_export_file(const std::string& title, synfig::filesystem::Path& file
 	}
 
 	dialog->set_current_folder(prev_path.u8string());
-	dialog->add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog->add_button(Gtk::Stock::SAVE,   Gtk::RESPONSE_ACCEPT);
+	dialog->add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	dialog->add_button(_("Save"),   Gtk::RESPONSE_ACCEPT);
 
 	if (filename.empty()) {
 		dialog->set_filename(prev_path.u8string());
@@ -3237,8 +2763,8 @@ App::dialog_select_list_item(const std::string &title, const std::string &messag
 	grid->attach(*tree, 0, 1, 1, 2);
 
 	dialog.get_content_area()->pack_start(*grid);
-	dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog.add_button(Gtk::Stock::OPEN,   Gtk::RESPONSE_ACCEPT);
+	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
+	dialog.add_button(_("Open"),   Gtk::RESPONSE_ACCEPT);
 	dialog.set_default_size(300, 450);
 	dialog.show_all();
 

@@ -40,6 +40,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 target_sources(synfigstudio
 	PRIVATE
+		"${CMAKE_CURRENT_LIST_DIR}/actiondatabase.cpp"
+		"${CMAKE_CURRENT_LIST_DIR}/actionwidgethelper.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/duck.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/timemodel.cpp"
 		"${CMAKE_CURRENT_LIST_DIR}/app.cpp"

@@ -240,12 +240,7 @@ WorkArea::WorkArea(etl::loose_handle<synfigapp::CanvasInterface> canvas_interfac
 	hscrollbar1->set_hexpand(true);
 	hscrollbar1->show();
 
-	Gtk::IconSize iconsize = Gtk::IconSize::from_name("synfig-small_icon");
-	zoomdial = manage(new ZoomDial(iconsize));
-	zoomdial->signal_zoom_in().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_in));
-	zoomdial->signal_zoom_out().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_out));
-	zoomdial->signal_zoom_fit().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_fit));
-	zoomdial->signal_zoom_norm().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_norm));
+	zoomdial = manage(new ZoomDial("doc"));
 	zoomdial->signal_zoom_edit().connect(sigc::mem_fun(*this, &studio::WorkArea::zoom_edit));
 	zoomdial->show();
 
@@ -1356,8 +1351,9 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 				return true;
 			}
 
-			if(guide_highlighted){
+			if (guide_highlighted) {
 				Gtk::Menu* guide_menu(manage(new Gtk::Menu()));
+				guide_menu->attach_to_widget(*this);
 				guide_menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), guide_menu));
 				Gtk::MenuItem *item = manage(new Gtk::MenuItem(_("_Edit Guide")));
 				item->set_use_underline(true);

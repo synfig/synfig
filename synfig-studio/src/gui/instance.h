@@ -32,6 +32,9 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <giomm/menu.h>
+#include <giomm/simpleactiongroup.h>
+
 #include <gtkmm/treestore.h>
 #include <sigc++/sigc++.h>
 
@@ -61,7 +64,7 @@ class Instance : public synfigapp::Instance
 public:
 	typedef std::list< etl::handle<CanvasView> > CanvasViewList;
 
-	enum Status
+	enum class Status
 	{
 		STATUS_OK,
 		STATUS_ERROR,
@@ -217,14 +220,12 @@ public:
 	void gather_uri(std::map<synfig::String, synfig::String> &x, const synfigapp::SelectionManager::LayerList &layers) const;
 
 	void add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
-	void add_actions_to_menu(Gtk::Menu *menu, const synfigapp::Action::ParamList &param_list1,const synfigapp::Action::ParamList &param_list2, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
+	void add_actions_to_menu(const std::string& action_group_name, const Glib::RefPtr<Gio::Menu>& menu, const synfigapp::Action::ParamList& param_list, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
 
-	void add_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info,   const synfigapp::Action::ParamList &param_list, synfigapp::Action::Category category=synfigapp::Action::CATEGORY_ALL)const;
+	void add_actions_to_group(const Glib::RefPtr<Gio::SimpleActionGroup>& action_group, const synfigapp::Action::ParamList& param_list, synfigapp::Action::Category category = synfigapp::Action::CATEGORY_ALL) const;
 
-	void add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfig::Layer::Handle &layer) const;
-	void add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info, const synfig::Layer::Handle &layer) const;
-	void add_special_layer_actions_to_menu(Gtk::Menu *menu, const synfigapp::SelectionManager::LayerList &layers) const;
-	void add_special_layer_actions_to_group(const Glib::RefPtr<Gtk::ActionGroup>& action_group, synfig::String& ui_info, const synfigapp::SelectionManager::LayerList &layers) const;
+	void add_special_layer_actions_to_menu(const Glib::RefPtr<Gio::Menu>& menu, const synfig::Layer::Handle& layer) const;
+	void add_special_layer_actions_to_group(const Glib::RefPtr<Gio::SimpleActionGroup>& action_group, const synfig::Layer::Handle& layer) const;
 
 	void process_action(synfig::String name, synfigapp::Action::ParamList param_list);
 

@@ -288,7 +288,8 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 	if(event->button!=3)
 		return false;
 
-	Gtk::Menu *tabmenu=manage(new class Gtk::Menu());
+	Gtk::Menu* tabmenu = manage(new class Gtk::Menu());
+	tabmenu->attach_to_widget(*canvas_view);
 	tabmenu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), tabmenu));
 
 	if (get_n_pages() > 1 || (get_parent() && get_parent()->get_children().size() > 1)) {
@@ -306,7 +307,7 @@ DockBook::tab_button_pressed(GdkEventButton* event, Dockable* dockable)
 	item->show();
 	tabmenu->append(*item);
 
-	tabmenu->popup(event->button,gtk_get_current_event_time());
+	tabmenu->popup(event->button, gtk_get_current_event_time());
 
 	return true;
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)

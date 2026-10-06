@@ -25,13 +25,15 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCK_LAYERS_H
-#define __SYNFIG_STUDIO_DOCK_LAYERS_H
+#ifndef SYNFIG_STUDIO_DOCK_LAYERS_H
+#define SYNFIG_STUDIO_DOCK_LAYERS_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/actiongroup.h>
+#include <giomm/simpleactiongroup.h>
+
 #include <gui/docks/dock_canvasspecific.h>
+#include <gui/trees/layertree.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -45,12 +47,7 @@ class LayerActionManager;
 
 class Dock_Layers : public Dock_CanvasSpecific
 {
-	Glib::RefPtr<Gtk::ActionGroup> action_group_new_layers;
-	Glib::RefPtr<Gtk::ActionGroup> action_group_layer_ops;
-
-	Glib::RefPtr<Gtk::Action> action_new_layer;
-
-	//Gtk::Scale *layer_amount_hscale;
+	Glib::RefPtr<Gio::SimpleAction> action_popup_new_layer;
 
 	LayerActionManager* layer_action_manager;
 
@@ -59,13 +56,12 @@ protected:
 	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
 
 private:
-
 	void add_layer(synfig::String id);
 	void popup_add_layer_menu();
+	bool on_layertree_no_layer_clicked(GdkEventButton* ev);
+	bool on_layertree_layer_clicked(int button, Gtk::TreeRow row, LayerTree::ColumnID column_id);
 
 public:
-
-
 	Dock_Layers();
 	~Dock_Layers();
 }; // END of Dock_Layers

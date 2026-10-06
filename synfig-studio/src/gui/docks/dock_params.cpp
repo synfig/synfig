@@ -58,7 +58,6 @@ using namespace studio;
 
 Dock_Params::Dock_Params():
 	Dock_CanvasSpecific("params", _("Parameters"), "parameters_icon"),
-	action_group( Gtk::ActionGroup::create("action_group_dock_params") ),
 	vadjustment( Gtk::Adjustment::create(0, 0, 1, 1, 1) )
 {
 	set_name("parameters_panel");
