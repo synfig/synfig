@@ -161,7 +161,10 @@ get_special_layer_valuenodes(synfig::Layer::Handle layer, synfig::Canvas::Handle
 {
 	std::vector<ValueNode::RHandle> valuenodes;
 	if (layer->get_name() == "duplicate") {
-		valuenodes.push_back(layer->dynamic_param_list().find("index")->second);
+		const auto& dynamic_params = layer->dynamic_param_list();
+		auto index_param = dynamic_params.find("index");
+		if (index_param != dynamic_params.end())
+			valuenodes.push_back(index_param->second);
 	} else if (layer->get_name() == "skeleton") {
 		if (layer->get_canvas() != src_layer_canvas) {
 			// Needed for updating cloned skeleton layer bone names
@@ -197,7 +200,7 @@ replace_skeleton_valuenodes(const std::map<synfig::Layer::Handle,synfig::Layer::
 	for (const auto& layer_pair : cloned_layer_map) {
 		auto cloned_layer = layer_pair.second;
 		replace_value_nodes(cloned_layer,
-							[cloned_valuenode_map](ValueNode::LooseHandle vn) -> ValueNode::LooseHandle {
+							[&cloned_valuenode_map](ValueNode::LooseHandle vn) -> ValueNode::LooseHandle {
 			auto found = cloned_valuenode_map.find(vn);
 			if (found == cloned_valuenode_map.end()) {
 				return nullptr;
