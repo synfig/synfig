@@ -5,6 +5,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Modified 2026-10-05: traverse cloned inline group layers at every depth.
 **
 **	This file is part of Synfig.
 **
@@ -52,6 +53,8 @@
 #include <synfig/layers/layer_pastecanvas.h>
 
 #endif
+
+#include <set>
 
 using namespace synfig;
 using namespace synfigapp;
@@ -170,17 +173,27 @@ void Action::ValueDescExport::scan_canvas(synfig::Canvas::Handle prev_canvas, sy
 	}
 
 	{ // scan layers
-		for(IndependentContext i = canvas->get_independent_context(); *i; i++){
-			if(recursive && etl::handle<Layer_PasteCanvas>::cast_dynamic(*i)){
-				etl::handle<synfig::Layer_PasteCanvas> p = etl::handle<Layer_PasteCanvas>::cast_dynamic(*i);
+		std::list<Canvas::Handle> pending;
+		std::set<Canvas::Handle> visited;
+		pending.push_back(canvas);
+		while (!pending.empty())
+		{
+			Canvas::Handle current = pending.front();
+			pending.pop_front();
+			if (!visited.insert(current).second)
+				continue;
+
+			for (IndependentContext i = current->get_independent_context(); *i; ++i)
+			{
 				scan_layer(prev_canvas, new_canvas, *i);
-				synfig::Canvas::Handle sub_canvas = p->get_sub_canvas();
-				if (sub_canvas){
-					for(IndependentContext j = sub_canvas->get_independent_context(); *j; j++)
-							scan_layer(prev_canvas, new_canvas, *j);
-				}
-			} else
-				scan_layer(prev_canvas, new_canvas, *i);
+				if (!recursive)
+					continue;
+
+				Layer_PasteCanvas::Handle group = Layer_PasteCanvas::Handle::cast_dynamic(*i);
+				Canvas::Handle sub_canvas = group ? group->get_sub_canvas() : Canvas::Handle();
+				if (sub_canvas && sub_canvas->is_inline())
+					pending.push_back(sub_canvas);
+			}
 		}
 	}
 
