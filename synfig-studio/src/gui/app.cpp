@@ -2670,7 +2670,12 @@ App::dialog_open_file_image_sequence(const std::string& title, std::set<synfig::
 
 	// show only images
 	Glib::RefPtr<Gtk::FileFilter> filter_image = Gtk::FileFilter::create();
-	filter_image->set_name(_("Image files (*.png, *.jpg, *.jpeg, *.bmp, *.svg)"));
+	String filter_name = _("Images files (*.png, *.jpg, *.jpeg, *.bmp)");
+	if (!filter_name.empty() && filter_name[filter_name.size() - 1] == ')')
+		filter_name.insert(filter_name.size() - 1, ", *.svg");
+	else
+		filter_name += ", *.svg";
+	filter_image->set_name(filter_name);
 	filter_image->add_mime_type("image/png");
 	filter_image->add_mime_type("image/jpeg");
 	filter_image->add_mime_type("image/jpg");
