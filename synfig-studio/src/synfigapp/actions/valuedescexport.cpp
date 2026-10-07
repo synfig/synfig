@@ -50,9 +50,9 @@
 
 #include <synfigapp/localization.h>
 
-#include <synfig/layers/layer_pastecanvas.h>
-
 #endif
+
+#include <synfig/layers/layer_pastecanvas.h>
 
 #include <set>
 
