@@ -66,22 +66,22 @@ public:
 
 private:
 	pointer data_ = nullptr;
-	int pitch_ = 0;
+	std::ptrdiff_t pitch_ = 0;
 
 public:
-	reference operator[](int i)const { assert(data_); return *(pointer)( (char*)data_+pitch_*i ); }
+	reference operator[](int i)const { assert(data_); return *(pointer)( (char*)data_+(std::ptrdiff_t)pitch_*i ); }
 	reference operator*()const { assert(data_); return *data_; }
 	pointer operator->() const { assert(data_); return data_; }
 
 	/** Go to next surface row */
 	void inc() { assert(data_); data_ = (pointer)((char*)data_ + pitch_); }
 	/** Skip @a n surface rows */
-	void inc(int n) { assert(data_); data_ = (pointer)((char*)data_ + n*pitch_); }
+	void inc(int n) { assert(data_); data_ = (pointer)((char*)data_ + (std::ptrdiff_t)n*pitch_); }
 
 	/** Go back to previous surface row */
 	void dec() { assert(data_); data_ = (pointer)((char*)data_ - pitch_); }
 	/** Go back @a n surface rows */
-	void dec(int n) { assert(data_); data_ = (pointer)((char*)data_ - n*pitch_); }
+	void dec(int n) { assert(data_); data_ = (pointer)((char*)data_ - (std::ptrdiff_t)n*pitch_); }
 
 	/** Go to next surface row */
 	const self_type &operator++() { assert(data_); inc(); return *this; }
@@ -130,7 +130,7 @@ public:
 	/** Check if iterator is invalid. DOES NOT check if it off the 2D surface */
 	bool operator!()const { return !data_; }
 
-	generic_pen_row_iterator(pointer data, int pitch):data_(data), pitch_(pitch) { }
+	generic_pen_row_iterator(pointer data, std::ptrdiff_t pitch):data_(data), pitch_(pitch) { }
 	generic_pen_row_iterator():data_(nullptr), pitch_(0) { }
 };
 
@@ -178,7 +178,7 @@ protected:
 	int w_ = 0, h_ = 0;
 private:
 	/** how many bytes have a surface row, including possible padding */
-	int pitch_ = 0;
+	std::ptrdiff_t pitch_ = 0;
 	/** the default sample value to write on the surface */
 	value_type value_ {};
 	/** current pointer to surface data */
@@ -187,13 +187,13 @@ private:
 	typedef generic_pen<T> self_type;
 
 	/** convenient method to advance @c data_ some @a nbytes */
-	void addptr(int nbytes)
+	void addptr(std::ptrdiff_t nbytes)
 	{
 		data_ = (pointer)((char*)data_ + nbytes);
 	}
 
 	/** conveniet method to return @c data_ some @a nbytes */
-	void subptr(int nbytes)
+	void subptr(std::ptrdiff_t nbytes)
 	{
 		data_ = (pointer)((char*)data_ - nbytes);
 	}
@@ -207,7 +207,7 @@ public:
 	 * @param h height: the number of samples per surface column
 	 * @param pitch number of BYTES in a surface row
 	 */
-	generic_pen(value_type *data, int w, int h, int pitch):
+	generic_pen(value_type *data, int w, int h, std::ptrdiff_t pitch):
 		x_(0),
 		y_(0),
 		w_(w),
@@ -229,7 +229,7 @@ public:
 		y_(0),
 		w_(w),
 		h_(h),
-		pitch_(sizeof(value_type)*w),
+		pitch_((std::ptrdiff_t)sizeof(value_type)*w),
 		value_{},
 		data_(data)
 	{
@@ -247,7 +247,7 @@ public:
 	{
 		assert(data_);
 		x_ += a, y_ += b;
-		addptr(b*pitch_ + a*sizeof(value_type));
+		addptr((std::ptrdiff_t)b*pitch_ + (std::ptrdiff_t)a*(std::ptrdiff_t)sizeof(value_type));
 		return *this;
 	}
 	/**
@@ -286,9 +286,9 @@ public:
 	/** Move this pen @a n samples along the horizontal axis before current position */
 	void dec_x(int n) { assert(data_); x_-=n; data_-=n; }
 	/** Move this pen @a n samples along the vertical axis after current position */
-	void inc_y(int n) { assert(data_); y_+=n; data_ = (pointer)((char*)data_ + pitch_*n); }
+	void inc_y(int n) { assert(data_); y_+=n; data_ = (pointer)((char*)data_ + (std::ptrdiff_t)pitch_*n); }
 	/** Move this pen @a n samples along the vertical axis before current position */
-	void dec_y(int n) { assert(data_); y_-=n; data_ = (pointer)((char*)data_ - pitch_*n); }
+	void dec_y(int n) { assert(data_); y_-=n; data_ = (pointer)((char*)data_ - (std::ptrdiff_t)pitch_*n); }
 
 	/** Replace the sample at current position with @a v */
 	void put_value(const value_type &v)const { assert(data_); *data_=v; }
@@ -305,10 +305,10 @@ public:
 	const_reference get_value()const { assert(data_); return *data_; }
 
 	/** Get the sample value at (@a x, @a y) coordinates from current point */
-	const_reference get_value_at(int x, int y)const { assert(data_); return ((pointer)(((char*)data_)+y*pitch_))[x]; }
+	const_reference get_value_at(int x, int y)const { assert(data_); return ((pointer)(((char*)data_)+(std::ptrdiff_t)y*pitch_))[x]; }
 
 	/** Get the sample value at (@a x, @a y) coordinates from current point if it is in a valid region */
-	const_reference get_value_clip_at(int x, int y)const { assert(data_); if(clipped(x,y))return value_type(); return ((pointer)(((char*)data_)+y*pitch_))[x]; }
+	const_reference get_value_clip_at(int x, int y)const { assert(data_); if(clipped(x,y))return value_type(); return ((pointer)(((char*)data_)+(std::ptrdiff_t)y*pitch_))[x]; }
 
 	/** Get the current sample value if it is in a valid region */
 	const value_type get_value_clip()const { assert(data_); if(clipped())return value_type(); return *data_; }
@@ -409,15 +409,15 @@ public:
 	void put_block_clip(int h, int w) { put_block_clip(h,w,value_); }
 
 
-	iterator_x operator[](int i)const { assert(data_); return (pointer)(((char*)data_)+i*pitch_); }
+	iterator_x operator[](int i)const { assert(data_); return (pointer)(((char*)data_)+(std::ptrdiff_t)i*pitch_); }
 
 	iterator_x x() { assert(data_); return data_; }
 	iterator_x begin_x() { assert(data_); return data_-x_; }
 	iterator_x end_x() { assert(data_); return data_-x_+w_; }
 
 	iterator_y y() { assert(data_); return iterator_y(data_,pitch_); }
-	iterator_y begin_y() { assert(data_); return iterator_y((pointer)((char*)data_ - y_*pitch_),pitch_); }
-	iterator_y end_y() { assert(data_); return iterator_y((pointer)((char*)data_ + (h_-y_)*pitch_),pitch_); }
+	iterator_y begin_y() { assert(data_); return iterator_y((pointer)((char*)data_ - (std::ptrdiff_t)y_*pitch_),pitch_); }
+	iterator_y end_y() { assert(data_); return iterator_y((pointer)((char*)data_ + (std::ptrdiff_t)(h_-y_)*pitch_),pitch_); }
 
 	explicit operator bool()const { return (bool)data_; }
 	bool operator!()const { return !data_; }
@@ -430,8 +430,8 @@ public:
 	{
 		assert(data_);
 		assert(pitch_==rhs.pitch_);
-		int ptr_diff=(char*)data_-(char*)rhs.data_-1;
-		return difference_type(ptr_diff%pitch_/sizeof(value_type)+1,ptr_diff/pitch_);
+		std::ptrdiff_t ptr_diff=(char*)data_-(char*)rhs.data_-1;
+		return difference_type((int)(ptr_diff%pitch_/sizeof(value_type)+1),(int)(ptr_diff/pitch_));
 	}
 
 	self_type operator+(const difference_type &rhs)const
@@ -444,7 +444,7 @@ public:
 
 	int get_width()const {return w_;}
 	int get_height()const {return h_;}
-	int get_pitch()const {return pitch_;}
+	std::ptrdiff_t get_pitch()const {return pitch_;}
 };
 
 /**
