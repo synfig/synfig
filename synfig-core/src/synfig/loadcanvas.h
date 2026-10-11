@@ -70,17 +70,21 @@ struct CanvasMissingId
 
 typedef std::vector<CanvasMissingId> CanvasMissingIdList;
 
+/**
+ * - List of valuenode or canvas IDs with missing external file
+ * - External ile to use instead of that missing one
+ */
 struct BrokenUseIdInfo
 {
-	filesystem::Path replacement;
 	CanvasMissingIdList missing_items;
+	filesystem::Path replacement;
 };
 
 /** Map to fix broken links due to missing files
  *  (original_file_path, (new_file_path, [(valuenode_id, value_type), ...]))
  *  If new_file_path is null, there is no replacement file path to that item
  */
-struct CanvasBrokenUseIdMap : private std::map<filesystem::Path, BrokenUseIdInfo>
+struct MissingFileFixer : private std::map<filesystem::Path, BrokenUseIdInfo>
 {
 	bool
 	fix(std::string& use_id) const
@@ -111,7 +115,7 @@ struct CanvasBrokenUseIdMap : private std::map<filesystem::Path, BrokenUseIdInfo
 		auto missing_file = filesystem::Path(use_id.substr(0, pos));
 		auto missing_file_iter = find(missing_file);
 		if (missing_file_iter == end()) {
-			(*this)[missing_file] = {{}, {item}};
+			(*this)[missing_file] = {{item}, {}};
 		} else {
 			CanvasMissingIdList& missing_items = missing_file_iter->second.missing_items;
 			if (missing_items.end() == std::find(missing_items.begin(), missing_items.end(), item))
@@ -171,7 +175,7 @@ private:
 	/** maps a missing external file to another existent one.
 	 *  User maybe moved or renamed the files without taking care of this one.
 	 */
-	CanvasBrokenUseIdMap filepath_fix_map;
+	MissingFileFixer filepath_fix_map;
 	/*
  --	** -- C O N S T R U C T O R S ---------------------------------------------
 	*/
@@ -213,9 +217,9 @@ public:
 	const synfig::String& get_warnings_text()const { return warnings_text; }
 
 	/** Gets the list of the broken "use" attribute ID values due to missing files */
-	const CanvasBrokenUseIdMap& get_broken_use_ids() const;
+	const MissingFileFixer& get_broken_use_ids() const;
 	/** Sets the map of (missing file, replacement file) that fixes load of "use" attribute content */
-	void set_broken_use_ids(const CanvasBrokenUseIdMap& map);
+	void set_broken_use_ids(const MissingFileFixer& map);
 
 	//! Register a canvas in the canvas map
 	/*! \param canvas The handle to the canvas to register
@@ -335,7 +339,7 @@ struct LoadingIssues
 {
 	String errors;
 	String warnings;
-	CanvasBrokenUseIdMap* broken_links = nullptr;
+	MissingFileFixer* missing_files = nullptr;
 };
 
 //!	Loads a canvas from current xmlpp Element

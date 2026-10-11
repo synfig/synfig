@@ -3663,9 +3663,9 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 	{
 		OneMoment one_moment;
 
-		CanvasBrokenUseIdMap broken_links;
+		MissingFileFixer missing_files;
 		LoadingIssues issues;
-		issues.broken_links = &broken_links;
+		issues.missing_files = &missing_files;
 
 		// try open container
 		FileSystem::Handle container = CanvasFileNaming::make_filesystem_container(filename.u8string(), truncate_storage_size);
@@ -3691,7 +3691,7 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 				// throw (String)strprintf(_("\"%s\" appears to already be open!"),filename.c_str());
 			} else {
 				if (!canvas) {
-					if (!broken_links.empty()) {
+					if (!missing_files.empty()) {
 						// show dialog
 						// if dialog cancelled, resume loop;
 						// if confirmed, continue.
@@ -3700,7 +3700,7 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 							synfig::error(_("Couldn't open dialog for fixing missing files"));
 						} else {
 							dialog->set_canvas_filepath(filename);
-							dialog->set_broken_useids(broken_links);
+							dialog->set_broken_useids(missing_files);
 							if (dialog->run() == Gtk::RESPONSE_OK) {
 								continue;
 							}
@@ -3730,7 +3730,7 @@ App::open(filesystem::Path filename, /* std::string as, */ synfig::FileContainer
 
 				one_moment.hide();
 
-				if (!broken_links.empty()) {
+				if (!missing_files.empty()) {
 					// This file isn't saved! mark it as such
 					instance->inc_action_count();
 				}

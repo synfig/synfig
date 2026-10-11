@@ -552,19 +552,19 @@ Canvas::_get_relative_id(etl::loose_handle<const Canvas> x)const
 }
 
 ValueNode::Handle
-Canvas::find_value_node(const String &id, bool might_fail, const Type& expected_type, CanvasBrokenUseIdMap* broken_links)
+Canvas::find_value_node(const String& id, bool might_fail, const Type& expected_type, MissingFileFixer* missing_files)
 {
 	return
 		ValueNode::Handle::cast_const(
-			const_cast<const Canvas*>(this)->find_value_node(id, might_fail, expected_type, broken_links)
+			const_cast<const Canvas*>(this)->find_value_node(id, might_fail, expected_type, missing_files)
 		);
 }
 
 ValueNode::ConstHandle
-Canvas::find_value_node(const String &id, bool might_fail, const Type& expected_type, CanvasBrokenUseIdMap* broken_links)const
+Canvas::find_value_node(const String& id, bool might_fail, const Type& expected_type, MissingFileFixer* missing_files) const
 {
 	if(is_inline() && parent_)
-		return parent_->find_value_node(id, might_fail, expected_type, broken_links);
+		return parent_->find_value_node(id, might_fail, expected_type, missing_files);
 
 	if(id.empty())
 	{
@@ -586,19 +586,19 @@ Canvas::find_value_node(const String &id, bool might_fail, const Type& expected_
 
 	String warnings;
 	try {
-		return find_canvas(canvas_id, warnings, broken_links)->value_node_list_.find(value_node_id, might_fail);
+		return find_canvas(canvas_id, warnings, missing_files)->value_node_list_.find(value_node_id, might_fail);
 	} catch (...) {
-		if (broken_links)
-			broken_links->add(id, expected_type.description.name);
+		if (missing_files)
+			missing_files->add(id, expected_type.description.name);
 		throw;
 	}
 }
 
 ValueNode::Handle
-Canvas::surefind_value_node(const String &id, const Type& expected_type, CanvasBrokenUseIdMap* broken_links)
+Canvas::surefind_value_node(const String& id, const Type& expected_type, MissingFileFixer* missing_files)
 {
 	if(is_inline() && parent_)
-		return parent_->surefind_value_node(id, expected_type, broken_links);
+		return parent_->surefind_value_node(id, expected_type, missing_files);
 
 	if(id.empty())
 		throw Exception::IDNotFound("Empty ID");
@@ -615,10 +615,10 @@ Canvas::surefind_value_node(const String &id, const Type& expected_type, CanvasB
 
 	String warnings;
 	try {
-		return surefind_canvas(canvas_id,warnings, broken_links)->value_node_list_.surefind(value_node_id);
+		return surefind_canvas(canvas_id,warnings, missing_files)->value_node_list_.surefind(value_node_id);
 	} catch (...) {
-		if (broken_links)
-			broken_links->add(id, expected_type.description.name);
+		if (missing_files)
+			missing_files->add(id, expected_type.description.name);
 		throw;
 	}
 }
@@ -712,10 +712,10 @@ Canvas::remove_value_node(ValueNode::Handle x, bool might_fail)
 }
 
 Canvas::Handle
-Canvas::surefind_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap* broken_links)
+Canvas::surefind_canvas(const String& id, String& warnings, MissingFileFixer* missing_files)
 {
 	if(is_inline() && parent_)
-		return parent_->surefind_canvas(id, warnings, broken_links);
+		return parent_->surefind_canvas(id, warnings, missing_files);
 
 	if(id.empty())
 		return this;
@@ -727,7 +727,7 @@ Canvas::surefind_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap
 		// If '#' is the first character, remove it
 		// and attempt to parse the ID again.
 		if(id[0]=='#')
-			return surefind_canvas(String(id,1),warnings, broken_links);
+			return surefind_canvas(String(id,1),warnings, missing_files);
 
 		//! \todo This needs a lot more optimization
 		String file_name(id,0,id.find_first_of('#'));
@@ -755,7 +755,7 @@ Canvas::surefind_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap
 			externals_[file_name]=external_canvas;
 		}
 
-		return Handle::cast_const(external_canvas.constant()->find_canvas(external_id, warnings, broken_links));
+		return Handle::cast_const(external_canvas.constant()->find_canvas(external_id, warnings, missing_files));
 	}
 
 	// If we do not have any resolution, then we assume that the
@@ -778,7 +778,7 @@ Canvas::surefind_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap
 	// If the first character is the separator, then
 	// this references the root canvas.
 	if(id[0]==':')
-		return get_root()->surefind_canvas(std::string(id,1),warnings, broken_links);
+		return get_root()->surefind_canvas(std::string(id,1),warnings, missing_files);
 
 	// Now we know that the requested Canvas is in a child
 	// of this canvas. We have to find that canvas and
@@ -786,25 +786,25 @@ Canvas::surefind_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap
 
 	String canvas_name=std::string(id,0,id.find_first_of(':'));
 
-	Canvas::Handle child_canvas=surefind_canvas(canvas_name,warnings, broken_links);
+	Canvas::Handle child_canvas=surefind_canvas(canvas_name,warnings, missing_files);
 
-	return child_canvas->surefind_canvas(std::string(id,id.find_first_of(':')+1),warnings, broken_links);
+	return child_canvas->surefind_canvas(std::string(id,id.find_first_of(':')+1),warnings, missing_files);
 }
 
 Canvas::Handle
-Canvas::find_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap* broken_links)
+Canvas::find_canvas(const String& id, String& warnings, MissingFileFixer* missing_files)
 {
 	return
 		Canvas::Handle::cast_const(
-			const_cast<const Canvas*>(this)->find_canvas(id, warnings, broken_links)
+			const_cast<const Canvas*>(this)->find_canvas(id, warnings, missing_files)
 		);
 }
 
 Canvas::ConstHandle
-Canvas::find_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap* broken_links)const
+Canvas::find_canvas(const String& id, String& warnings, MissingFileFixer* missing_files) const
 {
 	if(is_inline() && parent_)
-		return parent_->find_canvas(id, warnings, broken_links);
+		return parent_->find_canvas(id, warnings, missing_files);
 
 	if(id.empty())
 		return this;
@@ -816,7 +816,7 @@ Canvas::find_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap* br
 		// If '#' is the first character, remove it
 		// and attempt to parse the ID again.
 		if(id[0]=='#')
-			return find_canvas(String(id,1), warnings, broken_links);
+			return find_canvas(String(id,1), warnings, missing_files);
 
 		//! \todo This needs a lot more optimization
 		String file_name(id,0,id.find_first_of('#'));
@@ -841,7 +841,7 @@ Canvas::find_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap* br
 			externals_[file_name]=external_canvas;
 		}
 
-		return Handle::cast_const(external_canvas.constant()->find_canvas(external_id, warnings, broken_links));
+		return Handle::cast_const(external_canvas.constant()->find_canvas(external_id, warnings, missing_files));
 	}
 
 	// If we do not have any resolution, then we assume that the
@@ -862,7 +862,7 @@ Canvas::find_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap* br
 	// If the first character is the separator, then
 	// this references the root canvas.
 	if(id[0]==':')
-		return get_root()->find_canvas(std::string(id,1), warnings, broken_links);
+		return get_root()->find_canvas(std::string(id,1), warnings, missing_files);
 
 	// Now we know that the requested Canvas is in a child
 	// of this canvas. We have to find that canvas and
@@ -870,9 +870,9 @@ Canvas::find_canvas(const String &id, String &warnings, CanvasBrokenUseIdMap* br
 
 	String canvas_name=std::string(id,0,id.find_first_of(':'));
 
-	Canvas::ConstHandle child_canvas=find_canvas(canvas_name, warnings, broken_links);
+	Canvas::ConstHandle child_canvas=find_canvas(canvas_name, warnings, missing_files);
 
-	return child_canvas->find_canvas(std::string(id,id.find_first_of(':')+1), warnings, broken_links);
+	return child_canvas->find_canvas(std::string(id,id.find_first_of(':')+1), warnings, missing_files);
 }
 
 Canvas::Handle

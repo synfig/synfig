@@ -57,7 +57,7 @@ public:
 
 	void set_canvas_filepath(const synfig::filesystem::Path& path);
 
-	void set_broken_useids(synfig::CanvasBrokenUseIdMap& map);
+	void set_broken_useids(synfig::MissingFileFixer& map);
 
 protected:
 	void on_response(int response_id) override;
@@ -69,13 +69,13 @@ private:
 
 	Glib::RefPtr<Gtk::ListBox> missing_file_list_;
 	Glib::RefPtr<Gtk::Label> canvas_filepath_label_;
-	synfig::CanvasBrokenUseIdMap* map_;
+	synfig::MissingFileFixer* map_;
 
 	/** maps (original file path, replacer file path) **/
 	typedef std::map<synfig::filesystem::Path, synfig::filesystem::Path> FileReplacerMap;
 	FileReplacerMap replacer_map_;
 
-	void create_row(FileReplacerMap& replacer_map, const synfig::CanvasBrokenUseIdMap::const_iterator& iter);
+	void create_row(FileReplacerMap& replacer_map, const synfig::MissingFileFixer::const_iterator& iter);
 
 	void on_replace_button_clicked(const synfig::filesystem::Path& missing_path, Gtk::Label* label);
 
