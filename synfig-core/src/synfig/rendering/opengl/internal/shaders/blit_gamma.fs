@@ -1,9 +1,9 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/glsl/color_fragment.glsl
-**	\brief Color Fragment Shader
+/*!	\file synfig/rendering/opengl/internal/glsl/blit_gamma.fs
+**	\brief Blit Gamma Fragment Shader
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -25,10 +25,19 @@
 
 #version 330 core
 
-uniform vec4 color;
-layout(location = 0) out vec4 out_color;
+uniform sampler2D tex;
+uniform ivec2 offset;
+
+uniform vec3 gamma;
+
+layout (location = 0) out vec4 out_color;
 
 void main()
 {
-	out_color = color;
+	ivec2 coord = ivec2(floor(gl_FragCoord));
+	vec4 col = texelFetch(tex, coord + offset, 0);
+    col.r = col.r < 0 ? -pow(-col.r, gamma.r) : pow(col.r, gamma.r);
+    col.g = col.g < 0 ? -pow(-col.g, gamma.g) : pow(col.g, gamma.g);
+    col.b = col.b < 0 ? -pow(-col.b, gamma.b) : pow(col.b, gamma.b);
+	out_color = col;
 }

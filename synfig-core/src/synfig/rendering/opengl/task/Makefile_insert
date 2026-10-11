@@ -1,16 +1,16 @@
 RENDERING_OPENGL_TASK_HH = \
-	rendering/opengl/task/taskcontourgl.h \
 	rendering/opengl/task/taskgl.h
 
 RENDERING_OPENGL_TASK_CC = \
+	rendering/opengl/task/taskgl.cpp \
+	rendering/opengl/task/taskpixelcolormatrixgl.cpp \
 	rendering/opengl/task/taskblendgl.cpp \
 	rendering/opengl/task/taskcontourgl.cpp \
-	rendering/opengl/task/taskgl.cpp \
-	rendering/opengl/task/tasktransformationaffinegl.cpp
+	rendering/opengl/task/taskblurgl.cpp
 
-RENDERING_OPENGL_HH += \
+RENDERING_HH += \
     $(RENDERING_OPENGL_TASK_HH)
 
-RENDERING_OPENGL_CC += \
+RENDERING_CC += \
     $(RENDERING_OPENGL_TASK_CC)
 

@@ -52,10 +52,7 @@
 #include "software/rendererpreviewsw.h"
 #include "software/rendererlowressw.h"
 #include "software/renderersafe.h"
-#ifdef WITH_OPENGL
 #include "opengl/renderergl.h"
-#include "opengl/task/taskgl.h"
-#endif
 
 #endif
 
@@ -72,7 +69,6 @@ using namespace rendering;
 //#define DEBUG_OPTIMIZATION
 //#define DEBUG_OPTIMIZATION_EACH_CHANGE
 #endif
-
 
 /* === M A C R O S ========================================================= */
 
@@ -95,9 +91,7 @@ Renderer::initialize_renderers()
 {
 	// initialize renderers
 	RendererSW::initialize();
-#ifdef WITH_OPENGL
 	RendererGL::initialize();
-#endif
 
 	// register renderers
 	register_renderer("software", new RendererSW());
@@ -108,17 +102,13 @@ Renderer::initialize_renderers()
 	register_renderer("software-low8",  new RendererLowResSW(8));
 	register_renderer("software-low16", new RendererLowResSW(16));
 	register_renderer("safe", new RendererSafe());
-#ifdef WITH_OPENGL
 	register_renderer("gl", new RendererGL());
-#endif
 }
 
 void
 Renderer::deinitialize_renderers()
 {
-#ifdef WITH_OPENGL
 	RendererGL::deinitialize();
-#endif
 	RendererSW::deinitialize();
 }
 

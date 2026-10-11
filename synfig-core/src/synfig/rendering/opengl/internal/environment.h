@@ -4,6 +4,7 @@
 **
 **	\legal
 **	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -30,19 +31,14 @@
 
 /* === H E A D E R S ======================================================= */
 
-#include <synfig/rendering/opengl/internal/samplers.h>
-#include <cassert>
-
-#include "antialiasing.h"
-#include "buffers.h"
 #include "context.h"
-#ifdef WITH_OPENCL
-#include "clcontext.h"
-#endif
-#include "framebuffers.h"
-#include "misc.h"
-#include "samplers.h"
 #include "shaders.h"
+
+#include <cassert>
+#include <thread>
+#include <mutex>
+
+#include <map>
 
 /* === M A C R O S ========================================================= */
 
@@ -59,40 +55,48 @@ namespace gl
 
 class Environment
 {
-private:
-	static Environment *instance;
-
 public:
-	Context context;
-#ifdef WITH_OPENCL
-	ClContext clcontext;
-#endif
-	Samplers samplers;
-	Buffers buffers;
-	Shaders shaders;
-	Antialiasing antialiasing;
-	Framebuffers framebuffers;
-	Misc misc;
-
-	Environment():
-		context(),
-#ifdef WITH_OPENCL
-		clcontext(),
-#endif
-		samplers(context),
-		buffers(context),
-		shaders(context),
-		antialiasing(context),
-		framebuffers(context),
-		misc(context)
-	{ }
+	Environment();
+	~Environment();
 
 	static Environment& get_instance()
-		{ assert(instance); return *instance; }
+	{
+		assert(is_valid(instance));
+		return *instance;
+	}
+
 	static void initialize()
-		{ assert(!instance); instance = new Environment(); }
+	{
+		assert(!is_valid(instance));
+		instance = new Environment();
+	}
+
 	static void deinitialize()
-		{ assert(instance); delete instance; }
+	{
+		delete instance;
+	}
+
+	static bool is_valid(Environment* instance)
+	{
+		return instance && instance->valid;
+	}
+
+	// Context& get_or_create_context(std::thread::id id);
+
+	Context& get_or_create_context();
+
+private:
+	std::mutex mutex;
+
+	bool valid;
+	static Environment* instance;
+
+	// std::thread mainThread;
+	Context* mainContext = nullptr;
+
+	// Shaders* shaders = nullptr;
+
+	// std::map<std::thread::id, Context*> contexts;
 };
 
 }; /* end namespace gl */
