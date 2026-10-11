@@ -184,21 +184,21 @@ synfig::open_canvas_as(const FileSystem::Identifier& identifier, const String& a
 	try
 	{
 		CanvasParser::loading_.insert(identifier);
-		if (issues.broken_links)
-			parser.set_broken_use_ids(*issues.broken_links);
+		if (issues.missing_files)
+			parser.set_broken_use_ids(*issues.missing_files);
 		canvas = parser.parse_from_file_as(identifier, filename, issues.errors);
 	}
 	catch (...)
 	{
 		CanvasParser::loading_.erase(identifier);
-		if (issues.broken_links)
-			*issues.broken_links = parser.get_broken_use_ids();
+		if (issues.missing_files)
+			*issues.missing_files = parser.get_broken_use_ids();
 		throw;
 	}
 
 	CanvasParser::loading_.erase(identifier);
-	if (issues.broken_links)
-		*issues.broken_links = parser.get_broken_use_ids();
+	if (issues.missing_files)
+		*issues.missing_files = parser.get_broken_use_ids();
 
 	issues.warnings = parser.get_warnings_text();
 
@@ -3698,14 +3698,14 @@ synfig::open_canvas(xmlpp::Element* node, LoadingIssues& issues){
 	return canvas;
 }
 
-const CanvasBrokenUseIdMap&
+const MissingFileFixer&
 CanvasParser::get_broken_use_ids() const
 {
 	return filepath_fix_map;
 }
 
 void
-CanvasParser::set_broken_use_ids(const CanvasBrokenUseIdMap& map)
+CanvasParser::set_broken_use_ids(const MissingFileFixer& map)
 {
 	filepath_fix_map = map;
 }

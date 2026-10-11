@@ -86,9 +86,9 @@ load_canvas_file(const synfig::filesystem::Path& filename)
 	// file to open inside canvas file-system
 	synfig::String canvas_filename = synfig::CanvasFileNaming::project_file(filename.u8string());
 
-	synfig::CanvasBrokenUseIdMap broken_links;
+	synfig::MissingFileFixer missing_files;
 	synfig::LoadingIssues issues;
-	issues.broken_links = &broken_links;
+	issues.missing_files = &missing_files;
 
 	auto canvas = open_canvas_as(canvas_file_system ->get_identifier(canvas_filename), filename.u8string(), issues);
 
@@ -169,7 +169,7 @@ Dialog_FixMissingFiles::set_canvas_filepath(const synfig::filesystem::Path& path
 }
 
 void
-Dialog_FixMissingFiles::set_broken_useids(synfig::CanvasBrokenUseIdMap& map)
+Dialog_FixMissingFiles::set_broken_useids(synfig::MissingFileFixer& map)
 {
 	map_ = &map;
 	replacer_map_.clear();
@@ -202,7 +202,7 @@ Dialog_FixMissingFiles::on_response(int response_id)
 }
 
 void
-Dialog_FixMissingFiles::create_row(Dialog_FixMissingFiles::FileReplacerMap& replacer_map, const synfig::CanvasBrokenUseIdMap::const_iterator& iter)
+Dialog_FixMissingFiles::create_row(Dialog_FixMissingFiles::FileReplacerMap& replacer_map, const synfig::MissingFileFixer::const_iterator& iter)
 {
 	synfig::filesystem::Path missing_path(iter->first.u8string());
 	const synfig::BrokenUseIdInfo& uses = iter->second;
