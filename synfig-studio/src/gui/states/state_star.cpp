@@ -304,6 +304,24 @@ public:
 
 	void toggle_layer_creation();
 
+	class EgressAvoider
+	{
+	public:
+		explicit EgressAvoider(bool& egress_on_selection_change)
+			: egress_on_selection_change_(egress_on_selection_change)
+		{
+			previous_value = egress_on_selection_change;
+			egress_on_selection_change_ = false;
+		}
+		virtual ~EgressAvoider()
+		{
+			egress_on_selection_change_ = previous_value;
+		}
+	private:
+		bool& egress_on_selection_change_;
+		bool previous_value;
+	};
+
 };	// END of class StateStar_Context
 
 /* === M E T H O D S ======================================================= */
@@ -869,15 +887,15 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	ValueBase blend_param_value(get_blend());
 	blend_param_value.set_static(true);
 
+	EgressAvoider egress_guard(egress_on_selection_change);
+
 	///////////////////////////////////////////////////////////////////////////
 	//   S T A R
 	///////////////////////////////////////////////////////////////////////////
 
 	if (get_layer_star_flag())
 	{
-		egress_on_selection_change=false;
 		layer=get_canvas_interface()->add_layer_to("star",canvas,depth);
-		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -953,9 +971,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	{
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
-		egress_on_selection_change=false;
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("curve_gradient",canvas,depth));
-		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -1033,9 +1049,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	{
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
-		egress_on_selection_change=false;
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("plant",canvas,depth));
-		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -1108,9 +1122,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	{
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
-		egress_on_selection_change=false;
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("region",canvas,depth));
-		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -1191,9 +1203,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	{
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
-		egress_on_selection_change=false;
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("outline",canvas,depth));
-		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -1275,9 +1285,7 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 	{
 		synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
-		egress_on_selection_change=false;
 		Layer::Handle layer(get_canvas_interface()->add_layer_to("advanced_outline",canvas,depth));
-		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -1350,10 +1358,8 @@ StateStar_Context::make_star(const Point& _p1, const Point& _p2)
 			get_canvas_interface()->signal_layer_param_changed()(layer,"origin");
 		}
 	}
-	egress_on_selection_change=false;
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
-	egress_on_selection_change=true;
 
 	reset();
 	increment_id();

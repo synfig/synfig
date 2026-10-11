@@ -280,6 +280,23 @@ public:
 
 	void toggle_layer_creation();
 
+	class EgressAvoider
+	{
+	public:
+		explicit EgressAvoider(bool& egress_on_selection_change)
+			: egress_on_selection_change_(egress_on_selection_change)
+		{
+			previous_value = egress_on_selection_change;
+			egress_on_selection_change_ = false;
+		}
+		virtual ~EgressAvoider()
+		{
+			egress_on_selection_change_ = previous_value;
+		}
+	private:
+		bool& egress_on_selection_change_;
+		bool previous_value;
+	};
 };	// END of class StateBLine_Context
 
 /* === P R O C E D U R E S ================================================= */
@@ -800,6 +817,8 @@ StateBLine_Context::run_()
 		ValueBase blend_param_value(get_blend());
 		blend_param_value.set_static(true);
 
+		EgressAvoider egress_guard(egress_on_selection_change);
+
 		///////////////////////////////////////////////////////////////////////////
 		//   C U R V E   G R A D I E N T
 		///////////////////////////////////////////////////////////////////////////
@@ -808,9 +827,7 @@ StateBLine_Context::run_()
 		{
 			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
-			egress_on_selection_change=false;
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("curve_gradient",canvas,depth));
-			egress_on_selection_change=true;
 			if (!layer)
 			{
 				group.cancel();
@@ -878,9 +895,7 @@ StateBLine_Context::run_()
 		{
 			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
-			egress_on_selection_change=false;
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("plant",canvas,depth));
-			egress_on_selection_change=true;
 			if (!layer)
 			{
 				group.cancel();
@@ -948,9 +963,7 @@ StateBLine_Context::run_()
 		{
 			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
-			egress_on_selection_change=false;
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("region",canvas,depth));
-			egress_on_selection_change=true;
 			if (!layer)
 			{
 				group.cancel();
@@ -1026,9 +1039,7 @@ StateBLine_Context::run_()
 		{
 			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
-			egress_on_selection_change=false;
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("outline",canvas,depth));
-			egress_on_selection_change=true;
 			if (!layer)
 			{
 				group.cancel();
@@ -1105,9 +1116,7 @@ StateBLine_Context::run_()
 		{
 			synfigapp::PushMode push_mode(get_canvas_interface(),synfigapp::MODE_NORMAL);
 
-			egress_on_selection_change=false;
 			Layer::Handle layer(get_canvas_interface()->add_layer_to("advanced_outline",canvas,depth));
-			egress_on_selection_change=true;
 			if (!layer)
 			{
 				group.cancel();
@@ -1176,10 +1185,8 @@ StateBLine_Context::run_()
 			}
 		}
 
-		egress_on_selection_change=false;
 		get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 		get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
-		egress_on_selection_change=true;
 
 	} while(0);
 
