@@ -224,7 +224,7 @@ CanvasInterface::layer_create(
 			String valuenode_id = strprintf(_("Index %d"), i);
 			try
 			{
-				canvas->find_value_node(valuenode_id, true);
+				canvas->find_value_node(valuenode_id);
 			}
 			catch (const Exception::IDNotFound& x)
 			{

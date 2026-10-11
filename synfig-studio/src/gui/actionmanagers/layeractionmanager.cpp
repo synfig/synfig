@@ -614,7 +614,7 @@ LayerActionManager::export_dup_nodes(synfig::Layer::Handle layer, Canvas::Handle
 			String name = strprintf(_("Index %d"), index++);
 			try
 			{
-				canvas->find_value_node(name, true);
+				canvas->find_value_node(name);
 			}
 			catch (const Exception::IDNotFound& x)
 			{
@@ -714,7 +714,7 @@ bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::H
 			} else {
 				ValueNode::Handle local_canvas_value_node;
 				try {
-					local_canvas_value_node = canvas->find_value_node(modified_id, true);
+					local_canvas_value_node = canvas->find_value_node(modified_id);
 				} catch (...) {
 				}
 				const bool link_to_local_canvas = static_cast<bool>(local_canvas_value_node);
@@ -771,7 +771,7 @@ LayerActionManager::export_value_nodes(Canvas::Handle canvas, const ValueNodeRep
 			continue;
 
 		try {
-			canvas->find_value_node(modified_id, true);
+			canvas->find_value_node(modified_id);
 		} catch (...) {
 			action->set_param("new",item.second.first);
 			action->set_param("name",modified_id);

@@ -65,12 +65,6 @@ synfig::find_value_node(const GUID& guid)
 
 /* === M E T H O D S ======================================================= */
 
-void
-ValueNode::breakpoint()
-{
-	return;
-}
-
 ValueNode::ValueNode(Type &type):type(&type)
 {
 	value_node_count++;
@@ -373,7 +367,7 @@ ValueNodeList::count(const String &id)const
 }
 
 ValueNode::Handle
-ValueNodeList::find(const String &id, bool might_fail)
+ValueNodeList::find(const String& id)
 {
 	iterator iter;
 
@@ -385,7 +379,6 @@ ValueNodeList::find(const String &id, bool might_fail)
 
 	if(iter==end())
 	{
-		if (!might_fail) ValueNode::breakpoint();
 		throw Exception::IDNotFound("ValueNode in ValueNodeList: "+id);
 	}
 
@@ -393,7 +386,7 @@ ValueNodeList::find(const String &id, bool might_fail)
 }
 
 ValueNode::ConstHandle
-ValueNodeList::find(const String &id, bool might_fail)const
+ValueNodeList::find(const String& id) const
 {
 	const_iterator iter;
 
@@ -405,7 +398,6 @@ ValueNodeList::find(const String &id, bool might_fail)const
 
 	if(iter==end())
 	{
-		if (!might_fail) ValueNode::breakpoint();
 		throw Exception::IDNotFound("ValueNode in ValueNodeList: "+id);
 	}
 
@@ -422,7 +414,7 @@ ValueNodeList::surefind(const String &id)
 
 	try
 	{
-		value_node=find(id, true);
+		value_node = find(id);
 	}
 	catch(Exception::IDNotFound&)
 	{
@@ -463,7 +455,7 @@ ValueNodeList::add(ValueNode::Handle value_node)
 
 	try
 	{
-		ValueNode::RHandle other_value_node=find(value_node->get_id(), true);
+		ValueNode::RHandle other_value_node = find(value_node->get_id());
 		if(PlaceholderValueNode::Handle::cast_dynamic(other_value_node))
 		{
 			other_value_node->replace(value_node);

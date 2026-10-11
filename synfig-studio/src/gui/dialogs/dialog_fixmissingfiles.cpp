@@ -110,7 +110,7 @@ check_canvas_has_missing_items(synfig::Canvas::LooseHandle canvas, const synfig:
 			continue;
 
 		try {
-			if (auto vn = canvas->find_value_node(item.id, true, synfig::type_nil, nullptr)) {
+			if (auto vn = canvas->find_value_node(item.id, synfig::type_nil, nullptr)) {
 				synfig::warning("found %s : %s - %s", item.id.c_str(), item.type_name.c_str(), vn->get_type().description.name.c_str());
 				if (item.type_name.empty())
 					synfig::warning("The type of %s was still empty!", item.id.c_str());
