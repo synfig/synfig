@@ -552,30 +552,29 @@ Canvas::_get_relative_id(etl::loose_handle<const Canvas> x)const
 }
 
 ValueNode::Handle
-Canvas::find_value_node(const String& id, bool might_fail, const Type& expected_type, MissingFileFixer* missing_files)
+Canvas::find_value_node(const String& id, const Type& expected_type, MissingFileFixer* missing_files)
 {
 	return
 		ValueNode::Handle::cast_const(
-			const_cast<const Canvas*>(this)->find_value_node(id, might_fail, expected_type, missing_files)
+			const_cast<const Canvas*>(this)->find_value_node(id, expected_type, missing_files)
 		);
 }
 
 ValueNode::ConstHandle
-Canvas::find_value_node(const String& id, bool might_fail, const Type& expected_type, MissingFileFixer* missing_files) const
+Canvas::find_value_node(const String& id, const Type& expected_type, MissingFileFixer* missing_files) const
 {
 	if(is_inline() && parent_)
-		return parent_->find_value_node(id, might_fail, expected_type, missing_files);
+		return parent_->find_value_node(id, expected_type, missing_files);
 
 	if(id.empty())
 	{
-		if (!might_fail) ValueNode::breakpoint();
 		throw Exception::IDNotFound("Empty ID");
 	}
 
 	// If we do not have any resolution, then we assume that the
 	// request is for this immediate canvas
 	if(id.find_first_of(':')==std::string::npos && id.find_first_of('#')==std::string::npos)
-		return value_node_list_.find(id, might_fail);
+		return value_node_list_.find(id);
 
 	String canvas_id(id,0,id.rfind(':'));
 	String value_node_id(id,id.rfind(':')+1);
@@ -586,7 +585,7 @@ Canvas::find_value_node(const String& id, bool might_fail, const Type& expected_
 
 	String warnings;
 	try {
-		return find_canvas(canvas_id, warnings, missing_files)->value_node_list_.find(value_node_id, might_fail);
+		return find_canvas(canvas_id, warnings, missing_files)->value_node_list_.find(value_node_id);
 	} catch (...) {
 		if (missing_files)
 			missing_files->add(id, expected_type.description.name);
@@ -641,7 +640,7 @@ Canvas::add_value_node(ValueNode::Handle x, const String &id)
 
 	try
 	{
-		if(PlaceholderValueNode::Handle::cast_dynamic(value_node_list_.find(id, true)))
+		if (PlaceholderValueNode::Handle::cast_dynamic(value_node_list_.find(id)))
 			throw Exception::IDNotFound("add_value_node()");
 
 		throw Exception::IDAlreadyExists(id);
@@ -688,21 +687,19 @@ Canvas::rename_value_node(ValueNode::Handle x, const String &id)
 */
 
 void
-Canvas::remove_value_node(ValueNode::Handle x, bool might_fail)
+Canvas::remove_value_node(ValueNode::Handle x)
 {
 	if(is_inline() && parent_)
-		return parent_->remove_value_node(x, might_fail);
+		return parent_->remove_value_node(x);
 //		throw Exception::IDNotFound("Canvas::remove_value_node() was called from an inline canvas");
 
 	if(!x)
 	{
-		if (!might_fail) ValueNode::breakpoint();
 		throw Exception::IDNotFound("Canvas::remove_value_node() was passed empty handle");
 	}
 
 	if(!value_node_list_.erase(x))
 	{
-		if (!might_fail) ValueNode::breakpoint();
 		throw Exception::IDNotFound("Canvas::remove_value_node(): ValueNode was not found inside of this canvas");
 	}
 

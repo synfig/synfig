@@ -504,7 +504,7 @@ public:
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::Handle find_value_node(const String& id, bool might_fail, const Type& expected_type = type_nil, MissingFileFixer* missing_files = nullptr);
+	ValueNode::Handle find_value_node(const String& id, const Type& expected_type = type_nil, MissingFileFixer* missing_files = nullptr);
 
 	//! \internal \writeme
 	ValueNode::Handle surefind_value_node(const String& id, const Type& expected_type = type_nil, MissingFileFixer* missing_files = nullptr);
@@ -513,7 +513,7 @@ public:
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::ConstHandle find_value_node(const String& id, bool might_fail, const Type& expected_type = type_nil, MissingFileFixer* missing_files = nullptr) const;
+	ValueNode::ConstHandle find_value_node(const String& id, const Type& expected_type = type_nil, MissingFileFixer* missing_files = nullptr) const;
 
 	//! Adds a Value node by its Id.
 	/*! Throws an error if the Id is not
@@ -525,10 +525,10 @@ public:
 	//void rename_value_node(ValueNode::Handle x, const String &id);
 
 	//! Removes a Value Node from the Canvas by its Handle
-	void remove_value_node(ValueNode::Handle x, bool might_fail);
+	void remove_value_node(ValueNode::Handle x);
 
 	//! Removes a Value Node from the Canvas by its Id
-	void remove_value_node(const String &id, bool might_fail) { remove_value_node(find_value_node(id, might_fail, type_nil), might_fail); }
+	void remove_value_node(const String& id) { remove_value_node(find_value_node(id, type_nil)); }
 
 	//! Finds a child Canvas in the Canvas with the given \a name
 	/*!	\return If found, returns a handle to the child Canvas.

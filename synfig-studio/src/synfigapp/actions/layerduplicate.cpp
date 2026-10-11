@@ -304,7 +304,7 @@ Action::LayerDuplicate::export_dup_nodes(synfig::Layer::Handle layer, Canvas::Ha
 			String name = strprintf(_("Index %d"), index++);
 			try
 			{
-				canvas->find_value_node(name, true);
+				canvas->find_value_node(name);
 			}
 			catch (const Exception::IDNotFound&)
 			{

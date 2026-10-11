@@ -194,7 +194,7 @@ void Action::ValueDescExport::scan_layer(synfig::Canvas::Handle prev_canvas, syn
 			action->set_param("canvas",get_canvas());
 			action->set_param("canvas_interface",get_canvas_interface());
 			action->set_param("dest",ValueDesc(layer, i->first));
-			action->set_param("src",new_canvas->find_value_node(i->second->get_id(),false));
+			action->set_param("src", new_canvas->find_value_node(i->second->get_id()));
 			assert(action->is_ready());
 			add_action(action);
 		}
@@ -222,7 +222,7 @@ void Action::ValueDescExport::scan_linkable_value_node(synfig::Canvas::Handle pr
 				action->set_param("canvas",get_canvas());
 				action->set_param("canvas_interface",get_canvas_interface());
 				action->set_param("dest",ValueDesc(linkable_value_node, i));
-				action->set_param("src",new_canvas->find_value_node(link->get_id(),false));
+				action->set_param("src", new_canvas->find_value_node(link->get_id()));
 				assert(action->is_ready());
 				add_action(action);
 			}
