@@ -139,7 +139,7 @@ synfig::ValueNode_Absolute::operator()(Time t) const
 }
 
 synfig::ValueBase
-synfig::ValueNode_Absolute::get_inverse(const Time& t, const synfig::ValueBase& target_value) const
+synfig::ValueNode_Absolute::get_inverse(const Time& /*t*/, const synfig::ValueBase& target_value) const
 {
 	const Type& target_type = target_value.get_type();
 	
