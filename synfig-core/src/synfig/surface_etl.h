@@ -270,7 +270,7 @@ public:
 	}
 
 	surface(const surface &s):
-		data_(s.data_?(pointer)(new char[s.pitch_*s.h_]):0),
+		data_(s.data_?(pointer)(new char[(size_t)s.pitch_*s.h_]):0),
 		pitch_(s.pitch_),
 		w_(s.w_),
 		h_(s.h_),
@@ -280,7 +280,7 @@ public:
 		if(s.data_)
 		{
 			assert(data_);
-			memcpy(data_, s.data_, pitch_ * h_);
+			memcpy(data_, s.data_, (size_t)pitch_ * h_);
 		}
 	}
 
@@ -305,7 +305,7 @@ public:
 		pitch_=rhs.pitch_;
 		deletable_=true;
 
-		memcpy(data_,rhs.data_,pitch_*h_);
+		memcpy(data_,rhs.data_,(size_t)pitch_*h_);
 
 		return *this;
 	}
@@ -315,7 +315,7 @@ public:
 	{
 		if(pitch_!=rhs.pitch_ || w_!=rhs.w_ || h_!=rhs.h_)
 			return;
-		memcpy(data_, rhs.data_, pitch_*h_);
+		memcpy(data_, rhs.data_, (size_t)pitch_*h_);
 	}
 
 	/** Change the surface size. It doesn't keep the previous pixel/sample values */
@@ -336,7 +336,7 @@ public:
 			pitch_=pitch;
 		else
 			pitch_=sizeof(value_type)*w_;
-		data_=(pointer)(new char[pitch_*h_]);
+		data_=(pointer)(new char[(size_t)pitch_*h_]);
 		deletable_=true;
 	}
 
@@ -423,19 +423,19 @@ public:
 	clear()
 	{
 		assert(data_);
-		if(pitch_==(signed int)sizeof(value_type)*w_)
-			memset(static_cast<void*>(data_), 0, h_*pitch_);
+		if(pitch_==(typename difference_type::value_type)sizeof(value_type)*w_)
+			memset(static_cast<void*>(data_), 0, (size_t)h_*pitch_);
 		else
 			fill(value_type());
 	}
 
 	iterator_x
 	operator[](const int &y)
-	{ assert(data_); return (pointer)(((char*)data_)+y*pitch_); }
+	{ assert(data_); return (pointer)(((char*)data_)+(std::ptrdiff_t)y*pitch_); }
 
 	const_iterator_x
 	operator[](const int &y)const
-	{ assert(data_); return (const_pointer)(((const char*)data_)+y*pitch_); }
+	{ assert(data_); return (const_pointer)(((const char*)data_)+(std::ptrdiff_t)y*pitch_); }
 
 
 	bool is_valid()const
