@@ -455,22 +455,31 @@ void SynfigCommandLineParser::process_info_options()
 			 << layer->get_local_name() << std::endl;
 		std::cout << _("Version: ") << layer->get_version() << std::endl;
 
-		Layer::Vocab vocab = layer->get_param_vocab();
-		for(; !vocab.empty(); vocab.pop_front())
-		{
-			std::cout << _("param - ") << vocab.front().get_name().c_str();
-			if(!vocab.front().get_critical())
+		for (const auto& param : layer->get_param_vocab()) {
+			std::cout << _("param - ") << param.get_name();
+			if (!param.get_critical())
 				std::cout << _(" (not critical)");
 			std::cout << std::endl << _("\tLocalized Name: ")
-				 << vocab.front().get_local_name().c_str() << std::endl;
+				 << param.get_local_name().c_str() << std::endl;
 
-			if(!vocab.front().get_description().empty())
+			const ValueBase value = layer->get_param(param.get_name());
+			const Type& type = value.get_type();
+			if (type != type_list) {
+				std::cout << _("\tValue type: ")
+					<< type.description.local_name << " (" << type.description.name << ")" << std::endl;
+			} else {
+				const Type::Description& content_desc = value.get_contained_type().description;
+				std::cout << _("\tValue type: ")
+					<< type.description.local_name << "[" << content_desc.local_name << "] (" << type.description.name << "[" << content_desc.name << "])" << std::endl;
+			}
+
+			if (!param.get_description().empty())
 				std::cout << _("\tDescription: ")
-					 << vocab.front().get_description().c_str() << std::endl;
+					 << param.get_description() << std::endl;
 
-			if(!vocab.front().get_hint().empty())
+			if (!param.get_hint().empty())
 				std::cout << _("\tHint: ")
-					 << vocab.front().get_hint().c_str() << std::endl;
+					 << param.get_hint() << std::endl;
 		}
 
 		throw (SynfigToolException(SYNFIGTOOL_HELP));
