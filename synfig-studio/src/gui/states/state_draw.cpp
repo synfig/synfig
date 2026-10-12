@@ -1055,22 +1055,31 @@ StateDraw_Context::event_stroke(const Smach::event& x)
 		// If so, the event.mirrored_stroke_data is now 'invalid' and should not create a second outline
 		const Real squared_max_acceptable_distance = 1/40.;
 		auto& stroke = event.stroke_data;
+		auto& width = event.width_data;
 		const auto& mirror = event.mirrored_stroke_data;
 		auto change_to_median_point = [] (synfig::Vector &a, const synfig::Vector& b) {
 			a = (a + b)/2;
 		};
 		if ((stroke->front()-event.mirrored_stroke_data->front()).mag_squared() < squared_max_acceptable_distance) {
+			const std::list<Real> width_data_copy(*event.width_data);
 			change_to_median_point(*stroke->begin(), *(--mirror->rend()));
 			stroke->insert(stroke->begin(), mirror->rbegin(), --mirror->rend());
+			width->insert(width->begin(), width_data_copy.rbegin(), --width_data_copy.rend());
 		} else if ((stroke->front()-mirror->back()).mag_squared() < squared_max_acceptable_distance) {
+			const std::list<Real> width_data_copy(*event.width_data);
 			change_to_median_point(*(stroke->begin()), *(--mirror->end()));
 			stroke->insert(stroke->begin(), mirror->begin(), --mirror->end());
+			width->insert(width->begin(), width_data_copy.begin(), --width_data_copy.end());
 		} else if ((stroke->back()-mirror->front()).mag_squared() < squared_max_acceptable_distance) {
+			const std::list<Real> width_data_copy(*event.width_data);
 			change_to_median_point(*(--stroke->end()), *mirror->begin());
 			stroke->insert(stroke->end(), ++mirror->begin(), mirror->end());
+			width->insert(width->end(), ++width_data_copy.begin(), width_data_copy.end());
 		} else if ((stroke->back()-mirror->back()).mag_squared() < squared_max_acceptable_distance) {
+			const std::list<Real> width_data_copy(*event.width_data);
 			change_to_median_point(*(--stroke->end()), *mirror->rbegin());
 			stroke->insert(stroke->end(), ++mirror->rbegin(), mirror->rend());
+			width->insert(width->end(), ++width_data_copy.rbegin(), width_data_copy.rend());
 		} else {
 			is_mirror_data_valid = true;
 		}
