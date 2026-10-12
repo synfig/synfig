@@ -206,6 +206,23 @@ public:
 	void toggle_layer_conical_gradient();
 	void toggle_layer_spiral_gradient();
 
+	class EgressAvoider
+	{
+	public:
+		explicit EgressAvoider(bool& egress_on_selection_change)
+			: egress_on_selection_change_(egress_on_selection_change)
+		{
+			previous_value = egress_on_selection_change;
+			egress_on_selection_change_ = false;
+		}
+		virtual ~EgressAvoider()
+		{
+			egress_on_selection_change_ = previous_value;
+		}
+	private:
+		bool& egress_on_selection_change_;
+		bool previous_value;
+	};
 
 };	// END of class StateGradient_Context
 
@@ -528,11 +545,11 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 	const Point p1(transform.unperform(_p1));
 	const Point p2(transform.unperform(_p2));
 
+	EgressAvoider egress_guard(egress_on_selection_change);
+
 	if (get_layer_linear_gradient_flag())
 	{
-		egress_on_selection_change=false;
 		layer=get_canvas_interface()->add_layer_to("linear_gradient",canvas,depth);
-		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -547,9 +564,7 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 
 	else if (get_layer_radial_gradient_flag())
 	{
-		egress_on_selection_change=false;
 		layer=get_canvas_interface()->add_layer_to("radial_gradient",canvas,depth);
-		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -564,9 +579,7 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 
 	else if (get_layer_conical_gradient_flag())
 	{
-		egress_on_selection_change=false;
 		layer=get_canvas_interface()->add_layer_to("conical_gradient",canvas,depth);
-		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -584,9 +597,7 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 
 	else if (get_layer_spiral_gradient_flag())
 	{
-		egress_on_selection_change=false;
 		layer=get_canvas_interface()->add_layer_to("spiral_gradient",canvas,depth);
-		egress_on_selection_change=true;
 		if (!layer)
 		{
 			get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -618,12 +629,10 @@ StateGradient_Context::make_gradient(const Point& _p1, const Point& _p2)
 	layer->set_description(get_id());
 	get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 
-	egress_on_selection_change=false;
 	synfigapp::SelectionManager::LayerList layer_selection;
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	layer_selection.push_back(layer);
 	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
-	egress_on_selection_change=true;
 
 	reset();
 	increment_id();
