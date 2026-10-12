@@ -5,6 +5,7 @@
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
 **	Copyright (c) 2008 Chris Moore
+**	Modified 2026-10-05: traverse cloned inline group layers at every depth.
 **
 **	This file is part of Synfig.
 **
@@ -50,6 +51,10 @@
 #include <synfigapp/localization.h>
 
 #endif
+
+#include <synfig/layers/layer_pastecanvas.h>
+
+#include <set>
 
 using namespace synfig;
 using namespace synfigapp;
@@ -159,7 +164,7 @@ Action::ValueDescExport::is_ready()const
 	return Action::CanvasSpecific::is_ready();
 }
 
-void Action::ValueDescExport::scan_canvas(synfig::Canvas::Handle prev_canvas, synfig::Canvas::Handle new_canvas, synfig::Canvas::Handle canvas)
+void Action::ValueDescExport::scan_canvas(synfig::Canvas::Handle prev_canvas, synfig::Canvas::Handle new_canvas, synfig::Canvas::Handle canvas, bool recursive)
 {
 	{ // scan children
 		std::list<Canvas::Handle> &children = canvas->children();
@@ -168,8 +173,28 @@ void Action::ValueDescExport::scan_canvas(synfig::Canvas::Handle prev_canvas, sy
 	}
 
 	{ // scan layers
-		for (IndependentContext i = canvas->get_independent_context(); *i; ++i)
-			scan_layer(prev_canvas, new_canvas, *i);
+		std::list<Canvas::Handle> pending;
+		std::set<Canvas::Handle> visited;
+		pending.push_back(canvas);
+		while (!pending.empty())
+		{
+			Canvas::Handle current = pending.front();
+			pending.pop_front();
+			if (!visited.insert(current).second)
+				continue;
+
+			for (IndependentContext i = current->get_independent_context(); *i; ++i)
+			{
+				scan_layer(prev_canvas, new_canvas, *i);
+				if (!recursive)
+					continue;
+
+				Layer_PasteCanvas::Handle group = Layer_PasteCanvas::Handle::cast_dynamic(*i);
+				Canvas::Handle sub_canvas = group ? group->get_sub_canvas() : Canvas::Handle();
+				if (sub_canvas && sub_canvas->is_inline())
+					pending.push_back(sub_canvas);
+			}
+		}
 	}
 
 	{ // scan values
@@ -269,7 +294,7 @@ Action::ValueDescExport::prepare()
 
 			// scan all layers and canvases and relink value nodes
 			scan_canvas(prev_canvas, canvas, get_canvas());
-			scan_canvas(prev_canvas, canvas, canvas);
+			scan_canvas(prev_canvas, canvas, canvas, true);
 		} else {
 			canvas->rend_desc()=get_canvas()->rend_desc();
 		}
