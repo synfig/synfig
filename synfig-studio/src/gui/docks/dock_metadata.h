@@ -25,8 +25,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DOCK_METADATA_H
-#define __SYNFIG_STUDIO_DOCK_METADATA_H
+#ifndef SYNFIG_STUDIO_DOCK_METADATA_H
+#define SYNFIG_STUDIO_DOCK_METADATA_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -45,15 +45,13 @@ class Instance;
 
 class Dock_MetaData : public Dock_CanvasSpecific
 {
-	Glib::RefPtr<Gtk::ActionGroup> action_group;
-
 	void on_add_pressed();
 	void on_delete_pressed();
 
 protected:
 
-	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
-	virtual void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
+	void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view) override;
+	void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view) override;
 
 public:
 

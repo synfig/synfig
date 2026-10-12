@@ -59,7 +59,10 @@ class ToggleDucksDial
 
 public:
 
-	ToggleDucksDial(const Gtk::IconSize &size);
+	/**
+	 * @param action_prefix if empty, it doesn't use Gio::Actions. In this case, rely on the signal_*() methods
+	 */
+	ToggleDucksDial(const std::string& action_prefix);
 	void update_toggles(Duck::Type mask);
 
 	void insert_to_toolbar(Gtk::Toolbar &toolbar, int index = -1);

@@ -25,12 +25,11 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DIALOG_HISTORY_H
-#define __SYNFIG_STUDIO_DIALOG_HISTORY_H
+#ifndef SYNFIG_STUDIO_DIALOG_HISTORY_H
+#define SYNFIG_STUDIO_DIALOG_HISTORY_H
 
 /* === H E A D E R S ======================================================= */
 
-#include <gtkmm/actiongroup.h>
 #include <gtkmm/treeview.h>
 #include <gui/instance.h>
 #include <gui/docks/dock_canvasspecific.h>
@@ -45,7 +44,6 @@ namespace studio {
 
 class Dock_History : public Dock_CanvasSpecific
 {
-	Glib::RefPtr<Gtk::ActionGroup> action_group;
 	Gtk::TreeView *action_tree;
 
 	etl::loose_handle<studio::Instance>	selected_instance;
@@ -53,15 +51,6 @@ class Dock_History : public Dock_CanvasSpecific
 	sigc::connection on_undo_tree_changed_connection;
 
 	void on_undo_tree_changed();
-
-	void set_selected_instance_(etl::handle<studio::Instance> x);
-
-
-	void set_selected_instance(etl::loose_handle<studio::Instance> x);
-
-	void set_selected_instance_signal(etl::handle<studio::Instance> x);
-
-	void delete_instance(etl::handle<studio::Instance> x);
 
 	Gtk::Widget* create_action_tree();
 
@@ -77,8 +66,10 @@ public:
 
 	Dock_History();
 	~Dock_History();
+
 protected:
-	virtual void init_instance_vfunc(etl::loose_handle<Instance> instance);
+	void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view) override;
+	void changed_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view) override;
 
 	bool on_action_event(GdkEvent *event);
 	void on_action_toggle(const Glib::ustring& path);

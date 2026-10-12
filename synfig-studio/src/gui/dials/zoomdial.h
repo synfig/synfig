@@ -55,13 +55,14 @@ class ZoomDial : public Gtk::Grid
 	Gtk::Button *zoom_norm;
 	Gtk::Entry *current_zoom;
 
-	Gtk::Button *create_icon(Gtk::IconSize size, const std::string& icon_name,
-			const char * tooltip);
 	void after_event(GdkEvent *event);
 	bool current_zoom_event(GdkEvent* event);
 
 public:
-	ZoomDial(Gtk::IconSize &size);
+	/**
+	 * @param action_prefix if empty, it doesn't use Gio::Actions. In this case, rely on the signal_*() methods
+	 */
+	ZoomDial(const std::string& action_prefix);
 
 	Glib::SignalProxy0<void> signal_zoom_in()   { return zoom_in->signal_clicked(); }
 	Glib::SignalProxy0<void> signal_zoom_out()  { return zoom_out->signal_clicked(); }

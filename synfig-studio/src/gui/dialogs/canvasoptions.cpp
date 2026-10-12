@@ -128,7 +128,7 @@ CanvasOptions::update_title()
 void
 CanvasOptions::refresh()
 {
-	if(canvas_view_->get_work_area()->grid_status())
+	if (canvas_view_->get_work_area()->get_show_grid())
 		toggle_grid_show->set_active(true);
 	else
 		toggle_grid_show->set_active(false);
