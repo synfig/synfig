@@ -344,6 +344,7 @@ Widget_Preview::Widget_Preview():
 	scr_time_scrub(adj_time_scrub),
 	b_loop(/*_("Loop")*/),
 	currentindex(-100000),//TODO get the value from canvas setting or preview option
+	playback_speed(1.00),
 	timedisp(-1),
 	//audiotime(0),
 	adj_sound(Gtk::Adjustment::create(0, 0, 4)),
@@ -352,6 +353,7 @@ Widget_Preview::Widget_Preview():
 	singleframe(),
 	toolbarisshown(),
 	zoom_preview(true),
+	speed_preview(true),
 	toolbar(),
 	play_button(),
 	pause_button(),
@@ -502,6 +504,26 @@ Widget_Preview::Widget_Preview():
 
 	toolbar->pack_end(zoom_preview, Gtk::PACK_SHRINK, 0);
 
+	//playback speed
+	speed_preview.append("0.25x");
+	speed_preview.append("0.5x");
+	speed_preview.append("1.0x");
+	speed_preview.append("1.5x");
+	speed_preview.append("2.0x");
+	Gtk::Entry* speed_entry = speed_preview.get_entry();
+	speed_entry->set_text("1.0x"); //default playback speed
+	speed_entry->set_icon_from_icon_name("animate_mode_on_icon");
+	speed_entry->signal_activate().connect(sigc::mem_fun(*this, &Widget_Preview::update_playback));
+	speed_entry->signal_focus_out_event().connect(sigc::mem_fun(*this, &Widget_Preview::on_playback_speed_focus_out), false);
+	speed_preview.signal_changed().connect(sigc::mem_fun(*this, &Widget_Preview::update_playback));
+
+	//set the speed widget width
+	speed_preview.set_size_request(65, -1);
+	speed_preview.set_margin_end(8);
+	speed_preview.show();
+
+	toolbar->pack_end(speed_preview, Gtk::PACK_SHRINK, 0);
+
 	show_toolbar();
 
 	//3rd row: previewing frame numbering and rendered frame numbering
@@ -631,6 +653,34 @@ void studio::Widget_Preview::update()
 	l_currenttime.set_text(timecode);
 
 }
+
+bool Widget_Preview::on_playback_speed_focus_out(GdkEventFocus* event)
+{
+    update_playback();
+    return false;
+}
+
+void studio::Widget_Preview::update_playback() {
+	Gtk::Entry* entry = speed_preview.get_entry();
+	Glib::ustring text = entry->get_text();
+	try {
+		double value;
+		value = std::stod(text);
+		if(value <= 0) {
+			playback_speed = 1;
+		} else {
+			playback_speed = value;
+		}
+	} catch(const std::exception& e) {
+		// when input can't be converted to double, revert to previous value.
+	}
+	char buf[16];
+	snprintf(buf, sizeof(buf), "%.2fx", playback_speed);
+	entry->set_text(Glib::ustring(buf));
+	play_button->grab_focus();
+	update();
+}
+
 void studio::Widget_Preview::preview_draw()
 {
 	draw_area.queue_draw();
@@ -744,6 +794,7 @@ bool studio::Widget_Preview::redraw(const Cairo::RefPtr<Cairo::Context> &cr)
 bool studio::Widget_Preview::play_update()
 {
 	float diff = timer.pop_time();
+	diff *= playback_speed;
 	//synfig::info("Play update: diff = %.2f",diff);
 
 	if(playing)
