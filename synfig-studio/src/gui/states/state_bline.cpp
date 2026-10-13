@@ -459,6 +459,9 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 {
 	egress_on_selection_change=true;
 
+	if (canvas_view)
+		menu.attach_to_widget(*canvas_view);
+
 	// Toolbox widgets
 	title_label.set_label(_("Spline Tool"));
 	Pango::AttrList list;
