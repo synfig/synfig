@@ -25,8 +25,8 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STATEMANAGER_H
-#define __SYNFIG_STATEMANAGER_H
+#ifndef SYNFIG_STUDIO_STATEMANAGER_H
+#define SYNFIG_STUDIO_STATEMANAGER_H
 
 /* === H E A D E R S ======================================================= */
 
@@ -44,7 +44,8 @@
 typedef unsigned int guint;
 
 namespace studio {
-	class StateManager
+
+class StateManager
 {
 private:
 	Glib::RefPtr<Gtk::ActionGroup> state_group;
@@ -54,15 +55,23 @@ private:
 	std::vector<guint> merge_id_list;
 
 	void change_state_(const Glib::RefPtr<Gtk::RadioAction>& current, const Smach::state_base* state);
+	void change_state(const Smach::state_base* state);
+
+	sigc::signal<void, const Smach::state_base*> signal_state_registered_;
+	sigc::signal<void, const Smach::state_base*> signal_state_selected_;
 
 public:
 	StateManager();
 
 	~StateManager();
 
-	void add_state(const Smach::state_base *state);
+	void register_state(const Smach::state_base* state);
 
 	Glib::RefPtr<Gtk::ActionGroup> get_action_group();
+
+	sigc::signal<void, const Smach::state_base*>& signal_state_registered() { return signal_state_registered_; };
+
+	sigc::signal<void, const Smach::state_base*>& signal_state_selected() { return signal_state_selected_; };
 };
 
 }; // END of namespace studio
