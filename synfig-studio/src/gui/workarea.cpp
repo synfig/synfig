@@ -1665,21 +1665,15 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 
 			// FIXME: One might want to figure out where in the code
 			// this empirical drift is been introduced.
-
-			const synfig::Point scroll_point(get_scrollx_adjustment()->get_value(),get_scrolly_adjustment()->get_value());
-			const double drift = 0.052;
-
+			// Zoom in/out performed against the center of the canvas
+			
 			switch(event->scroll.direction) {
 			case GDK_SCROLL_UP:
 			case GDK_SCROLL_RIGHT:
-				get_scrollx_adjustment()->set_value(scroll_point[0]+(mouse_pos[0]-scroll_point[0])*(1.25-(1+drift)));
-				get_scrolly_adjustment()->set_value(scroll_point[1]-(mouse_pos[1]+scroll_point[1])*(1.25-(1+drift)));
 				zoom_in();
 				break;
 			case GDK_SCROLL_DOWN:
 			case GDK_SCROLL_LEFT:
-				get_scrollx_adjustment()->set_value(scroll_point[0]+(mouse_pos[0]-scroll_point[0])*(1/1.25-(1+drift)));
-				get_scrolly_adjustment()->set_value(scroll_point[1]-(mouse_pos[1]+scroll_point[1])*(1/1.25-(1+drift)));
 				zoom_out();
 				break;
 			default:
