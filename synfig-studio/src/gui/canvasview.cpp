@@ -297,11 +297,6 @@ class studio::CanvasViewSelectionManager : public SelectionManager
 public:
 	CanvasViewSelectionManager(CanvasView *view): view(view) { }
 
-private:
-	void _set_selected_layer(const Layer::Handle &layer)
-		{ view->layer_tree->select_layer(layer); }
-
-public:
 	//! Returns the number of layers selected.
 	virtual int get_selected_layer_count()const
 		{ return get_selected_layers().size(); }
