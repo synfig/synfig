@@ -456,8 +456,8 @@ Widget_Preview::Widget_Preview():
 	jackdial->signal_toggle_jack().connect(sigc::mem_fun(*this, &studio::Widget_Preview::toggle_jack_button));
 	jackdial->signal_offset_changed().connect(sigc::mem_fun(*this, &studio::Widget_Preview::on_jack_offset_changed));
 #endif
-	//FIXME: Hardcoded FPS!
-	jackdial->set_fps(24.f);
+	// Use user-configured preview FPS as initial default; set_preview() will update with actual canvas rate
+	jackdial->set_fps(App::preview_fps);
 	jackdial->set_offset(jack_offset);
 	if ( !getenv("SYNFIG_DISABLE_JACK") )
 		jackdial->show();
