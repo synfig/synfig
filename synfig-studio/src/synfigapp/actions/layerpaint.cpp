@@ -50,7 +50,7 @@ using namespace synfigapp;
 ACTION_INIT(Action::LayerPaint);
 ACTION_SET_NAME(Action::LayerPaint, "LayerPaint");
 ACTION_SET_LOCAL_NAME(Action::LayerPaint, N_("Brush Stroke"));
-ACTION_SET_TASK(Action::LayerPaint, "brush_stroke");
+ACTION_SET_TASK(Action::LayerPaint, "paint");
 ACTION_SET_CATEGORY(Action::LayerPaint, Action::CATEGORY_NONE);
 ACTION_SET_PRIORITY(Action::LayerPaint, 0);
 ACTION_SET_VERSION(Action::LayerPaint, "0.0");
@@ -214,9 +214,8 @@ Action::LayerPaint::PaintStroke::apply()
 				return;
 			}
 			if (layer->rendering_surface && final_surface && final_surface->is_valid()) {
-				Surface* surface_copy = new Surface(*final_surface);
 				layer->rendering_surface = new rendering::SurfaceResource(
-					new rendering::SurfaceSW(*surface_copy, true)
+					new rendering::SurfaceSW(*final_surface, true)
 				);
 				layer->changed();
 				applied = true;

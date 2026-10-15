@@ -34,17 +34,20 @@
 
 #include <gui/states/state_fill.h>
 
+#include <synfig/general.h>
+#include <synfig/layers/layer_switch.h>
+
+#include <synfigapp/actions/layerfill.h>
+#include <synfigapp/main.h>
+
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/docks/dock_toolbox.h>
+#include <gui/ducktransform_matrix.h>
 #include <gui/event_layerclick.h>
 #include <gui/localization.h>
 #include <gui/states/state_normal.h>
 #include <gui/workarea.h>
-
-#include <synfig/general.h>
-
-#include <synfigapp/main.h>
 
 #endif
 
@@ -157,15 +160,59 @@ StateFill_Context::event_refresh_handler(const Smach::event& /*x*/)
 Smach::event_result
 StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 {
-	synfig::info("STATE FILL: Received layer clicked Event");
 	const EventLayerClick& event(*reinterpret_cast<const EventLayerClick*>(&x));
 
-	if(!event.layer)
-	{
+	synfig::Layer::Handle target_layer = event.layer;
+	if (!event.layer) {
+		// Trying to get a layer when the clicked point is fully transparent
+		target_layer = get_canvas_view()->get_selection_manager()->get_selected_layer();
+		if (target_layer && !target_layer->active())
+			target_layer = nullptr;
+	}
+
+	synfig::Layer_Bitmap::Handle layer_bitmap;
+	synfig::Transform::Handle extra_transformation = nullptr;
+
+	if (auto layer_switch = dynamic_cast<synfig::Layer_Switch*>(target_layer.get())) {
+		layer_bitmap = synfig::Layer_Bitmap::Handle::cast_dynamic(layer_switch->get_current_layer());
+		if (layer_bitmap) {
+			extra_transformation = new Transform_Matrix(
+				layer_switch->get_guid(),
+				layer_switch->get_summary_transformation().get_matrix()
+			);
+		}
+	} else {
+		layer_bitmap = synfig::Layer_Bitmap::Handle::cast_dynamic(target_layer);
+	}
+
+	if (!layer_bitmap && !event.layer) {
 		get_canvas_view()->get_ui_interface()->warning(_("No layer here"));
 		return Smach::RESULT_ACCEPT;
 	}
 
+	if (layer_bitmap && layer_bitmap->rendering_surface) {
+		synfigapp::Action::BitmapLayerFill::Handle action = new synfigapp::Action::BitmapLayerFill();
+
+		action->set_param("layer", synfig::Layer::Handle(layer_bitmap.get()));
+
+		synfig::TransformStack transform(get_work_area()->get_curr_transform_stack());
+		transform.push(extra_transformation);
+
+		const synfig::Vector tl = layer_bitmap->get_param("tl").get(synfig::Point());
+		const synfig::Vector br = layer_bitmap->get_param("br").get(synfig::Point());
+		synfig::Point pos(transform.unperform(event.pos));
+		pos = (pos - tl).divide_coords(br - tl);
+		pos[0] *= layer_bitmap->rendering_surface->get_width();
+		pos[1] *= layer_bitmap->rendering_surface->get_height();
+
+		action->set_param("point", synfig::ValueBase(pos));
+		action->set_param("color", synfig::ValueBase(synfigapp::Main::get_fill_color()));
+		action->set_param("canvas", get_canvas());
+		action->set_param("canvas_interface", get_canvas_interface());
+		get_canvas_interface()->get_instance()->perform_action(action);
+
+		return Smach::RESULT_ACCEPT;
+	}
 
 	//synfigapp::Action::Handle action(synfigapp::Action::create("ValueDescSet"));
 	synfigapp::ValueDesc value_desc(event.layer,"color");
@@ -175,25 +222,6 @@ StateFill_Context::event_workarea_layer_clicked_handler(const Smach::event& x)
 		get_canvas_view()->get_ui_interface()->warning(_("Unable to set layer color"));
 		return Smach::RESULT_ERROR;
 	}
-	/*
-	assert(action);
 
-	action->set_param("canvas",get_canvas());
-	action->set_param("canvas_interface",get_canvas_interface());
-	action->set_param("value_desc",value_desc);
-	action->set_param("time",get_canvas_interface()->get_time());
-	//action->set_param("layer",event.layer);
-	//if(!action->set_param("param",String("color")))
-	//	synfig::error("LayerParamConnect didn't like \"param\"");
-	if(!action->set_param("new_value",ValueBase(synfigapp::Main::get_fill_color())))
-		synfig::error("LayerParamConnect didn't like \"fill_color\"");
-
-	if(!get_canvas_interface()->get_instance()->perform_action(action))
-	{
-		get_canvas_view()->get_ui_interface()->warning(_("Unable to set layer color"));
-		return Smach::RESULT_ERROR;
-	}
-	get_canvas_view()->get_ui_interface()->task(_("Idle"));
-	*/
 	return Smach::RESULT_ACCEPT;
 }

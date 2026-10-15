@@ -10,6 +10,7 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/layerencapsulatefilter.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerencapsulateswitch.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerextract.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/layerfill.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerfit.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerlower.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layermove.cpp"
