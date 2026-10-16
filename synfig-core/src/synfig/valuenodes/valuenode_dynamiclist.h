@@ -103,6 +103,7 @@ public:
 		friend class ValueNode_BLine;
 		friend class ValueNode_WPList;
 		friend class ValueNode_DIList;
+		friend class ValueNode_AnimShareList;
 	public:
 		typedef synfig::Activepoint Activepoint;
 
