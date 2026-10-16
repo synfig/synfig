@@ -41,7 +41,6 @@
 #include <iostream>
 #include <synfig/context.h>
 #include <synfig/canvasfilenaming.h>
-#include <synfig/loadcanvas.h>
 #include <synfig/savecanvas.h>
 #include <synfig/filecontainerzip.h>
 #include <synfig/filesystem.h>

@@ -156,7 +156,7 @@ Action::ValueDescConnect::set_param(const synfig::String& name, const Action::Pa
 
 	if(!value_node_name.empty() && !value_node && name=="canvas" && param.get_type()==Param::TYPE_CANVAS)
 	{
-		value_node=param.get_canvas()->find_value_node(value_node_name, false);
+		value_node = param.get_canvas()->find_value_node(value_node_name);
 	}
 
 	if(name=="src_name" && param.get_type()==Param::TYPE_STRING)
@@ -165,7 +165,7 @@ Action::ValueDescConnect::set_param(const synfig::String& name, const Action::Pa
 
 		if(get_canvas())
 		{
-			value_node=get_canvas()->find_value_node(value_node_name, false);
+			value_node = get_canvas()->find_value_node(value_node_name);
 			if(!value_node)
 				return false;
 		}

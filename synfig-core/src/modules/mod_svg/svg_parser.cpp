@@ -124,7 +124,10 @@ Svg_parser::load_svg_canvas(const std::string& filepath, String &errors, String 
 	Canvas::Handle canvas;
 	if(nodeRoot){
 		//canvas=synfig::open_canvas(nodeRoot,_filepath,errors,warnings);
-		canvas=synfig::open_canvas(nodeRoot,errors,warnings);
+		synfig::LoadingIssues issues;
+		canvas = synfig::open_canvas(nodeRoot, issues);
+		errors += issues.errors;
+		warnings += issues.warnings;
 	}
 	return canvas;
 }
