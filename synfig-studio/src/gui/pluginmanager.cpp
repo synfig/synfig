@@ -136,6 +136,14 @@ load_plugin_metadata(studio::PluginMetadata& metadata, const xmlpp::Node& node)
 	}
 
 	metadata.description = studio::PluginString::load(node, "description");
+
+	for ( const xmlpp::Node* node : node.find("./minimum_synfig") ) {
+		if ( node ) {
+			const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
+			if ( const xmlpp::TextNode* text = element->get_child_text() )
+				metadata.min_synfig = text->get_content();
+		}
+	}
 }
 
 const synfig::filesystem::Path studio::Plugin::user_config_filename{"user_config.json"};

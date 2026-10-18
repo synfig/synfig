@@ -115,6 +115,11 @@ public:
 
 	/** plugin description for user */
 	PluginString description;
+
+	/** mininum supported Synfig Studio version
+	 *  example "01.04.00" for 1.4.0.
+	 */
+	std::string min_synfig;
 };
 
 class ImportExport
