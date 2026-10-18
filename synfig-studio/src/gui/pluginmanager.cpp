@@ -385,32 +385,10 @@ void studio::PluginManager::load_import_export(
 
 std::string studio::PluginManager::interpreter_executable(const std::string& interpreter) const
 {
-	// Path to python binary can be overridden
-	// with SYNFIG_PYTHON_BINARY env variable:
 	std::string command;
 
 	if ( interpreter == "python" ) {
-		std::vector<std::string> search_paths;
-		std::string custom_python_binary = Glib::getenv("SYNFIG_PYTHON_BINARY");
-		if (!custom_python_binary.empty()) {
-			search_paths.emplace_back(custom_python_binary);
-		} else {
-			// Set path to python binary depending on the os type.
-			// For Windows case Python binary is expected
-			// at INSTALL_PREFIX/python/python.exe
-			for (std::string python_bin : {"python3", "python"} ) {
-#ifdef _WIN32
-				search_paths.emplace_back(App::get_base_path() + "/python/" + python_bin + ".exe");
-#endif
-				search_paths.emplace_back(python_bin);
-			}
-		}
-		for (const auto& path : search_paths) {
-			if (studio::App::check_python_version(path)) {
-				command = path;
-				break;
-			}
-		}
+		command = studio::App::get_python_path();
 
 		if ( command.empty() ) {
 			studio::App::dialog_message_1b(
