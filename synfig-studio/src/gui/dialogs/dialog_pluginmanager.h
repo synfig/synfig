@@ -30,6 +30,7 @@
 
 /* === H E A D E R S ======================================================= */
 
+#include <gtkmm/entry.h>
 #include <gtkmm/filechooserdialog.h>
 #include <gtkmm/listbox.h>
 #include <gtkmm/messagedialog.h>
@@ -58,6 +59,7 @@ private:
 	Gtk::MessageDialog message_dialog;
 	Gtk::MessageDialog confirmation_dialog;
 	Gtk::Notebook notebook;
+	Gtk::Entry filter_entry;
 
 	std::vector<studio::Plugin> plugin_list;
 	void build_installed_plugin_listbox();
@@ -65,6 +67,8 @@ private:
 	void save_plugin_config(const std::string& plugin_id, Gtk::Widget* config_widget);
 	void reset_plugin_config(const std::string& plugin_id);
 	void on_install_plugin_button_clicked();
+	void on_filter_entry_changed();
+	void on_filter_entry_icon_pressed(Gtk::EntryIconPosition icon_pos, const GdkEventButton* ev);
 	void refresh();
 
 }; // END of class Dialog_PluginManager

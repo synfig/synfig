@@ -141,6 +141,41 @@ get_plugin_tab_content_widget(Gtk::Notebook& notebook, const std::string& plugin
 	return nullptr;
 }
 
+static bool
+is_plugin_filtered(Gtk::ListBoxRow* row, const Gtk::Entry& filter_entry, const std::vector<Plugin>& plugin_list)
+{
+	const Glib::ustring filter_text = filter_entry.get_text().lowercase();
+	if (filter_text.empty() || filter_text.size() < 3)
+		return true;
+
+	auto contains_filter_str_insensitive_case = [filter_text](const Glib::ustring& txt1) -> bool {
+		return txt1.lowercase().find(filter_text) != Glib::ustring::npos;
+	};
+
+	if (void* data = row->get_child()->get_data("plugin-id")) {
+		const std::string plugin_id = static_cast<const char*>(data);
+
+		if (contains_filter_str_insensitive_case(plugin_id))
+			return true;
+		for (const auto& plugin : plugin_list) {
+			if (plugin_id == plugin.id) {
+				if (contains_filter_str_insensitive_case(plugin.name.get()))
+					return true;
+				if (contains_filter_str_insensitive_case(plugin.name.fallback()))
+					return true;
+				if (contains_filter_str_insensitive_case(plugin.metadata.author))
+					return true;
+				if (contains_filter_str_insensitive_case(plugin.metadata.description.get()))
+					return true;
+				if (contains_filter_str_insensitive_case(plugin.metadata.description.fallback()))
+					return true;
+				return false;
+			}
+		}
+	}
+	return false;
+}
+
 /* === M E T H O D S ======================================================= */
 
 Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
@@ -296,6 +331,8 @@ Dialog_PluginManager::build_notebook()
 	install_plugin_button->set_always_show_image(true);
 	install_plugin_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_PluginManager::on_install_plugin_button_clicked));
 	plugin_list_box.set_selection_mode(Gtk::SELECTION_NONE);
+	plugin_list_box.set_filter_func([=](Gtk::ListBoxRow* row) -> bool { return is_plugin_filtered(row, filter_entry, plugin_list); });
+	plugin_list_box.set_margin_bottom(6);
 
 	installed_plugins_scroll->add(*installed_plugins_tab);
 
@@ -306,6 +343,15 @@ Dialog_PluginManager::build_notebook()
 	installed_plugins_label->set_margin_right(20);
 	notebook.append_page(*installed_plugins_scroll, *installed_plugins_label);
 
+	filter_entry.set_icon_from_icon_name("edit-find", Gtk::ENTRY_ICON_PRIMARY);
+	filter_entry.set_icon_activatable(false, Gtk::ENTRY_ICON_PRIMARY);
+	filter_entry.set_icon_from_icon_name("edit-clear", Gtk::ENTRY_ICON_SECONDARY);
+	filter_entry.set_icon_activatable(false, Gtk::ENTRY_ICON_SECONDARY);
+	filter_entry.set_placeholder_text(_("Type to search for installed plugins"));
+	filter_entry.signal_changed().connect(sigc::mem_fun(*this, &Dialog_PluginManager::on_filter_entry_changed));
+	filter_entry.signal_icon_press().connect(sigc::mem_fun(*this, &Dialog_PluginManager::on_filter_entry_icon_pressed));
+
+	installed_plugins_tab->pack_start(filter_entry, Gtk::PACK_SHRINK);
 	installed_plugins_tab->pack_start(plugin_list_box, Gtk::PACK_SHRINK);
 	installed_plugins_tab->pack_end(*install_plugin_button, Gtk::PACK_SHRINK);
 
@@ -421,13 +467,13 @@ Dialog_PluginManager::build_notebook()
 		// Add the tab to the notebook
 		plugin_scroll->add(*plugin_tab);
 		notebook.append_page(*plugin_scroll, *plugin_label);
-
 	}
 
 	notebook.show_all_children();
 	notebook.set_current_page(activePage == -1 ? 0 : activePage);
 	notebook.set_tab_pos(Gtk::POS_LEFT);
 }
+
 void
 Dialog_PluginManager::build_installed_plugin_listbox()
 {
@@ -502,6 +548,8 @@ Dialog_PluginManager::build_installed_plugin_listbox()
 
 		plugin_list_item->pack_start(*plugin_name, Gtk::PACK_SHRINK, 20);
 		plugin_list_item->pack_end(*plugin_option_box, Gtk::PACK_SHRINK, 20);
+
+		plugin_list_item->set_data("plugin-id", const_cast<void*>(static_cast<const void*>(plugin.id.data())));
 
 		plugin_list_box.add(*plugin_list_item);
 
@@ -654,4 +702,20 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 	Gtk::MessageDialog msg_dialog = Gtk::MessageDialog(plugin_file_dialog, _("Plugin installed successfully."), false, Gtk::MESSAGE_INFO, Gtk::BUTTONS_CLOSE, true);
 	msg_dialog.run();
 	plugin_file_dialog.close();
+}
+
+void
+Dialog_PluginManager::on_filter_entry_changed()
+{
+	filter_entry.set_icon_activatable(filter_entry.get_text_length() > 0, Gtk::ENTRY_ICON_SECONDARY);
+
+	plugin_list_box.invalidate_filter();
+}
+
+void
+Dialog_PluginManager::on_filter_entry_icon_pressed(Gtk::EntryIconPosition icon_pos, const GdkEventButton* ev)
+{
+	if (icon_pos == Gtk::ENTRY_ICON_SECONDARY && ev->button == 1) {
+		filter_entry.set_text("");
+	}
 }
