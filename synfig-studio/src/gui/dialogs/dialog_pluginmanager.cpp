@@ -495,6 +495,18 @@ Dialog_PluginManager::build_installed_plugin_listbox()
 		plugin_list_item->set_margin_top(10);
 		plugin_option_box->property_expand().set_value(false);
 
+		plugin_list_item->set_tooltip_markup(
+			strprintf(
+				"<b>Author</b>: %s\n<b>Version</b>: %i %s\n<b>URL</b>: %s\n<b>Description</b>: %s\n<b>Minimum Synfig Studio</b>: %s",
+				plugin.metadata.author.c_str(),
+				plugin.metadata.version,
+				plugin.metadata.release.get().empty()? "" : strprintf(" (%s)", plugin.metadata.release.get().c_str()).c_str(),
+				plugin.metadata.url.c_str(),
+				plugin.metadata.description.get().c_str(),
+				plugin.metadata.min_synfig.c_str()
+			)
+		);
+
 		edit_settings->set_image_from_icon_name("document-properties", Gtk::ICON_SIZE_BUTTON);
 		restore_settings->set_image_from_icon_name("view-refresh", Gtk::ICON_SIZE_BUTTON);
 		open_folder->set_image_from_icon_name("document-open", Gtk::ICON_SIZE_BUTTON);
