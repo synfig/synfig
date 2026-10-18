@@ -228,10 +228,9 @@ public:
 		if (begin == end) return;
 
 		// check values
-		int count = 0;
 		Type &type = (*begin).get_type();
 		if (!check_type(type)) return;
-		for(Iterator i(begin); !(i == end); ++i, ++count)
+		for (Iterator i(begin); !(i == end); ++i)
 			if ((*i).get_type() != type) return;
 
 		// find difference
