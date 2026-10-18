@@ -667,6 +667,9 @@ Dialog_PluginManager::on_install_plugin_button_clicked()
 	// Check if folder with same name already exists
 	const filesystem::Path output_path = path_to_user_plugins / plugin_name;
 	if (native_fs->is_directory(output_path.u8string())) {
+		if (native_fs->is_file((output_path / filesystem::Path("plugin.xml")).u8string())) {
+
+		}
 		confirmation_dialog.set_message(_("Plugin already exists. Do you want to overwrite it?"));
 		int response = confirmation_dialog.run();
 		if (response != Gtk::RESPONSE_OK) {
