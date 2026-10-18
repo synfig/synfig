@@ -386,6 +386,8 @@ src/synfig/valuenodes/valuenode_gradientrotate.cpp
 src/synfig/valuenodes/valuenode_gradientrotate.h
 src/synfig/valuenodes/valuenode_greyed.cpp
 src/synfig/valuenodes/valuenode_greyed.h
+src/synfig/valuenodes/valuenode_ik_angle.cpp
+src/synfig/valuenodes/valuenode_ik_angle.h
 src/synfig/valuenodes/valuenode_integer.cpp
 src/synfig/valuenodes/valuenode_integer.h
 src/synfig/valuenodes/valuenode_intstring.cpp

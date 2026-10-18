@@ -32,6 +32,7 @@
 
 #include <synfig/bone.h>
 #include "layer_polygon.h"
+#include <synfig/color.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -50,6 +51,7 @@ private:
 	ValueBase param_bones;
 	//!Parameter: (synfig::String) Name of the skeleton
 	ValueBase param_name;
+	ValueBase color_bones;
 
 public:
 	typedef etl::handle<Layer_Skeleton> Handle;
