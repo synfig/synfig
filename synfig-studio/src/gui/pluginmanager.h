@@ -101,11 +101,19 @@ struct PluginScript
 class PluginMetadata
 {
 public:
+	/** plugin author name */
 	std::string author;
+	/** plugin version string or codename */
 	PluginString release;
-	int version;
+	/** plugin version number:
+	 *  it must be increased at each new release so plugin
+	 *  manager can know what is newer than other
+	 */
+	int version = 0;
+	/** plugin homepage url */
 	std::string url;
 
+	/** plugin description for user */
 	PluginString description;
 };
 

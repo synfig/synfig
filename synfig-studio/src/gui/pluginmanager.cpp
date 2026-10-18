@@ -106,6 +106,38 @@ parse_argument_necessity(const xmlpp::Element& element, const std::string& attri
 	return default_value;
 }
 
+static void
+load_plugin_metadata(studio::PluginMetadata& metadata, const xmlpp::Node& node)
+{
+	metadata.release = studio::PluginString::load(node, "release");
+
+	for ( const xmlpp::Node* node : node.find("./author") ) {
+		if ( node ) {
+			const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
+			if ( const xmlpp::TextNode* text = element->get_child_text() )
+				metadata.author = text->get_content();
+		}
+	}
+
+	for ( const xmlpp::Node* node : node.find("./version") ) {
+		if ( node ) {
+			const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
+			if ( const xmlpp::TextNode* text = element->get_child_text() )
+				metadata.version = std::atoi(text->get_content().c_str());
+		}
+	}
+
+	for ( const xmlpp::Node* node : node.find("./url") ) {
+		if ( node ) {
+			const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
+			if ( const xmlpp::TextNode* text = element->get_child_text() )
+				metadata.url = text->get_content();
+		}
+	}
+
+	metadata.description = studio::PluginString::load(node, "description");
+}
+
 const synfig::filesystem::Path studio::Plugin::user_config_filename{"user_config.json"};
 const synfig::filesystem::Path studio::Plugin::config_ui_filename{"configuration.ui"};
 
@@ -219,7 +251,7 @@ studio::ImportExport studio::ImportExport::load(const xmlpp::Node& node)
 			ie.extensions.push_back("." + text->get_content());
 	}
 
-	ie.metadata.description = PluginString::load(node, "description");
+	load_plugin_metadata(ie.metadata, node);
 
 	return ie;
 }
@@ -294,32 +326,7 @@ studio::PluginManager::load_plugin( const synfig::filesystem::Path& file, const 
 			plugin.id = id;
 			plugin.dir = plugindir;
 
-			plugin.metadata.release = PluginString::load(*pNode, "release");
-			for ( const xmlpp::Node* node : pNode->find("./author") )
-			{
-				if ( node ) {
-					const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
-					if ( const xmlpp::TextNode* text = element->get_child_text() )
-						plugin.metadata.author = text->get_content();
-				}
-			}
-			for ( const xmlpp::Node* node : pNode->find("./version") )
-			{
-				if ( node ) {
-					const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
-					if ( const xmlpp::TextNode* text = element->get_child_text() )
-						plugin.metadata.version = std::atoi(text->get_content().c_str());
-				}
-			}
-			for ( const xmlpp::Node* node : pNode->find("./url") )
-			{
-				if ( node ) {
-					const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
-					if ( const xmlpp::TextNode* text = element->get_child_text() )
-						plugin.metadata.url = text->get_content();
-				}
-			}
-			plugin.metadata.description = PluginString::load(*pNode, "description");
+			load_plugin_metadata(plugin.metadata, *pNode);
 
 			if ( !plugin.is_valid() || !script.is_valid() ) {
 				synfig::warning(_("Invalid plugin metadata description"));
