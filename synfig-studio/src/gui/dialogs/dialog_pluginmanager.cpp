@@ -165,8 +165,7 @@ Dialog_PluginManager::Dialog_PluginManager(Gtk::Window& parent):
 	set_resizable(false);
 	set_default_size(800, 600);
 
-	build_listbox();
-
+	build_installed_plugin_listbox();
 
 	build_notebook();
 
@@ -192,7 +191,7 @@ Dialog_PluginManager::refresh()
 		delete child;
 	}
 
-	build_listbox();
+	build_installed_plugin_listbox();
 	build_notebook();
 }
 
@@ -430,13 +429,18 @@ Dialog_PluginManager::build_notebook()
 	notebook.set_tab_pos(Gtk::POS_LEFT);
 }
 void
-Dialog_PluginManager::build_listbox()
+Dialog_PluginManager::build_installed_plugin_listbox()
 {
+	unsigned int plugin_page_num = 0;
+
 	for (const auto& plugin : plugin_list) {
+		++plugin_page_num;
+
 		Gtk::HBox* plugin_list_item = manage(new Gtk::HBox());
 		Gtk::Label* plugin_name = manage(new Gtk::Label());
 
 		Gtk::HBox* plugin_option_box = manage(new Gtk::HBox());
+		Gtk::Button* edit_settings = manage(new Gtk::Button());
 		Gtk::Button* restore_settings = manage(new Gtk::Button());
 		Gtk::Button* open_folder = manage(new Gtk::Button());
 		Gtk::Button* delete_plugin = manage(new Gtk::Button());
@@ -445,10 +449,12 @@ Dialog_PluginManager::build_listbox()
 		plugin_list_item->set_margin_top(10);
 		plugin_option_box->property_expand().set_value(false);
 
+		edit_settings->set_image_from_icon_name("document-properties", Gtk::ICON_SIZE_BUTTON);
 		restore_settings->set_image_from_icon_name("view-refresh", Gtk::ICON_SIZE_BUTTON);
 		open_folder->set_image_from_icon_name("document-open", Gtk::ICON_SIZE_BUTTON);
 		delete_plugin->set_image_from_icon_name("user-trash-symbolic", Gtk::ICON_SIZE_BUTTON);
 
+		edit_settings->set_tooltip_text(_("Edit plugin settings"));
 		restore_settings->set_tooltip_text(_("Restore default plugin settings"));
 		open_folder->set_tooltip_text(_("Open plugin folder"));
 		delete_plugin->set_tooltip_text(_("Remove plugin"));
@@ -478,6 +484,14 @@ Dialog_PluginManager::build_listbox()
 			)
 		);
 
+		edit_settings->signal_clicked().connect(
+			sigc::bind(
+				sigc::mem_fun(notebook, &Gtk::Notebook::set_current_page),
+				plugin_page_num
+			)
+		);
+
+		plugin_option_box->pack_start(*edit_settings, Gtk::PACK_SHRINK, 10);
 		plugin_option_box->pack_start(*restore_settings, Gtk::PACK_SHRINK, 10);
 		plugin_option_box->pack_start(*open_folder, Gtk::PACK_SHRINK, 10);
 		plugin_option_box->pack_start(*delete_plugin, Gtk::PACK_SHRINK, 10);

@@ -60,7 +60,7 @@ private:
 	Gtk::Notebook notebook;
 
 	std::vector<studio::Plugin> plugin_list;
-	void build_listbox();
+	void build_installed_plugin_listbox();
 	void build_notebook();
 	void save_plugin_config(const std::string& plugin_id, Gtk::Widget* config_widget);
 	void reset_plugin_config(const std::string& plugin_id);
