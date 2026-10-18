@@ -180,9 +180,10 @@ private:
 		xmlpp::Element* nodeRoot;//output
 		double width;
 		double height;
+		synfig::Rect view_box_;
 		int kux;
 		bool set_canvas;
-		double ox,oy;
+		double ox_, oy_;
 		//urls
 		std::list<LinearGradient> lg;
 		std::list<RadialGradient> rg;
