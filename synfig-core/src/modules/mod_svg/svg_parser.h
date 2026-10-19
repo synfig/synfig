@@ -39,6 +39,7 @@
 
 #include <libxml++/libxml++.h>
 #include <synfig/canvas.h>
+#include <unordered_map>
 
 /* === M A C R O S ========================================================= */
 
@@ -83,6 +84,8 @@ struct SVGGradient
 		REFLECT = 2,
 		REPEAT = 3,
 	} spread_method = SpreadMethod::PAD;
+
+	std::string stops_source_id;
 
 	static SpreadMethod parse_spread_method(const std::string& x);
 };
@@ -183,9 +186,11 @@ private:
 		int kux;
 		bool set_canvas;
 		double ox,oy;
+		bool gradients_loaded;
 		//urls
 		std::list<LinearGradient> lg;
 		std::list<RadialGradient> rg;
+		std::unordered_map<std::string, const xmlpp::Element*> gradient_nodes;
 
 public:
 		explicit Svg_parser(const Gamma &gamma = Gamma());
@@ -221,6 +226,7 @@ private:
 		void parser_effects(const xmlpp::Element* nodeElement, xmlpp::Element* root, const Style& parent_style, const SVGMatrix& mtx);
 
 		/* === DEFS PARSERS =============================== */
+		void load_gradients(const xmlpp::Node* root_node);
 		void parser_defs(const xmlpp::Node* node);
 		void parser_linearGradient(const xmlpp::Node* node);
 		void parser_radialGradient(const xmlpp::Node* node);

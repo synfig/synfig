@@ -46,6 +46,7 @@
 #include <synfig/localization.h>
 #include <synfig/string_helper.h>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "svg_parser.h"
 #endif
@@ -81,6 +82,7 @@ static String unquote(const String& str);
 
 static float get_inkscape_version(const xmlpp::Element* svgNodeElement);
 static Glib::ustring fetch_element_label_or_id(const xmlpp::Element* svgNodeElement);
+static bool parse_number_or_percent(const std::string& value, double& out);
 
 /* === M E T H O D S ======================================================= */
 
@@ -114,7 +116,9 @@ Svg_parser::load_svg_canvas(const std::string& filepath, String &errors, String 
 		//set_id(filepath);
 		if(parser){
 		  	const xmlpp::Node* pNode = parser.get_document()->get_root_node();
+		  	load_gradients(pNode);
 		  	parser_node(pNode);
+		  	gradient_nodes.clear();
 		}
 	#ifdef LIBXMLCPP_EXCEPTIONS_ENABLED
   	}catch(const std::exception& ex){
@@ -137,7 +141,8 @@ Svg_parser::Svg_parser(const Gamma &gamma):
 	kux(60),
 	set_canvas(false), //we must run parser_canvas method
 	ox(0),
-	oy(0)
+	oy(0),
+	gradients_loaded(false)
 {
 }
 /*
@@ -1648,23 +1653,213 @@ Svg_parser::parser_effects(const xmlpp::Element* /*nodeElement*/, xmlpp::Element
 	build_transform(root, mtx);
 }
 
+/* === GRADIENT HELPERS ==================================================== */
+
+static std::string
+clean_gradient_id(std::string id)
+{
+	id = synfig::trim(id);
+	if (id.compare(0, 4, "url(") == 0) {
+		size_t start = id.find('#');
+		size_t end = id.find(')', start == std::string::npos ? 0 : start);
+		if (start != std::string::npos && end != std::string::npos && end > start) {
+			id = id.substr(start + 1, end - start - 1);
+		} else if (end != std::string::npos && end > 4) {
+			id = id.substr(4, end - 4);
+		}
+	}
+	id = synfig::trim(id);
+	while (!id.empty() && (id.back() == '\'' || id.back() == '"'))
+		id.pop_back();
+	while (!id.empty() && (id.front() == '\'' || id.front() == '"'))
+		id.erase(0, 1);
+	id = synfig::trim(id);
+	if (!id.empty() && id.front() == '#')
+		id.erase(0, 1);
+	return synfig::trim(id);
+}
+
+static std::string
+get_gradient_href(const xmlpp::Element* elem)
+{
+	std::string link = elem->get_attribute_value("href");
+	if (link.empty())
+		link = elem->get_attribute_value("href", "xlink");
+	if (link.empty())
+		link = elem->get_attribute_value("xlink:href");
+	return clean_gradient_id(link);
+}
+
+static std::list<ColorStop>
+parse_color_stops(const xmlpp::Element* elem, const Gamma& gamma)
+{
+	std::list<ColorStop> stops;
+	const xmlpp::ContentNode* nodeContent = dynamic_cast<const xmlpp::ContentNode*>(elem);
+	if (!nodeContent) {
+		xmlpp::Node::NodeList list = elem->get_children();
+		for (xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter) {
+			Glib::ustring name = (*iter)->get_name();
+			if (name.compare("stop") == 0) {
+				const xmlpp::Element* nodeIter = dynamic_cast<const xmlpp::Element*>(*iter);
+				if (!nodeIter) continue;
+				Style style;
+				style.merge(nodeIter);
+				std::string offset_str = nodeIter->get_attribute_value("offset");
+				if (offset_str.empty())
+					offset_str = style.get("offset", "0");
+				double d_offset = 0.0;
+				float offset = 0.0f;
+				if (parse_number_or_percent(offset_str, d_offset))
+					offset = (float)d_offset;
+				else
+					offset = (float)atof(offset_str.c_str());
+				offset = std::max(0.0f, std::min(1.0f, offset));
+
+				String stop_color = style.get("stop-color", "#000000");
+				String opacity = style.get("stop-opacity", "1");
+				double d_opacity = 1.0;
+				float f_opacity = 1.0f;
+				if (parse_number_or_percent(opacity, d_opacity))
+					f_opacity = (float)std::max(0.0, std::min(1.0, d_opacity));
+				else
+					f_opacity = (float)std::max(0.0, std::min(1.0, atof(opacity.c_str())));
+				stops.push_back(ColorStop(stop_color, f_opacity, gamma, offset));
+			}
+		}
+	}
+	return stops;
+}
+
+static std::list<ColorStop>
+find_gradient_stops(
+	const xmlpp::Element* elem,
+	const Gamma& gamma,
+	const std::unordered_map<std::string, const xmlpp::Element*>& gradient_nodes,
+	std::string& out_stops_source_id)
+{
+	std::list<ColorStop> stops = parse_color_stops(elem, gamma);
+	if (!stops.empty()) {
+		out_stops_source_id = clean_gradient_id(elem->get_attribute_value("id"));
+		return stops;
+	}
+
+	std::unordered_set<std::string> visited;
+	std::string id = clean_gradient_id(elem->get_attribute_value("id"));
+	if (!id.empty())
+		visited.insert(id);
+
+	const xmlpp::Element* curr = elem;
+	while (curr) {
+		std::string ref_id = get_gradient_href(curr);
+		if (ref_id.empty() || visited.count(ref_id))
+			break;
+		visited.insert(ref_id);
+
+		auto it = gradient_nodes.find(ref_id);
+		if (it == gradient_nodes.end())
+			break;
+
+		stops = parse_color_stops(it->second, gamma);
+		if (!stops.empty()) {
+			out_stops_source_id = ref_id;
+			return stops;
+		}
+		curr = it->second;
+	}
+	out_stops_source_id = id;
+	return stops;
+}
+
+static std::string
+find_gradient_attribute(
+	const xmlpp::Element* elem,
+	const std::string& attr_name,
+	const std::unordered_map<std::string, const xmlpp::Element*>& gradient_nodes)
+{
+	if (elem->get_attribute(attr_name) != nullptr)
+		return elem->get_attribute_value(attr_name);
+
+	std::unordered_set<std::string> visited;
+	std::string id = clean_gradient_id(elem->get_attribute_value("id"));
+	if (!id.empty())
+		visited.insert(id);
+
+	const xmlpp::Element* curr = elem;
+	while (curr) {
+		std::string ref_id = get_gradient_href(curr);
+		if (ref_id.empty() || visited.count(ref_id))
+			break;
+		visited.insert(ref_id);
+
+		auto it = gradient_nodes.find(ref_id);
+		if (it == gradient_nodes.end())
+			break;
+
+		if (it->second->get_attribute(attr_name) != nullptr)
+			return it->second->get_attribute_value(attr_name);
+
+		curr = it->second;
+	}
+	return "";
+}
+
+static void
+collect_gradient_nodes(
+	const xmlpp::Node* node,
+	std::unordered_map<std::string, const xmlpp::Element*>& gradient_nodes,
+	std::vector<const xmlpp::Element*>& gradient_order)
+{
+	if (!node) return;
+	if (const xmlpp::Element* elem = dynamic_cast<const xmlpp::Element*>(node)) {
+		const Glib::ustring nodename = elem->get_name();
+		if (nodename == "linearGradient" || nodename == "radialGradient") {
+			std::string id = clean_gradient_id(elem->get_attribute_value("id"));
+			if (!id.empty()) {
+				if (gradient_nodes.find(id) == gradient_nodes.end()) {
+					gradient_nodes[id] = elem;
+					gradient_order.push_back(elem);
+				}
+			}
+		}
+	}
+
+	if (!dynamic_cast<const xmlpp::ContentNode*>(node)) {
+		xmlpp::Node::NodeList list = node->get_children();
+		for (xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter) {
+			collect_gradient_nodes(*iter, gradient_nodes, gradient_order);
+		}
+	}
+}
+
 /* === DEFS PARSERS ======================================================== */
+
+void
+Svg_parser::load_gradients(const xmlpp::Node* root_node)
+{
+	lg.clear();
+	rg.clear();
+	gradient_nodes.clear();
+	gradients_loaded = true;
+
+	std::vector<const xmlpp::Element*> gradient_order;
+	collect_gradient_nodes(root_node, gradient_nodes, gradient_order);
+
+	for (const xmlpp::Element* elem : gradient_order) {
+		const Glib::ustring nodename = elem->get_name();
+		if (nodename == "linearGradient") {
+			parser_linearGradient(elem);
+		} else if (nodename == "radialGradient") {
+			parser_radialGradient(elem);
+		}
+	}
+}
 
 void
 Svg_parser::parser_defs(const xmlpp::Node* node)
 {
-	const xmlpp::ContentNode* nodeContent = dynamic_cast<const xmlpp::ContentNode*>(node);
-	if(!nodeContent){
-		xmlpp::Node::NodeList list = node->get_children();
-		for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter){
-			Glib::ustring name =(*iter)->get_name();
-			if(name.compare("linearGradient")==0){
-				parser_linearGradient(*iter);
-			}else if(name.compare("radialGradient")==0){
-				parser_radialGradient(*iter);
-			}
- 		}
-  	}
+	if (!gradients_loaded) {
+		load_gradients(node);
+	}
 }
 
 /* === BUILDS ============================================================== */
@@ -1716,13 +1911,14 @@ Svg_parser::get_colorStop(String name)
 		if(lg.empty()&& rg.empty())
 			return none;
 
-		String target_name = name;
-		if(target_name.at(0)=='#') target_name.erase(0,1);
-		else return none;
+		String target_name = clean_gradient_id(name);
 		for (const LinearGradient& linear_gradient : lg) {
-			//only find into linear gradients
 			if(linear_gradient.name == target_name)
 				return linear_gradient.stops;
+		}
+		for (const RadialGradient& radial_gradient : rg) {
+			if(radial_gradient.name == target_name)
+				return radial_gradient.stops;
 		}
 	}
 	return none;
@@ -1732,9 +1928,7 @@ void
 Svg_parser::build_fill(xmlpp::Element* root, String name, const SVGMatrix& mtx)
 {
 	if(!name.empty()){
-		int start=name.find_first_of('#')+1;
-		int end=name.find_first_of(')');
-		String target_name = name.substr(start,end-start);
+		String target_name = clean_gradient_id(name);
 
 		for (const LinearGradient& linear_gradient : lg) {
 			if (linear_gradient.name == target_name) {
@@ -1826,7 +2020,8 @@ Svg_parser::build_linearGradient(xmlpp::Element* root, const LinearGradient& dat
 	//gradient link
 	xmlpp::Element *child_stops=gradient->add_child("param");
 	child_stops->set_attribute("name","gradient");
-	child_stops->set_attribute("guid",GUID::hasher(data.name).get_string());
+	const std::string guid_source = data.stops_source_id.empty() ? data.name : data.stops_source_id;
+	child_stops->set_attribute("guid",GUID::hasher(guid_source).get_string());
 	build_stop_color (child_stops->add_child("gradient"),data.stops);
 
 	const bool loop = data.spread_method != SVGGradient::SpreadMethod::PAD;
@@ -1877,7 +2072,8 @@ Svg_parser::build_radialGradient(xmlpp::Element* root, const RadialGradient& dat
 	//gradient link
 	xmlpp::Element *child_stops=gradient->add_child("param");
 	child_stops->set_attribute("name","gradient");
-	child_stops->set_attribute("guid",GUID::hasher(data.name).get_string());
+	const std::string guid_source = data.stops_source_id.empty() ? data.name : data.stops_source_id;
+	child_stops->set_attribute("guid",GUID::hasher(guid_source).get_string());
 	build_stop_color (child_stops->add_child("gradient"),data.stops);
 
 	//here the center point and radius
@@ -1902,50 +2098,50 @@ void
 Svg_parser::parser_linearGradient(const xmlpp::Node* node)
 {
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
-		Glib::ustring id	=nodeElement->get_attribute_value("id");
-		float x1			=atof(nodeElement->get_attribute_value("x1").data());
-		float y1			=atof(nodeElement->get_attribute_value("y1").data());
-		float x2			=atof(nodeElement->get_attribute_value("x2").data());
-		float y2			=atof(nodeElement->get_attribute_value("y2").data());
-		Glib::ustring link	=nodeElement->get_attribute_value("href");
-		Glib::ustring transform	=nodeElement->get_attribute_value("gradientTransform");
-		const std::string spread_method_string = nodeElement->get_attribute_value("spreadMethod");
+		std::string id = clean_gradient_id(nodeElement->get_attribute_value("id"));
+		if (id.empty()) return;
 
-		if(link.empty())
-			link = nodeElement->get_attribute_value("href","xlink");			
+		for (const auto& existing : lg) {
+			if (existing.name == id)
+				return;
+		}
 
-		//resolve transformations
-		SVGMatrix mtx;
-		if(!transform.empty())
-			mtx.parser_transform(transform);
+		std::string stops_source_id = id;
+		std::list<ColorStop> stops = find_gradient_stops(nodeElement, gamma, gradient_nodes, stops_source_id);
 
-		std::list<ColorStop> stops;
-		if(!link.empty()){
-			stops = get_colorStop(link);
-		}else{
-			//color stops
-			const xmlpp::ContentNode* nodeContent = dynamic_cast<const xmlpp::ContentNode*>(node);
-			if(!nodeContent){
-    			xmlpp::Node::NodeList list = node->get_children();
-    			for(xmlpp::Node::NodeList::iterator iter = list.begin(); iter != list.end(); ++iter){
-					Glib::ustring name =(*iter)->get_name();
-					if(name.compare("stop")==0){
-						const xmlpp::Element* nodeIter = dynamic_cast<const xmlpp::Element*>(*iter);
-						Style style;
-						style.merge(nodeIter);
-						float offset=atof(nodeIter->get_attribute_value("offset").data());
-						String stop_color = style.get("stop-color", "#000000");
-						String opacity = style.get("stop-opacity", "1");
-						stops.push_back(ColorStop(stop_color, atof(opacity.data()), gamma, offset));
-					}
-    			}
+		if (stops.empty()) {
+			std::string link = get_gradient_href(nodeElement);
+			if (!link.empty()) {
+				stops = get_colorStop(link);
+				if (!stops.empty())
+					stops_source_id = link;
 			}
 		}
-		if (!stops.empty()) {
-			LinearGradient linear_gradient(id,x1,y1,x2,y2,stops,mtx);
-			linear_gradient.spread_method = SVGGradient::parse_spread_method(spread_method_string);
-			lg.push_back(linear_gradient);
-		}
+
+		if (stops.empty())
+			return;
+
+		std::string x1_str = find_gradient_attribute(nodeElement, "x1", gradient_nodes);
+		std::string y1_str = find_gradient_attribute(nodeElement, "y1", gradient_nodes);
+		std::string x2_str = find_gradient_attribute(nodeElement, "x2", gradient_nodes);
+		std::string y2_str = find_gradient_attribute(nodeElement, "y2", gradient_nodes);
+
+		float x1 = (float)atof(x1_str.c_str());
+		float y1 = (float)atof(y1_str.c_str());
+		float x2 = (float)atof(x2_str.c_str());
+		float y2 = (float)atof(y2_str.c_str());
+
+		std::string transform = find_gradient_attribute(nodeElement, "gradientTransform", gradient_nodes);
+		SVGMatrix mtx;
+		if (!transform.empty())
+			mtx.parser_transform(transform);
+
+		std::string spread_method_string = find_gradient_attribute(nodeElement, "spreadMethod", gradient_nodes);
+
+		LinearGradient linear_gradient(id, x1, y1, x2, y2, stops, mtx);
+		linear_gradient.spread_method = SVGGradient::parse_spread_method(spread_method_string);
+		linear_gradient.stops_source_id = stops_source_id;
+		lg.push_back(linear_gradient);
 	}
 }
 
@@ -1953,36 +2149,55 @@ void
 Svg_parser::parser_radialGradient(const xmlpp::Node* node)
 {
 	if(const xmlpp::Element* nodeElement = dynamic_cast<const xmlpp::Element*>(node)){
-		Glib::ustring id	=nodeElement->get_attribute_value("id");
-		float cx			=atof(nodeElement->get_attribute_value("cx").data());
-		float cy			=atof(nodeElement->get_attribute_value("cy").data());
-		float fx			=atof(nodeElement->get_attribute_value("fx").data());
-		float fy			=atof(nodeElement->get_attribute_value("fy").data());
-		float r				=atof(nodeElement->get_attribute_value("r").data());
-		Glib::ustring link	=nodeElement->get_attribute_value("href");//basic
-		Glib::ustring transform	=nodeElement->get_attribute_value("gradientTransform");
-		const std::string spread_method_string = nodeElement->get_attribute_value("spreadMethod");
+		std::string id = clean_gradient_id(nodeElement->get_attribute_value("id"));
+		if (id.empty()) return;
 
-		if(link.empty())
-			link = nodeElement->get_attribute_value("href","xlink");
+		for (const auto& existing : rg) {
+			if (existing.name == id)
+				return;
+		}
 
-		if (cx!=fx || cy!=fy)
-			synfig::warning("SVG Parser: ignoring focus attributes for radial gradient");
+		std::string stops_source_id = id;
+		std::list<ColorStop> stops = find_gradient_stops(nodeElement, gamma, gradient_nodes, stops_source_id);
 
-		//resolve transformations
-		SVGMatrix mtx;
-		if(!transform.empty())
-			mtx.parser_transform(transform);
-
-		if(!link.empty()){
-			//inkscape always use link, i don't need parser stops here, but it's possible
-			std::list<ColorStop> stops = get_colorStop(link);
-			if (!stops.empty()) {
-				RadialGradient radial_gradient(id,cx,cy,r,stops,mtx);
-				radial_gradient.spread_method = SVGGradient::parse_spread_method(spread_method_string);
-				rg.push_back(radial_gradient);
+		if (stops.empty()) {
+			std::string link = get_gradient_href(nodeElement);
+			if (!link.empty()) {
+				stops = get_colorStop(link);
+				if (!stops.empty())
+					stops_source_id = link;
 			}
 		}
+
+		if (stops.empty())
+			return;
+
+		std::string cx_str = find_gradient_attribute(nodeElement, "cx", gradient_nodes);
+		std::string cy_str = find_gradient_attribute(nodeElement, "cy", gradient_nodes);
+		std::string fx_str = find_gradient_attribute(nodeElement, "fx", gradient_nodes);
+		std::string fy_str = find_gradient_attribute(nodeElement, "fy", gradient_nodes);
+		std::string r_str  = find_gradient_attribute(nodeElement, "r",  gradient_nodes);
+
+		float cx = (float)atof(cx_str.c_str());
+		float cy = (float)atof(cy_str.c_str());
+		float fx = fx_str.empty() ? cx : (float)atof(fx_str.c_str());
+		float fy = fy_str.empty() ? cy : (float)atof(fy_str.c_str());
+		float r  = (float)atof(r_str.c_str());
+
+		if (cx != fx || cy != fy)
+			synfig::warning("SVG Parser: ignoring focus attributes for radial gradient");
+
+		std::string transform = find_gradient_attribute(nodeElement, "gradientTransform", gradient_nodes);
+		SVGMatrix mtx;
+		if (!transform.empty())
+			mtx.parser_transform(transform);
+
+		std::string spread_method_string = find_gradient_attribute(nodeElement, "spreadMethod", gradient_nodes);
+
+		RadialGradient radial_gradient(id, cx, cy, r, stops, mtx);
+		radial_gradient.spread_method = SVGGradient::parse_spread_method(spread_method_string);
+		radial_gradient.stops_source_id = stops_source_id;
+		rg.push_back(radial_gradient);
 	}
 }
 
