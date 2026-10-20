@@ -45,7 +45,7 @@ namespace studio {
 
 class Dock_ToolOptions : public Dockable
 {
-	Gtk::Label empty_label;
+	Gtk::Label empty_label_;
 	Gtk::VBox sub_vbox_;
 
 public:
@@ -53,7 +53,7 @@ public:
 	~Dock_ToolOptions();
 
 	void clear();
-	void set_widget(Gtk::Widget&);
+	void set_widget(Gtk::Widget& x);
 
 }; // END of Dock_ToolOptions
 

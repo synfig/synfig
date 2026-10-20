@@ -34,6 +34,7 @@
 #endif
 
 #include "docks/dialog_tooloptions.h"
+
 #include <gui/localization.h>
 
 #endif
@@ -60,8 +61,8 @@ Dock_ToolOptions::Dock_ToolOptions()
 	sub_vbox_.set_margin_end(10);
 	sub_vbox_.set_margin_bottom(10);
 	
-	set_widget(empty_label);
-	empty_label.show();
+	set_widget(empty_label_);
+	empty_label_.show();
 }
 
 Dock_ToolOptions::~Dock_ToolOptions()
@@ -72,23 +73,24 @@ void
 Dock_ToolOptions::clear()
 {
 	Dockable::clear();
-	set_local_name(_("Tool Options"));
-	add(sub_vbox_);
-	set_widget(empty_label);
-	sub_vbox_.set_valign(Gtk::Align::ALIGN_CENTER);
-	empty_label.show();
 
+	set_local_name(_("Tool Options"));
 	set_icon("about_icon");
+
+	add(sub_vbox_);
+	sub_vbox_.set_valign(Gtk::Align::ALIGN_CENTER);
+	set_widget(empty_label_);
+	empty_label_.show();
 }
 
 void
 Dock_ToolOptions::set_widget(Gtk::Widget& x)
 {
 	std::vector<Gtk::Widget*> children = sub_vbox_.get_children();
-	for(std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
+	for (std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
 		sub_vbox_.remove(**i);
 	sub_vbox_.show();
-	sub_vbox_.pack_start(x,false,false);
+	sub_vbox_.pack_start(x, false, false);
 	sub_vbox_.set_valign(Gtk::Align::ALIGN_FILL);
 	x.show();
 }
