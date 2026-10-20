@@ -579,7 +579,7 @@ StateBrush_Context::StateBrush_Context(CanvasView* canvas_view) :
 	layer(nullptr)
 {
 	load_settings();
-	App::dialog_tool_options->present();
+	App::dock_tool_options->present();
 	update_cursor();
 	refresh_tool_options();
 	App::dock_toolbox->refresh();
@@ -598,7 +598,7 @@ StateBrush_Context::~StateBrush_Context()
 	layer = nullptr;
 	clear_overlay_preview();
 	get_work_area()->reset_cursor();
-	App::dialog_tool_options->clear();
+	App::dock_tool_options->clear();
 	App::dock_toolbox->refresh();
 }
 
@@ -628,9 +628,9 @@ StateBrush_Context::refresh_tool_options()
 	brush_buttons.clear();
 	setting_controls.clear();
 	original_brush_config.clear();
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_local_name(_("Brush Tool"));
-	App::dialog_tool_options->set_name("brush");
+	App::dock_tool_options->clear();
+	App::dock_tool_options->set_local_name(_("Brush Tool"));
+	App::dock_tool_options->set_name("brush");
 
 	Gtk::Notebook *notebook = Gtk::manage(new Gtk::Notebook());
 	notebook->set_hexpand(true);
@@ -639,7 +639,7 @@ StateBrush_Context::refresh_tool_options()
 	create_brushes_tab(notebook);
 	create_settings_tab(notebook);
 	notebook->show_all();
-	App::dialog_tool_options->add(*notebook);
+	App::dock_tool_options->add(*notebook);
 }
 
 void

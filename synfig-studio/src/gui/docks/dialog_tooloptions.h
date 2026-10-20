@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file dialog_tooloptions.h
-**	\brief Template Header
+**	\brief Header File for ToolOptions Panel
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -25,13 +25,14 @@
 
 /* === S T A R T =========================================================== */
 
-#ifndef __SYNFIG_STUDIO_DIALOG_TOOLOPTIONS_H
-#define __SYNFIG_STUDIO_DIALOG_TOOLOPTIONS_H
+#ifndef SYNFIG_STUDIO_DOCK_TOOLOPTIONS_H
+#define SYNFIG_STUDIO_DOCK_TOOLOPTIONS_H
 
 /* === H E A D E R S ======================================================= */
 
 #include <gtkmm/box.h>
 #include <gtkmm/label.h>
+
 #include "docks/dockable.h"
 
 /* === M A C R O S ========================================================= */
@@ -42,19 +43,19 @@
 
 namespace studio {
 
-class Dialog_ToolOptions : public Dockable
+class Dock_ToolOptions : public Dockable
 {
 	Gtk::Label empty_label;
 	Gtk::VBox sub_vbox_;
 
 public:
+	Dock_ToolOptions();
+	~Dock_ToolOptions();
 
 	void clear();
 	void set_widget(Gtk::Widget&);
 
-	Dialog_ToolOptions();
-	~Dialog_ToolOptions();
-}; // END of Dialog_ToolOptions
+}; // END of Dock_ToolOptions
 
 }; // END of namespace studio
 

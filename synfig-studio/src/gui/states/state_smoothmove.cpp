@@ -225,7 +225,7 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 	options_grid.show_all();
 
 	refresh_tool_options();
-	App::dialog_tool_options->present();
+	App::dock_tool_options->present();
 
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
@@ -239,10 +239,10 @@ StateSmoothMove_Context::StateSmoothMove_Context(CanvasView* canvas_view):
 void
 StateSmoothMove_Context::refresh_tool_options()
 {
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_grid);
-	App::dialog_tool_options->set_local_name(_("Smooth Move"));
-	App::dialog_tool_options->set_icon("tool_smooth_move_icon");
+	App::dock_tool_options->clear();
+	App::dock_tool_options->set_widget(options_grid);
+	App::dock_tool_options->set_local_name(_("Smooth Move"));
+	App::dock_tool_options->set_icon("tool_smooth_move_icon");
 }
 
 Smach::event_result
@@ -266,7 +266,7 @@ StateSmoothMove_Context::~StateSmoothMove_Context()
 	get_work_area()->clear_duck_dragger();
 	get_work_area()->reset_cursor();
 
-	App::dialog_tool_options->clear();
+	App::dock_tool_options->clear();
 
 	App::dock_toolbox->refresh();
 }

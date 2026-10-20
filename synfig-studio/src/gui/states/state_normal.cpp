@@ -313,10 +313,10 @@ StateNormal_Context::StateNormal_Context(CanvasView* canvas_view):
 void
 StateNormal_Context::refresh_tool_options()
 {
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_grid);
-	App::dialog_tool_options->set_local_name(_("Transform Tool"));
-	App::dialog_tool_options->set_icon("tool_normal_icon");
+	App::dock_tool_options->clear();
+	App::dock_tool_options->set_widget(options_grid);
+	App::dock_tool_options->set_local_name(_("Transform Tool"));
+	App::dock_tool_options->set_icon("tool_normal_icon");
 }
 
 
@@ -326,7 +326,7 @@ StateNormal_Context::~StateNormal_Context()
 	get_work_area()->clear_duck_dragger();
 	get_work_area()->reset_cursor();
 
-	App::dialog_tool_options->clear();
+	App::dock_tool_options->clear();
 
 	App::dock_toolbox->refresh();
 }

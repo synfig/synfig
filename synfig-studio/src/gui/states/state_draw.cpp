@@ -742,7 +742,7 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 		sigc::mem_fun(*this, &StateDraw_Context::UpdateSmoothness));
 
 	refresh_tool_options();
-	App::dialog_tool_options->present();
+	App::dock_tool_options->present();
 
 	// Hide all tangent and width ducks
 	get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH);
@@ -793,12 +793,12 @@ StateDraw_Context::UpdateSmoothness()
 void
 StateDraw_Context::refresh_tool_options()
 {
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_grid);
-	App::dialog_tool_options->set_local_name(_("Draw Tool"));
-	App::dialog_tool_options->set_icon("tool_draw_icon");
+	App::dock_tool_options->clear();
+	App::dock_tool_options->set_widget(options_grid);
+	App::dock_tool_options->set_local_name(_("Draw Tool"));
+	App::dock_tool_options->set_icon("tool_draw_icon");
 
-	App::dialog_tool_options->add_button(
+	App::dock_tool_options->add_button(
 		"tool_fill_icon",
 		_("Fill Last Stroke")
 	)->signal_clicked().connect(
@@ -818,7 +818,7 @@ StateDraw_Context::~StateDraw_Context()
 {
 	save_settings();
 
-	App::dialog_tool_options->clear();
+	App::dock_tool_options->clear();
 
 	get_work_area()->reset_cursor();
 

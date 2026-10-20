@@ -443,7 +443,7 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 	load_settings();
 
 	refresh_tool_options();
-	App::dialog_tool_options->present();
+	App::dock_tool_options->present();
 
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
@@ -467,10 +467,10 @@ StateText_Context::StateText_Context(CanvasView *canvasView):
 void
 StateText_Context::refresh_tool_options()
 {
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_grid);
-	App::dialog_tool_options->set_local_name(_("Text Tool"));
-	App::dialog_tool_options->set_icon("tool_text_icon");
+	App::dock_tool_options->clear();
+	App::dock_tool_options->set_widget(options_grid);
+	App::dock_tool_options->set_local_name(_("Text Tool"));
+	App::dock_tool_options->set_icon("tool_text_icon");
 }
 
 Smach::event_result
@@ -488,7 +488,7 @@ StateText_Context::~StateText_Context()
 	get_work_area()->set_allow_layer_clicks(prev_workarea_layer_status_);
 	get_work_area()->reset_cursor();
 
-	App::dialog_tool_options->clear();
+	App::dock_tool_options->clear();
 
 	get_work_area()->queue_draw();
 

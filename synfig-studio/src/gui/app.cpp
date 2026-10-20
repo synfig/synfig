@@ -94,9 +94,9 @@
 #include <gui/docks/dock_keyframes.h>
 #include <gui/docks/dock_layers.h>
 #include <gui/docks/dock_layergroups.h>
-#include <gui/docks/dock_params.h>
 #include <gui/docks/dock_metadata.h>
 #include <gui/docks/dock_navigator.h>
+#include <gui/docks/dock_params.h>
 #include <gui/docks/dock_soundwave.h>
 #include <gui/docks/dock_timetrack.h>
 #include <gui/docks/dock_timetrack2.h>
@@ -240,26 +240,26 @@ studio::Dialog_Gradient    *studio::App::dialog_gradient;
 studio::Dialog_Input       *studio::App::dialog_input;
 //studio::Dialog_Palette     *studio::App::dialog_palette;
 studio::Dialog_Setup       *studio::App::dialog_setup = nullptr;
-studio::Dialog_ToolOptions *studio::App::dialog_tool_options;
 studio::VectorizerSettings *studio::App::vectorizerpopup;
 
-       studio::DockManager   *App::dock_manager = nullptr;
-static studio::Dock_Canvases      *dock_canvases;
-static studio::Dock_Children      *dock_children;
-static studio::Dock_Curves        *dock_curves;
-static studio::Dock_History       *dock_history;
-static studio::Dock_Info          *dock_info;
-               Dock_Info     *App::dock_info_ = nullptr;
-static studio::Dock_Keyframes     *dock_keyframes;
-static studio::Dock_Layers        *dock_layers;
-static studio::Dock_LayerGroups   *dock_layer_groups;
-static studio::Dock_MetaData      *dock_meta_data;
-static studio::Dock_Params        *dock_params;
-static studio::Dock_Navigator     *dock_navigator;
-static studio::Dock_SoundWave     *dock_soundwave;
-static studio::Dock_Timetrack_Old *dock_timetrack_old;
-static studio::Dock_Timetrack2    *dock_timetrack;
-       studio::Dock_Toolbox  *App::dock_toolbox = nullptr;
+	   studio::DockManager      *App::dock_manager = nullptr;
+static studio::Dock_Canvases*         dock_canvases;
+static studio::Dock_Children*         dock_children;
+static studio::Dock_Curves*           dock_curves;
+static studio::Dock_History*          dock_history;
+static studio::Dock_Info*             dock_info;
+			   Dock_Info*        App::dock_info_ = nullptr;
+static studio::Dock_Keyframes*        dock_keyframes;
+static studio::Dock_Layers*           dock_layers;
+static studio::Dock_LayerGroups*      dock_layer_groups;
+static studio::Dock_MetaData*         dock_meta_data;
+static studio::Dock_Params*           dock_params;
+static studio::Dock_Navigator*        dock_navigator;
+static studio::Dock_SoundWave*        dock_soundwave;
+static studio::Dock_Timetrack_Old*    dock_timetrack_old;
+static studio::Dock_Timetrack2*       dock_timetrack;
+	   studio::Dock_Toolbox*     App::dock_toolbox = nullptr;
+	   studio::Dock_ToolOptions* App::dock_tool_options = nullptr;
 
 static std::list< etl::handle< studio::Module > > module_list_;
 
@@ -1667,8 +1667,8 @@ void App::init(const synfig::String& rootpath)
 		about=new studio::About();
 
 		studio_init_cb.task(_("Init Tool Options..."));
-		dialog_tool_options=new studio::Dialog_ToolOptions();
-		dock_manager->register_dockable(*dialog_tool_options);
+		dock_tool_options = new studio::Dock_ToolOptions();
+		dock_manager->register_dockable(*dock_tool_options);
 
 		studio_init_cb.task(_("Init History..."));
 		dock_history=new studio::Dock_History();

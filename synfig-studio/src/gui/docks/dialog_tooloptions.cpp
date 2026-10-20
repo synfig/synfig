@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
 /*!	\file dialog_tooloptions.cpp
-**	\brief Template File
+**	\brief Implementation File for ToolOptions Panel
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -51,9 +51,9 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Dialog_ToolOptions::Dialog_ToolOptions():
-	Dockable("tool_options",_("Tool Options"),"about_icon"),
-	empty_label(_("This tool has no options"))
+Dock_ToolOptions::Dock_ToolOptions()
+	: Dockable("tool_options", _("Tool Options"), "about_icon")
+	, empty_label_(_("This tool has no options"))
 {
 	add(sub_vbox_);
 
@@ -64,12 +64,12 @@ Dialog_ToolOptions::Dialog_ToolOptions():
 	empty_label.show();
 }
 
-Dialog_ToolOptions::~Dialog_ToolOptions()
+Dock_ToolOptions::~Dock_ToolOptions()
 {
 }
 
 void
-Dialog_ToolOptions::clear()
+Dock_ToolOptions::clear()
 {
 	Dockable::clear();
 	set_local_name(_("Tool Options"));
@@ -82,7 +82,7 @@ Dialog_ToolOptions::clear()
 }
 
 void
-Dialog_ToolOptions::set_widget(Gtk::Widget&x)
+Dock_ToolOptions::set_widget(Gtk::Widget& x)
 {
 	std::vector<Gtk::Widget*> children = sub_vbox_.get_children();
 	for(std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)

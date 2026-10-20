@@ -561,7 +561,7 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 	options_grid.show_all();
 
 	refresh_tool_options();
-	App::dialog_tool_options->present();
+	App::dock_tool_options->present();
 
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
@@ -580,10 +580,10 @@ StateRectangle_Context::StateRectangle_Context(CanvasView* canvas_view):
 void
 StateRectangle_Context::refresh_tool_options()
 {
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_grid);
-	App::dialog_tool_options->set_local_name(_("Rectangle Tool"));
-	App::dialog_tool_options->set_icon("tool_rectangle_icon");
+	App::dock_tool_options->clear();
+	App::dock_tool_options->set_widget(options_grid);
+	App::dock_tool_options->set_local_name(_("Rectangle Tool"));
+	App::dock_tool_options->set_icon("tool_rectangle_icon");
 }
 
 Smach::event_result
@@ -602,7 +602,7 @@ StateRectangle_Context::~StateRectangle_Context()
 
 	get_work_area()->reset_cursor();
 
-	App::dialog_tool_options->clear();
+	App::dock_tool_options->clear();
 
 	// Refresh the work area
 	get_work_area()->queue_draw();

@@ -210,7 +210,7 @@ StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 	options_grid.show_all();
 
 	refresh_tool_options();
-	App::dialog_tool_options->present();
+	App::dock_tool_options->present();
 
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
@@ -227,10 +227,10 @@ StateScale_Context::StateScale_Context(CanvasView* canvas_view):
 void
 StateScale_Context::refresh_tool_options()
 {
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_grid);
-	App::dialog_tool_options->set_local_name(_("Scale Tool"));
-	App::dialog_tool_options->set_icon("tool_scale_icon");
+	App::dock_tool_options->clear();
+	App::dock_tool_options->set_widget(options_grid);
+	App::dock_tool_options->set_local_name(_("Scale Tool"));
+	App::dock_tool_options->set_icon("tool_scale_icon");
 }
 
 Smach::event_result
@@ -254,7 +254,7 @@ StateScale_Context::~StateScale_Context()
 	get_work_area()->clear_duck_dragger();
 	get_work_area()->reset_cursor();
 
-	App::dialog_tool_options->clear();
+	App::dock_tool_options->clear();
 
 	App::dock_toolbox->refresh();
 }

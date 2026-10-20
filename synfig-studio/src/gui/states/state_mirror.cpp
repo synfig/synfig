@@ -199,7 +199,7 @@ StateMirror_Context::StateMirror_Context(CanvasView* canvas_view):
 	keyrelease_connect=get_work_area()->signal_key_release_event().connect(sigc::mem_fun(*this,&StateMirror_Context::key_release_event),false);
 
 	refresh_tool_options();
-	App::dialog_tool_options->present();
+	App::dock_tool_options->present();
 
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
@@ -247,10 +247,10 @@ StateMirror_Context::key_release_event(GdkEventKey *event)
 void
 StateMirror_Context::refresh_tool_options()
 {
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_grid);
-	App::dialog_tool_options->set_local_name(_("Mirror Tool"));
-	App::dialog_tool_options->set_icon("tool_mirror_icon");
+	App::dock_tool_options->clear();
+	App::dock_tool_options->set_widget(options_grid);
+	App::dock_tool_options->set_local_name(_("Mirror Tool"));
+	App::dock_tool_options->set_icon("tool_mirror_icon");
 }
 
 Smach::event_result
@@ -291,7 +291,7 @@ StateMirror_Context::~StateMirror_Context()
 	keypress_connect.disconnect();
 	keyrelease_connect.disconnect();
 
-	App::dialog_tool_options->clear();
+	App::dock_tool_options->clear();
 
 	App::dock_toolbox->refresh();
 }

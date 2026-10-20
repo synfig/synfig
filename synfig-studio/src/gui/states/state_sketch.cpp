@@ -294,7 +294,7 @@ StateSketch_Context::StateSketch_Context(CanvasView* canvas_view):
 	options_grid.show_all();
 
 	refresh_tool_options();
-	App::dialog_tool_options->present();
+	App::dock_tool_options->present();
 
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
@@ -323,7 +323,7 @@ StateSketch_Context::~StateSketch_Context()
 {
 	get_work_area()->reset_cursor();
 
-	App::dialog_tool_options->clear();
+	App::dock_tool_options->clear();
 
 	// Enable the time bar
 	//get_canvas_view()->set_sensitive_timebar(true);
@@ -337,12 +337,12 @@ StateSketch_Context::~StateSketch_Context()
 void
 StateSketch_Context::refresh_tool_options()
 {
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_grid);
-	App::dialog_tool_options->set_local_name(_("Sketch Tool"));
-	App::dialog_tool_options->set_icon("tool_sketch_icon");
+	App::dock_tool_options->clear();
+	App::dock_tool_options->set_widget(options_grid);
+	App::dock_tool_options->set_local_name(_("Sketch Tool"));
+	App::dock_tool_options->set_icon("tool_sketch_icon");
 
-	App::dialog_tool_options->add_button(
+	App::dock_tool_options->add_button(
 		"edit-undo",
 		_("Undo Last Stroke")
 	)->signal_clicked().connect(
@@ -351,7 +351,7 @@ StateSketch_Context::refresh_tool_options()
 			&studio::StateSketch_Context::undo_stroke
 		)
 	);
-	App::dialog_tool_options->add_button(
+	App::dock_tool_options->add_button(
 		"edit-redo",
 		_("Redo Last Stroke")
 	)->signal_clicked().connect(
@@ -360,7 +360,7 @@ StateSketch_Context::refresh_tool_options()
 			&studio::StateSketch_Context::redo_stroke
 		)
 	);
-	App::dialog_tool_options->add_button(
+	App::dock_tool_options->add_button(
 		"edit-clear",
 		_("Clear Sketch")
 	)->signal_clicked().connect(
@@ -369,7 +369,7 @@ StateSketch_Context::refresh_tool_options()
 			&studio::StateSketch_Context::clear_sketch
 		)
 	);
-	App::dialog_tool_options->add_button(
+	App::dock_tool_options->add_button(
 		"document-save-as",
 		_("Save Sketch As...")
 	)->signal_clicked().connect(
@@ -379,7 +379,7 @@ StateSketch_Context::refresh_tool_options()
 		)
 	);
 
-	App::dialog_tool_options->add_button(
+	App::dock_tool_options->add_button(
 		"document-open",
 		_("Open a Sketch")
 	)->signal_clicked().connect(

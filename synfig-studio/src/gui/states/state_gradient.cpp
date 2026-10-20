@@ -427,7 +427,7 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 	options_grid.show_all();
 
 	refresh_tool_options();
-	App::dialog_tool_options->present();
+	App::dock_tool_options->present();
 
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
@@ -454,10 +454,10 @@ StateGradient_Context::StateGradient_Context(CanvasView* canvas_view):
 void
 StateGradient_Context::refresh_tool_options()
 {
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_grid);
-	App::dialog_tool_options->set_local_name(_("Gradient Tool"));
-	App::dialog_tool_options->set_icon("tool_gradient_icon");
+	App::dock_tool_options->clear();
+	App::dock_tool_options->set_widget(options_grid);
+	App::dock_tool_options->set_local_name(_("Gradient Tool"));
+	App::dock_tool_options->set_icon("tool_gradient_icon");
 }
 
 Smach::event_result
@@ -476,7 +476,7 @@ StateGradient_Context::~StateGradient_Context()
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->reset_cursor();
 
-	App::dialog_tool_options->clear();
+	App::dock_tool_options->clear();
 
 	// Enable the time bar
 	//get_canvas_view()->set_sensitive_timebar(true);

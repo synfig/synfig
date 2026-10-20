@@ -403,7 +403,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	skel_deform_bone_width_dist.hide();
 
 	refresh_tool_options();
-	App::dialog_tool_options->present();
+	App::dock_tool_options->present();
 
 	// remembering previous type mask
 	prev_type_mask = get_work_area()->get_type_mask();
@@ -457,12 +457,12 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 void
 StateBone_Context::refresh_tool_options()
 {
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_table);
-	App::dialog_tool_options->set_local_name(_("Skeleton Tool"));
-	App::dialog_tool_options->set_name("bone");
+	App::dock_tool_options->clear();
+	App::dock_tool_options->set_widget(options_table);
+	App::dock_tool_options->set_local_name(_("Skeleton Tool"));
+	App::dock_tool_options->set_name("bone");
 
-	App::dialog_tool_options->add_button(
+	App::dock_tool_options->add_button(
 			"edit-clear",
 			_("Clear current Skeleton")
 	)->signal_clicked().connect(
@@ -500,7 +500,7 @@ StateBone_Context::~StateBone_Context()
 	get_canvas_interface()->set_state("");
 
 	save_settings();
-	App::dialog_tool_options->clear();
+	App::dock_tool_options->clear();
 
 	get_work_area()->reset_cursor();
 

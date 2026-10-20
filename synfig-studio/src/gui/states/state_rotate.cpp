@@ -224,7 +224,7 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 	options_grid.show_all();
 
 	refresh_tool_options();
-	App::dialog_tool_options->present();
+	App::dock_tool_options->present();
 
 	get_work_area()->set_allow_layer_clicks(true);
 	get_work_area()->set_duck_dragger(duck_dragger_);
@@ -240,10 +240,10 @@ StateRotate_Context::StateRotate_Context(CanvasView* canvas_view):
 void
 StateRotate_Context::refresh_tool_options()
 {
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_grid);
-	App::dialog_tool_options->set_local_name(_("Rotate Tool"));
-	App::dialog_tool_options->set_icon("tool_rotate_icon");
+	App::dock_tool_options->clear();
+	App::dock_tool_options->set_widget(options_grid);
+	App::dock_tool_options->set_local_name(_("Rotate Tool"));
+	App::dock_tool_options->set_icon("tool_rotate_icon");
 }
 
 Smach::event_result
@@ -269,7 +269,7 @@ StateRotate_Context::~StateRotate_Context()
 	get_work_area()->clear_duck_dragger();
 	get_work_area()->reset_cursor();
 
-	App::dialog_tool_options->clear();
+	App::dock_tool_options->clear();
 
 	App::dock_toolbox->refresh();
 }

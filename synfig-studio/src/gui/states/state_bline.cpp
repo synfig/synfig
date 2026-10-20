@@ -590,7 +590,7 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 	options_grid.show_all();
 
 	refresh_tool_options();
-	App::dialog_tool_options->present();
+	App::dock_tool_options->present();
 
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
@@ -612,12 +612,12 @@ StateBLine_Context::StateBLine_Context(CanvasView* canvas_view):
 void
 StateBLine_Context::refresh_tool_options()
 {
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_grid);
-	App::dialog_tool_options->set_local_name(_("Spline Tool"));
-	App::dialog_tool_options->set_icon("tool_spline_icon");
+	App::dock_tool_options->clear();
+	App::dock_tool_options->set_widget(options_grid);
+	App::dock_tool_options->set_local_name(_("Spline Tool"));
+	App::dock_tool_options->set_icon("tool_spline_icon");
 
-	App::dialog_tool_options->add_button(
+	App::dock_tool_options->add_button(
 		"system-run",
 		_("Make Spline")
 	)->signal_clicked().connect(
@@ -627,7 +627,7 @@ StateBLine_Context::refresh_tool_options()
 		))
 	);
 
-	App::dialog_tool_options->add_button(
+	App::dock_tool_options->add_button(
 		"edit-clear",
 		_("Clear current Spline")
 	)->signal_clicked().connect(
@@ -654,7 +654,7 @@ StateBLine_Context::~StateBLine_Context()
 	}
 
 	save_settings();
-	App::dialog_tool_options->clear();
+	App::dock_tool_options->clear();
 
 	get_work_area()->reset_cursor();
 
