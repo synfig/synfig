@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog_tooloptions.h
+/*!	\file dock_tooloptions.h
 **	\brief Header File for ToolOptions Panel
 **
 **	\legal

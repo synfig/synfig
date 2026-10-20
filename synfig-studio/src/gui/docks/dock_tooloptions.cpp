@@ -1,5 +1,5 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog_tooloptions.cpp
+/*!	\file dock_tooloptions.cpp
 **	\brief Implementation File for ToolOptions Panel
 **
 **	\legal
@@ -33,7 +33,7 @@
 #	include <config.h>
 #endif
 
-#include "docks/dialog_tooloptions.h"
+#include "docks/dock_tooloptions.h"
 
 #include <gui/localization.h>
 

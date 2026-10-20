@@ -40,7 +40,7 @@
 #include <gui/app.h>
 #include <gui/canvasview.h>
 #include <gui/docks/dock_toolbox.h>
-#include <gui/docks/dialog_tooloptions.h>
+#include <gui/docks/dock_tooloptions.h>
 #include <gui/duck.h>
 #include <gui/localization.h>
 #include <gui/onemoment.h>

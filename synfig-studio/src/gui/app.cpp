@@ -84,7 +84,7 @@
 #include <gui/dialogs/dialog_setup.h>
 #include <gui/dialogs/vectorizersettings.h>
 
-#include <gui/docks/dialog_tooloptions.h>
+#include <gui/docks/dock_tooloptions.h>
 #include <gui/docks/dockmanager.h>
 #include <gui/docks/dock_canvases.h>
 #include <gui/docks/dock_children.h>
