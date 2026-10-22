@@ -41,6 +41,7 @@
 
 #include <gui/app.h>
 #include <gui/exception_guard.h>
+#include <gui/helpers.h>
 #include <gui/localization.h>
 #include <gui/trees/historytreestore.h>
 
@@ -144,6 +145,12 @@ Dock_History::Dock_History():
 
 	if (Gtk::Toolbar* toolbar = dynamic_cast<Gtk::Toolbar*>(App::ui_manager()->get_widget("/toolbar-history"))) {
 		set_toolbar(*toolbar);
+		if (Gtk::ToolItem* undo_item = toolbar->get_nth_item(0)) {
+			setup_tooltip_with_accel(undo_item, _("Undo the previous action"), "<Actions>/action_group_dock_history/undo");
+		}
+		if (Gtk::ToolItem* redo_item = toolbar->get_nth_item(1)) {
+			setup_tooltip_with_accel(redo_item, _("Redo the previously undone action"), "<Actions>/action_group_dock_history/redo");
+		}
 	}
 	add(*create_action_tree());
 }

@@ -842,7 +842,11 @@ CanvasView::create_time_bar()
 		Gtk::IconSize iconsize=Gtk::IconSize::from_name("synfig-small_icon_16x16");
 		animatebutton = Gtk::manage(new Gtk::ToggleButton());
 		animatebutton->set_image_from_icon_name("animate_mode_off_icon", iconsize);
-		animatebutton->set_tooltip_text(_("Turn on animate editing mode"));
+		setup_tooltip_with_accel(animatebutton, [this]() {
+			return (get_mode() & MODE_ANIMATE)
+				? _("Turn off animate editing mode")
+				: _("Turn on animate editing mode");
+		}, "<Actions>/canvasview/animate");
 
 		// Set hotkey to toggle animate button on and off
 		auto accel_group = App::ui_manager()->get_accel_group();
@@ -1012,6 +1016,7 @@ CanvasView::create_action_toolbutton(const Glib::RefPtr<Gtk::Action> &action)
 {
 	Gtk::ToolButton *button = Gtk::manage(new Gtk::ToolButton());
 	button->set_related_action(action);
+	setup_tooltip_with_accel(button, action);
 	button->show();
 	return button;
 }
@@ -1064,7 +1069,7 @@ CanvasView::create_top_toolbar()
 		preview_options_button->signal_clicked().connect(
 			sigc::mem_fun(*this,&CanvasView::on_preview_option));
 		preview_options_button->set_label(_("Preview"));
-		preview_options_button->set_tooltip_text(_("Shows the Preview Settings Dialog"));
+		setup_tooltip_with_accel(preview_options_button, _("Shows the Preview Settings Dialog"), "<Actions>/canvasview/preview");
 		preview_options_button->show();
 
 		top_toolbar->append(*preview_options_button);
@@ -1150,7 +1155,7 @@ CanvasView::create_top_toolbar()
 		onion_skin->signal_toggled().connect(
 			sigc::mem_fun(*this, &CanvasView::toggle_onion_skin));
 		onion_skin->set_label(_("Onion Skin"));
-		onion_skin->set_tooltip_text(_("Show Onion Skin when enabled"));
+		setup_tooltip_with_accel(onion_skin, _("Show Onion Skin when enabled"), "<Actions>/canvasview/toggle-onion-skin");
 		onion_skin->show();
 
 		top_toolbar->append(*onion_skin);
@@ -1239,7 +1244,7 @@ CanvasView::create_right_toolbar()
 		show_grid->signal_toggled().connect(
 			sigc::mem_fun(*this, &CanvasView::toggle_show_grid));
 		show_grid->set_label(_("Show Grid"));
-		show_grid->set_tooltip_text(_("Show Grid when enabled"));
+		setup_tooltip_with_accel(show_grid, _("Show Grid when enabled"), "<Actions>/canvasview/toggle-grid-show");
 		show_grid->show();
 
 		right_toolbar->append(*show_grid);
@@ -1252,7 +1257,7 @@ CanvasView::create_right_toolbar()
 		snap_grid->signal_toggled().connect(
 			sigc::mem_fun(*this, &CanvasView::toggle_snap_grid));
 		snap_grid->set_label(_("Snap to Grid"));
-		snap_grid->set_tooltip_text(_("Snap to Grid when enabled"));
+		setup_tooltip_with_accel(snap_grid, _("Snap to Grid when enabled"), "<Actions>/canvasview/toggle-grid-snap");
 		snap_grid->show();
 
 		right_toolbar->append(*snap_grid);
@@ -2091,13 +2096,13 @@ CanvasView::on_mode_changed(CanvasInterface::Mode mode)
 	if(mode&MODE_ANIMATE)
 	{
 		animatebutton->set_image_from_icon_name("animate_mode_on_icon");
-		animatebutton->set_tooltip_text(_("Turn off animate editing mode"));
+		animatebutton->trigger_tooltip_query();
 		animatebutton->set_active(true);
 	}
 	else
 	{
 		animatebutton->set_image_from_icon_name("animate_mode_off_icon");
-		animatebutton->set_tooltip_text(_("Turn on animate editing mode"));
+		animatebutton->trigger_tooltip_query();
 		animatebutton->set_active(false);
 	}
 	//Keyframe lock icons
