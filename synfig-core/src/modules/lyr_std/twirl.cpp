@@ -267,11 +267,28 @@ Twirl::accelerated_render(Context context,Surface *surface,int quality, const Re
 RendDesc
 Twirl::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 {
+	Point center=param_center.get(Point());
+	Real radius=param_radius.get(Real());
+	bool distort_outside=param_distort_outside.get(bool());
+
+	if (radius <= 0)
+		return renddesc;
+
+	Rect twirl_rect(center[0]-radius, center[1]-radius, center[0]+radius, center[1]+radius);
+	Rect windr(renddesc.get_tl(), renddesc.get_br());
+
+	if (!distort_outside && !rect_intersect(twirl_rect, windr))
+		return renddesc;
+
 	RendDesc desc(renddesc);
+	Rect r = windr | twirl_rect;
 	Real pw = desc.get_pw();
 	Real ph = desc.get_ph();
-	desc.set_tl(Vector(-10.0, -10.0));
-	desc.set_br(Vector( 10.0,  10.0));
+	if (approximate_zero(pw) || approximate_zero(ph))
+		return renddesc;
+
+	desc.set_tl(r.get_min());
+	desc.set_br(r.get_max());
 	desc.set_wh(
 		(int)approximate_ceil(fabs((desc.get_br()[0] - desc.get_tl()[0])/pw)),
 		(int)approximate_ceil(fabs((desc.get_br()[1] - desc.get_tl()[1])/ph)) );
