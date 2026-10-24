@@ -54,6 +54,7 @@ class ValueNode_Bone : public LinkableValueNode
 	ValueNode::RHandle parent_;
 
 protected:
+	bool is_root_bone = false;
 	ValueNode_Bone();
 	ValueNode_Bone(const ValueBase &value, etl::loose_handle<Canvas> canvas = nullptr);
 
@@ -105,7 +106,7 @@ public:
 		{ return (*this)(t).get(Bone()).have_influence_on(x); }
 
 	ValueNode_Bone::ConstHandle is_ancestor_of(ValueNode_Bone::ConstHandle bone, Time t)const;
-	virtual bool is_root()const { return false; }
+	virtual bool is_root()const { return is_root_bone; }
 
 	// return a set of the bones that affect the given valuenode
 	//   recurses through the valuenodes in the waypoints if it's animated,

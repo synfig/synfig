@@ -66,6 +66,7 @@ target_sources(libsynfig
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_boneweightpair.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_wplist.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_bonelink.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/valuenode_bonedriver.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_average.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_dynamic.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/valuenode_derivative.cpp"

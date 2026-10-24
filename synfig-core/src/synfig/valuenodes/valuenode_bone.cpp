@@ -998,6 +998,7 @@ ValueNode_Bone::runref()const
 
 ValueNode_Bone_Root::ValueNode_Bone_Root()
 {
+	is_root_bone = true;
 	DEBUG_LOG("SYNFIG_DEBUG_ROOT_BONE",
 		"%s:%d ValueNode_Bone_Root::ValueNode_Bone_Root()\n", __FILE__, __LINE__);
 }
