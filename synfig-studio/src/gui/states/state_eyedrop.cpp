@@ -39,7 +39,7 @@
 #include <gui/canvasview.h>
 #include <gui/dialogs/dialog_color.h>
 #include <gui/docks/dock_toolbox.h>
-#include <gui/docks/dialog_tooloptions.h>
+#include <gui/docks/dock_tooloptions.h>
 #include <gui/event_mouse.h>
 #include <gui/localization.h>
 #include <gui/workarea.h>
@@ -147,17 +147,17 @@ StateEyedrop_Context::~StateEyedrop_Context()
 	synfig::info("Left Eyedrop State");
 	canvas_view->get_work_area()->reset_cursor();
 
-	App::dialog_tool_options->clear();
+	App::dock_tool_options->clear();
 	App::dock_toolbox->refresh();
 }
 
 void
 StateEyedrop_Context::refresh_tool_options()
 {
-	App::dialog_tool_options->clear();
-	App::dialog_tool_options->set_widget(options_grid);
-	App::dialog_tool_options->set_local_name(_("Eyedropper Tool"));
-	App::dialog_tool_options->set_name("eyedrop");
+	App::dock_tool_options->clear();
+	App::dock_tool_options->set_widget(options_grid);
+	App::dock_tool_options->set_local_name(_("Eyedropper Tool"));
+	App::dock_tool_options->set_name("eyedrop");
 }
 
 Smach::event_result

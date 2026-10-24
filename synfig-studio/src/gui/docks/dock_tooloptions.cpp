@@ -1,6 +1,6 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file dialog_tooloptions.cpp
-**	\brief Template File
+/*!	\file dock_tooloptions.cpp
+**	\brief Implementation File for ToolOptions Panel
 **
 **	\legal
 **	Copyright (c) 2002-2005 Robert B. Quattlebaum Jr., Adrian Bentley
@@ -33,7 +33,8 @@
 #	include <config.h>
 #endif
 
-#include "docks/dialog_tooloptions.h"
+#include "docks/dock_tooloptions.h"
+
 #include <gui/localization.h>
 
 #endif
@@ -51,44 +52,45 @@ using namespace studio;
 
 /* === M E T H O D S ======================================================= */
 
-Dialog_ToolOptions::Dialog_ToolOptions():
-	Dockable("tool_options",_("Tool Options"),"about_icon"),
-	empty_label(_("This tool has no options"))
+Dock_ToolOptions::Dock_ToolOptions()
+	: Dockable("tool_options", _("Tool Options"), "about_icon")
+	, empty_label_(_("This tool has no options"))
 {
 	add(sub_vbox_);
 
 	sub_vbox_.set_margin_end(10);
 	sub_vbox_.set_margin_bottom(10);
 	
-	set_widget(empty_label);
-	empty_label.show();
+	set_widget(empty_label_);
+	empty_label_.show();
 }
 
-Dialog_ToolOptions::~Dialog_ToolOptions()
+Dock_ToolOptions::~Dock_ToolOptions()
 {
 }
 
 void
-Dialog_ToolOptions::clear()
+Dock_ToolOptions::clear()
 {
 	Dockable::clear();
-	set_local_name(_("Tool Options"));
-	add(sub_vbox_);
-	set_widget(empty_label);
-	sub_vbox_.set_valign(Gtk::Align::ALIGN_CENTER);
-	empty_label.show();
 
+	set_local_name(_("Tool Options"));
 	set_icon("about_icon");
+
+	add(sub_vbox_);
+	sub_vbox_.set_valign(Gtk::Align::ALIGN_CENTER);
+	set_widget(empty_label_);
+	empty_label_.show();
 }
 
 void
-Dialog_ToolOptions::set_widget(Gtk::Widget&x)
+Dock_ToolOptions::set_widget(Gtk::Widget& x)
 {
 	std::vector<Gtk::Widget*> children = sub_vbox_.get_children();
-	for(std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
+	for (std::vector<Gtk::Widget*>::iterator i = children.begin(); i != children.end(); ++i)
 		sub_vbox_.remove(**i);
 	sub_vbox_.show();
-	sub_vbox_.pack_start(x,false,false);
+	sub_vbox_.pack_start(x, false, false);
 	sub_vbox_.set_valign(Gtk::Align::ALIGN_FILL);
 	x.show();
 }

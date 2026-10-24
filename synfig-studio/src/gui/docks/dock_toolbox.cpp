@@ -45,7 +45,7 @@
 #include <gui/statemanager.h>
 #include <gui/app.h>
 #include <gui/canvasview.h>
-#include <gui/docks/dialog_tooloptions.h>
+#include <gui/docks/dock_tooloptions.h>
 #include <gui/instance.h>
 #include <gui/localization.h>
 #include <gui/widgets/widget_defaults.h>
