@@ -1650,22 +1650,7 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		// Control + scroll up/down: zoom in/out
 
 		if (modifier & GDK_CONTROL_MASK) {
-			// The zoom is performed while preserving the pointer
-			// position as a fixed point (similarly to Xara Xtreme and
-			// Inkscape).
-
-			// The strategy used below is to scroll to the updated
-			// position, then zoom. This is easy to implement within
-			// the present architecture, but has the disadvantage of
-			// triggering multiple visible refreshes. Note: 1.25 is
-			// the hard wired ratio in zoom_in()/zoom_out(). The
-			// variable "drift" compensates additional inaccuracies in
-			// the zoom. There is also an additional minus sign for
-			// the inverted y coordinates.
-
-			// FIXME: One might want to figure out where in the code
-			// this empirical drift is been introduced.
-			// Zoom in/out performed against the center of the canvas
+			// Zoom in/out performed against the center of the canvasview
 			
 			switch(event->scroll.direction) {
 			case GDK_SCROLL_UP:
