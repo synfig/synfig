@@ -60,7 +60,7 @@
 #include "zstreambuf.h"
 #include "importer.h"
 
-#include <libxml++/libxml++.h>
+#include <synfig/xmlpp_compat.h>
 #include "gradient.h"
 
 
@@ -96,7 +96,7 @@ xmlpp::Element* encode_keyframe(xmlpp::Element* root,const Keyframe &kf, float f
 	root->set_name("keyframe");
  	root->set_attribute("time",kf.get_time().get_string(fps));
 	if(!kf.get_description().empty())
-		root->set_child_text(kf.get_description());
+		set_first_child_text(root, kf.get_description());
 	root->set_attribute("active", kf.active()?"true":"false");
 	return root;
 }
@@ -171,25 +171,25 @@ xmlpp::Element* encode_bool(xmlpp::Element* root, bool b)
 xmlpp::Element* encode_string(xmlpp::Element* root,const String &str)
 {
 	root->set_name("string");
-	root->set_child_text(str);
+	set_first_child_text(root, str);
 	return root;
 }
 
 xmlpp::Element* encode_vector(xmlpp::Element* root,Vector vect)
 {
 	root->set_name("vector");
-	root->add_child("x")->set_child_text(strprintf(VECTOR_VALUE_TYPE_FORMAT,(float)vect[0]));
-	root->add_child("y")->set_child_text(strprintf(VECTOR_VALUE_TYPE_FORMAT,(float)vect[1]));
+	set_first_child_text(add_child_element(root, "x"), strprintf(VECTOR_VALUE_TYPE_FORMAT,(float)vect[0]));
+	set_first_child_text(add_child_element(root, "y"), strprintf(VECTOR_VALUE_TYPE_FORMAT,(float)vect[1]));
 	return root;
 }
 
 xmlpp::Element* encode_color(xmlpp::Element* root,Color color)
 {
 	root->set_name("color");
-	root->add_child("r")->set_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_r()));
-	root->add_child("g")->set_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_g()));
-	root->add_child("b")->set_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_b()));
-	root->add_child("a")->set_child_text(strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_a()));
+	set_first_child_text(add_child_element(root, "r"), strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_r()));
+	set_first_child_text(add_child_element(root, "g"), strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_g()));
+	set_first_child_text(add_child_element(root, "b"), strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_b()));
+	set_first_child_text(add_child_element(root, "a"), strprintf(COLOR_VALUE_TYPE_FORMAT,(float)color.get_a()));
 	return root;
 }
 
@@ -203,10 +203,10 @@ xmlpp::Element* encode_angle(xmlpp::Element* root,Angle theta)
 xmlpp::Element* encode_segment(xmlpp::Element* root,Segment seg)
 {
 	root->set_name("segment");
-	encode_vector(root->add_child("p1")->add_child("vector"),seg.p1);
-	encode_vector(root->add_child("t1")->add_child("vector"),seg.t1);
-	encode_vector(root->add_child("p2")->add_child("vector"),seg.p2);
-	encode_vector(root->add_child("t2")->add_child("vector"),seg.t2);
+	encode_vector(add_child_element(add_child_element(root, "p1"), "vector"),seg.p1);
+	encode_vector(add_child_element(add_child_element(root, "t1"), "vector"),seg.t1);
+	encode_vector(add_child_element(add_child_element(root, "p2"), "vector"),seg.p2);
+	encode_vector(add_child_element(add_child_element(root, "t2"), "vector"),seg.t2);
 	return root;
 }
 
@@ -214,34 +214,34 @@ xmlpp::Element* encode_bline_point(xmlpp::Element* root,BLinePoint bline_point)
 {
 	root->set_name(type_bline_point.description.name);
 
-	encode_vector(root->add_child("vertex")->add_child("vector"),bline_point.get_vertex());
-	encode_vector(root->add_child("t1")->add_child("vector"),bline_point.get_tangent1());
+	encode_vector(add_child_element(add_child_element(root, "vertex"), "vector"),bline_point.get_vertex());
+	encode_vector(add_child_element(add_child_element(root, "t1"), "vector"),bline_point.get_tangent1());
 
 	if(bline_point.get_split_tangent_both())
-		encode_vector(root->add_child("t2")->add_child("vector"),bline_point.get_tangent2());
+		encode_vector(add_child_element(add_child_element(root, "t2"), "vector"),bline_point.get_tangent2());
 
-	encode_real(root->add_child("width")->add_child("real"),bline_point.get_width());
-	encode_real(root->add_child("origin")->add_child("real"),bline_point.get_origin());
+	encode_real(add_child_element(add_child_element(root, "width"), "real"),bline_point.get_width());
+	encode_real(add_child_element(add_child_element(root, "origin"), "real"),bline_point.get_origin());
 	return root;
 }
 
 xmlpp::Element* encode_width_point(xmlpp::Element* root,WidthPoint width_point)
 {
 	root->set_name(type_width_point.description.name);
-	encode_real(root->add_child("position")->add_child("real"),width_point.get_position());
-	encode_real(root->add_child("width")->add_child("real"),width_point.get_width());
-	encode_integer(root->add_child("side_before")->add_child("integer"),width_point.get_side_type_before());
-	encode_integer(root->add_child("side_after")->add_child("integer"),width_point.get_side_type_after());
+	encode_real(add_child_element(add_child_element(root, "position"), "real"),width_point.get_position());
+	encode_real(add_child_element(add_child_element(root, "width"), "real"),width_point.get_width());
+	encode_integer(add_child_element(add_child_element(root, "side_before"), "integer"),width_point.get_side_type_before());
+	encode_integer(add_child_element(add_child_element(root, "side_after"), "integer"),width_point.get_side_type_after());
 	return root;
 }
 
 xmlpp::Element* encode_dash_item(xmlpp::Element* root, DashItem dash_item)
 {
 	root->set_name(type_dash_item.description.name);
-	encode_real(root->add_child("offset")->add_child("real"),dash_item.get_offset());
-	encode_real(root->add_child("length")->add_child("real"),dash_item.get_length());
-	encode_integer(root->add_child("side_before")->add_child("integer"),dash_item.get_side_type_before());
-	encode_integer(root->add_child("side_after")->add_child("integer"),dash_item.get_side_type_after());
+	encode_real(add_child_element(add_child_element(root, "offset"), "real"),dash_item.get_offset());
+	encode_real(add_child_element(add_child_element(root, "length"), "real"),dash_item.get_length());
+	encode_integer(add_child_element(add_child_element(root, "side_before"), "integer"),dash_item.get_side_type_before());
+	encode_integer(add_child_element(add_child_element(root, "side_after"), "integer"),dash_item.get_side_type_after());
 	return root;
 }
 
@@ -250,7 +250,7 @@ xmlpp::Element* encode_gradient(xmlpp::Element* root,Gradient x)
 	root->set_name("gradient");
 	x.sync();
 	for (Gradient::const_iterator iter = x.begin(); iter != x.end(); ++iter) {
-		xmlpp::Element *cpoint(encode_color(root->add_child("color"),iter->color));
+		xmlpp::Element *cpoint(encode_color(add_child_element(root, "color"),iter->color));
 		cpoint->set_attribute("pos",strprintf("%f",iter->pos));
 	}
 	return root;
@@ -265,7 +265,7 @@ xmlpp::Element* encode_list(xmlpp::Element* root,std::vector<ValueBase> list, Ca
 
 	while(!list.empty())
 	{
-		encode_value(root->add_child("value"),list.front(),canvas);
+		encode_value(add_child_element(root, "value"),list.front(),canvas);
 		list.erase(list.begin());
 	}
 
@@ -275,26 +275,26 @@ xmlpp::Element* encode_list(xmlpp::Element* root,std::vector<ValueBase> list, Ca
 xmlpp::Element* encode_transformation(xmlpp::Element* root,const Transformation &transformation)
 {
 	root->set_name("transformation");
-	encode_vector(root->add_child("offset")->add_child("vector"),transformation.offset);
-	encode_angle(root->add_child("angle")->add_child("angle"),transformation.angle);
-	encode_angle(root->add_child("skew_angle")->add_child("angle"),transformation.skew_angle);
-	encode_vector(root->add_child("scale")->add_child("vector"),transformation.scale);
+	encode_vector(add_child_element(add_child_element(root, "offset"), "vector"),transformation.offset);
+	encode_angle(add_child_element(add_child_element(root, "angle"), "angle"),transformation.angle);
+	encode_angle(add_child_element(add_child_element(root, "skew_angle"), "angle"),transformation.skew_angle);
+	encode_vector(add_child_element(add_child_element(root, "scale"), "vector"),transformation.scale);
 	return root;
 }
 
 xmlpp::Element* encode_weighted_value(xmlpp::Element* root,types_namespace::TypeWeightedValueBase &type, const ValueBase &data,Canvas::ConstHandle canvas)
 {
 	root->set_name(type.description.name);
-	encode_real(root->add_child("weight")->add_child("real"), type.extract_weight(data));
-	encode_value(root->add_child("value")->add_child("value"), type.extract_value(data), canvas);
+	encode_real(add_child_element(add_child_element(root, "weight"), "real"), type.extract_weight(data));
+	encode_value(add_child_element(add_child_element(root, "value"), "value"), type.extract_value(data), canvas);
 	return root;
 }
 
 xmlpp::Element* encode_pair(xmlpp::Element* root,types_namespace::TypePairBase &type, const ValueBase &data,Canvas::ConstHandle canvas)
 {
 	root->set_name(type.description.name);
-	encode_value(root->add_child("first")->add_child("value"), type.extract_first(data), canvas);
-	encode_value(root->add_child("second")->add_child("value"), type.extract_second(data), canvas);
+	encode_value(add_child_element(add_child_element(root, "first"), "value"), type.extract_first(data), canvas);
+	encode_value(add_child_element(add_child_element(root, "second"), "value"), type.extract_second(data), canvas);
 	return root;
 }
 
@@ -444,7 +444,7 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 	
 	for(iter=waypoint_list.begin();iter!=waypoint_list.end();++iter)
 	{
-		xmlpp::Element *waypoint_node=root->add_child("waypoint");
+		xmlpp::Element *waypoint_node=add_child_element(root, "waypoint");
 		waypoint_node->set_attribute("time",iter->get_time().get_string());
 
 		if(iter->get_value_node()->is_exported())
@@ -457,10 +457,10 @@ xmlpp::Element* encode_animated(xmlpp::Element* root,ValueNode_Animated::ConstHa
 				if (data.get_type() == type_canvas)
 					waypoint_node->set_attribute("use",data.get(Canvas::Handle()).get()->get_relative_id(canvas));
 				else
-					encode_value_node(waypoint_node->add_child("value_node"),iter->get_value_node(),canvas);
+					encode_value_node(add_child_element(waypoint_node, "value_node"),iter->get_value_node(),canvas);
 			}
 			else
-				encode_value_node(waypoint_node->add_child("value_node"),iter->get_value_node(),canvas);
+				encode_value_node(add_child_element(waypoint_node, "value_node"),iter->get_value_node(),canvas);
 		}
 		
 		if (iter->get_before()!=INTERPOLATION_UNDEFINED)
@@ -501,14 +501,14 @@ xmlpp::Element* encode_static_list(xmlpp::Element* root,ValueNode_StaticList::Co
 
 	for(iter=value_node->list.begin();iter!=value_node->list.end();++iter)
 	{
-		xmlpp::Element	*entry_node=root->add_child("entry");
+		xmlpp::Element	*entry_node=add_child_element(root, "entry");
 		assert(*iter);
 		if(!(*iter)->get_id().empty())
 			entry_node->set_attribute("use",(*iter)->get_relative_id(canvas));
 		else
 		{
 			DEBUG_LOG("SYNFIG_DEBUG_SAVE_CANVAS", "%s:%d encode entry %s\n", __FILE__, __LINE__, (*iter)->get_string().c_str());
-			encode_value_node(entry_node->add_child("value_node"),*iter,canvas);
+			encode_value_node(add_child_element(entry_node, "value_node"),*iter,canvas);
 		}
 	}
 
@@ -551,12 +551,12 @@ xmlpp::Element* encode_dynamic_list(xmlpp::Element* root,ValueNode_DynamicList::
 
 	for(iter=corrected_valuenode_list.begin();iter!=corrected_valuenode_list.end();++iter)
 	{
-		xmlpp::Element	*entry_node=root->add_child("entry");
+		xmlpp::Element	*entry_node=add_child_element(root, "entry");
 		assert(iter->value_node);
 		if(!iter->value_node->get_id().empty())
 			entry_node->set_attribute("use",iter->value_node->get_relative_id(canvas));
 		else
-			encode_value_node(entry_node->add_child("value_node"),iter->value_node,canvas);
+			encode_value_node(add_child_element(entry_node, "value_node"),iter->value_node,canvas);
 
 		// process waypoints
 		{
@@ -648,7 +648,7 @@ xmlpp::Element* encode_linkable_value_node(xmlpp::Element* root,LinkableValueNod
 			{
 				DEBUG_LOG("SYNFIG_DEBUG_SAVE_CANVAS", "%s:%d saving bone's parent\n", __FILE__, __LINE__);
 			}
-			encode_value_node(root->add_child(value_node->link_name(i))->add_child("value_node"),link,canvas);
+			encode_value_node(add_child_element(add_child_element(root, value_node->link_name(i)), "value_node"),link,canvas);
 		}
 	}
 
@@ -790,7 +790,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 		// Handle dynamic parameters
 		if(dynamic_param_list.count(iter->get_name()))
 		{
-			xmlpp::Element *node=root->add_child("param");
+			xmlpp::Element *node=add_child_element(root, "param");
 			node->set_attribute("name",iter->get_name());
 
 			ValueNode::ConstHandle value_node=dynamic_param_list.find(iter->get_name())->second;
@@ -798,7 +798,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 			// If the valuenode has no ID, then it must be defined in-place
 			if(value_node->get_id().empty())
 			{
-				encode_value_node(node->add_child("value_node"),value_node,layer->get_canvas().constant());
+				encode_value_node(add_child_element(node, "value_node"),value_node,layer->get_canvas().constant());
 			}
 			else
 			{
@@ -829,7 +829,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 
 					if(!value.get(Canvas::Handle()))
 						continue;
-					xmlpp::Element *node=root->add_child("param");
+					xmlpp::Element *node=add_child_element(root, "param");
 					node->set_attribute("name",iter->get_name());
 					node->set_attribute("use",child->get_relative_id(layer->get_canvas()));
 					if(value.get_static())
@@ -837,7 +837,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 					continue;
 				}
 			}
-			xmlpp::Element *node=root->add_child("param");
+			xmlpp::Element *node=add_child_element(root, "param");
 			node->set_attribute("name",iter->get_name());
 
 			// remember filename param if need
@@ -857,7 +857,7 @@ xmlpp::Element* encode_layer(xmlpp::Element* root,Layer::ConstHandle layer)
 						value.set(filename);
 			}
 
-			encode_value(node->add_child("value"),value,layer->get_canvas().constant());
+			encode_value(add_child_element(node, "value"),value,layer->get_canvas().constant());
 		}
 	}
 
@@ -933,36 +933,36 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 		);
 
 		if(!canvas->get_name().empty())
-			root->add_child("name")->set_child_text(canvas->get_name());
+			set_first_child_text(add_child_element(root, "name"), canvas->get_name());
 		if(!canvas->get_description().empty())
-			root->add_child("desc")->set_child_text(canvas->get_description());
+			set_first_child_text(add_child_element(root, "desc"), canvas->get_description());
 		if(!canvas->get_author().empty())
-			root->add_child("author")->set_child_text(canvas->get_description());
+			set_first_child_text(add_child_element(root, "author"), canvas->get_description());
 
 		std::list<String> meta_keys(canvas->get_meta_data_keys());
 		while(!meta_keys.empty())
 		{
-			xmlpp::Element* meta_element(root->add_child("meta"));
+			xmlpp::Element* meta_element(add_child_element(root, "meta"));
 			meta_element->set_attribute("name",meta_keys.front());
 			meta_element->set_attribute("content",canvas->get_meta_data(meta_keys.front()));
 			meta_keys.pop_front();
 		}
 		for(KeyframeList::const_iterator iter=canvas->keyframe_list().begin();iter!=canvas->keyframe_list().end();++iter)
-			encode_keyframe(root->add_child("keyframe"),*iter,canvas->rend_desc().get_frame_rate());
+			encode_keyframe(add_child_element(root, "keyframe"),*iter,canvas->rend_desc().get_frame_rate());
 	}
 
 	// Output the <bones> section
 	if((!canvas->is_inline() && !ValueNode_Bone::get_bone_map(canvas).empty()))
 	{
-		xmlpp::Element *node=root->add_child("bones");
+		xmlpp::Element *node=add_child_element(root, "bones");
 
-		encode_value_node_bone(node->add_child("value_node"),ValueNode_Bone::get_root_bone(),canvas);
+		encode_value_node_bone(add_child_element(node, "value_node"),ValueNode_Bone::get_root_bone(),canvas);
 
 		ValueNode_Bone::BoneList bone_list(ValueNode_Bone::get_ordered_bones(canvas));
 		for(ValueNode_Bone::BoneList::iterator iter=bone_list.begin();iter!=bone_list.end();++iter)
 		{
 			ValueNode_Bone::Handle bone(*iter);
-			encode_value_node_bone(node->add_child("value_node"),bone,canvas);
+			encode_value_node_bone(add_child_element(node, "value_node"),bone,canvas);
 		}
 	}
 
@@ -979,7 +979,7 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 
 	if((!canvas->is_inline() && !canvas->value_node_list().empty()) || !canvas->children().empty())
 	{
-		xmlpp::Element *node=root->add_child("defs");
+		xmlpp::Element *node=add_child_element(root, "defs");
 		const ValueNodeList &value_node_list(canvas->value_node_list());
 
 		// Save all the constant 'value_node' nodes first.
@@ -988,7 +988,7 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 			// If the value_node is a constant, then use the shorthand
 			if (ValueNode_Const::Handle value_node = ValueNode_Const::Handle::cast_dynamic(*iter))
 			{
-				reinterpret_cast<xmlpp::Element*>(encode_value(node->add_child("value"),value_node->get_value(),canvas))->set_attribute("id",value_node->get_id());
+				reinterpret_cast<xmlpp::Element*>(encode_value(add_child_element(node, "value"),value_node->get_value(),canvas))->set_attribute("id",value_node->get_id());
 			}
 		}
 
@@ -997,20 +997,20 @@ xmlpp::Element* encode_canvas(xmlpp::Element* root,Canvas::ConstHandle canvas)
 		{
 			if (!ValueNode_Const::Handle::cast_dynamic(*iter))
 			{
-				encode_value_node(node->add_child("value_node"),*iter,canvas);
+				encode_value_node(add_child_element(node, "value_node"),*iter,canvas);
 			}
 		}
 
 		for(Canvas::Children::const_iterator iter=canvas->children().begin();iter!=canvas->children().end();++iter)
 		{
-			encode_canvas(node->add_child("canvas"),*iter);
+			encode_canvas(add_child_element(node, "canvas"),*iter);
 		}
 	}
 
 	Canvas::const_reverse_iterator iter;
 
 	for(iter=canvas->rbegin();iter!=canvas->rend();++iter)
-		encode_layer(root->add_child("layer"),*iter);
+		encode_layer(add_child_element(root, "layer"),*iter);
 
 	return root;
 }
