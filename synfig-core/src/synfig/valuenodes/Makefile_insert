@@ -3,6 +3,7 @@ VALUENODES_HH = \
 	valuenodes/valuenode_add.h \
 	valuenodes/valuenode_and.h \
 	valuenodes/valuenode_angle.h \
+	valuenodes/valuenode_animsharelist.h\
 	valuenodes/valuenode_anglestring.h \
 	valuenodes/valuenode_animated.h \
 	valuenodes/valuenode_animatedfile.h \
@@ -53,6 +54,7 @@ VALUENODES_HH = \
 	valuenodes/valuenode_switch.h \
 	valuenodes/valuenode_timedswap.h \
 	valuenodes/valuenode_timeloop.h \
+	valuenodes/valuenode_timeoffset.h \
 	valuenodes/valuenode_timestring.h \
 	valuenodes/valuenode_twotone.h \
 	valuenodes/valuenode_vectorangle.h \
@@ -75,6 +77,7 @@ VALUENODES_CC = \
 	valuenodes/valuenode_add.cpp \
 	valuenodes/valuenode_and.cpp \
 	valuenodes/valuenode_angle.cpp \
+	valuenodes/valuenode_animsharelist.cpp\
 	valuenodes/valuenode_anglestring.cpp \
 	valuenodes/valuenode_animated.cpp \
 	valuenodes/valuenode_animatedfile.cpp \
@@ -125,6 +128,7 @@ VALUENODES_CC = \
 	valuenodes/valuenode_switch.cpp \
 	valuenodes/valuenode_timedswap.cpp \
 	valuenodes/valuenode_timeloop.cpp \
+	valuenodes/valuenode_timeoffset.cpp \
 	valuenodes/valuenode_timestring.cpp \
 	valuenodes/valuenode_twotone.cpp \
 	valuenodes/valuenode_vectorangle.cpp \
