@@ -12,5 +12,5 @@ app_layerduplicate_SOURCES=app_layerduplicate.cpp test_base.h
 
 smach_SOURCES=smach.cpp
 
-json_SOURCES=test_json.cpp test_base.h $(top_srcdir)/src/gui/json.cpp
+json_SOURCES=test_json.cpp test_base.h ../src/gui/json.cpp
 
