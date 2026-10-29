@@ -1102,6 +1102,9 @@ DEFINE_ACTION("panel-pal_edit",        _("Palette Editor"))
 DEFINE_ACTION("panel-soundwave",       _("Sound"))
 DEFINE_ACTION("panel-timetrack",       _("Timetrack"))
 
+// actions in Plug-Ins
+DEFINE_ACTION("open-plugin-manager", _("Plugin Manager"))
+
 // actions in Help menu
 DEFINE_ACTION("help",           Gtk::Stock::HELP)
 #if GTK_CHECK_VERSION(3, 20, 0)
@@ -1226,16 +1229,8 @@ DEFINE_ACTION("switch-to-rightmost-tab",  _("Switch to Rightmost Tab"))
 "		<menuitem action='amount-dec'/>"
 "	</menu>"
 "	<menu action='menu-plugins'>"
-;
-
-	for ( const auto& plugin : studio::App::plugin_manager.plugins() ) {
-		// TODO: (Plugins) Arrange menu items into groups
-
-		DEFINE_ACTION(plugin.id, plugin.name.get())
-		ui_info_menu += strprintf("	<menuitem action='%s'/>", plugin.id.c_str());
-	}
-
-	ui_info_menu +=
+"		<menuitem action='open-plugin-manager'/>"
+"       <separator />"
 "	</menu>"
 "	<menu action='menu-window'>"
 "		<menu action='menu-workspace'>"
@@ -2744,7 +2739,7 @@ App::dialog_select_importer(const synfig::filesystem::Path& filename, std::strin
 		if ( importer.has_extension(ext) )
 		{
 			plugin = importer.id;
-			combo_importers.append(importer.id, importer.description.get());
+			combo_importers.append(importer.id, importer.metadata.description.get());
 			if ( count == 0 )
 				combo_importers.set_active_id(importer.id);
 			count++;
@@ -2802,7 +2797,7 @@ App::dialog_open_file_with_history_button(const std::string& title, filesystem::
 	for ( const ImportExport& exp : plugin_manager.importers() )
 	{
 		Glib::RefPtr<Gtk::FileFilter> filter = Gtk::FileFilter::create();
-		filter->set_name(exp.description.get());
+		filter->set_name(exp.metadata.description.get());
 		for ( const std::string& extension : exp.extensions )
 		{
 			filter->add_pattern("*" + extension);
@@ -2836,7 +2831,7 @@ App::dialog_open_file_with_history_button(const std::string& title, filesystem::
 		{
 			for ( const auto& importer : App::plugin_manager.importers() )
 			{
-				if ( filter->get_name() == importer.description.get() )
+				if ( filter->get_name() == importer.metadata.description.get() )
 				{
 					plugin_importer = importer.id;
 					break;
@@ -3072,7 +3067,7 @@ App::dialog_export_file(const std::string& title, synfig::filesystem::Path& file
 	for ( const ImportExport& exp : App::plugin_manager.exporters() )
 	{
 		Glib::RefPtr<Gtk::FileFilter> filter = Gtk::FileFilter::create();
-		filter->set_name(exp.description.get());
+		filter->set_name(exp.metadata.description.get());
 		for ( const std::string& extension : exp.extensions )
 			filter->add_pattern("*" + extension);
 		dialog->add_filter(filter);
@@ -3100,7 +3095,7 @@ App::dialog_export_file(const std::string& title, synfig::filesystem::Path& file
 		auto filter = dialog->get_filter();
 		for ( const auto& exporter : App::plugin_manager.exporters() )
 		{
-			if ( filter->get_name() == exporter.description.get() )
+			if ( filter->get_name() == exporter.metadata.description.get() )
 			{
 				if ( !exporter.has_extension(filename.extension().u8string()) )
 					filename += exporter.extensions[0];
@@ -4229,4 +4224,31 @@ studio::App::check_python_version(const std::string& path)
 	}
 	synfig::warning(err_msg, (std_out + '\n' + std_err).c_str());
 	return false;
+}
+
+std::string
+App::get_python_path()
+{
+	std::vector<std::string> search_paths;
+	std::string custom_python_binary = Glib::getenv("SYNFIG_PYTHON_BINARY");
+	if (!custom_python_binary.empty()) {
+		search_paths.emplace_back(custom_python_binary);
+	} else {
+		// Set path to python binary depending on the os type.
+		// For Windows case Python binary is expected
+		// at INSTALL_PREFIX/python/python.exe
+		for (std::string python_bin : {"python3", "python"} ) {
+#ifdef _WIN32
+			search_paths.emplace_back(App::get_base_path() + "/python/" + python_bin + ".exe");
+#endif
+			search_paths.emplace_back(python_bin);
+		}
+	}
+	for (const auto& path : search_paths) {
+		if (studio::App::check_python_version(path)) {
+			return path;
+		}
+	}
+
+	return "";
 }
