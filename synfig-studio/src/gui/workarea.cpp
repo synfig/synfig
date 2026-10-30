@@ -1652,13 +1652,17 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		if (modifier & GDK_CONTROL_MASK) {
 			// Zoom in/out performed against the center of the canvasview
 			
+			const synfig::Point realcenter = (window_tl + window_br) / 2.0;
+			const synfig::Vector offset = mouse_pos - realcenter;
 			switch(event->scroll.direction) {
 			case GDK_SCROLL_UP:
 			case GDK_SCROLL_RIGHT:
+				set_focus_point(get_focus_point() - offset * (1.0 - 1.0 / 1.25));
 				zoom_in();
 				break;
 			case GDK_SCROLL_DOWN:
 			case GDK_SCROLL_LEFT:
+				set_focus_point(get_focus_point() + offset * (1.25 - 1.0));
 				zoom_out();
 				break;
 			default:
