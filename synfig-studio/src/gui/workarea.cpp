@@ -1650,36 +1650,19 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		// Control + scroll up/down: zoom in/out
 
 		if (modifier & GDK_CONTROL_MASK) {
-			// The zoom is performed while preserving the pointer
-			// position as a fixed point (similarly to Xara Xtreme and
-			// Inkscape).
-
-			// The strategy used below is to scroll to the updated
-			// position, then zoom. This is easy to implement within
-			// the present architecture, but has the disadvantage of
-			// triggering multiple visible refreshes. Note: 1.25 is
-			// the hard wired ratio in zoom_in()/zoom_out(). The
-			// variable "drift" compensates additional inaccuracies in
-			// the zoom. There is also an additional minus sign for
-			// the inverted y coordinates.
-
-			// FIXME: One might want to figure out where in the code
-			// this empirical drift is been introduced.
-
-			const synfig::Point scroll_point(get_scrollx_adjustment()->get_value(),get_scrolly_adjustment()->get_value());
-			const double drift = 0.052;
-
+			// Zoom in/out performed against the center of the canvasview
+			
+			const synfig::Point realcenter = (window_tl + window_br) / 2.0;
+			const synfig::Vector offset = mouse_pos - realcenter;
 			switch(event->scroll.direction) {
 			case GDK_SCROLL_UP:
 			case GDK_SCROLL_RIGHT:
-				get_scrollx_adjustment()->set_value(scroll_point[0]+(mouse_pos[0]-scroll_point[0])*(1.25-(1+drift)));
-				get_scrolly_adjustment()->set_value(scroll_point[1]-(mouse_pos[1]+scroll_point[1])*(1.25-(1+drift)));
+				set_focus_point(get_focus_point() - offset * (1.0 - 1.0 / 1.25));
 				zoom_in();
 				break;
 			case GDK_SCROLL_DOWN:
 			case GDK_SCROLL_LEFT:
-				get_scrollx_adjustment()->set_value(scroll_point[0]+(mouse_pos[0]-scroll_point[0])*(1/1.25-(1+drift)));
-				get_scrolly_adjustment()->set_value(scroll_point[1]-(mouse_pos[1]+scroll_point[1])*(1/1.25-(1+drift)));
+				set_focus_point(get_focus_point() + offset * (1.25 - 1.0));
 				zoom_out();
 				break;
 			default:
