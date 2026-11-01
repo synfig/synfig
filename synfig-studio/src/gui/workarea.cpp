@@ -79,6 +79,8 @@ using namespace studio;
 
 /* === G L O B A L S ======================================================= */
 
+constexpr Real zoom_factor = 1.25;
+
 /* === C L A S S E S ======================================================= */
 
 /* === M E T H O D S ======================================================= */
@@ -1650,19 +1652,21 @@ WorkArea::on_drawing_area_event(GdkEvent *event)
 		// Control + scroll up/down: zoom in/out
 
 		if (modifier & GDK_CONTROL_MASK) {
-			// Zoom in/out performed against the center of the canvasview
+			// The zoom is performed while preserving the pointer
+			// position as a fixed point (similarly to Xara Xtreme and
+			// Inkscape).
 			
 			const synfig::Point realcenter = (window_tl + window_br) / 2.0;
 			const synfig::Vector offset = mouse_pos - realcenter;
 			switch(event->scroll.direction) {
 			case GDK_SCROLL_UP:
 			case GDK_SCROLL_RIGHT:
-				set_focus_point(get_focus_point() - offset * (1.0 - 1.0 / 1.25));
+				set_focus_point(get_focus_point() - offset * (1.0 - 1.0 / zoom_factor));
 				zoom_in();
 				break;
 			case GDK_SCROLL_DOWN:
 			case GDK_SCROLL_LEFT:
-				set_focus_point(get_focus_point() + offset * (1.25 - 1.0));
+				set_focus_point(get_focus_point() + offset * (zoom_factor - 1.0));
 				zoom_out();
 				break;
 			default:
@@ -2066,13 +2070,13 @@ WorkArea::queue_scroll()
 void
 studio::WorkArea::zoom_in()
 {
-	set_zoom(zoom*1.25);
+	set_zoom(zoom*zoom_factor);
 }
 
 void
 studio::WorkArea::zoom_out()
 {
-	set_zoom(zoom/1.25);
+	set_zoom(zoom/zoom_factor);
 }
 
 void
