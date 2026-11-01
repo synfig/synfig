@@ -27,6 +27,8 @@
 #ifndef SYNFIG_STRING_HELPER_H
 #define SYNFIG_STRING_HELPER_H
 
+#include <cstdarg>
+
 #include <string>
 #include "real.h"
 
