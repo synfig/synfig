@@ -91,14 +91,23 @@ Action::ValueNodeStaticListInsertSmart::get_param_vocab()
 bool
 Action::ValueNodeStaticListInsertSmart::is_candidate(const ParamList &x)
 {
-	if (!candidate_check(get_param_vocab(),x))
-		return false;
+    if(!candidate_check(get_param_vocab(),x))
+        return false;
 
-	ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
+    ValueDesc value_desc(x.find("value_desc")->second.get_value_desc());
 
-	return (value_desc.parent_is_value_node() &&
-			// We need a static list.
-			ValueNode_StaticList::Handle::cast_dynamic(value_desc.get_parent_value_node()));
+    ValueNode_StaticList::Handle value_node;
+
+    if(value_desc.parent_is_value_node())
+        value_node =
+            ValueNode_StaticList::Handle::cast_dynamic(
+                value_desc.get_parent_value_node());
+    else
+        value_node =
+            ValueNode_StaticList::Handle::cast_dynamic(
+                value_desc.get_value_node());
+
+    return bool(value_node);
 }
 
 bool
@@ -108,15 +117,20 @@ Action::ValueNodeStaticListInsertSmart::set_param(const synfig::String& name, co
 	{
 		ValueDesc value_desc(param.get_value_desc());
 
-		if(!value_desc.parent_is_value_node())
-			return false;
+		if(value_desc.parent_is_value_node())
+    	{
+        	value_node = ValueNode_StaticList::Handle::cast_dynamic(value_desc.get_parent_value_node());
+        	index = value_desc.get_index();
+    	}
+    	else
+    	{
+        	value_node = ValueNode_StaticList::Handle::cast_dynamic(value_desc.get_value_node());
+        	index = 0;
+    	}
 
-		value_node=ValueNode_StaticList::Handle::cast_dynamic(value_desc.get_parent_value_node());
 
 		if(!value_node)
 			return false;
-
-		index=value_desc.get_index();
 
 		return true;
 	}

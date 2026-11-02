@@ -129,7 +129,7 @@ Widget_ValueBase::Widget_ValueBase():
 	vector_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	color_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	enum_widget->signal_changed().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
-	sublayer_widget->signal_changed().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
+	sublayer_widget->signal_changed().connect([this](){if (child_param_desc.get_hint()=="anim_share_param" && sublayer_widget->get_value().empty()) return; activate();});
 	real_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	integer_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
 	angle_widget->signal_activate().connect(sigc::mem_fun(*this,&Widget_ValueBase::activate));
@@ -224,6 +224,9 @@ void Widget_ValueBase::popup_combobox()
 		const std::string& child_param_hint = get_child_param_desc().get_hint();
 		if( param_hint == "sublayer_name" || child_param_hint == "sublayer_name")
 			combobox = sublayer_widget;
+		else if (param_hint == "anim_share_param" || child_param_hint == "anim_share_param")
+    		combobox = sublayer_widget;
+
 		else if( param_hint == "font_family" || child_param_hint == "font_family")
 			combobox = fontfamily_widget;
 	}
@@ -342,6 +345,12 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 				filename_widget->set_value(value.get(std::string()));
 				filename_widget->show();
 			}
+			else if(child_param_desc.get_hint()=="anim_share_param" || param_desc.get_hint()=="anim_share_param")
+			{
+    			sublayer_widget->set_share_params(value_desc);
+    			sublayer_widget->set_value(value.get(std::string()));
+    			sublayer_widget->show();
+			}
 			else if(child_param_desc.get_hint()=="sublayer_name" || param_desc.get_hint()=="sublayer_name")
 			{
 				sublayer_widget->set_value_desc(value_desc);
@@ -365,6 +374,11 @@ Widget_ValueBase::set_value(const synfig::ValueBase &data)
 			color_widget->set_value(value.get(synfig::Color()));
 			color_widget->show();
 		}
+		else
+    	if (type == type_anim_share)
+    	{
+        	label->hide();
+    	}
 		else
 		{
 			label->show();
@@ -433,6 +447,9 @@ Widget_ValueBase::get_value()
 		}
 		else if(child_param_desc.get_hint()=="font_family" || param_desc.get_hint()=="font_family") {
 			value=std::string(fontfamily_widget->get_value());
+		}
+		else if(child_param_desc.get_hint()=="anim_share_param" || param_desc.get_hint()=="anim_share_param") {
+    		value=std::string(sublayer_widget->get_value());
 		}
 		else
 		{

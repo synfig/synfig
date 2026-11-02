@@ -53,6 +53,7 @@
 #include "blinepoint.h"
 #include "widthpoint.h"
 #include "dashitem.h"
+#include "animshare.h"
 
 #endif
 
@@ -377,6 +378,30 @@ TypeDashItem TypeDashItem::instance;
 SYNFIG_IMPLEMENT_TYPE_ALIAS(DashItem, TypeDashItem)
 
 
+// AnimShare
+
+class TypeAnimShare: public Type
+{
+	static String to_string(const AnimShare &x)
+		{ return strprintf("AnimShare (%s, %s, %d)",
+			x.get_param().c_str(),
+			x.get_delay().get_string().c_str(),
+			x.get_order()); }
+	void initialize_vfunc(Description &description)
+	{
+		Type::initialize_vfunc(description);
+		description.name = "anim_share";
+		description.aliases.push_back("animshare");
+		description.local_name = N_("anim_share");
+		register_all_but_compare<AnimShare, to_string>();
+	}
+public:
+	static TypeAnimShare instance;
+};
+TypeAnimShare TypeAnimShare::instance;
+SYNFIG_IMPLEMENT_TYPE_ALIAS(AnimShare, TypeAnimShare)
+
+
 // List
 
 class TypeList: public Type
@@ -616,4 +641,5 @@ namespace synfig {
 	Type &type_bone_object		= TypeBoneObject::instance;
 	Type &type_bone_valuenode	= TypeBoneValueNode::instance;
 	Type &type_transformation	= TypeTransformation::instance;
+	Type &type_anim_share 		= TypeAnimShare::instance;
 }; // END of namespace synfig
