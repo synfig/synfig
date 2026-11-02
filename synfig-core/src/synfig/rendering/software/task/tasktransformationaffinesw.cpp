@@ -92,12 +92,15 @@ public:
 		src_pixels_to_units.m20 = sub_task()->source_rect.minx - src_upp[0]*sub_task()->target_rect.minx;
 		src_pixels_to_units.m21 = sub_task()->source_rect.miny - src_upp[1]*sub_task()->target_rect.miny;
 
+		// Correction by 0.5 is necessary to avoid 1px shift when rendering to
+		// targets that store pixels from top-to-bottom, like png for example.
+		// See this thread for various details and debugging info: https://github.com/synfig/synfig/issues/3472
 		Vector dst_ppu = get_pixels_per_unit();
 		Matrix dst_units_to_pixels;
 		dst_units_to_pixels.m00 = dst_ppu[0];
 		dst_units_to_pixels.m11 = dst_ppu[1];
-		dst_units_to_pixels.m20 = target_rect.minx - dst_ppu[0]*source_rect.minx;
-		dst_units_to_pixels.m21 = target_rect.miny - dst_ppu[1]*source_rect.miny;
+		dst_units_to_pixels.m20 = target_rect.minx - dst_ppu[0]*source_rect.minx - 0.5;
+		dst_units_to_pixels.m21 = target_rect.miny - dst_ppu[1]*source_rect.miny - 0.5;
 
 		Matrix matrix = dst_units_to_pixels * transformation->matrix * src_pixels_to_units;
 
