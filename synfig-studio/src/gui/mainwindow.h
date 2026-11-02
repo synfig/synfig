@@ -46,6 +46,7 @@ namespace studio {
 	class Dockable;
 	class DockBook;
 	class WorkspaceHandler;
+	class Dialog_PluginManager;
 
 	class MainWindow: public Gtk::ApplicationWindow
 	{
@@ -53,6 +54,7 @@ namespace studio {
 		Gtk::Bin *bin_;
 		DockBook *main_dock_book_;
 		Glib::RefPtr<Gtk::ActionGroup> window_action_group;
+		std::unique_ptr<Dialog_PluginManager> plugin_manager_dialog;
 
 		//! Constructor Helper - Initializes all of the menus
 		void init_menus();
@@ -65,6 +67,8 @@ namespace studio {
 		void on_custom_workspaces_changed();
 		void on_dockable_registered(Dockable* dockable);
 		void on_dockable_unregistered(Dockable* dockable);
+		void on_plugins_changed();
+		void show_plugin_manager();
 		void toggle_show_menubar();
 		void toggle_show_toolbar();
 
@@ -72,6 +76,7 @@ namespace studio {
 
 		guint save_workspace_merge_id;
 		guint custom_workspaces_merge_id;
+		guint save_plugins_merge_id;
 
 		void add_custom_workspace_menu_item_handlers();
 		void remove_custom_workspace_menu_item_handlers();
