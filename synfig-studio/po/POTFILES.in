@@ -68,8 +68,6 @@ src/gui/dials/toggleducksdial.cpp
 src/gui/dials/toggleducksdial.h
 src/gui/dials/zoomdial.cpp
 src/gui/dials/zoomdial.h
-src/gui/docks/dialog_tooloptions.cpp
-src/gui/docks/dialog_tooloptions.h
 src/gui/docks/dock_canvases.cpp
 src/gui/docks/dock_canvases.h
 src/gui/docks/dock_canvasspecific.cpp
@@ -101,6 +99,8 @@ src/gui/docks/dock_timetrack.h
 src/gui/docks/dock_timetrack2.cpp
 src/gui/docks/dock_toolbox.cpp
 src/gui/docks/dock_toolbox.h
+src/gui/docks/dock_tooloptions.cpp
+src/gui/docks/dock_tooloptions.h
 src/gui/docks/dockable.cpp
 src/gui/docks/dockable.h
 src/gui/docks/dockbook.cpp

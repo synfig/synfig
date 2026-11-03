@@ -1,6 +1,5 @@
 target_sources(synfigstudio
     PRIVATE
-        "${CMAKE_CURRENT_LIST_DIR}/dialog_tooloptions.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dock_canvases.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dock_canvasspecific.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dock_children.cpp"
@@ -17,6 +16,7 @@ target_sources(synfigstudio
         "${CMAKE_CURRENT_LIST_DIR}/dock_timetrack.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dock_timetrack2.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dock_toolbox.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/dock_tooloptions.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dockable.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dockbook.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dockdialog.cpp"
