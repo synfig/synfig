@@ -17,6 +17,7 @@ target_sources(synfigapp
         "${CMAKE_CURRENT_LIST_DIR}/layerpaint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerparamconnect.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerparamdisconnect.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/layerparamreset.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerparamset.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerparamsetstatic.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/layerparamunsetstatic.cpp"
