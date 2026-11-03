@@ -216,12 +216,18 @@ inline float unspherify(float f)
 Point sphtrans(const Point &p, const Point &center, const float &radius,
 											const Real &percent, int type, bool& clipped)
 {
+	clipped=false;
+
+	if (radius <= 0.0f)
+	{
+		clipped=true;
+		return p;
+	}
+
 	const Vector v = (p - center) / radius;
 
 	Point newp = p;
 	const float t = percent;
-
-	clipped=false;
 
 	if(type == TYPE_NORMAL)
 	{
@@ -338,15 +344,95 @@ Layer_SphereDistort::get_color(Context context, const Point &pos)const
 RendDesc
 Layer_SphereDistort::get_sub_renddesc_vfunc(const RendDesc &renddesc) const
 {
-	RendDesc desc(renddesc);
-	Real pw = desc.get_pw();
-	Real ph = desc.get_ph();
-	desc.set_tl(Vector(-10.0, -10.0));
-	desc.set_br(Vector( 10.0,  10.0));
-	desc.set_wh(
-		(int)approximate_ceil(fabs((desc.get_br()[0] - desc.get_tl()[0])/pw)),
-		(int)approximate_ceil(fabs((desc.get_br()[1] - desc.get_tl()[1])/ph)) );
-	return desc;
+	Vector center=param_center.get(Vector());
+	double radius=param_radius.get(double());
+	double percent=param_amount.get(double());
+	int type=param_type.get(int());
+
+	if (radius <= 0.0)
+		return renddesc;
+
+	Rect sphr;
+	sphr.set_point(center[0]-radius,center[1]-radius);
+	sphr.expand(center[0]+radius,center[1]+radius);
+
+	Rect windr;
+	windr.set_point(renddesc.get_tl()[0],renddesc.get_tl()[1]);
+	windr.expand(renddesc.get_br()[0],renddesc.get_br()[1]);
+
+	// test bounding boxes for collision
+	if( (type == TYPE_NORMAL && !rect_intersect(sphr,windr)) ||
+		(type == TYPE_DISTH && (sphr.minx >= windr.maxx || windr.minx >= sphr.maxx)) ||
+		(type == TYPE_DISTV && (sphr.miny >= windr.maxy || windr.miny >= sphr.maxy)) )
+	{
+		return renddesc;
+	}
+
+	Point tl = renddesc.get_tl(), br = renddesc.get_br();
+	Point origin[4] = {tl,tl,br,br};
+	Vector v[4] = {Vector(0,br[1]-tl[1]),
+				   Vector(br[0]-tl[0],0),
+				   Vector(0,tl[1]-br[1]),
+				   Vector(tl[0]-br[0],0)};
+
+	Point close(0,0);
+	Real t = 0;
+	Rect expandr(tl,br);
+
+	for(int i=0; i<4; ++i)
+	{
+		Vector p_o = center-origin[i];
+		Real mag_sq = v[i].mag_squared();
+		t = mag_sq > 1e-12 ? (p_o*v[i])/mag_sq : 0;
+		if (t < 0) t = 0;
+		if (t > 1) t = 1;
+
+		close = origin[i] + v[i]*t;
+
+		Point p = sphtrans(close,center,radius,percent,type);
+		expandr.expand(p[0],p[1]);
+		p = sphtrans(origin[i],center,radius,percent,type);
+		expandr.expand(p[0],p[1]);
+		p = sphtrans(origin[i]+v[i],center,radius,percent,type);
+		expandr.expand(p[0],p[1]);
+	}
+
+	Point ntl(0,0),nbr(0,0);
+
+	if(tl[0] < br[0]) {
+		ntl[0] = expandr.minx;
+		nbr[0] = expandr.maxx;
+	} else {
+		ntl[0] = expandr.maxx;
+		nbr[0] = expandr.minx;
+	}
+
+	if(tl[1] < br[1]) {
+		ntl[1] = expandr.miny;
+		nbr[1] = expandr.maxy;
+	} else {
+		ntl[1] = expandr.maxy;
+		nbr[1] = expandr.miny;
+	}
+
+	Real pw = renddesc.get_pw(), ph = renddesc.get_ph();
+	if (approximate_zero(pw) || approximate_zero(ph))
+		return renddesc;
+
+	Vector temp = ntl-tl;
+	int nl = (int)(temp[0]/pw)-1;
+	int nt = (int)(temp[1]/ph)-1;
+
+	temp = nbr - br;
+	int nr = (int)(temp[0]/pw)+1;
+	int nb = (int)(temp[1]/ph)+1;
+
+	int nw = renddesc.get_w() + nr - nl;
+	int nh = renddesc.get_h() + nb - nt;
+
+	RendDesc r(renddesc);
+	r.set_subwindow(nl,nt,nw,nh);
+	return r;
 }
 
 #if 1
@@ -608,11 +694,10 @@ Layer_SphereDistort::get_bounding_rect()const
 	int type=param_type.get(int());
 	bool clip=param_clip.get(bool());
 
-	Rect bounds(Rect::full_plane());
+	if (!clip)
+		return Rect::full_plane();
 
-	if (clip)
-		return bounds;
-
+	Rect bounds;
 	switch(type)
 	{
 		case TYPE_NORMAL:
@@ -626,6 +711,7 @@ Layer_SphereDistort::get_bounding_rect()const
 			bounds = Rect::horizontal_strip(center[1]-radius, center[1]+radius);
 			break;
 		default:
+			bounds = Rect::full_plane();
 			break;
 	}
 

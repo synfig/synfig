@@ -60,6 +60,9 @@ software::Contour::render_polyspan(
 	Color::value_type opacity,
 	Color::BlendMethod blend_method )
 {
+	if (target_surface.get_w() <= 0 || target_surface.get_h() <= 0)
+		return;
+
 	bool simple_fill = (Color::BLEND_METHODS_OVERWRITE_ON_ALPHA_ONE & (1 << blend_method))
 			        && fabsf(1.f - opacity*color.get_a()) <= 1e-6;
 
