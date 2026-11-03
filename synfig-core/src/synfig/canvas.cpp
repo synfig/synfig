@@ -962,6 +962,12 @@ Canvas::clone(const GUID& deriv_guid, bool for_export)const
 
 	Handle canvas(new Canvas(name));
 
+	if (for_export)
+	{
+		canvas->rend_desc() = rend_desc();
+		canvas->keyframe_list_ = keyframe_list_;
+	}
+
 	if(is_inline() && !for_export)
 	{
 		canvas->is_inline_=true;
