@@ -47,7 +47,7 @@
 #include "valuenode_animatedfile.h"
 #include "valuenode_const.h"
 
-#include <libxml++/libxml++.h>
+#include <synfig/xmlpp_compat.h>
 
 #endif
 
@@ -249,7 +249,7 @@ public:
 			if (auto metadata_node = root->get_first_child("metadata")) {
 				if (auto sound_node = metadata_node->get_first_child("soundFile")) {
 					if (auto sound_element = dynamic_cast<xmlpp::Element*>(sound_node)) {
-						if (auto sound_text_node = sound_element->get_child_text())
+						if (auto sound_text_node = get_first_child_text(sound_element))
 							fields["sound"] = sound_text_node->get_content();
 					}
 					if (fields.count("sound") == 0 || fields["sound"].empty())
@@ -259,7 +259,7 @@ public:
 			if (auto mouthcues_node = root->get_first_child("mouthCues")) {
 				for (auto mouthcue_node : mouthcues_node->get_children("mouthCue")) {
 					if (auto mouthcue_element = dynamic_cast<xmlpp::Element*>(mouthcue_node)) {
-						if (auto mouthcue_text_node = mouthcue_element->get_child_text()) {
+						if (auto mouthcue_text_node = get_first_child_text(mouthcue_element)) {
 							std::string phoneme = mouthcue_text_node->get_content();
 							if (phoneme.empty()) {
 								synfig::warning(_("XML animated file: missing phoneme for Rhubarb mouthcue element: using X"));

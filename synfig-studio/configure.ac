@@ -98,6 +98,12 @@ PKG_CHECK_MODULES(SYNFIG, [synfig >= 1.5.5] sigc++-2.0,,[
 AC_SUBST(SYNFIG_CFLAGS)
 AC_SUBST(SYNFIG_LIBS)
 
+dnl libsynfig may have been built against libxml++ 5.0, whose headers need a
+dnl C++17 compiler. The last -std flag wins, which is why appending is enough.
+PKG_CHECK_MODULES(LIBXMLPP, libxml++-5.0,[
+    CXXFLAGS="$CXXFLAGS -std=gnu++17"
+],[])
+
 AC_ARG_ENABLE([jack],
     AS_HELP_STRING([--enable-jack],
            [ Enable experimental JACK transport support experimental ]),
