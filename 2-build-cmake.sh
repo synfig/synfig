@@ -8,9 +8,14 @@ WORKDIR=$(pwd)
 
 BUILDDIR=cmake-build
 
-if [[ "$(uname -s)" =~ ^MSYS_NT.* ]] || [[ "$(uname -s)" =~ Msys$ ]]
-then
-export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:/opt/mlt-7.28.0/lib/pkgconfig"
+if [[ "$(uname -s)" =~ ^MSYS_NT.* ]] || [[ "$(uname -s)" =~ Msys$ ]]; then
+    if [ ! -d "${MINGW_PREFIX}/lib/mlt" ]; then
+        for opt_mlt in /opt/mlt-*/lib/pkgconfig; do
+            if [ -d "$opt_mlt" ]; then
+                export PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${opt_mlt}"
+            fi
+        done
+    fi
 fi
 
 mkdir -p "${BUILDDIR}" && cd "${BUILDDIR}"

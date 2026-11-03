@@ -42,10 +42,8 @@ $MINGW_PACKAGE_PREFIX-libltdl \
 $MINGW_PACKAGE_PREFIX-libmng \
 $MINGW_PACKAGE_PREFIX-libxml++2.6 \
 $MINGW_PACKAGE_PREFIX-make \
+"${MINGW_PACKAGE_PREFIX}-mlt" \
 $MINGW_PACKAGE_PREFIX-ninja \
 $MINGW_PACKAGE_PREFIX-openexr \
 $MINGW_PACKAGE_PREFIX-pkgconf \
 $MINGW_PACKAGE_PREFIX-SDL2
-
-# build mlt
-bash "${SCRIPT_DIR}/autobuild/msys2/build_mlt.sh"

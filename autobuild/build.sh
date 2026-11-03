@@ -87,17 +87,34 @@ fi
 if [[ `uname` == "MINGW"* ]]; then # MacOS doesn't support `uname -o` flag
 	PATH="${PREFIX}/lib/ccache/bin:${PATH}"
 	# copy MLT
-	MLT_REV=1   # Change this when something is changed inside of if block below
-	if [ ! -f "${PREFIX}/mlt-${VERSION_MLT}-${MLT_REV}.done" ]; then
-		VERSION_MLT="7.28.0"
-		cp -rf /opt/mlt-${VERSION_MLT}/*.dll "${PREFIX}/bin/"
-		cp -rf /opt/mlt-${VERSION_MLT}/*.exe "${PREFIX}/bin/"
-		cp -rf /opt/mlt-${VERSION_MLT}/share "${PREFIX}/bin/"
-		mkdir -p "${PREFIX}/bin/lib/"
-		cp -rf /opt/mlt-${VERSION_MLT}/lib/mlt "${PREFIX}/bin/lib/"
-		touch "${PREFIX}/mlt-${VERSION_MLT}-${MLT_REV}.done"
+	MLT_REV=2   # Change this when something is changed inside of if block below
+	if [ ! -f "${PREFIX}/mlt-${MLT_REV}.done" ]; then
+		if [ -d "${MINGW_PREFIX}/lib/mlt" ]; then
+			cp -rf "${MINGW_PREFIX}"/bin/libmlt*.dll "${PREFIX}/bin/"
+			[ -f "${MINGW_PREFIX}/bin/melt.exe" ] && cp -rf "${MINGW_PREFIX}/bin/melt.exe" "${PREFIX}/bin/"
+			mkdir -p "${PREFIX}/bin/share/"
+			cp -rf "${MINGW_PREFIX}/share/mlt" "${PREFIX}/bin/share/"
+			mkdir -p "${PREFIX}/bin/lib/"
+			cp -rf "${MINGW_PREFIX}/lib/mlt" "${PREFIX}/bin/lib/"
+		else
+			OPT_MLT_DIR=$(ls -d /opt/mlt-* 2>/dev/null | tail -n 1)
+			if [ -n "$OPT_MLT_DIR" ] && [ -d "$OPT_MLT_DIR" ]; then
+				cp -rf "${OPT_MLT_DIR}"/*.dll "${PREFIX}/bin/"
+				[ -f "${OPT_MLT_DIR}/melt.exe" ] && cp -rf "${OPT_MLT_DIR}/melt.exe" "${PREFIX}/bin/"
+				[ -d "${OPT_MLT_DIR}/share" ] && cp -rf "${OPT_MLT_DIR}/share" "${PREFIX}/bin/"
+				mkdir -p "${PREFIX}/bin/lib/"
+				[ -d "${OPT_MLT_DIR}/lib/mlt" ] && cp -rf "${OPT_MLT_DIR}/lib/mlt" "${PREFIX}/bin/lib/"
+			fi
+		fi
+		touch "${PREFIX}/mlt-${MLT_REV}.done"
 	fi
-	export PKG_CONFIG_PATH="/opt/mlt-${VERSION_MLT}/lib/pkgconfig:${PKG_CONFIG_PATH}"
+	if [ ! -d "${MINGW_PREFIX}/lib/mlt" ]; then
+		for opt_mlt in /opt/mlt-*/lib/pkgconfig; do
+			if [ -d "$opt_mlt" ]; then
+				export PKG_CONFIG_PATH="${opt_mlt}:${PKG_CONFIG_PATH}"
+			fi
+		done
+	fi
 fi
 if [[ `uname` == "Darwin" ]]; then
 	# autopoint is not in PATH after install via brew (conflicting with system gettext https://github.com/Homebrew/legacy-homebrew/issues/24070)

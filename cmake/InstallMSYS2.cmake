@@ -75,6 +75,7 @@ file(GLOB MINGW_LIBS
     ${MINGW_BIN}/libMagickWand-[A-Z0-9.-]*.dll
     ${MINGW_BIN}/libmlt-[0-9]*.dll
     ${MINGW_BIN}/libmlt++-[0-9]*.dll
+    ${MINGW_BIN}/melt.exe
     ${MINGW_BIN}/libpango-1.0-[0-9]*.dll
     ${MINGW_BIN}/libpangocairo-1.0-[0-9]*.dll
     ${MINGW_BIN}/libpangoft2-1.0-[0-9]*.dll
@@ -103,35 +104,51 @@ file(GLOB MINGW_LIBS
 #    file(COPY ${MINGW_LIBS} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
 install(FILES ${MINGW_LIBS} DESTINATION bin)
 
-find_program(CYGPATH_EXECUTABLE cygpath ${MINGW_PATH}/../usr/bin/)
-if(CYGPATH_EXECUTABLE)
-    set(MLT_PATH "/opt/mlt-7.28.0")
-    execute_process(
-		    COMMAND ${CYGPATH_EXECUTABLE} -m ${MLT_PATH}
-		    OUTPUT_VARIABLE MLT_DIRECTORY
-		    ERROR_QUIET
-		    OUTPUT_STRIP_TRAILING_WHITESPACE
+# MLT
+if(EXISTS "${MINGW_LIB}/mlt")
+    set(MLT_LIB_SOURCE "${MINGW_LIB}/mlt")
+    set(MLT_SHARE_SOURCE "${MINGW_SHARE}/mlt")
+    file(GLOB MLT_BIN_FILES
+        "${MINGW_BIN}/libmlt-[0-9]*.dll"
+        "${MINGW_BIN}/libmlt++-[0-9]*.dll"
+        "${MINGW_BIN}/melt.exe"
     )
-    message(${MLT_DIRECTORY})
+    file(COPY ${MLT_BIN_FILES} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
 else()
-    message(WARNING "-- cygpath tool not found, using relative path for MLT.")
-    set(MLT_DIRECTORY "${MINGW_PATH}/../opt/mlt-7.28.0")
+    file(GLOB MLT_OPT_DIRS "${MINGW_PATH}/../opt/mlt-*/lib/mlt" "/opt/mlt-*/lib/mlt")
+    if(MLT_OPT_DIRS)
+        list(GET MLT_OPT_DIRS -1 MLT_OPT_LIB_DIR)
+        get_filename_component(MLT_OPT_ROOT "${MLT_OPT_LIB_DIR}/../.." ABSOLUTE)
+        set(MLT_LIB_SOURCE "${MLT_OPT_LIB_DIR}")
+        if(EXISTS "${MLT_OPT_ROOT}/share/mlt")
+            set(MLT_SHARE_SOURCE "${MLT_OPT_ROOT}/share/mlt")
+        elseif(EXISTS "${MLT_OPT_ROOT}/share")
+            set(MLT_SHARE_SOURCE "${MLT_OPT_ROOT}/share")
+        endif()
+        file(GLOB MLT_FALLBACK_FILES
+            "${MLT_OPT_ROOT}/libmlt++-*.dll"
+            "${MLT_OPT_ROOT}/libmlt-*.dll"
+            "${MLT_OPT_ROOT}/melt.exe"
+        )
+        file(COPY ${MLT_FALLBACK_FILES} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
+        install(FILES ${MLT_FALLBACK_FILES} DESTINATION bin)
+    endif()
 endif()
 
-file(GLOB MLT_FILES
-	    ${MLT_DIRECTORY}/libmlt++-*.dll
-	    ${MLT_DIRECTORY}/libmlt-*.dll
-	    ${MLT_DIRECTORY}/melt.exe
-	    )
-file(COPY ${MLT_FILES} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
-install(FILES ${MLT_FILES} DESTINATION bin)
+if(MLT_LIB_SOURCE)
+    file(COPY "${MLT_LIB_SOURCE}" DESTINATION ${SYNFIG_BUILD_ROOT}/lib)
+    file(COPY "${MLT_LIB_SOURCE}" DESTINATION ${SYNFIG_BUILD_ROOT}/bin/lib)
+    install(DIRECTORY "${MLT_LIB_SOURCE}" DESTINATION bin/lib)
+    install(DIRECTORY "${MLT_LIB_SOURCE}" DESTINATION lib)
+endif()
 
-file(GLOB MLT_DIRECTORIES
-	    ${MLT_DIRECTORY}/lib
-	    ${MLT_DIRECTORY}/share
-	    )
-file(COPY ${MLT_DIRECTORIES} DESTINATION ${SYNFIG_BUILD_ROOT}/bin)
-install(DIRECTORY ${MLT_DIRECTORIES} DESTINATION bin)
+if(MLT_SHARE_SOURCE AND EXISTS "${MLT_SHARE_SOURCE}")
+    file(COPY "${MLT_SHARE_SOURCE}" DESTINATION ${SYNFIG_BUILD_ROOT}/share)
+    file(COPY "${MLT_SHARE_SOURCE}" DESTINATION ${SYNFIG_BUILD_ROOT}/bin/share)
+    install(DIRECTORY "${MLT_SHARE_SOURCE}" DESTINATION bin/share)
+    install(DIRECTORY "${MLT_SHARE_SOURCE}" DESTINATION share)
+endif()
+
 
 # /output/etc
 file(GLOB ETC_DIRECTORIES
