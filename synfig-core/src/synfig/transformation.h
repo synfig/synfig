@@ -163,13 +163,13 @@ public:
 		Rect transformed_bounds(
 			matrix.get_transformed(
 				Vector(bounds.minx, bounds.miny) ));
-		transformed_bounds.expand(
+		transformed_bounds.expand_to(
 			matrix.get_transformed(
 				Vector(bounds.minx, bounds.maxy) ));
-		transformed_bounds.expand(
+		transformed_bounds.expand_to(
 			matrix.get_transformed(
 				Vector(bounds.maxx, bounds.miny) ));
-		transformed_bounds.expand(
+		transformed_bounds.expand_to(
 			matrix.get_transformed(
 				Vector(bounds.maxx, bounds.maxy) ));
 		return transformed_bounds;

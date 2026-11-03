@@ -127,7 +127,7 @@ public:
 			const value_type &y1
 	):
 			minx(x0), miny(y0), maxx(x0), maxy(y0)
-	{ expand(x1, y1); }
+	{ expand_to(x1, y1); }
 
 	template<typename F>
 	bool valid(const F &less) const
@@ -145,15 +145,15 @@ public:
 	{ minx = maxx = x; miny = maxy = y; }
 
 	template<typename F>
-	void expand(const value_type &x1, const value_type &y1, const F &less)
+	void expand_to(const value_type& x1, const value_type& y1, const F& less)
 	{
 		minx = std::min(minx, x1, less);
 		miny = std::min(miny, y1, less);
 		maxx = std::max(maxx, x1, less);
 		maxy = std::max(maxy, y1, less);
 	}
-	void expand(const value_type &x1, const value_type &y1)
-	{ expand(x1, y1, std::less<T>()); }
+	void expand_to(const value_type& x1, const value_type& y1)
+	{ expand_to(x1, y1, std::less<T>()); }
 };
 
 
@@ -328,7 +328,7 @@ public:
 	typedef rect<int> baserect;
 
 	using baserect::set_point;
-	using baserect::expand;
+	using baserect::expand_to;
 	using baserect::set;
 
 	static RectInt zero()
@@ -345,7 +345,7 @@ public:
 
 	RectInt(const PointInt& x) { set_point(x); }
 
-	RectInt(const PointInt& min, const PointInt& max) { set_point(min); expand(max); }
+	RectInt(const PointInt& min, const PointInt& max) { set_point(min); expand_to(max); }
 
 	RectInt(const value_type &x1,const value_type &y1)	{ set_point(x1,y1); }
 
@@ -353,17 +353,21 @@ public:
 			const value_type &x2,const value_type &y2)
 	{
 		set_point(x1,y1);
-		expand(x2,y2);
+		expand_to(x2,y2);
 	}
 
 	void set_point(const PointInt& max) { set_point(max[0],max[1]);	}
 
-	RectInt& expand(const PointInt& max) { expand(max[0],max[1]); return *this; }
+	/** The rectangle will comprise the @a max point */
+	RectInt& expand_to(const PointInt& max) { expand_to(max[0],max[1]); return *this; }
 
+	/** Every rectangle edge will be moved by @a r so it expands by the double of @a r on each direction */
 	RectInt& expand(const int& r) { minx-=r; miny-=r; maxx+=r; maxy+=r; return *this; }
 
+	/** Both left and right edges of this rectangle will be expanded by @a r on each side */
 	RectInt& expand_x(const int& r) { minx-=r; maxx+=r; return *this; }
 
+	/** Both top and bottom edges of this rectangle will be expanded by @a r on each side */
 	RectInt& expand_y(const int& r) { miny-=r; maxy+=r; return *this; }
 
 	RectInt& set(const PointInt& min,const PointInt& max) { set(min[0],min[1],max[0],max[1]); return *this; }
@@ -479,7 +483,7 @@ public:
 	typedef rect<Real> baserect;
 
 	using baserect::set_point;
-	using baserect::expand;
+	using baserect::expand_to;
 	using baserect::set;
 
 	static Rect full_plane();
@@ -511,7 +515,7 @@ public:
 
 	Rect(const Point& x) { set_point(x); }
 
-	Rect(const Point& min, const Point& max) { set_point(min); expand(max); }
+	Rect(const Point& min, const Point& max) { set_point(min); expand_to(max); }
 
 	Rect(const value_type &x1,const value_type &y1)	{ set_point(x1,y1); }
 
@@ -519,17 +523,21 @@ public:
 			const value_type &x2,const value_type &y2)
 	{
 		set_point(x1,y1);
-		expand(x2,y2);
+		expand_to(x2,y2);
 	}
 
 	void set_point(const Point& max) { set_point(max[0],max[1]);	}
 
-	Rect& expand(const Point& max) { expand(max[0],max[1]); return *this; }
+	/** The rectangle will comprise the @a max point */
+	Rect& expand_to(const Point& max) { expand_to(max[0],max[1]); return *this; }
 
+	/** Every rectangle edge will be moved by @a r so it expands by the double of @a r on each direction */
 	Rect& expand(const Real& r) { minx-=r; miny-=r; maxx+=r; maxy+=r; return *this; }
 
+	/** Both left and right edges of this rectangle will be expanded by @a r on each side */
 	Rect& expand_x(const Real& r) { minx-=r; maxx+=r; return *this; }
 
+	/** Both top and bottom edges of this rectangle will be expanded by @a r on each side */
 	Rect& expand_y(const Real& r) { miny-=r; maxy+=r; return *this; }
 
 	Rect& set(const Point& min,const Point& max) { set(min[0],min[1],max[0],max[1]); return *this; }

@@ -84,7 +84,7 @@ Mesh::calc_target_rectangle() const
 	if (vertices.empty()) return Rect::zero();
 	Rect target_rectangle = Rect(vertices[0].position);
 	for(std::vector<Vertex>::const_iterator i = vertices.begin(); i != vertices.end(); ++i)
-		target_rectangle.expand(i->position);
+		target_rectangle.expand_to(i->position);
 	return target_rectangle;
 }
 
@@ -94,7 +94,7 @@ Mesh::calc_target_rectangle(const Matrix &transform_matrix) const
 	if (vertices.empty()) return Rect::zero();
 	Rect target_rectangle = Rect(transform_matrix.get_transformed(vertices[0].position));
 	for(std::vector<Vertex>::const_iterator i = vertices.begin(); i != vertices.end(); ++i)
-		target_rectangle.expand( transform_matrix.get_transformed(i->position) );
+		target_rectangle.expand_to( transform_matrix.get_transformed(i->position) );
 	return target_rectangle;
 }
 
@@ -105,7 +105,7 @@ Mesh::calc_source_rectangle() const
 	if (vertices.empty()) return Rect::zero();
 	Rect source_rectangle = Rect(vertices[0].position);
 	for(std::vector<Vertex>::const_iterator i = vertices.begin(); i != vertices.end(); ++i)
-		source_rectangle.expand(i->position);
+		source_rectangle.expand_to(i->position);
 	return source_rectangle;
 }
 Rect
@@ -114,7 +114,7 @@ Mesh::calc_source_rectangle(const Matrix &transform_matrix) const
 	if (vertices.empty()) return Rect::zero();
 	Rect source_rectangle = Rect(transform_matrix.get_transformed(vertices[0].tex_coords));
 	for(std::vector<Vertex>::const_iterator i = vertices.begin(); i != vertices.end(); ++i)
-		source_rectangle.expand( transform_matrix.get_transformed(i->tex_coords) );
+		source_rectangle.expand_to( transform_matrix.get_transformed(i->tex_coords) );
 	return source_rectangle;
 }
 

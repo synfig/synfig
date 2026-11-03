@@ -375,14 +375,14 @@ Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int qua
 		Rect	sphr;
 
 		sphr.set_point(center[0]-radius,center[1]-radius);
-		sphr.expand(center[0]+radius,center[1]+radius);
+		sphr.expand_to(center[0]+radius,center[1]+radius);
 
 		//get the bounding box of the transform
 		Rect	windr;
 
 		//and the bounding box of the rendering
-		windr.set_point(renddesc.get_tl()[0],renddesc.get_tl()[1]);
-		windr.expand(renddesc.get_br()[0],renddesc.get_br()[1]);
+		windr.set_point(renddesc.get_tl());
+		windr.expand_to(renddesc.get_br());
 
 		//test bounding boxes for collision
 		if( (type == TYPE_NORMAL && !rect_intersect(sphr,windr)) ||
@@ -446,11 +446,11 @@ Layer_SphereDistort::accelerated_render(Context context,Surface *surface,int qua
 
 			//now get transforms and expand the rectangle to accommodate
 			Point p = sphtrans(close,center,radius,percent,type);
-			expandr.expand(p[0],p[1]);
+			expandr.expand_to(p);
 			p = sphtrans(origin[i],center,radius,percent,type);
-			expandr.expand(p[0],p[1]);
+			expandr.expand_to(p);
 			p = sphtrans(origin[i]+v[i],center,radius,percent,type);
-			expandr.expand(p[0],p[1]);
+			expandr.expand_to(p);
 		}
 
 		/*warning("Spherize: Bounding box (%f,%f)-(%f,%f)",
