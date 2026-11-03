@@ -49,6 +49,7 @@
 #include <synfig/synfig_iterations.h>
 #include <synfig/valuenodes/valuenode_bone.h>
 #include <synfigapp/selectionmanager.h>
+#include <synfigapp/layerclipboard.h>
 
 #endif
 
@@ -494,11 +495,7 @@ LayerActionManager::copy()
 	clipboard_.clear();
 	synfig::GUID guid;
 
-	while(!layer_list.empty())
-	{
-		clipboard_.push_back(layer_list.front()->clone(0, guid));
-		layer_list.pop_front();
-	}
+	clipboard_ = synfigapp::clone_layers_for_clipboard(layer_list, nullptr, guid);
 
 	action_paste_->set_sensitive(!clipboard_.empty());
 
@@ -526,7 +523,7 @@ LayerActionManager::paste()
 
 	ValueNodeReplacementMap valuenode_replacements;
 
-	bool user_accepted = query_user_about_foreign_exported_value_nodes(canvas, valuenode_replacements);
+	bool user_accepted = query_user_about_foreign_exported_value_nodes(canvas, valuenode_replacements, guid);
 	if (!user_accepted)
 		return;
 	if (!valuenode_replacements.empty())
@@ -534,9 +531,10 @@ LayerActionManager::paste()
 
 	synfigapp::SelectionManager::LayerList layer_selection;
 
-	for(std::list<synfig::Layer::Handle>::iterator iter=clipboard_.begin();iter!=clipboard_.end();++iter)
+	auto pasted_layers = synfigapp::clone_layers_for_clipboard(clipboard_, canvas, guid);
+	for(std::list<synfig::Layer::Handle>::iterator iter=pasted_layers.begin();iter!=pasted_layers.end();++iter)
 	{
-		layer=(*iter)->clone(canvas, guid);
+		layer=*iter;
 		layer_selection.push_back(layer);
 
 		replace_exported_value_nodes(layer, valuenode_replacements);
@@ -683,7 +681,7 @@ LayerActionManager::amount_dec()
 	}
 }
 
-bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::Handle canvas, ValueNodeReplacementMap& valuenode_replacements) const
+bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::Handle canvas, ValueNodeReplacementMap& valuenode_replacements, const GUID& guid) const
 {
 	std::vector<ValueNode::LooseHandle> foreign_exported_valuenode_list;
 
@@ -721,7 +719,7 @@ bool LayerActionManager::query_user_about_foreign_exported_value_nodes(Canvas::H
 				if (link_to_local_canvas) {
 					valuenode_replacements[foreign_value_node] = std::pair<ValueNode::Handle, std::string>(local_canvas_value_node, "");
 				} else {
-					ValueNode::Handle cloned_value_node = foreign_value_node->clone(canvas);// TODO Use paste guid?!
+					ValueNode::Handle cloned_value_node = foreign_value_node->clone(canvas, guid);
 					valuenode_replacements[foreign_value_node] = std::pair<ValueNode::Handle, std::string>(cloned_value_node, modified_id);
 				}
 			}
