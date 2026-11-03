@@ -667,17 +667,17 @@ Job SynfigCommandLineParser::extract_job()
 		job.filename = filesystem::Path(set_input_file);
 
 		// Open the composition
-		std::string errors, warnings;
+		LoadingIssues issues;
 		try
 		{
 			if (FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(job.filename.u8string()))
 			{
 				FileSystem::Identifier identifier = file_system->get_identifier(CanvasFileNaming::project_file(job.filename.u8string()));
-				job.root = open_canvas_as(identifier, filesystem::absolute(job.filename).u8string(), errors, warnings);
+				job.root = open_canvas_as(identifier, filesystem::absolute(job.filename).u8string(), issues);
 			}
 			else
 			{
-				errors.append("Cannot open container " + job.filename.u8string() + "\n");
+				issues.errors.append("Cannot open container " + job.filename.u8string() + "\n");
 			}
 		}
 		catch(std::runtime_error& /*x*/)
@@ -781,16 +781,16 @@ Job SynfigCommandLineParser::extract_job()
 		// TODO: Enable multi-appending. Disabled in the previous CLI version
 		std::string composite_file = misc_append_filename;
 
-		std::string errors, warnings;
+		LoadingIssues issues;
 		Canvas::Handle composite;
 		if (FileSystem::Handle file_system = CanvasFileNaming::make_filesystem(composite_file))
 		{
 			FileSystem::Identifier identifier = file_system->get_identifier(CanvasFileNaming::project_file(composite_file));
-			composite = open_canvas_as(identifier, composite_file, errors, warnings);
+			composite = open_canvas_as(identifier, composite_file, issues);
 		}
 		else
 		{
-			errors.append("Cannot open container " + composite_file + "\n");
+			issues.errors.append("Cannot open container " + composite_file + "\n");
 		}
 
 		if(!composite)
