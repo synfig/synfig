@@ -46,6 +46,8 @@
 
 #endif
 
+#include <libxml/parser.h>
+
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
@@ -302,6 +304,7 @@ FileContainerZip::HistoryRecord FileContainerZip::decode_history(const String &c
 {
 	HistoryRecord history_record;
 	xmlpp::DomParser parser;
+	parser.set_parser_options(XML_PARSE_BIG_LINES);
 	parser.parse_memory(comment);
 	if(parser)
 	{

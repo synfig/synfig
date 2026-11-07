@@ -50,6 +50,8 @@
 #include "svg_parser.h"
 #endif
 
+#include <libxml/parser.h>
+
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
@@ -109,6 +111,7 @@ Svg_parser::load_svg_canvas(const std::string& filepath, String &errors, String 
   	#endif //LIBXMLCPP_EXCEPTIONS_ENABLED
 		//load parser
 		xmlpp::DomParser parser;
+		parser.set_parser_options(XML_PARSE_BIG_LINES);
 		parser.set_substitute_entities();
 		parser.parse_file(filepath);
 		//set_id(filepath);
