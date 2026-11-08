@@ -66,6 +66,8 @@
 
 #endif
 
+#include <libxml/parser.h>
+
 std::string
 JSON::escape_string(const std::string& str)
 {
@@ -363,6 +365,7 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 	try
 	{
 		xmlpp::DomParser parser;
+		parser.set_parser_options(XML_PARSE_BIG_LINES);
 		//parser.set_validate();
 		parser.set_substitute_entities(); //We just want the text to be resolved/unescaped automatically.
 		parser.parse_file(file);

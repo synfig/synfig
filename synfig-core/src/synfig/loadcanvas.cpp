@@ -86,6 +86,8 @@
 
 #endif
 
+#include <libxml/parser.h>
+
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
@@ -3546,6 +3548,7 @@ CanvasParser::parse_from_file_as(const FileSystem::Identifier &identifier,const 
 				stream = FileSystem::ReadStream::Handle(new ZReadStream(stream, zstreambuf::compression::gzip));
 
 			xmlpp::DomParser parser;
+			parser.set_parser_options(XML_PARSE_BIG_LINES);
 			parser.parse_stream(*stream);
 			stream.reset();
 			if(parser)
