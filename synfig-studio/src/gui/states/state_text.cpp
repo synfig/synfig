@@ -186,6 +186,24 @@ public:
 	void make_text(const Point& point);
 	void toggle_layer_creation();
 
+	class EgressAvoider
+	{
+	public:
+		explicit EgressAvoider(bool& egress_on_selection_change)
+			: egress_on_selection_change_(egress_on_selection_change)
+		{
+			previous_value = egress_on_selection_change;
+			egress_on_selection_change_ = false;
+		}
+		virtual ~EgressAvoider()
+		{
+			egress_on_selection_change_ = previous_value;
+		}
+	private:
+		bool& egress_on_selection_change_;
+		bool previous_value;
+	};
+
 }; // END of class StateText_Context
 
 /* === P R O C E D U R E S ================================================= */
@@ -543,6 +561,8 @@ StateText_Context::make_text(const Point& _point)
 	ValueBase blend_param_value(get_blend());
 	blend_param_value.set_static(true);
 
+	EgressAvoider egress_guard(egress_on_selection_change);
+
 	String text;
 	if (get_paragraph_flag()) {
 		if (!App::dialog_paragraph(_("Text Paragraph"), _("Enter text here:"), text)) return;
@@ -550,9 +570,7 @@ StateText_Context::make_text(const Point& _point)
 		if (!App::dialog_entry(_("Input text"), _("Text: "), text, _("Cancel"), _("Ok"))) return;
 	}
 
-	egress_on_selection_change=false;
 	layer=get_canvas_interface()->add_layer_to("text",canvas,depth);
-	egress_on_selection_change=true;
 	if (!layer)
 	{
 		get_canvas_view()->get_ui_interface()->error(_("Unable to create layer"));
@@ -585,10 +603,9 @@ StateText_Context::make_text(const Point& _point)
 	layer->set_description(get_id());
 	get_canvas_interface()->signal_layer_new_description()(layer,layer->get_description());
 	*/
-	egress_on_selection_change=false;
+
 	get_canvas_interface()->get_selection_manager()->clear_selected_layers();
 	get_canvas_interface()->get_selection_manager()->set_selected_layers(layer_selection);
-	egress_on_selection_change=true;
 
 	reset();
 	increment_id();
