@@ -200,7 +200,7 @@ StateEyedrop_Context::event_workarea_mouse_button_down_handler(const Smach::even
 		else {
 			synfigapp::Main::set_fill_color(color);
 		}
-		studio::App::dialog_color->set_color(color);
+		if (studio::App::dialog_color) studio::App::dialog_color->set_color(color);
 		return Smach::RESULT_ACCEPT;
 	}
 	return Smach::RESULT_OK;
