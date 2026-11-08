@@ -352,6 +352,8 @@ src/synfig/valuenodes/valuenode_blinereversetangent.cpp
 src/synfig/valuenodes/valuenode_blinereversetangent.h
 src/synfig/valuenodes/valuenode_bone.cpp
 src/synfig/valuenodes/valuenode_bone.h
+src/synfig/valuenodes/valuenode_bonedriver.cpp
+src/synfig/valuenodes/valuenode_bonedriver.h
 src/synfig/valuenodes/valuenode_boneinfluence.cpp
 src/synfig/valuenodes/valuenode_boneinfluence.h
 src/synfig/valuenodes/valuenode_bonelink.cpp

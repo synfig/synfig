@@ -237,6 +237,14 @@ struct Widget_Curves::CurveStruct: sigc::trackable
 		return channels[channel].values[time];
 	}
 
+	Real get_speed(size_t channel, Real time, Real tolerance) {
+		const Real delta_t = (tolerance > 0.0 && tolerance < 0.05) ? (tolerance * 0.5) : (1.0 / 120.0);
+		Real v_plus = get_value(channel, time + delta_t, 0.0);
+		Real v_minus = get_value(channel, time - delta_t, 0.0);
+		Real deriv = (v_plus - v_minus) / (2.0 * delta_t);
+		return std::abs(deriv);
+	}
+
 	static bool get_value_base_channel_values(const ValueBase &value_base, std::vector<Real>& channels) {
 		channels.clear();
 		Type &type(value_base.get_type());
@@ -599,6 +607,15 @@ void Widget_Curves::select_all_points()
 	channel_point_sd.select_all_items();
 }
 
+void Widget_Curves::set_graph_mode(Widget_Curves::GraphMode mode)
+{
+	if (graph_mode_ == mode)
+		return;
+	graph_mode_ = mode;
+	refresh();
+	signal_graph_mode_changed_(graph_mode_);
+}
+
 void
 Widget_Curves::set_value_descs(etl::handle<synfigapp::CanvasInterface> canvas_interface_, const std::list< std::pair<std::string, ValueDesc> > &data)
 {
@@ -726,6 +743,8 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 	Real range_max = -100000000.0;
 	Real range_min =  100000000.0;
+	if (graph_mode_ == MODE_SPEED_GRAPH)
+		range_min = 0.0;
 
 	// draw overlapped waypoints
 	cr->set_line_width(.4);
@@ -739,7 +758,9 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		std::vector<Real> channel_values;
 		CurveStruct::get_value_base_channel_values(waypoint.get_value(), channel_values);
 		for (size_t c = 0; c < num_channels; c++) {
-			Real value = curve_it->get_value(c, waypoint.get_time(), time_plot_data->dt);
+			Real value = (graph_mode_ == MODE_SPEED_GRAPH)
+				? curve_it->get_speed(c, waypoint.get_time(), time_plot_data->dt)
+				: curve_it->get_value(c, waypoint.get_time(), time_plot_data->dt);
 			int y = time_plot_data->get_pixel_y_coord(value);
 
 			Real old_value = channel_values[c];
@@ -772,7 +793,9 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 		Time t = time_plot_data->lower_ex;
 		for(int j = 0; j < w; ++j, t += time_plot_data->dt) {
 			for(size_t c = 0; c < channels; ++c) {
-				Real y = curve_it->get_value(c, t, time_plot_data->dt);
+				Real y = (graph_mode_ == MODE_SPEED_GRAPH)
+					? curve_it->get_speed(c, t, time_plot_data->dt)
+					: curve_it->get_value(c, t, time_plot_data->dt);
 				range_max = std::max(range_max, y);
 				range_min = std::min(range_min, y);
 				points[c].push_back( Gdk::Point(j, time_plot_data->get_pixel_y_coord(y)) );
@@ -842,7 +865,9 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			const auto & hovered_point = channel_point_sd.get_hovered_item();
 			bool hover = hovered_point.is_valid() && tp == hovered_point.time_point && hovered_point.curve_it == curve_it;
 			for (size_t c = 0; c < channels; ++c) {
-				Real y = curve_it->get_value(c, t, time_plot_data->dt);
+				Real y = (graph_mode_ == MODE_SPEED_GRAPH)
+					? curve_it->get_speed(c, t, time_plot_data->dt)
+					: curve_it->get_value(c, t, time_plot_data->dt);
 				int py = time_plot_data->get_pixel_y_coord(y);
 				area.set_y(0 - waypoint_edge_length/2 + 1 + py);
 
@@ -855,6 +880,14 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 			cr->pop_group_to_source();
 			cr->paint_with_alpha(0.5);
 		}
+	}
+
+	// Draw speed mode indicator banner
+	if (graph_mode_ == MODE_SPEED_GRAPH) {
+		Glib::RefPtr<Pango::Layout> mode_banner(Pango::Layout::create(get_pango_context()));
+		mode_banner->set_markup("<span weight=\"bold\" size=\"medium\" foreground=\"#e67e22\">SPEED GRAPH (|dV/dt|)</span>");
+		cr->move_to(w - 210, 10);
+		mode_banner->show_in_cairo_context(cr);
 	}
 
 	// Draw selection rectangle
@@ -882,14 +915,26 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 
 		float fps = canvas_interface->get_canvas()->rend_desc().get_frame_rate();
 
+		Real cur_val = (graph_mode_ == MODE_SPEED_GRAPH)
+			? inspected_item->curve_it->get_speed(inspected_item->channel_idx, inspected_item->time_point.get_time(), time_plot_data->dt)
+			: inspected_item->get_value(time_plot_data->dt);
+
 		char buf[512];
-		if (channel_point_sd.get_state() != channel_point_sd.POINTER_DRAGGING) {
+		if (graph_mode_ == MODE_SPEED_GRAPH) {
+			snprintf(buf, 511, _("%s:<b>%s</b>\n<b>Time:</b> %lfs (%if)\n<b>Speed:</b> %lf units/s"),
+					inspected_item->curve_it->name.c_str(),
+					inspected_item->curve_it->channels[inspected_item->channel_idx].name.c_str(),
+					Real(inspected_item->time_point.get_time()),
+					int(std::trunc(inspected_item->time_point.get_time()*fps)),
+					cur_val
+					);
+		} else if (channel_point_sd.get_state() != channel_point_sd.POINTER_DRAGGING) {
 			snprintf(buf, 511, _("%s:<b>%s</b>\n<b>Time:</b> %lfs (%if)\n<b>Value:</b> %lf"),
 					inspected_item->curve_it->name.c_str(),
 					inspected_item->curve_it->channels[inspected_item->channel_idx].name.c_str(),
 					Real(inspected_item->time_point.get_time()),
 					int(std::trunc(inspected_item->time_point.get_time()*fps)),
-					inspected_item->get_value(time_plot_data->dt)
+					cur_val
 					);
 		} else {
 			int x0, y0;
@@ -902,19 +947,25 @@ Widget_Curves::on_draw(const Cairo::RefPtr<Cairo::Context> &cr)
 					Real(inspected_item->time_point.get_time()),
 					int(std::trunc(inspected_item->time_point.get_time()*fps)),
 					int(std::trunc((inspected_item->time_point.get_time() - t0)*fps)),
-					inspected_item->get_value(time_plot_data->dt),
-					inspected_item->get_value(time_plot_data->dt) - value0
+					cur_val,
+					cur_val - value0
 					);
 		}
 		std::string text(buf);
 
 		int item_pos_x = time_plot_data->get_pixel_t_coord(inspected_item->time_point.get_time());
-		int item_pos_y = time_plot_data->get_pixel_y_coord(inspected_item->get_value(time_plot_data->dt));
+		int item_pos_y = time_plot_data->get_pixel_y_coord(cur_val);
 
 		Tooltip tooltip(this);
 		tooltip.text = text;
 		tooltip.popup_margin = waypoint_edge_length;
 		tooltip.draw(cr, item_pos_x, item_pos_y);
+	}
+
+	if (graph_mode_ == MODE_SPEED_GRAPH) {
+		range_min = 0.0;
+		if (range_max <= range_min)
+			range_max = range_min + 1.0;
 	}
 
 	if (channel_point_sd.get_state() != channel_point_sd.POINTER_DRAGGING && channel_point_sd.get_state() != channel_point_sd.POINTER_PANNING && !curve_list.empty() && range_min < range_max)
@@ -1047,7 +1098,9 @@ Widget_Curves::ChannelPointSD::ChannelPointSD(Widget_Curves& widget)
 void Widget_Curves::ChannelPointSD::get_item_position(const Widget_Curves::ChannelPoint& item, Gdk::Point& position)
 {
 	const Time &time = item.time_point.get_time();
-	Real value = item.get_value(widget.time_plot_data->dt);
+	Real value = (widget.get_graph_mode() == MODE_SPEED_GRAPH)
+		? item.curve_it->get_speed(item.channel_idx, time, widget.time_plot_data->dt)
+		: item.get_value(widget.time_plot_data->dt);
 	position.set_x(widget.time_plot_data->get_pixel_t_coord(time));
 	position.set_y(widget.time_plot_data->get_pixel_y_coord(value));
 }
@@ -1063,7 +1116,9 @@ bool Widget_Curves::ChannelPointSD::find_item_at_position(int pos_x, int pos_y, 
 		{
 			int px = widget.time_plot_data->get_pixel_t_coord(t);
 			for (size_t c = 0; c < channels; ++c) {
-				Real y = curve_it->get_value(c, t, widget.time_plot_data->dt);
+				Real y = (widget.get_graph_mode() == MODE_SPEED_GRAPH)
+					? curve_it->get_speed(c, t, widget.time_plot_data->dt)
+					: curve_it->get_value(c, t, widget.time_plot_data->dt);
 				int py = widget.time_plot_data->get_pixel_y_coord(y);
 
 				if (pos_x > px - widget.waypoint_edge_length/2 && pos_x <= px + widget.waypoint_edge_length/2) {
@@ -1105,7 +1160,9 @@ bool Widget_Curves::ChannelPointSD::find_items_in_rect(Gdk::Rectangle rect, std:
 		{
 			int px = widget.time_plot_data->get_pixel_t_coord(t);
 			for (size_t c = 0; c < channels; ++c) {
-				Real y = curve_it->get_value(c, t, widget.time_plot_data->dt);
+				Real y = (widget.get_graph_mode() == MODE_SPEED_GRAPH)
+					? curve_it->get_speed(c, t, widget.time_plot_data->dt)
+					: curve_it->get_value(c, t, widget.time_plot_data->dt);
 				int py = widget.time_plot_data->get_pixel_y_coord(y);
 
 				if (x0 < px + widget.waypoint_edge_length/2 && x1 >= px - widget.waypoint_edge_length/2) {
@@ -1161,7 +1218,7 @@ void Widget_Curves::ChannelPointSD::delta_drag(int total_dx, int total_dy, bool 
 
 	std::vector<ChannelPoint*> selection = get_selected_items();
 	// Move Y value
-	if (dy != 0) {
+	if (dy != 0 && widget.get_graph_mode() != MODE_SPEED_GRAPH) {
 		// If the active point (ie. the point clicked and dragged by cursor) is a converted parameter,
 		// it can't be moved vertically.
 		// So, any selected channel point shouldn't be moved vertically: it is strange in UX point of view
