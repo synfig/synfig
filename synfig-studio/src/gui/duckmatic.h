@@ -55,7 +55,7 @@
 /* === C L A S S E S & S T R U C T S ======================================= */
 
 namespace synfigapp { class ValueDesc; class CanvasInterface; }
-namespace synfig { class ParamDesc; }
+namespace synfig { class ParamDesc; class ValueNode_Bone; }
 
 namespace studio
 {
@@ -113,6 +113,38 @@ public:
 	void bezier_drag(Duckmatic* duckmatic, const synfig::Vector& vector);
 };
 
+class BoneDrag_Base : public etl::shared_object
+{
+public:
+	virtual void begin_bone_drag(Duckmatic* duckmatic, const synfig::Point& offset, bool translate_mode = false)=0;
+	virtual bool end_bone_drag(Duckmatic* duckmatic)=0;
+	virtual void bone_drag(Duckmatic* duckmatic, const synfig::Point& point)=0;
+	virtual bool is_translate_mode() const { return false; }
+};
+
+class BoneDrag_Default : public BoneDrag_Base
+{
+	synfig::Point drag_offset_;
+	synfig::Point origin_initial_;
+	synfig::Point tip_initial_;
+	synfig::Point angle_initial_;
+	synfig::Point origin_width_initial_;
+	synfig::Point tip_width_initial_;
+	synfig::Angle initial_bone_angle_;
+	synfig::Angle total_rotation_;
+	synfig::Real initial_mouse_angle_;
+	synfig::Real last_mouse_angle_;
+	bool is_moving_;
+	bool translate_mode_;
+
+public:
+	BoneDrag_Default();
+	void begin_bone_drag(Duckmatic* duckmatic, const synfig::Point& offset, bool translate_mode = false) override;
+	void bone_drag(Duckmatic* duckmatic, const synfig::Point& point) override;
+	bool end_bone_drag(Duckmatic* duckmatic) override;
+	bool is_translate_mode() const override { return translate_mode_; }
+};
+
 struct Guide
 {
 	synfig::Point point;
@@ -147,6 +179,8 @@ public:
 
 	struct Bezier;
 
+	struct Bone;
+
 	class Push;
 
 	friend class Push;
@@ -180,12 +214,16 @@ private:
 
 	std::list<etl::handle<Bezier> > bezier_list_;
 
+	std::list<etl::handle<Bone> > bone_list_;
+
 	//! I cannot recall what this is for
 	//synfig::Vector snap;
 
 	etl::handle<DuckDrag_Base> duck_dragger_;
 
 	etl::handle<BezierDrag_Base> bezier_dragger_;
+
+	etl::handle<BoneDrag_Base> bone_dragger_;
 
 	sigc::signal<void> signal_duck_selection_changed_;
 	sigc::signal<void, const Duck::Handle&> signal_duck_selection_single_;
@@ -213,6 +251,8 @@ private:
 protected:
 
 	etl::handle<Bezier> selected_bezier;
+
+	etl::handle<Bone> selected_bone;
 
 	synfig::Time cur_time;
 
@@ -325,6 +365,8 @@ public:
 	DuckList get_duck_list()const;
 
 	const std::list<etl::handle<Bezier> >& bezier_list()const { return bezier_list_; }
+
+	const std::list<etl::handle<Bone> >& bone_list()const { return bone_list_; }
 
 	const std::list<etl::handle<Stroke> >& stroke_list()const { return stroke_list_; }
 
@@ -463,9 +505,13 @@ public:
 
 	void add_bezier(const etl::handle<Bezier> &bezier);
 
+	void add_bone(const etl::handle<Bone> &bone);
+
 	void erase_duck(const Duck::Handle& duck);
 
 	void erase_bezier(const etl::handle<Bezier> &bezier);
+
+	void erase_bone(const etl::handle<Bone> &bone);
 
 	//! Returns the last duck added
 	Duck::Handle last_duck() const;
@@ -493,6 +539,8 @@ public:
 	etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real radius=0, float* location=0);
 
 	etl::handle<Bezier> find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radius, float* location=0);
+
+	etl::handle<Bone> find_bone(synfig::Point pos, synfig::Real radius=0);
 
 	//! if transform_count is set function will not restore transporm stack
 	void add_ducks_layers(synfig::Canvas::Handle canvas, std::set<synfig::Layer::Handle>& selected_layer_set, etl::handle<CanvasView> canvas_view, synfig::TransformStack& transform_stack, int* transform_count = nullptr);
@@ -532,6 +580,18 @@ public:
 	void set_bezier_dragger(etl::handle<BezierDrag_Base> x) { bezier_dragger_=x; }
 	etl::handle<BezierDrag_Base> get_bezier_dragger()const { return bezier_dragger_; }
 	void clear_bezier_dragger() { bezier_dragger_=new BezierDrag_Default(); }
+
+	void set_bone_dragger(etl::handle<BoneDrag_Base> x) { bone_dragger_=x; }
+	etl::handle<BoneDrag_Base> get_bone_dragger()const { return bone_dragger_; }
+	void clear_bone_dragger() { bone_dragger_=new BoneDrag_Default(); }
+
+	void start_bone_drag(const synfig::Point& offset, bool translate_mode = false);
+	void translate_selected_bone(const synfig::Point& point);
+	bool end_bone_drag();
+	bool is_bone_drag_translate_mode() const { return bone_dragger_ ? bone_dragger_->is_translate_mode() : false; }
+
+	etl::handle<Bone> get_selected_bone()const { return selected_bone; }
+	void set_selected_bone(etl::handle<Bone> b) { selected_bone = b; }
 }; // END of class Duckmatic
 
 
@@ -542,9 +602,11 @@ class Duckmatic::Push
 	Duckmatic *duckmatic_;
 	DuckMap duck_map;
 	std::list<etl::handle<Bezier> > bezier_list_;
+	std::list<etl::handle<Bone> > bone_list_;
 	std::list<etl::handle<Stroke> > stroke_list_;
 	DuckDataMap duck_data_share_map;
 	etl::handle<DuckDrag_Base> duck_dragger_;
+	etl::handle<BoneDrag_Base> bone_dragger_;
 
 	bool needs_restore;
 
@@ -572,6 +634,36 @@ public:
 	sigc::signal<void,float> &signal_user_click(int i=0) { assert(i>=0); assert(i<5); return signal_user_click_[i]; }
 	sigc::signal<void,float> &signal_user_doubleclick(int i=0) { assert(i>=0); assert(i<5); return signal_user_doubleclick_[i]; }
 }; // END of struct Duckmatic::Bezier
+
+/*! \struct Duckmatic::Bone
+**	\writeme */
+struct Duckmatic::Bone : public etl::shared_object
+{
+private:
+	sigc::signal<void> signal_user_click_[5];
+public:
+	typedef etl::handle<Bone> Handle;
+	typedef etl::loose_handle<Bone> LooseHandle;
+
+	Duck::Handle origin;
+	Duck::Handle tip;
+	Duck::Handle angle;
+	Duck::Handle fake;
+	Duck::Handle origin_width;
+	Duck::Handle tip_width;
+
+	etl::handle<synfig::ValueNode_Bone> bone_node;
+	synfigapp::ValueDesc value_desc;
+	synfig::TransformStack transform_stack;
+
+	synfig::Real length;
+	synfig::Real r0;
+	synfig::Real r1;
+
+	bool is_valid()const { return origin && tip && angle; }
+
+	sigc::signal<void> &signal_user_click(int i=0) { assert(i>=0); assert(i<5); return signal_user_click_[i]; }
+}; // END of struct Duckmatic::Bone
 
 /*! \struct Duckmatic::Stroke
 **	\writeme */
