@@ -396,7 +396,7 @@ public:
 		if (!is_value_node()) return nullptr;
 
 		if(parent_is_canvas())
-			return canvas->find_value_node(name,false);
+			return canvas->find_value_node(name);
 		if(parent_is_layer() && layer->dynamic_param_list().count(name))
 			return layer->dynamic_param_list().find(name)->second;
 		if(parent_is_linkable_value_node())

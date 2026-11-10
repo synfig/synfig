@@ -112,8 +112,6 @@ public:
 
 	typedef etl::rhandle<ValueNode> RHandle;
 
-	static void breakpoint();
-
 	/*
  --	** -- D A T A -------------------------------------------------------------
 	*/
@@ -484,13 +482,13 @@ public:
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::Handle find(const String &name, bool might_fail);
+	ValueNode::Handle find(const String& name);
 
 	//! Finds the ValueNode in the list with the given \a name
 	/*!	\return If found, returns a handle to the ValueNode.
 	**		Otherwise, returns an empty handle.
 	*/
-	ValueNode::ConstHandle find(const String &name, bool might_fail)const;
+	ValueNode::ConstHandle find(const String& name) const;
 
 	//! Removes the \a value_node from the list
 	bool erase(ValueNode::Handle value_node);
