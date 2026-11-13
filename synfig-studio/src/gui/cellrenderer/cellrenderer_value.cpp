@@ -516,7 +516,8 @@ CellRenderer_ValueBase::render_vfunc(
 	 || type == type_list
 	 || type == type_bline_point
 	 || type == type_width_point
-	 || type == type_dash_item)
+	 || type == type_dash_item
+	 || type == type_anim_share)
 	{
 		property_text() = data.get_type().description.local_name;
 	}

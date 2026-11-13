@@ -99,6 +99,7 @@ target_sources(libsynfig
         "${CMAKE_CURRENT_LIST_DIR}/blinepoint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/widthpoint.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/dashitem.cpp"
+		"${CMAKE_CURRENT_LIST_DIR}/animshare.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/gradient.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/type.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/base_types.cpp"
