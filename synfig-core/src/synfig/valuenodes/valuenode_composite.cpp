@@ -697,8 +697,7 @@ ValueNode_Composite::get_children_vocab_vfunc()const
 		);
 		ret.push_back(ParamDesc("width")
 			.set_local_name(_("Width"))
-			.set_description(_("The width of the Spline Point"))
-			.set_is_distance()
+			.set_description(_("The relative width of the Spline Point"))
 		);
 		ret.push_back(ParamDesc("origin")
 			.set_local_name(_("Origin"))
