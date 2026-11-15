@@ -1,0 +1,163 @@
+{
+	"version": 9,
+	
+	"configurePresets": 
+	[ 
+		{
+			"name": "Ucrt64-Base",
+			"displayName": "Ucrt64 Base Configuration",
+			"description": "Base Configuration for UCRT64 flair",
+			"hidden": true,
+			"environment": 
+			{
+				"MSYSTEM": "UCRT64",
+				"MSYSDIR": "ucrt64"
+			}
+		},
+		
+		{
+			"name": "Mingw64-Base",
+			"displayName": "Mingw64 Base Configuration",
+			"description": "Base Configuration for Mingw64 flair",
+			"hidden": true,
+			"environment": 
+			{
+				"MSYSTEM": "MINGW64",
+				"MSYSDIR": "mingw64"
+			}
+		},
+		
+		{
+			"name": "Debug-Base",
+			"displayName": "Debug Base Configuration",
+			"description": "Base Configuration for debugging",
+			"hidden": true,
+			"cacheVariables": 
+			{
+				"CMAKE_BUILD_TYPE": "Debug"
+			}
+		},
+		
+		{
+			"name": "Release-Base",
+			"displayName": "Release Base Configuration",
+			"description": "Base Configuration for release",
+			"hidden": true,
+			"cacheVariables": 
+			{
+				"CMAKE_BUILD_TYPE": "Release"
+			}
+		},
+		
+		{
+			"name": "Msys2-Base",
+			"displayName": "MSYS2 Base Configuration",
+			"description": "MSYS2 base configuration, native toolchain",
+			"hidden": true,
+			"generator": "Ninja",
+			"binaryDir": "${sourceDir}/cmake-build",
+			"environment": 
+			{
+				"ROOTPATH": "C:/msys64",
+				"PATH": "$env{ROOTPATH}/$env{MSYSDIR}/bin;$env{ROOTPATH}/usr/bin;c:/Windows/System32;c:/Windows;$penv{PATH}",
+				"PKG_CONFIG_PATH": "$env{ROOTPATH}/$env{MSYSDIR}/lib/pkgconfig"
+			},
+			"cacheVariables": 
+			{
+				"CMAKE_CXX_COMPILER": "$env{ROOTPATH}/$env{MSYSDIR}/bin/g++.exe",
+				"CMAKE_CXX_FLAGS": "-D_WIN32 -D__MINGW32__ -D__MINGW64__ -DWIN32",
+				"CMAKE_C_COMPILER": "$env{ROOTPATH}/$env{MSYSDIR}/bin/gcc.exe",
+				"CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+				"CMAKE_INSTALL_PREFIX": "${sourceDir}/cmake-build/install",
+				"ENABLE_TESTS": "ON",
+				"MSYS": "1"
+			},
+			"vendor": 
+			{
+				"microsoft.com/VisualStudioSettings/CMake/1.0":
+				{
+					"intelliSenseMode": "linux-gcc-x64",
+					"hostOS": [ "Windows" ]
+				}
+			}
+		},
+		
+		{
+			"name": "Msys2-Ucrt64-Debug",
+			"displayName": "MSYS2 UCRT64 Debug Configuration",
+			"description": "MSYS2 UCRT64, native toolchain, for debugging",
+			"hidden": false,
+			"inherits": [ "Ucrt64-Base", "Debug-Base", "Msys2-Base" ]
+		}		
+	],
+	
+	
+	"buildPresets":
+	[
+		{
+			"name":  "Msys2-Ucrt64-Debug-Build",
+			"displayName": "Msys2 UCRT64 Debug Build",
+			"description": "Msys2 native toolchain debugging build",
+			"hidden": false,
+			"configurePreset": "Msys2-Ucrt64-Debug",
+			"cleanFirst": false,
+			"verbose": true
+		},
+		
+		{
+			"name":  "Msys2-Ucrt64-Debug-Install",
+			"displayName": "Msys2 UCRT64 Debug Install",
+			"description": "Msys2 native toolchain debugging installation",
+			"hidden": false,
+			"configurePreset": "Msys2-Ucrt64-Debug",
+			"cleanFirst": false,
+			"targets": [ "install" ],			
+			"verbose": true
+		}
+	],
+	
+	
+	"testPresets": 
+	[
+		{
+			"name": "Msys2-Ucrt64-Debug-Test",
+			"displayName": "Msys2 UCRT64 Debug Test",
+			"description": "Msys2 UCRT64 native toolchain debugging tests",
+			"hidden": false,
+			"configurePreset": "Msys2-Ucrt64-Debug",
+			"output": 
+			{
+			  "outputOnFailure": true
+			}
+		}
+	],
+	
+	
+	"workflowPresets": 
+	[
+		{
+			"name": "Msys2-Ucrt64-Debug",
+			"displayName": "Msys2 UCRT Debug Workflow",
+			"description": "Msys2 UCRT64 native toolchain debugging workflow",
+			"steps": 
+			[
+				{
+					"type": "configure",
+					"name": "Msys2-Ucrt64-Debug"
+				},
+				{
+					"type": "build",
+					"name": "Msys2-Ucrt64-Debug-Build"
+				},
+				{
+					"type": "build",
+					"name": "Msys2-Ucrt64-Debug-Install"
+				},
+				{
+					"type": "test",
+					"name": "Msys2-Ucrt64-Debug-Test"
+				}
+			]
+		}
+	]
+}
