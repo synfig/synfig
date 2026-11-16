@@ -24,8 +24,8 @@ jobs:
         include:
         # includes a new variable of npm with a value of 2
         # for the matrix leg matching the os and version
-        - os: macos-14
-          name: macOS 14 Sonoma (Autotools)
+        - os: macos-15
+          name: macOS 15 Sequoia (Autotools)
           toolchain: autotools
           allow_failures: false
 
