@@ -31,7 +31,12 @@
 /* === H E A D E R S ======================================================= */
 
 #include <cassert>
+#include <functional>
+#include <string>
+#include <glibmm/refptr.h>
 #include <gtkmm/adjustment.h>
+
+namespace Gtk { class Action; class Widget; }
 
 #include <synfig/handle.h>
 #include <synfig/real.h>
@@ -249,6 +254,9 @@ inline void configure_adjustment(
 		.finish();
 }
 
+void setup_tooltip_with_accel(Gtk::Widget* widget, const std::string& base_tooltip, const std::string& accel_path);
+void setup_tooltip_with_accel(Gtk::Widget* widget, const std::function<std::string()>& get_base_tooltip, const std::string& accel_path);
+void setup_tooltip_with_accel(Gtk::Widget* widget, const Glib::RefPtr<Gtk::Action>& action);
 
 }; // END of namespace studio
 
