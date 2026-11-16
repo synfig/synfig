@@ -78,6 +78,18 @@ pacman -S --needed --noconfirm \
 		exit 1
 	}
 
+# Fix cursor 'color-picker' that is missing from the distro. 
+# This cursor is needed in a gtk widget that Synfig calls
+# If gtk can't find it, it bombs and takes down Synfig with it.
+	CURSOR_LOCATION="${MINGW_PREFIX}/share/icons/Adwaita/cursors"
+	if [[ ! -f "$CURSOR_LOCATION/color-picker.cur" ]]
+		cp "$CURSOR_LOCATION/crosshair.cur" "$CURSOR_LOCATION/color-picker.cur" \
+		|| {
+			err "ERROR: Could not provide the cursor 'color_picker'"
+			exit 1
+		}
+	fi
+
 # Under Windows, JACK doesn't need to be installed.
 
 # Special case: The librara libxml++-2.6 is that thoroughly outdated that 
