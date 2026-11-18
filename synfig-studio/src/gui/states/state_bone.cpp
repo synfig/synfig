@@ -414,18 +414,20 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 	// Turn off layer clicking
 	get_work_area()->set_allow_layer_clicks(false);
 
+	const Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
+	const bool is_skeleton_deformation_layer = Layer_SkeletonDeformation::Handle::cast_dynamic(layer).get();
+
 	// Turn on Active Bone rendering
-	int cnt =get_canvas_interface()->get_selection_manager()->get_selected_layer_count();
-	if(cnt<=1){
+	const int cnt = get_canvas_interface()->get_selection_manager()->get_selected_layer_count();
+	if (cnt <= 1) {
 		Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
-		if((Layer_Skeleton::Handle::cast_dynamic(layer) || Layer_SkeletonDeformation::Handle::cast_dynamic(layer)) || cnt==0)
+		if (cnt == 0 || is_skeleton_deformation_layer || Layer_Skeleton::Handle::cast_dynamic(layer))
 			get_work_area()->set_active_bone_display(true);
 	}
 
 	//ducks
-	Layer::Handle layer = get_canvas_interface()->get_selection_manager()->get_selected_layer();
 
-	if(Layer_SkeletonDeformation::Handle::cast_dynamic(layer)){
+	if (is_skeleton_deformation_layer) {
 		get_work_area()->set_type_mask((get_work_area()->get_type_mask() - Duck::TYPE_TANGENT) | (Duck::TYPE_WIDTH | Duck::TYPE_WIDTHPOINT_POSITION));
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 		update_tool_options(SKELETON_DEFORMATION_TYPE);
@@ -435,7 +437,7 @@ StateBone_Context::StateBone_Context(CanvasView *canvas_view) :
 			last_disabled_layer = layer;
 			get_canvas_interface()->signal_layer_status_changed()(layer, false);
 		}
-	}else{
+	} else {
 		get_work_area()->set_type_mask(get_work_area()->get_type_mask()-Duck::TYPE_TANGENT-Duck::TYPE_WIDTH-Duck::TYPE_WIDTHPOINT_POSITION);
 		get_canvas_view()->toggle_duck_mask(Duck::TYPE_NONE);
 		update_tool_options(SKELETON_TYPE);
