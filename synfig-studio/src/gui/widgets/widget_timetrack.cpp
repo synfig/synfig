@@ -39,6 +39,7 @@
 
 #include <synfig/general.h>
 #include <synfig/timepointcollect.h>
+#include <synfig/valuenodes/valuenode_animated.h>
 #include <synfig/valuenodes/valuenode_dynamiclist.h>
 
 #endif
@@ -175,20 +176,47 @@ bool Widget_Timetrack::move_selected(synfig::Time delta_time)
 	if (!action)
 		return false;
 
+	// When Alt is held, also move all subsequent keyframes in the same track (ripple edit)
+	const bool ripple = waypoint_sd.has_modifier(Gdk::MOD1_MASK);
+
 	synfigapp::Action::ParamList param_list;
 	for (WaypointItem *wi : selection) {
+		const synfigapp::ValueDesc &value_desc = param_info_map[wi->path.to_string()].get_value_desc();
+		synfig::Time time = wi->time_point.get_time();
+
 		param_list.add("canvas", canvas_interface->get_canvas());
 		param_list.add("canvas_interface", canvas_interface);
 
-		const synfigapp::ValueDesc &value_desc = param_info_map[wi->path.to_string()].get_value_desc();
 		if (value_desc.get_value_type() == synfig::type_canvas && !getenv("SYNFIG_SHOW_CANVAS_PARAM_WAYPOINTS")) {
 			param_list.add("addcanvas", value_desc.get_value().get(synfig::Canvas::Handle()));
 		} else {
 			param_list.add("addvaluedesc", value_desc);
 		}
 
-		param_list.add("addtime", wi->time_point.get_time());
+		param_list.add("addtime", time);
 		param_list.add("deltatime", delta_time);
+
+		if (ripple) {
+			// Also move all subsequent keyframes in the same track
+			synfig::ValueNode::Handle value_node = value_desc.get_value_node();
+			if (value_node) {
+				synfig::ValueNode_Animated::Handle animated =
+					synfig::ValueNode_Animated::Handle::cast_dynamic(value_node);
+				if (animated) {
+					const synfig::Node::time_set &all_times = animated->get_times();
+					for (synfig::Node::time_set::const_iterator it = all_times.begin();
+						 it != all_times.end(); ++it) {
+						if (it->get_time() > time) {
+							param_list.add("canvas", canvas_interface->get_canvas());
+							param_list.add("canvas_interface", canvas_interface);
+							param_list.add("addvaluedesc", value_desc);
+							param_list.add("addtime", it->get_time());
+							param_list.add("deltatime", delta_time);
+						}
+					}
+				}
+			}
+		}
 	}
 	action->set_param_list(param_list);
 	bool ok = canvas_interface->get_instance()->perform_action(action);
@@ -1436,7 +1464,7 @@ void Widget_Timetrack::WaypointSD::update_action()
 			else if (has_modifier(Gdk::SHIFT_MASK))
 				action = COPY;
 			else if (has_modifier(Gdk::MOD1_MASK))
-				action = SCALE;
+				action = MOVE;
 		} else {
 			synfig::warning(_("can't find action group: internal error"));
 			action = NONE;
