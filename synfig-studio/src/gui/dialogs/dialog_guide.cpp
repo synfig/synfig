@@ -43,6 +43,7 @@
 #include <gui/workarea.h>
 #include <gui/duckmatic.h>
 #include <gui/app.h>
+#include <gui/widgets/widget_vector.h>
 
 #endif
 
@@ -69,6 +70,32 @@ Dialog_Guide::Dialog_Guide(Gtk::Window& parent, etl::handle<synfig::Canvas> canv
 	//Box start
 	Gtk::Box *guide_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
 
+	// Pivot frame and widgets
+	Gtk::Frame* pivotFrame = manage(new Gtk::Frame(_("Pivot Position")));
+	pivotFrame->set_shadow_type(Gtk::SHADOW_NONE);
+	(static_cast<Gtk::Label*>(pivotFrame->get_label_widget()))->set_markup(_("<b>Pivot Position</b>"));
+	pivotFrame->set_margin_bottom(5);
+	pivotFrame->set_margin_top(5);
+
+	auto pivotGrid = manage(new Gtk::Grid());
+	pivotGrid->get_style_context()->add_class("dialog-secondary-content");
+	pivotGrid->set_row_spacing(6);
+	pivotGrid->set_column_spacing(8);
+
+	pivot_widget = manage(new Widget_Vector());
+	pivot_widget->set_canvas(canvas);
+	pivot_widget->show();
+
+	Gtk::Label* pivotPosLabel = manage(new Gtk::Label(_("_Position (X, Y):"), true));
+	pivotPosLabel->set_halign(Gtk::ALIGN_START);
+	pivotPosLabel->set_mnemonic_widget(*pivot_widget);
+	pivotGrid->attach(*pivotPosLabel, 0, 0, 1, 1);
+	pivotGrid->attach(*pivot_widget  , 1, 0, 1, 1);
+
+	guide_box->add(*pivotFrame);
+	guide_box->add(*pivotGrid);
+
+	// Angle frame and widgets
 	angle_widget=manage(new Gtk::SpinButton(angle_adjustment,15,2));
 	angle_widget->show();
 
@@ -131,16 +158,30 @@ Dialog_Guide::set_current_guide(GuideList::iterator current_guide)
 void
 Dialog_Guide::on_ok_or_apply_pressed(bool ok)
 {
+	bool changed = false;
+
+	if (pivot_widget && curr_guide->point != pivot_widget->get_value()) {
+		curr_guide->point = pivot_widget->get_value();
+		changed = true;
+	}
+
 	if (degrees && synfig::Angle::deg(curr_guide->angle).get() != angle_widget->get_value()) {
 		curr_guide->angle = synfig::Angle::deg(angle_widget->get_value());
+		changed = true;
 	} else if (!degrees && curr_guide->angle.get() != angle_widget->get_value()) {
 		curr_guide->angle = synfig::Angle::rad(angle_widget->get_value());
+		changed = true;
+	}
+
+	if (changed && current_work_area) {
+		current_work_area->save_meta_data();
+		current_work_area->queue_draw();
 	}
 
 	if (ok)
 		hide();
-	else
-		current_work_area->get_drawing_area()->queue_draw();
+	else if (current_work_area)
+		current_work_area->queue_draw();
 }
 
 void
@@ -156,6 +197,9 @@ Dialog_Guide::set_angle_type()
 void
 Dialog_Guide::init_widget_values()
 {
+	if (pivot_widget)
+		pivot_widget->set_value(curr_guide->point);
+
 	if(degrees)
 		angle_widget->set_value(synfig::Angle::deg(curr_guide->angle).get());
 	else

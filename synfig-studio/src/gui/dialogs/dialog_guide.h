@@ -48,6 +48,7 @@ namespace studio {
 
 class Widget_Waypoint;
 class Widget_ValueBase;
+class Widget_Vector;
 class WorkArea;
 struct Guide;
 
@@ -57,6 +58,8 @@ class Dialog_Guide : public Gtk::Dialog
 
 	synfig::Canvas::Handle canvas;
 	WorkArea* current_work_area;
+
+	Widget_Vector* pivot_widget;
 
 	Gtk::SpinButton* angle_widget;
 	Glib::RefPtr<Gtk::Adjustment> angle_adjustment;
