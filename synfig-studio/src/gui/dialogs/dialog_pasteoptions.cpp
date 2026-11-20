@@ -433,7 +433,7 @@ void Dialog_PasteOptions::refresh_row_status(size_t row_index)
 		try {
 			std::string name;
 			v_iter->get_value(COLUMN_NAME, name);
-			existent_vn = destination_canvas->value_node_list().find(name, true);
+			existent_vn = destination_canvas->value_node_list().find(name);
 		}  catch (...) {
 
 		}

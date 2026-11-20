@@ -150,12 +150,11 @@ int main(int argc, char **argv)
 	//// get canvas
 
 
-	String errors, warnings;
+	LoadingIssues issues;
 	Canvas::Handle canvas = open_canvas_as(
 		FileSystemNative::instance()->get_identifier(filename),
 		filename,
-		errors,
-		warnings );
+		issues );
 	if (!canvas)
 		return 1;
 
