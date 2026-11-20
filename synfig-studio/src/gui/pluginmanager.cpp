@@ -34,7 +34,7 @@
 
 #include <gui/pluginmanager.h>
 
-#include <libxml++/libxml++.h>
+#include <synfig/xmlpp_compat.h>
 #include <glibmm/fileutils.h>
 #include <glibmm/markup.h>
 #include <glibmm/miscutils.h>
@@ -227,7 +227,7 @@ studio::PluginString studio::PluginString::load(const xmlpp::Node& parent, const
 		std::string lang = element->get_attribute_value("lang");
 		if ( lang.empty() )
 			lang = element->get_attribute_value("lang", "xml");
-		if ( const xmlpp::TextNode* text = element->get_child_text() )
+		if ( const xmlpp::TextNode* text = synfig::get_first_child_text(element) )
 			string.add_translation(lang, text->get_content());
 	}
 	return string;
@@ -281,7 +281,7 @@ studio::PluginScript studio::PluginScript::load(const xmlpp::Node& node, const s
 
 	script.working_directory = working_directory;
 
-	if ( const xmlpp::TextNode* text = element.get_child_text() )
+	if ( const xmlpp::TextNode* text = synfig::get_first_child_text(&element) )
 		script.script = synfig::trim(text->get_content());
 
 	script.modify_document = parse_boolean_attribute(element, "modify_doc", true);
@@ -394,7 +394,7 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 			{
 				if ( node ) {
 					const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
-					if ( const xmlpp::TextNode* text = element->get_child_text() )
+					if ( const xmlpp::TextNode* text = synfig::get_first_child_text(element) )
 						plugin.author = text->get_content();
 				}
 			}
@@ -402,7 +402,7 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 			{
 				if ( node ) {
 					const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
-					if ( const xmlpp::TextNode* text = element->get_child_text() )
+					if ( const xmlpp::TextNode* text = synfig::get_first_child_text(element) )
 						plugin.version = std::atoi(text->get_content().c_str());
 				}
 			}
@@ -410,7 +410,7 @@ studio::PluginManager::load_plugin( const std::string &file, const std::string &
 			{
 				if ( node ) {
 					const xmlpp::Element* element = dynamic_cast<const xmlpp::Element*>(node);
-					if ( const xmlpp::TextNode* text = element->get_child_text() )
+					if ( const xmlpp::TextNode* text = synfig::get_first_child_text(element) )
 						plugin.url = text->get_content();
 				}
 			}
@@ -445,7 +445,7 @@ void studio::PluginManager::load_import_export(
 	auto nodelist = node->find("./" + name);
 	output.reserve(output.size() + nodelist.size());
 	int number = 0;
-	for ( xmlpp::Node* exporter_node : nodelist )
+	for ( const xmlpp::Node* exporter_node : nodelist )
 	{
 		auto execlist = exporter_node->find("./exec");
 		if ( execlist.empty() )

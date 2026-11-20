@@ -18,7 +18,19 @@ endif()
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(SIGCPP REQUIRED IMPORTED_TARGET sigc++-2.0)
 pkg_check_modules(GTKMM3 REQUIRED IMPORTED_TARGET gtkmm-3.0)
-pkg_check_modules(XMLPP REQUIRED IMPORTED_TARGET libxml++-2.6)
+
+## libxml++ 5.0 is preferred, but 2.6 is still supported as a fallback.
+## The two use different pkg-config module names, and 5.0 needs a C++17 compiler.
+pkg_check_modules(XMLPP QUIET IMPORTED_TARGET libxml++-5.0)
+if (XMLPP_FOUND)
+	if (NOT DEFINED CMAKE_CXX_STANDARD OR CMAKE_CXX_STANDARD LESS 17)
+		set(CMAKE_CXX_STANDARD 17)
+	endif()
+else()
+	pkg_check_modules(XMLPP REQUIRED IMPORTED_TARGET libxml++-2.6)
+endif()
+message(STATUS "Using libxml++ ${XMLPP_VERSION}")
+
 pkg_check_modules(FONTCONFIG IMPORTED_TARGET fontconfig) # for FontConfig
 pkg_check_modules(JACK IMPORTED_TARGET jack)
 pkg_search_module(MLT IMPORTED_TARGET mlt++-7 mlt++) # required for widget_soundwave
