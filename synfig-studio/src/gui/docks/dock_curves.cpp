@@ -57,9 +57,20 @@ using namespace studio;
 Dock_Curves::Dock_Curves():
 	Dock_CanvasSpecific("curves",_("Graphs"),"graphs_icon"),
 	table_(),
-	last_widget_curves_()
+	last_widget_curves_(),
+	mode_toggle_button_()
 {
 	vscrollbar_.set_orientation(Gtk::ORIENTATION_VERTICAL);
+
+	mode_toggle_button_ = add_button(
+		"graphs_icon",
+		_("Switch to Speed Graph")
+	);
+	if (mode_toggle_button_) {
+		mode_toggle_button_->signal_clicked().connect(
+			sigc::mem_fun(*this, &Dock_Curves::on_toggle_mode_clicked)
+		);
+	}
 }
 
 Dock_Curves::~Dock_Curves()
@@ -205,6 +216,7 @@ Dock_Curves::changed_canvas_view_vfunc(CanvasView::LooseHandle canvas_view)
 		table_->attach(vscrollbar_,          1, 2, 0, 3, Gtk::FILL|Gtk::SHRINK, Gtk::FILL|Gtk::EXPAND);
 		table_->show_all();
 		add(*table_);
+		update_mode_button();
 	}
 }
 
@@ -240,4 +252,31 @@ Dock_Curves::on_curves_waypoint_double_clicked(synfigapp::ValueDesc value_desc, 
 	CanvasView::LooseHandle canvas_view = get_canvas_view();
 	if (canvas_view)
 		canvas_view->on_waypoint_clicked_canvasview(value_desc, waypoint_set, button);
+}
+
+void
+Dock_Curves::on_toggle_mode_clicked()
+{
+	if (!last_widget_curves_)
+		return;
+
+	if (last_widget_curves_->get_graph_mode() == Widget_Curves::MODE_VALUE_GRAPH) {
+		last_widget_curves_->set_graph_mode(Widget_Curves::MODE_SPEED_GRAPH);
+	} else {
+		last_widget_curves_->set_graph_mode(Widget_Curves::MODE_VALUE_GRAPH);
+	}
+	update_mode_button();
+}
+
+void
+Dock_Curves::update_mode_button()
+{
+	if (!mode_toggle_button_ || !last_widget_curves_)
+		return;
+
+	if (last_widget_curves_->get_graph_mode() == Widget_Curves::MODE_SPEED_GRAPH) {
+		mode_toggle_button_->set_tooltip_text(_("Switch to Value Graph"));
+	} else {
+		mode_toggle_button_->set_tooltip_text(_("Switch to Speed Graph"));
+	}
 }
