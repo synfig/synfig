@@ -46,6 +46,8 @@
 
 #endif
 
+#include <libxml/parser.h>
+
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
@@ -567,6 +569,7 @@ FileSystemTemporary::open_temporary(const filesystem::Path& filename)
 	stream = new ZReadStream(stream, zstreambuf::compression::gzip);
 
 	xmlpp::DomParser parser;
+	parser.set_parser_options(XML_PARSE_BIG_LINES);
 	parser.parse_stream(*stream);
 	stream.reset();
 	if (!parser) return false;

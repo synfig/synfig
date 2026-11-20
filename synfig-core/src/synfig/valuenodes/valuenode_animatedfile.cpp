@@ -51,6 +51,8 @@
 
 #endif
 
+#include <libxml/parser.h>
+
 /* === U S I N G =========================================================== */
 
 using namespace synfig;
@@ -233,6 +235,7 @@ public:
 	{
 		try {
 			xmlpp::DomParser parser;
+			parser.set_parser_options(XML_PARSE_BIG_LINES);
 			parser.parse_stream(s);
 			if (!parser)
 				return false;
