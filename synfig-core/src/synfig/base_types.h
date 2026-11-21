@@ -60,6 +60,7 @@ namespace synfig {
 	SYNFIG_EXPORT extern Type &type_bone_object;
 	SYNFIG_EXPORT extern Type &type_bone_valuenode;
 	SYNFIG_EXPORT extern Type &type_transformation;
+	SYNFIG_EXPORT extern Type &type_anim_share;
 }; // END of namespace synfig
 
 /* === E N D =============================================================== */

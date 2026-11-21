@@ -558,7 +558,7 @@ CanvasTreeStore::set_row(Gtk::TreeRow row,synfigapp::ValueDesc value_desc, bool 
 					child_row[model.name] = linkable->link_local_name(i);
 					child_row[model.tooltip] = iter->get_description();
 					child_row[model.child_param_desc] = *iter;
-					set_row(child_row,synfigapp::ValueDesc(linkable,i));
+					set_row(child_row,synfigapp::ValueDesc(linkable,i, value_desc));
 				}
 			}
 			return;
