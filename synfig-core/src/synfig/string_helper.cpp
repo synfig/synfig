@@ -34,7 +34,6 @@
 
 #include <synfig/string_helper.h>
 
-#include <cstdarg>
 #include <cstdlib>
 
 #include <algorithm>
