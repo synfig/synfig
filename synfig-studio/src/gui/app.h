@@ -93,7 +93,6 @@ class Dialog_Setup;
 class Dialog_Gradient;
 class Dialog_Input;
 class Dialog_Color;
-class Dialog_ToolOptions;
 class VectorizerSettings;
 class DeviceTracker;
 class AutoRecover;
@@ -101,6 +100,7 @@ class AutoRecover;
 class DockManager;
 
 class Dock_Toolbox;
+class Dock_ToolOptions;
 class Dock_History;
 class Dock_Canvases;
 
@@ -199,13 +199,13 @@ public:
 	static Dialog_Gradient* dialog_gradient;
 	static Dialog_Color* dialog_color;
 //	static Dialog_Palette* dialog_palette;
-	static Dialog_ToolOptions *dialog_tool_options;
 	static VectorizerSettings *vectorizerpopup;
 	static synfig::Distance::System distance_system;
 
 	static About *about;
 	static MainWindow *main_window;
 	static Dock_Toolbox *dock_toolbox;
+	static Dock_ToolOptions* dock_tool_options;
 
 	static std::list<etl::handle<Instance> > instance_list;
 
