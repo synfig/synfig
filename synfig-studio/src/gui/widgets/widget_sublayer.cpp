@@ -102,4 +102,49 @@ void
 Widget_Sublayer::on_changed()
 {
 	value = get_active_id();
+	if (value.empty())
+        return;
+}
+
+void
+Widget_Sublayer::set_share_params(const synfigapp::ValueDesc &x)
+{
+    value_desc = x;
+    remove_all();
+
+	synfigapp::ValueDesc parent = value_desc;
+    while (parent.is_valid() && !parent.parent_is_layer())
+    {
+        synfigapp::ValueDesc next = parent.get_parent_desc();
+        if (!next.is_valid() || next == parent)
+            break;
+        parent = next;
+    }
+
+    if (!parent.parent_is_layer())
+    {
+        refresh();
+        return;
+    }
+
+    synfig::Layer::Handle layer = parent.get_layer();
+
+    if (auto p = synfig::Layer_PasteCanvas::Handle::cast_dynamic(layer))
+    {
+        synfig::Canvas::Handle canvas = p->get_sub_canvas();
+        if (canvas)
+        {
+            std::set<std::string> params;
+            for (synfig::IndependentContext i = canvas->get_independent_context(); *i; ++i)
+                for (const auto& kv : (*i)->dynamic_param_list())
+                    if (kv.second)
+                        params.insert(kv.first);
+
+            append("", _("<none>"));
+            for (const auto& name : params)
+                append(name, name);
+        }
+    }
+
+    refresh();
 }

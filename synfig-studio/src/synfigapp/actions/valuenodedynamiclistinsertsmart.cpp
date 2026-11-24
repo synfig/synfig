@@ -37,6 +37,7 @@
 
 #include "valuenodedynamiclistinsertsmart.h"
 #include <synfigapp/canvasinterface.h>
+#include <synfig/valuenodes/valuenode_animsharelist.h>
 
 #include <synfigapp/localization.h>
 
@@ -233,7 +234,6 @@ Action::ValueNodeDynamicListInsertSmartBase::prepare()
 				throw Error(Error::TYPE_NOTREADY);
 
 			add_action(action);
-
 			// This commented code creates a 'off' Active Point at time.begin()
 			// that produces bugs like
 			action=Action::create("ActivepointSetOff");
@@ -252,6 +252,7 @@ Action::ValueNodeDynamicListInsertSmartBase::prepare()
 				throw Error(Error::TYPE_NOTREADY);
 
 			add_action(action);
+
 			// If we are inserting the first element, or don't want to
 			// keep the shape, there is nothing more to do
 			if(value_node->list.size() > 0 && keep_shape)

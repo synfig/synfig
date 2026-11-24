@@ -177,6 +177,8 @@ Action::ValueNodeDynamicListRemoveSmart::is_ready()const
 {
 	if(!value_node)
 		return false;
+	if (index < 0 || index >= value_node->link_count())
+        return false;
 	return Action::CanvasSpecific::is_ready();
 }
 
