@@ -33,6 +33,8 @@
 #include <gui/widgets/widget_canvastimeslider.h>
 #include <gui/widgets/widget_keyframe_list.h>
 
+#include <synfig/soundprocessor.h>
+
 namespace studio {
 
 class Grid_SoundWave;
@@ -60,6 +62,10 @@ private:
 	Grid_SoundWave *current_grid_sound;
 	Gtk::Scrollbar vscrollbar;
 	Gtk::Scrollbar hscrollbar;
+
+	sigc::connection connection_time_changed;
+
+	synfig::SoundProcessor sound_processor;
 };
 
 }
