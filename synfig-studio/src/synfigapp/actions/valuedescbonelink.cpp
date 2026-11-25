@@ -182,37 +182,76 @@ Action::ValueDescBoneLink::prepare()
 	if (!bone_value_node)
 		throw Error(Error::TYPE_NOTREADY);
 
-	for (std::list<ValueDesc>::iterator iter = value_desc_list.begin(); iter != value_desc_list.end(); ++iter)
+	auto is_valuedesc_invalid_to_link = [bone_value_node](ValueDesc& value_desc) {
+		if (!ValueNode_BoneLink::check_type(value_desc.get_value_type()))
+			return true;
+		if (value_desc.parent_is_value_node() && bone_value_node == value_desc.get_parent_value_node())
+			return true;
+		return false;
+	};
+	value_desc_list.erase(std::remove_if(value_desc_list.begin(), value_desc_list.end(), is_valuedesc_invalid_to_link), value_desc_list.end());
+
+	for (std::list<ValueDesc>::iterator iter = value_desc_list.begin(); iter != value_desc_list.end();)
 	{
 		ValueDesc& value_desc(*iter);
 
-		if (!ValueNode_BoneLink::check_type(value_desc.get_value_type()))
-			continue;
-		if (value_desc.parent_is_value_node() && bone_value_node == value_desc.get_parent_value_node())
-			continue;
-
+		// Check if user selected "origin" instead of "transformation" parameter
 		if (value_desc.parent_is_layer() && value_desc.get_param_name() == "origin") {
 			Layer::ConstHandle layer = value_desc.get_layer();
 			bool has_transformation = layer->get_param("transformation").is_valid()
 									  || layer->dynamic_param_list().count("transformation") > 0;
 			if (has_transformation) {
-				// Propose to user to change to "transformation" parameter
-				if ( get_canvas_interface()
-				  && get_canvas_interface()->get_ui_interface()
-				  && UIInterface::RESPONSE_OK == get_canvas_interface()->get_ui_interface()->confirmation(
-						 _("Possible Wrong Bone Link"),
-						 synfig::strprintf(_("You are trying to link \"origin\" of layer '%s' to a bone.\n\n"
-							"Maybe you intended to link \"transformation\" parameter instead?"),
-							 layer->get_description().c_str()),
-						 _("Yes"),
-						 _("No"),
-						 synfigapp::UIInterface::RESPONSE_OK ))
-				{
-					value_desc = ValueDesc(value_desc.get_layer(), "transformation", value_desc.get_parent_desc());
+				ValueDesc value_desc_transformation_param(value_desc.get_layer(), "transformation", value_desc.get_parent_desc());
+				auto it = std::find(value_desc_list.begin(), value_desc_list.end(), value_desc_transformation_param);
+				if (it != value_desc_list.end()) {
+					// Silently ignore "origin" if user select both "origin" and "transformation" parameter of same layer
+					iter = value_desc_list.erase(iter);
+					continue;
+				} else {
+					// Propose to user to change to "transformation" parameter
+					if ( get_canvas_interface()
+					  && get_canvas_interface()->get_ui_interface()
+					  && UIInterface::RESPONSE_OK == get_canvas_interface()->get_ui_interface()->confirmation(
+							 _("Possible Wrong Bone Link"),
+							 synfig::strprintf(_("You are trying to link \"origin\" of layer '%s' to a bone.\n\n"
+								"Maybe you intended to link \"transformation\" parameter instead?"),
+								 layer->get_description().c_str()),
+							 _("Yes"),
+							 _("No"),
+							 synfigapp::UIInterface::RESPONSE_OK ))
+					{
+						value_desc = ValueDesc(value_desc.get_layer(), "transformation", value_desc.get_parent_desc());
+					}
 				}
 			}
 		}
 
+		// Check if user selected layer from a different canvas of Skeleton (Deformation) Layer
+		if (this->value_desc.get_canvas() != value_desc.get_canvas()) {
+			if ( get_canvas_interface()
+			  && get_canvas_interface()->get_ui_interface()
+			  && UIInterface::RESPONSE_OK == get_canvas_interface()->get_ui_interface()->confirmation(
+					 _("Possible Wrong Bone Link"),
+					 synfig::strprintf(_("You are trying to link a layer to a bone that is not in the same group.\n\n"
+						"Do you want to ignore it?"),
+						 ""),//layer->get_description().c_str()),
+					 _("Yes"),
+					 _("No"),
+					 synfigapp::UIInterface::RESPONSE_OK ))
+			{
+				iter = value_desc_list.erase(iter);
+				continue;
+			}
+		}
+		++iter;
+	}
+
+	// Avoid this empty action in action history
+	if (value_desc_list.empty())
+		throw Error(Error::TYPE_UNABLE, _("Nothing to link to bone"));
+
+	for (ValueDesc& value_desc : value_desc_list)
+	{
 		/*
 		if (value_desc.is_value_node())
 		{
