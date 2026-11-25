@@ -547,6 +547,7 @@ Widget_ColorEdit::on_palette_color_right_clicked(const synfig::Color& color)
 {
     Gtk::Menu* menu(manage(new Gtk::Menu()));
     menu->signal_hide().connect(sigc::bind(sigc::ptr_fun(&delete_widget), menu));
+	menu->attach_to_widget(*this);
 
     // Set as fill
     Gtk::MenuItem* item = manage(new Gtk::MenuItem(_("Set as Fill Color")));
