@@ -157,7 +157,7 @@ public:
 	//! Get summary transformation
 	Transformation get_summary_transformation()const
 	{
-		return get_transformation().transform( Transformation(-get_origin()) );
+		return get_transformation().transform( Transformation(get_origin()) );
 	}
 
 	//! Default constructor
