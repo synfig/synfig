@@ -54,9 +54,10 @@
 #include <gtkmm/statusbar.h>
 #include <gtkmm/toggleaction.h>
 #include <gtkmm/toggletoolbutton.h>
-#include <gtkmm/toolbar.h>
 #include <gtkmm/toolbutton.h>
 #include <gtkmm/uimanager.h>
+#include <gtkmm/box.h>
+#include <giomm/simpleactiongroup.h>
 
 #include <synfig/canvas.h>
 #include <synfig/clock.h>
@@ -282,8 +283,8 @@ private:
 	Gtk::ToolButton *refreshbutton;
 	Gtk::ComboBoxText *render_combobox;
 	Gtk::Grid *timebar;
-	Gtk::Toolbar *top_toolbar;
-	Gtk::Toolbar *right_toolbar;
+	Gtk::Box *top_toolbar;
+	Gtk::Box *right_toolbar;
 	Widget_Enum *widget_interpolation;
 	Gtk::ToggleButton *animatebutton;
 	Gtk::ToggleButton *timetrackbutton;
@@ -440,6 +441,7 @@ private:
 	Gtk::Widget *create_time_bar();
 
 	Gtk::ToolButton* create_action_toolbutton(const Glib::RefPtr<Gtk::Action> &action);
+	Gtk::ToolButton* create_action_toolbutton(const Glib::RefPtr<Gio::Action>& action, const Glib::ustring &icon_name);
 	Gtk::SeparatorToolItem* create_tool_separator();
 	Gtk::Widget* create_top_toolbar();
 	Gtk::Widget* create_stop_button();
