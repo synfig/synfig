@@ -52,6 +52,14 @@ public:
 	StateStroke();
 	~StateStroke();
 	virtual void* enter_state(studio::CanvasView* machine_context) const;
+
+	enum SymmetricalDrawingType{
+		SYMMETRICAL_NONE,
+		SYMMETRICAL_HORIZONTAL_MIRROR,
+		SYMMETRICAL_VERTICAL_MIRROR,
+		SYMMETRICAL_POINT_MIRROR,
+	} symmetrical_drawing_type = SYMMETRICAL_NONE;
+	synfig::Point symmetrical_drawing_reference_point;
 }; // END of class StateStroke
 
 extern StateStroke state_stroke;
@@ -59,6 +67,7 @@ extern StateStroke state_stroke;
 struct EventStroke : public Smach::event
 {
 	std::shared_ptr<std::list<synfig::Point>> stroke_data;
+	std::shared_ptr<std::list<synfig::Point>> mirrored_stroke_data;
 	std::shared_ptr<std::list<synfig::Real>> width_data;
 	Gdk::ModifierType modifier;
 

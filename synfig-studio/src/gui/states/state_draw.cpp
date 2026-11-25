@@ -83,6 +83,7 @@ const int GAP = 3;
 /* === G L O B A L S ======================================================= */
 
 StateDraw studio::state_draw;
+static StateStroke state_symmetrical_stroke;
 
 /* === C L A S S E S & S T R U C T S ======================================= */
 
@@ -109,6 +110,11 @@ class studio::StateDraw_Context : public sigc::trackable
 	ValueNode::Handle last_value_node_origin;
 
 	std::list<std::shared_ptr<std::list<synfig::Point>>> stroke_list;
+
+	std::vector<Guide> symmetrical_drawing_guides;
+	std::mutex symmetrical_drawing_guides_mutex;
+	void add_symmetrical_drawing_guide(const Point& reference, StateStroke::SymmetricalDrawingType type);
+	void remove_symmetrical_drawing_guides();
 
 	void refresh_ducks();
 
@@ -209,12 +215,18 @@ class studio::StateDraw_Context : public sigc::trackable
 	Gtk::CheckButton auto_export_checkbutton;
 	Gtk::Box auto_export_box;
 
+	Gtk::Label symmetrical_drawing_type_label;
+	Gtk::ComboBoxText symmetrical_drawing_type_combobox;
+	Gtk::Label symmetrical_drawing_reference_label;
+	Widget_Vector symmetrical_drawing_reference_widget;
+
 	Gtk::Button fill_last_stroke_button;
 
 
 	void UpdateUsePressure();
 	void UpdateCreateAdvancedOutline();
 	void UpdateSmoothness();
+	void UpdateSymmetryReference();
 
 	//Added by Adrian - data drive HOOOOO
 	synfigapp::BLineConverter blineconv;
@@ -294,6 +306,51 @@ public:
 
 	bool get_round_ends_flag()const { return round_ends_checkbutton.get_active();}
 	void set_round_ends_flag(bool x) {round_ends_checkbutton.set_active(x);}
+
+	StateStroke::SymmetricalDrawingType get_symmetrical_drawing_type() const {
+		std::string type_id = symmetrical_drawing_type_combobox.get_active_id();
+		return type_id == "horizontal"? StateStroke::SYMMETRICAL_HORIZONTAL_MIRROR :
+			   type_id == "vertical"? StateStroke::SYMMETRICAL_VERTICAL_MIRROR :
+			   type_id == "point"? StateStroke::SYMMETRICAL_POINT_MIRROR :
+			   StateStroke::SYMMETRICAL_NONE;
+	}
+
+	void set_symmetrical_drawing_type(StateStroke::SymmetricalDrawingType type) {
+		std::string type_id;
+		switch (type) {
+		case studio::StateStroke::SYMMETRICAL_NONE:
+			type_id = "none";
+			break;
+		case studio::StateStroke::SYMMETRICAL_HORIZONTAL_MIRROR:
+			type_id = "horizontal";
+			break;
+		case studio::StateStroke::SYMMETRICAL_VERTICAL_MIRROR:
+			type_id = "vertical";
+			break;
+		case studio::StateStroke::SYMMETRICAL_POINT_MIRROR:
+			type_id = "point";
+			break;
+		}
+		symmetrical_drawing_type_combobox.set_active_id(type_id);
+	}
+	void set_symmetrical_drawing_type_id(const std::string& type_id) {
+		if (!symmetrical_drawing_type_combobox.set_active_id(type_id)) {
+			warning(_("Invalid symmetrical drawing type: %s"), type_id.c_str());
+			symmetrical_drawing_type_combobox.set_active_id("none");
+		}
+	}
+
+	std::string get_symmetrical_drawing_type_id() const {
+		return symmetrical_drawing_type_combobox.get_active_id();
+	}
+
+	void set_symmetrical_drawing_reference(const Point& reference) {
+		symmetrical_drawing_reference_widget.set_value(reference);
+	}
+
+	Point get_symmetrical_drawing_reference() {
+		return symmetrical_drawing_reference_widget.get_value();
+	}
 
   bool layer_region_flag;
   bool layer_outline_flag;
@@ -409,6 +466,12 @@ StateDraw_Context::load_settings()
 		layer_region_flag = get_layer_region_flag();
 		layer_outline_flag = get_layer_outline_flag();
 		layer_advanced_outline_flag = get_layer_advanced_outline_flag();
+
+		set_symmetrical_drawing_type_id(settings.get_value("draw.symmetrical_drawing_type", "none"));
+		Point p;
+		p[0] = settings.get_value("draw.symmetrical_drawing_reference_x", 0.0);
+		p[1] = settings.get_value("draw.symmetrical_drawing_reference_y", 0.0);
+		set_symmetrical_drawing_reference(p);
 	}
 	catch(...)
 	{
@@ -442,6 +505,11 @@ StateDraw_Context::save_settings()
 		settings.set_value("draw.lthreshold",get_lthres());
 		settings.set_value("draw.localize",get_local_threshold_flag());
 		settings.set_value("draw.round_ends", get_round_ends_flag());
+
+		settings.set_value("draw.symmetrical_drawing_type", get_symmetrical_drawing_type_id());
+		Point p = get_symmetrical_drawing_reference();
+		settings.set_value("draw.symmetrical_drawing_reference_x", p[0]);
+		settings.set_value("draw.symmetrical_drawing_reference_y", p[1]);
 	}
 	catch(...)
 	{
@@ -659,12 +727,29 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	auto_export_box.pack_start(auto_export_label, true, true, 0);
 	auto_export_box.pack_start(auto_export_checkbutton, false, false, 0);
 
+	symmetrical_drawing_type_label.set_label(_("Symmetrical Drawing"));
+	symmetrical_drawing_type_label.set_halign(Gtk::ALIGN_START);
+	symmetrical_drawing_type_label.set_valign(Gtk::ALIGN_CENTER);
+
+	symmetrical_drawing_type_combobox.append("none", _("None"));
+	symmetrical_drawing_type_combobox.append("horizontal", _("Horizontal"));
+	symmetrical_drawing_type_combobox.append("vertical", _("Vertical"));
+	symmetrical_drawing_type_combobox.append("point", _("Point"));
+
+	symmetrical_drawing_reference_label.set_label(_("Symmetry Reference Point"));
+	symmetrical_drawing_reference_label.set_halign(Gtk::ALIGN_START);
+	symmetrical_drawing_reference_label.set_valign(Gtk::ALIGN_CENTER);
+
+	symmetrical_drawing_reference_widget.set_canvas(get_canvas());
+	symmetrical_drawing_reference_widget.set_digits(2);
+
 	nested=0;
 	load_settings();
 
 	UpdateUsePressure();
 	UpdateCreateAdvancedOutline();
 	UpdateSmoothness();
+	UpdateSymmetryReference();
 
 	// Toolbox layout
 	options_grid.attach(title_label,
@@ -723,6 +808,14 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 		0, 18, 2, 1);
 	options_grid.attach(auto_export_box,
 		0, 19, 2, 1);
+	options_grid.attach(symmetrical_drawing_type_label,
+		0, 20, 1, 1);
+	options_grid.attach(symmetrical_drawing_type_combobox,
+		1, 20, 1, 1);
+	options_grid.attach(symmetrical_drawing_reference_label,
+		0, 21, 1, 1);
+	options_grid.attach(symmetrical_drawing_reference_widget,
+		1, 21, 1, 1);
 
 	options_grid.set_vexpand(false);
 	options_grid.set_border_width(GAP*2);
@@ -740,6 +833,10 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 		sigc::mem_fun(*this, &StateDraw_Context::UpdateSmoothness));
 	globalthres_spin.signal_value_changed().connect(
 		sigc::mem_fun(*this, &StateDraw_Context::UpdateSmoothness));
+	symmetrical_drawing_reference_widget.signal_value_changed().connect(
+		sigc::mem_fun(*this, &StateDraw_Context::UpdateSymmetryReference));
+	symmetrical_drawing_type_combobox.signal_changed().connect(
+		sigc::mem_fun(*this, &StateDraw_Context::UpdateSymmetryReference));
 
 	refresh_tool_options();
 	App::dialog_tool_options->present();
@@ -763,6 +860,8 @@ StateDraw_Context::StateDraw_Context(CanvasView* canvas_view):
 	get_work_area()->set_cursor(Gdk::PENCIL);
 
 	App::dock_toolbox->refresh();
+
+	canvas_view->canvas_interface()->get_selection_manager()->clear_selected_layers();
 
 	refresh_ducks();
 }
@@ -788,6 +887,68 @@ StateDraw_Context::UpdateSmoothness()
 {
 	localthres_radiobutton.set_active(localthres_spin.is_focus());
 	globalthres_radiobutton.set_active(globalthres_spin.is_focus());
+}
+
+void
+StateDraw_Context::UpdateSymmetryReference()
+{
+	if (!get_work_area()) {
+		symmetrical_drawing_guides.clear();
+		return;
+	}
+
+	remove_symmetrical_drawing_guides();
+
+	Point reference = symmetrical_drawing_reference_widget.get_value();
+	auto symmetry_type = get_symmetrical_drawing_type();
+
+	add_symmetrical_drawing_guide(reference, symmetry_type);
+}
+
+void
+StateDraw_Context::remove_symmetrical_drawing_guides()
+{
+	if (!get_work_area())
+		return;
+
+	std::lock_guard<std::mutex> lock(symmetrical_drawing_guides_mutex);
+
+	{
+		auto& existent_guides = get_work_area()->get_guide_list();
+		for (const auto& guide : symmetrical_drawing_guides) {
+			auto it = std::find_if(existent_guides.begin(), existent_guides.end(), [guide](const Guide& g) {
+				return guide.point.is_equal_to(g.point) && guide.angle == g.angle;
+			});
+			if (it != existent_guides.end())
+				existent_guides.erase(it);
+		}
+		symmetrical_drawing_guides.clear();
+	}
+
+	get_work_area()->queue_draw();
+}
+
+void
+StateDraw_Context::add_symmetrical_drawing_guide(const Point& reference, StateStroke::SymmetricalDrawingType type)
+{
+	if (!get_work_area())
+		return;
+	if (type == StateStroke::SYMMETRICAL_NONE)
+		return;
+
+	std::lock_guard<std::mutex> lock(symmetrical_drawing_guides_mutex);
+
+	if (type != StateStroke::SYMMETRICAL_VERTICAL_MIRROR) {
+		Guide guide_y {Point{0.0, reference[1]}, Angle::deg(0)};
+		symmetrical_drawing_guides.push_back(guide_y);
+		get_work_area()->get_guide_list().push_front(guide_y);
+	}
+	if (type != StateStroke::SYMMETRICAL_HORIZONTAL_MIRROR) {
+		Guide guide_x {Point{reference[0], 0.0}, Angle::deg(90)};
+		symmetrical_drawing_guides.push_back(guide_x);
+		get_work_area()->get_guide_list().push_front(guide_x);
+	}
+	get_work_area()->queue_draw();
 }
 
 void
@@ -822,6 +983,8 @@ StateDraw_Context::~StateDraw_Context()
 
 	get_work_area()->reset_cursor();
 
+	remove_symmetrical_drawing_guides();
+
 	// Enable the time bar
 	get_canvas_view()->set_sensitive_timebar(true);
 
@@ -855,7 +1018,9 @@ StateDraw_Context::event_mouse_down_handler(const Smach::event& x)
 	case BUTTON_LEFT:
 		{
 			// Enter the stroke state to get the stroke
-			get_canvas_view()->get_smach().push_state(&state_stroke);
+			state_symmetrical_stroke.symmetrical_drawing_type = get_symmetrical_drawing_type();
+			state_symmetrical_stroke.symmetrical_drawing_reference_point = symmetrical_drawing_reference_widget.get_value();
+			get_canvas_view()->get_smach().push_state(&state_symmetrical_stroke);
 			return Smach::RESULT_ACCEPT;
 		}
 
@@ -884,15 +1049,54 @@ StateDraw_Context::event_stroke(const Smach::event& x)
 
 	get_work_area()->add_stroke(event.stroke_data,synfigapp::Main::get_outline_color());
 
+	bool is_mirror_data_valid = false;
+	if (event.mirrored_stroke_data && event.mirrored_stroke_data->size() > 1) {
+		// If source stroke and its mirror have their ends close enough to each other, 'glue' them in one single stroke
+		// If so, the event.mirrored_stroke_data is now 'invalid' and should not create a second outline
+		const Real squared_max_acceptable_distance = 1/40.;
+		auto& stroke = event.stroke_data;
+		auto& width = event.width_data;
+		const auto& mirror = event.mirrored_stroke_data;
+		auto change_to_median_point = [] (synfig::Vector &a, const synfig::Vector& b) {
+			a = (a + b)/2;
+		};
+		if ((stroke->front()-event.mirrored_stroke_data->front()).mag_squared() < squared_max_acceptable_distance) {
+			const std::list<Real> width_data_copy(*event.width_data);
+			change_to_median_point(*stroke->begin(), *(--mirror->rend()));
+			stroke->insert(stroke->begin(), mirror->rbegin(), --mirror->rend());
+			width->insert(width->begin(), width_data_copy.rbegin(), --width_data_copy.rend());
+		} else if ((stroke->front()-mirror->back()).mag_squared() < squared_max_acceptable_distance) {
+			const std::list<Real> width_data_copy(*event.width_data);
+			change_to_median_point(*(stroke->begin()), *(--mirror->end()));
+			stroke->insert(stroke->begin(), mirror->begin(), --mirror->end());
+			width->insert(width->begin(), width_data_copy.begin(), --width_data_copy.end());
+		} else if ((stroke->back()-mirror->front()).mag_squared() < squared_max_acceptable_distance) {
+			const std::list<Real> width_data_copy(*event.width_data);
+			change_to_median_point(*(--stroke->end()), *mirror->begin());
+			stroke->insert(stroke->end(), ++mirror->begin(), mirror->end());
+			width->insert(width->end(), ++width_data_copy.begin(), width_data_copy.end());
+		} else if ((stroke->back()-mirror->back()).mag_squared() < squared_max_acceptable_distance) {
+			const std::list<Real> width_data_copy(*event.width_data);
+			change_to_median_point(*(--stroke->end()), *mirror->rbegin());
+			stroke->insert(stroke->end(), ++mirror->rbegin(), mirror->rend());
+			width->insert(width->end(), ++width_data_copy.rbegin(), width_data_copy.rend());
+		} else {
+			is_mirror_data_valid = true;
+		}
+	}
 	if(nested==0)
 	{
 		WorkArea::DirtyTrap dirty_trap(*get_work_area());
 		Smach::event_result result;
+		if (is_mirror_data_valid)
+			process_stroke(event.mirrored_stroke_data, event.width_data, (event.modifier&Gdk::CONTROL_MASK) || (event.modifier&Gdk::BUTTON2_MASK));
 		result = process_stroke(event.stroke_data, event.width_data, (event.modifier&Gdk::CONTROL_MASK) || (event.modifier&Gdk::BUTTON2_MASK));
 		process_queue();
 		return result;
 	}
 
+	if (is_mirror_data_valid)
+		stroke_queue.push_back(std::pair<StrokeData,WidthData>(event.mirrored_stroke_data,event.width_data));
 	stroke_queue.push_back(std::pair<StrokeData,WidthData>(event.stroke_data,event.width_data));
 
 	return Smach::RESULT_ACCEPT;
@@ -1065,7 +1269,7 @@ StateDraw_Context::process_stroke(StrokeData stroke_data, WidthData width_data, 
 Smach::event_result
 StateDraw_Context::new_bline(std::list<synfig::BLinePoint> bline,std::list<synfig::WidthPoint> wplist,bool loop_bline_flag,float radius,ValueNode::Handle &value_node_origin)
 {
-	synfigapp::SelectionManager::LayerList layer_list;
+	synfigapp::SelectionManager::LayerList layer_list = get_canvas_view()->get_selection_manager()->get_selected_layers();
 
 	// Create the action group
 	synfigapp::Action::PassiveGrouper group(get_canvas_interface()->get_instance().get(),_("Sketch Spline"));
