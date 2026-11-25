@@ -40,8 +40,9 @@
 #include <gtkmm/radioaction.h>
 #include <gtkmm/stock.h>
 
+#include <synfig/general.h>
+
 #include <gui/app.h>
-#include <gui/docks/dock_toolbox.h>
 
 #endif
 
@@ -79,15 +80,28 @@ StateManager::change_state_(const Glib::RefPtr<Gtk::RadioAction>& current, const
 	auto state_action = Glib::RefPtr<Gtk::RadioAction>::cast_static(state_group->get_action(String("state-") + state->get_name()));
 	if (state_action) {
 		if (state_action == current) {
-			App::dock_toolbox->change_state_(state);
+			signal_state_selected_.emit(state);
 		}
 	}
 }
 
 void
-StateManager::add_state(const Smach::state_base *state)
+StateManager::change_state(const Smach::state_base* state)
 {
-	String name(state->get_name());
+	if (state) {
+		signal_state_selected_.emit(state);
+	}
+}
+
+void
+StateManager::register_state(const Smach::state_base* state)
+{
+	if (!state) {
+		synfig::error(_("Internal error: registering a null state."));
+		return;
+	}
+
+	const String name(state->get_name());
 
 	Glib::RefPtr<Gtk::RadioAction> action(
 		Gtk::RadioAction::create_with_icon_name(radio_action_group,
@@ -102,11 +116,13 @@ StateManager::add_state(const Smach::state_base *state)
 
 	action->signal_changed().connect(
 		sigc::bind(
-			sigc::mem_fun(*this,&studio::StateManager::change_state_),
+			sigc::mem_fun(*this, &StateManager::change_state_),
 			state
 		)
 	);
 
+	// this action is to be used in menus only.
+	// Regular type to not show the radio indicator in the menu item
 	Glib::RefPtr<Gtk::Action> regular_action(
 		Gtk::Action::create_with_icon_name("set-state-"+name,
 											state_icon_name(name),
@@ -119,10 +135,10 @@ StateManager::add_state(const Smach::state_base *state)
 
 	regular_action->signal_activate().connect(
 		sigc::bind(
-			sigc::mem_fun(*App::dock_toolbox, &studio::Dock_Toolbox::change_state_),
+			sigc::mem_fun(*this, &StateManager::change_state),
 			state
-			)
-		);
+		)
+	);
 
 	String uid_def;
 	uid_def = "<ui><popup action='menu-main'><menu action='menu-toolbox'><menuitem action='set-state-"+name+"' /></menu></popup></ui>";
@@ -132,7 +148,7 @@ StateManager::add_state(const Smach::state_base *state)
 
 	App::ui_manager()->ensure_update();
 
-	App::dock_toolbox->add_state(state);
+	signal_state_registered_.emit(state);
 }
 
 Glib::RefPtr<Gtk::ActionGroup>
