@@ -766,12 +766,21 @@ std::string DockManager::save_layout_to_string()
 void DockManager::load_layout_from_string(const std::string &x)
 {
 	std::string copy(x);
+	previous_layout_ = save_layout_to_string();
 	do
 	{
 		read_widget(copy);
 	} while (read_separator(copy));
 	while (!containers_to_remove_.empty())
 		remove_empty_container_recursive(*containers_to_remove_.begin()->first);
+}
+
+void
+studio::DockManager::toggle_to_previous_layout()
+{
+	if (previous_layout_.empty())
+		return;
+	load_layout_from_string(previous_layout_);
 }
 
 std::string DockManager::layout_from_template(const std::string &tpl, float dx, float dy, float sx, float sy)

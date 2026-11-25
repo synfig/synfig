@@ -59,7 +59,9 @@ Dialog_Workspaces::Dialog_Workspaces(Gtk::Dialog::BaseObjectType* cobject, const
 	Gtk::Dialog(cobject),
 	builder(refGlade),
 	rename_button(nullptr),
-	delete_button(nullptr)
+	delete_button(nullptr),
+	favorite_button(nullptr),
+	unfavorite_button(nullptr)
 {
 	Gtk::Button *button = nullptr;
 
@@ -74,6 +76,14 @@ Dialog_Workspaces::Dialog_Workspaces(Gtk::Dialog::BaseObjectType* cobject, const
 	refGlade->get_widget("workspaces_rename_button", rename_button);
 	if (rename_button)
 		rename_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Workspaces::on_rename_clicked));
+
+	refGlade->get_widget("workspaces_favorite_button", favorite_button);
+	if (favorite_button)
+		favorite_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Workspaces::on_favorite_clicked));
+
+	refGlade->get_widget("workspaces_unfavorite_button", unfavorite_button);
+	if (unfavorite_button)
+		unfavorite_button->signal_clicked().connect(sigc::mem_fun(*this, &Dialog_Workspaces::on_unfavorite_clicked));
 
 	Gtk::TreeView * workspace_treeview = nullptr;
 	refGlade->get_widget("workspaces_treeview", workspace_treeview);
@@ -118,6 +128,21 @@ void Dialog_Workspaces::on_selection_changed()
 	int count = current_selection->count_selected_rows();
 	rename_button->set_sensitive(count == 1);
 	delete_button->set_sensitive(count > 0);
+
+	bool has_favorite = false;
+	bool has_unfavorite = false;
+	WorkspaceHandler* workspaces = MainWindow::get_workspace_handler();
+	auto selected_names = get_selected_names();
+	for (const auto& name : selected_names) {
+		if (workspaces->is_favorite(name))
+			has_favorite = true;
+		else
+			has_unfavorite = true;
+		if (has_favorite && has_unfavorite)
+			break;
+	}
+	favorite_button->set_sensitive(has_unfavorite);
+	unfavorite_button->set_sensitive(has_favorite);
 }
 
 void Dialog_Workspaces::on_delete_clicked()
@@ -128,14 +153,7 @@ void Dialog_Workspaces::on_delete_clicked()
 	if (confirm_dlg.run() != Gtk::RESPONSE_YES)
 		return;
 
-	// get_selected_rows() return TreePath not TreeIter
-	// So, deleting an item, invalidates the other TreePaths (they point to wrong items)
-	std::vector<std::string> names;
-	for (const auto& selected_path : current_selection->get_selected_rows()) {
-		std::string name;
-		workspace_model->get_iter(selected_path)->get_value(0, name);
-		names.push_back(name);
-	}
+	std::vector<std::string> names = get_selected_names();
 	for (const std::string & name : names) {
 		MainWindow::get_workspace_handler()->remove_workspace(name);
 	}
@@ -143,9 +161,7 @@ void Dialog_Workspaces::on_delete_clicked()
 
 void Dialog_Workspaces::on_rename_clicked()
 {
-	std::string old_name;
-	auto selected_path = current_selection->get_selected_rows()[0];
-	workspace_model->get_iter(selected_path)->get_value(0, old_name);
+	std::string old_name = get_selected_names()[0];
 
 	Gtk::MessageDialog dialog(*this, _("Type a name for this custom workspace:"), false, Gtk::MESSAGE_QUESTION, Gtk::BUTTONS_NONE, true);
 	dialog.add_button(_("Cancel"), Gtk::RESPONSE_CANCEL);
@@ -195,8 +211,36 @@ void Dialog_Workspaces::on_rename_clicked()
 	MainWindow::get_workspace_handler()->add_workspace(name, tpl);
 }
 
+void Dialog_Workspaces::on_favorite_clicked()
+{
+	auto selected_names = get_selected_names();
+
+	MainWindow::get_workspace_handler()->favorite(selected_names[0]);
+}
+
+void Dialog_Workspaces::on_unfavorite_clicked()
+{
+	MainWindow::get_workspace_handler()->clear_favorite();
+}
+
+std::vector<std::string> Dialog_Workspaces::get_selected_names() const
+{
+	auto selected_rows = current_selection->get_selected_rows();
+	if (selected_rows.empty())
+		return {};
+	std::string name;
+	std::vector<std::string> names;
+	for (const auto& row : selected_rows) {
+		workspace_model->get_iter(row)->get_value(0, name);
+		names.push_back(name);
+	}
+	return names;
+}
+
 void Dialog_Workspaces::rebuild_list()
 {
+	auto selected_names = get_selected_names();
+
 	workspace_model->clear();
 
 	WorkspaceHandler* workspaces = MainWindow::get_workspace_handler();
@@ -205,6 +249,16 @@ void Dialog_Workspaces::rebuild_list()
 
 	std::vector<std::string> names;
 	workspaces->get_name_list(names);
-	for (const std::string & name : names)
-		workspace_model->append()->set_value(0, name);
+	for (const std::string & name : names) {
+		auto new_iter = workspace_model->append();
+		new_iter->set_value(0, name);
+		new_iter->set_value(1, workspaces->is_favorite(name));
+	}
+
+	if (selected_names.empty())
+		return;
+	auto iter = std::find(names.begin(), names.end(), selected_names[0]);
+	if (iter == names.end())
+		return;
+	current_selection->select(Gtk::TreePath(synfig::strprintf("%d", iter - names.begin())));
 }
