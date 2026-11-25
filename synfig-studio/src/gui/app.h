@@ -217,6 +217,11 @@ public:
 	static bool enable_experimental_features;
 	static bool use_dark_theme;
 	static bool show_file_toolbar;
+#ifdef ENABLE_UPDATE_CHECKER
+	static bool enable_update_check;
+	static int update_check_consent;
+	static synfig::String skipped_update_version;
+#endif
 
 	static PluginManager plugin_manager;
 	static synfig::String image_editor_path;
