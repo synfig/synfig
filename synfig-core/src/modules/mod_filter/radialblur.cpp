@@ -163,7 +163,7 @@ RadialBlur::accelerated_render(Context context,Surface *surface,int quality, con
 	int x, y;
 	for(y=0,pos[1]=tl[1];y<h;y+=(h-1),pos[1]+=ph*(h-1))
 		for(x=0,pos[0]=tl[0];x<w;x+=(w-1),pos[0]+=pw*(w-1))
-			rect.expand((pos-origin)*(1.0f-size) + origin);
+			rect.expand_to((pos-origin)*(1.0f-size) + origin);
 
 	Vector stl = rect.get_min();
 	Vector sbr = rect.get_max();

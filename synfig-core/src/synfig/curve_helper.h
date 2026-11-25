@@ -118,9 +118,9 @@ template < typename T >
 inline void Bound(synfig::rect<T> &r, const bezier<Point> &b)
 {
 	r.set_point(b[0][0],b[0][1]);
-	r.expand(b[1][0],b[1][1]);
-	r.expand(b[2][0],b[2][1]);
-	r.expand(b[3][0],b[3][1]);
+	r.expand_to(b[1][0],b[1][1]);
+	r.expand_to(b[2][0],b[2][1]);
+	r.expand_to(b[3][0],b[3][1]);
 }
 
 /*template < typename T >

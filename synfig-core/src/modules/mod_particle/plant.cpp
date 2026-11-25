@@ -141,7 +141,7 @@ Plant::branch(int n,int depth,float t, float stunt_growth, synfig::Point positio
 		if (particle_list.size() % 1000000 == 0)
 			synfig::info("constructed %d million particles...", particle_list.size()/1000000);
 
-		bounding_rect.expand(position);
+		bounding_rect.expand_to(position);
 	}
 
 	if(t>=1.0-stunt_growth)return;
@@ -183,11 +183,11 @@ Plant::calc_bounding_rect()const
 
 	for(;next!=bline.end();iter=next++)
 	{
-		bounding_rect.expand(iter->get_vertex());
-		bounding_rect.expand(next->get_vertex());
-		bounding_rect.expand(iter->get_vertex()+iter->get_tangent2()*0.3333333333333);
-		bounding_rect.expand(next->get_vertex()-next->get_tangent1()*0.3333333333333);
-		bounding_rect.expand(next->get_vertex()+next->get_tangent2()*velocity);
+		bounding_rect.expand_to(iter->get_vertex());
+		bounding_rect.expand_to(next->get_vertex());
+		bounding_rect.expand_to(iter->get_vertex()+iter->get_tangent2()*0.3333333333333);
+		bounding_rect.expand_to(next->get_vertex()-next->get_tangent1()*0.3333333333333);
+		bounding_rect.expand_to(next->get_vertex()+next->get_tangent2()*velocity);
 	}
 	bounding_rect.expand_x(gravity[0]);
 	bounding_rect.expand_y(gravity[1]);
@@ -265,7 +265,7 @@ Plant::sync()const
 			if (particle_list.size() % 1000000 == 0)
 				synfig::info("constructed %d million particles...", particle_list.size()/1000000);
 
-			bounding_rect.expand(point);
+			bounding_rect.expand_to(point);
 
 			Real stunt_growth(random_factor * (random(Random::SMOOTH_COSINE,i,f+seg,0.0f,0.0f)/2.0+0.5));
 			stunt_growth*=stunt_growth;

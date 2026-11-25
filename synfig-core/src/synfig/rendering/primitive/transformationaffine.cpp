@@ -119,9 +119,9 @@ TransformationAffine::transform_bounds_affine(const Matrix &matrix, const Bounds
 	
 	return Bounds(
 		   Rect( matrix.get_transformed( Vector(bounds.rect.minx, bounds.rect.miny) ) )
-		.expand( matrix.get_transformed( Vector(bounds.rect.minx, bounds.rect.maxy) ) )
-		.expand( matrix.get_transformed( Vector(bounds.rect.maxx, bounds.rect.miny) ) )
-		.expand( matrix.get_transformed( Vector(bounds.rect.maxx, bounds.rect.maxy) ) ),
+		.expand_to( matrix.get_transformed( Vector(bounds.rect.minx, bounds.rect.maxy) ) )
+		.expand_to( matrix.get_transformed( Vector(bounds.rect.maxx, bounds.rect.miny) ) )
+		.expand_to( matrix.get_transformed( Vector(bounds.rect.maxx, bounds.rect.maxy) ) ),
 		calc_optimal_resolution(Matrix2(
 			matrix.m00*kx, matrix.m01*kx,
 			matrix.m10*ky, matrix.m11*ky )) );
