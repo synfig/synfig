@@ -23,11 +23,31 @@
 */
 /* ========================================================================= */
 
+#include <synfig/canvas.h>
 #include <synfig/keyframe.h>
 
 #include "test_base.h"
 
 using namespace synfig;
+
+void exporting_canvas_preserves_animation_settings()
+{
+	Canvas::Handle canvas = Canvas::create();
+	canvas->rend_desc().set_frame_rate(24.0);
+	canvas->rend_desc().set_time_start(1.0);
+	canvas->rend_desc().set_time_end(5.0);
+	canvas->keyframe_list().add(Keyframe(2.0));
+	canvas->keyframe_list().add(Keyframe(4.0));
+
+	Canvas::Handle exported = canvas->clone(GUID(), true);
+
+	ASSERT_EQUAL(canvas->rend_desc().get_frame_rate(), exported->rend_desc().get_frame_rate())
+	ASSERT_EQUAL(canvas->rend_desc().get_time_start(), exported->rend_desc().get_time_start())
+	ASSERT_EQUAL(canvas->rend_desc().get_time_end(), exported->rend_desc().get_time_end())
+	ASSERT_EQUAL(canvas->keyframe_list().size(), exported->keyframe_list().size())
+	ASSERT_EQUAL(canvas->keyframe_list()[0], exported->keyframe_list()[0])
+	ASSERT_EQUAL(canvas->keyframe_list()[1], exported->keyframe_list()[1])
+}
 
 void adding_single_keyframe_works()
 {
@@ -607,6 +627,8 @@ int main()
 {
 
 	TEST_SUITE_BEGIN()
+
+	TEST_FUNCTION(exporting_canvas_preserves_animation_settings);
 
 	TEST_FUNCTION(adding_single_keyframe_works);
 	TEST_FUNCTION(adding_two_ordered_keyframes_keeps_the_order);
