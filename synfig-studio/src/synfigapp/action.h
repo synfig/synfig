@@ -381,6 +381,9 @@ Handle create(const synfig::String &name);
 //! Compiles a list of potential candidate actions with the given \a param_list and \a category
 CandidateList compile_candidate_list(const ParamList& param_list, Category category=CATEGORY_ALL);
 
+/** Compiles a list of potential candidate actions, that are not CATEGORY_HIDDEN, with the given @a param_list and @a category */
+CandidateList compile_visible_candidate_list(const ParamList& param_list, Category category = CATEGORY_ALL);
+
 /*!	\class synfigapp::Action::Main
 **	\brief \writeme
 **
