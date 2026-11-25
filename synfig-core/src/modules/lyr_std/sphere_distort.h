@@ -34,6 +34,7 @@
 #include <synfig/layer.h>
 #include <synfig/vector.h>
 #include <synfig/rect.h>
+#include <synfig/rendering/common/task/taskdistort.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -67,6 +68,8 @@ private:
 	ValueBase param_type;
 	//!Parameter (bool)
 	ValueBase param_clip;
+	//!Parameter (bool)
+	ValueBase param_cobra;
 
 	Rect bounds;
 
@@ -89,10 +92,40 @@ public:
 
 	virtual Vocab get_param_vocab()const;
 	virtual etl::handle<Transform> get_transform()const;
+	virtual bool reads_context()const { return true; }
 
 protected:
 	virtual RendDesc get_sub_renddesc_vfunc(const RendDesc &renddesc) const;
+	virtual rendering::Task::Handle build_rendering_task_vfunc(Context context) const;
+
+public:
+	struct Internal
+	{
+		Vector center = Vector(0,0);
+		Real radius = 1.;
+		Real percent = 1.;
+		int type = 0;
+		bool clip = false;
+
+		Point transform(const Point& point) const;
+		Point transform(const Point& point, bool& clipped) const;
+	};
 }; // END of class Layer_SphereDistort
+
+class TaskSphereDistort
+	: public rendering::TaskDistort
+{
+public:
+	typedef etl::handle<TaskSphereDistort> Handle;
+	static Token token;
+	Token::Handle get_token() const override;
+
+	Layer_SphereDistort::Internal internal;
+
+	int get_pass_subtask_index() const override;
+
+	Rect compute_required_source_rect(const Rect& source_rect, const Matrix& /*raster_to_world_transformation*/) const override;
+};
 
 }; // END of namespace lyr_std
 }; // END of namespace modules

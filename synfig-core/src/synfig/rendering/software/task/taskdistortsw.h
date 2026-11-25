@@ -75,6 +75,81 @@ public:
 	 * @return true, if successful
 	 */
 	bool run_task(const rendering::TaskDistort& task) const;
+
+	/**
+	 * Helper to compute info useful to loop the task target_rect raster surface.
+	 * @see get_loop_info()
+	 */
+	struct LoopInfo {
+		bool should_abort = false; /**< If true, it should quit run() immediatly with error flag (return false) */
+		bool may_end = false; /**< If true, it should quit run() immediatly as successful (return true) */
+
+		Point initial_p; /**< The initial value of point p (vector coordinates) */
+		Point p_dy; /**< The increase rate of point p after each line/row */
+		Point p_dx; /**< The increase rate of point p after each column */
+
+		PointInt pen_dy; /**< The increase rate of the pen in target_rect surface after each line/row */
+
+		Matrix sub_world_to_raster_transformation; /**< COmputes the conversion from vector to raster coordinates in sub_task surface */
+	};
+
+	static LoopInfo get_loop_info(const rendering::Task& task);
+};
+
+/**
+ * Software implementation of TaskDistort base.
+ *
+ * This is a base/interface class to tasks that remap pixels from source surface
+ * to another coordinates in target surface.
+ *
+ * The final task class must implement point_vfunc() that has this role of remapping.
+ *
+ * The final task class should call run_task() in its run() method, that actually
+ * calls point_vfunc() pixel by pixel of target surface.
+ */
+class TaskDistortOrColorSW
+	: public synfig::rendering::TaskSW
+{
+protected:
+	/**
+	 * The distortion callback point_vfunc() may return the coordinate or a 'fixed' color directly.
+	 */
+	struct Result {
+		enum class Type {
+			POINT, COLOR
+		};
+
+		Result() = default;
+		Result(const Point& p) noexcept;
+		Result(Point&& p) noexcept;
+		Result(const Color& color) noexcept;
+		Result(Color&& color) noexcept;
+
+		operator bool() const;
+		Point point() const;
+		Color color() const;
+
+	private:
+		Point point_{-0xdead, -0xdead};
+		Color color_;
+		Type type_{Type::COLOR};
+	};
+
+	/**
+	 * Convert @a point coordinates in target vectorial region to the vectorial coordinates in source region.
+	 *
+	 * @param point The transformed vectorial coordinates in target region
+	 * @return From where in source region should take the color (in vectorial coordinates)
+	 */
+	virtual Result point_or_color_vfunc(const Point &point) const = 0;
+
+public:
+	/**
+	 * Scan the target surface and fill each pixel according to point_vfunc().
+	 * @param task the TaskDistort object
+	 * @return true, if successful
+	 */
+	bool run_task(const rendering::TaskDistort& task) const;
 };
 
 }
