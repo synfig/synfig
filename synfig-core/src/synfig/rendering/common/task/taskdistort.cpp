@@ -50,7 +50,7 @@ using namespace synfig;
 void
 rendering::TaskDistort::set_coords_sub_tasks()
 {
-	if (!sub_task()) {
+	if (sub_tasks.empty() || !sub_task()) {
 		trunc_to_zero();
 		return;
 	}
@@ -60,15 +60,25 @@ rendering::TaskDistort::set_coords_sub_tasks()
 	}
 
 	const Vector ppu = get_pixels_per_unit();
+	const Vector upp = get_units_per_pixel();
 
-	Matrix bounds_transformation;
-	bounds_transformation.m00 = ppu[0];
-	bounds_transformation.m11 = ppu[1];
-	bounds_transformation.m20 = target_rect.minx - ppu[0]*source_rect.minx;
-	bounds_transformation.m21 = target_rect.miny - ppu[1]*source_rect.miny;
+	Matrix raster_to_world_transformation;
+	{
+		raster_to_world_transformation.m00 = upp[0];
+		raster_to_world_transformation.m11 = upp[1];
+		raster_to_world_transformation.m20 = source_rect.minx - upp[0]*target_rect.minx;
+		raster_to_world_transformation.m21 = source_rect.miny - upp[1]*target_rect.miny;
+	}
 
-	Matrix inv_matrix = bounds_transformation.get_inverted();
+	required_source_rect = compute_required_source_rect(source_rect, raster_to_world_transformation);
+	// Add 3 pixels due to possible cubic or cosine sampling
+	constexpr int padding = 3;
+	required_source_rect.minx -= padding*upp[0];
+	required_source_rect.maxx += padding*upp[0];
+	required_source_rect.miny -= padding*upp[1];
+	required_source_rect.maxy += padding*upp[1];
 
-	required_source_rect = compute_required_source_rect(source_rect, inv_matrix);
-	sub_task()->set_coords(required_source_rect, target_rect.get_size());
+	Vector new_target_size = required_source_rect.get_size().multiply_coords(ppu);
+
+	sub_task()->set_coords(required_source_rect, VectorInt(std::round(new_target_size[0]), std::round(new_target_size[1])));
 }
