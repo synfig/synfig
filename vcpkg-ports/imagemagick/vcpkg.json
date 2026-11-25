@@ -1,6 +1,6 @@
 {
   "name": "imagemagick",
-  "version": "7.1.0-39",
+  "version": "7.1.1-29",
   "description": "Use ImageMagick® to create, edit, compose, or convert digital images.",
   "homepage": "https://imagemagick.org",
   "license": "ImageMagick",

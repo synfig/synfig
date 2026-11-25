@@ -12,13 +12,13 @@ index 0813b3627..798c41c8d 100644
 --- a/MagickCore/fourier.c
 +++ b/MagickCore/fourier.c
 @@ -61,6 +61,10 @@
- #include "MagickCore/resource_.h"
- #include "MagickCore/string-private.h"
- #include "MagickCore/thread-private.h"
+ #define ENABLE_FFTW_DELEGATE
+ #endif
+ #endif
 +#if _MSC_VER
 +#undef MAGICKCORE_HAVE_COMPLEX_H
 +#define FFTW_NO_Complex
 +#endif
- #if defined(MAGICKCORE_FFTW_DELEGATE)
+ #if defined(ENABLE_FFTW_DELEGATE)
  #if defined(MAGICKCORE_HAVE_COMPLEX_H)
  #include <complex.h>

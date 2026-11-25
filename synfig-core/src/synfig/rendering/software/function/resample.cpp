@@ -44,11 +44,11 @@ using namespace rendering;
 
 /* === M A C R O S ========================================================= */
 
-#ifdef _MSC_VER
+//#ifdef _MSC_VER
 // MSVC requires explicit template instantiation. Without it, it will crash with an internal compiler error :(
-template Color surface<Color, ColorPrep>::reader<clamping::clamp, clamping::clamp>(const void*, int, int);
-template Color software::PackedSurface::Reader::reader<clamping::clamp, clamping::clamp>(void const*, int, int);
-#endif
+//template Color surface<Color, ColorPrep>::reader<clamping::clamp, clamping::clamp>(const void*, int, int);
+//template Color software::PackedSurface::Reader::reader<clamping::clamp, clamping::clamp>(void const*, int, int);
+//#endif
 
 /* === G L O B A L S ======================================================= */
 
