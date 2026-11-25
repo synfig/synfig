@@ -126,6 +126,7 @@ Duckmatic::Duckmatic(etl::loose_handle<synfigapp::CanvasInterface> canvas_interf
 {
 	clear_duck_dragger();
 	clear_bezier_dragger();
+	clear_bone_dragger();
 }
 
 Duckmatic::~Duckmatic()
@@ -146,6 +147,8 @@ Duckmatic::clear_ducks()
 
 	//duck_list_.clear();
 	bezier_list_.clear();
+	bone_list_.clear();
+	selected_bone = 0;
 	stroke_list_.clear();
 
 	if(show_persistent_strokes)
@@ -726,6 +729,29 @@ Duckmatic::end_bezier_drag()
 	return false;
 }
 
+void
+Duckmatic::start_bone_drag(const synfig::Point& offset, bool translate_mode)
+{
+	drag_offset_ = offset;
+	if(bone_dragger_)
+		bone_dragger_->begin_bone_drag(this,offset,translate_mode);
+}
+
+void
+Duckmatic::translate_selected_bone(const synfig::Point& point)
+{
+	if(bone_dragger_)
+		bone_dragger_->bone_drag(this,point);
+}
+
+bool
+Duckmatic::end_bone_drag()
+{
+	if(bone_dragger_)
+		return bone_dragger_->end_bone_drag(this);
+	return false;
+}
+
 /*
 -- ** -- grid and guide M E T H O D S----------------------------
 */
@@ -1183,6 +1209,15 @@ Duckmatic::add_bezier(const Bezier::Handle& bezier)
 }
 
 void
+Duckmatic::add_bone(const Bone::Handle& bone)
+{
+	for (const auto& b : bone_list_)
+		if (b->bone_node == bone->bone_node)
+			return;
+	bone_list_.push_back(bone);
+}
+
+void
 Duckmatic::add_stroke(std::shared_ptr<std::list<synfig::Point>> stroke_point_list, const synfig::Color& color)
 {
 	assert(stroke_point_list);
@@ -1279,6 +1314,20 @@ Duckmatic::erase_bezier(const Bezier::Handle& bezier)
 		}
 	}
 	synfig::warning("Unable to find bezier to erase!");
+}
+
+void
+Duckmatic::erase_bone(const Bone::Handle& bone)
+{
+	for(auto iter = bone_list_.begin(); iter != bone_list_.end(); ++iter)
+	{
+		if(*iter==bone)
+		{
+			bone_list_.erase(iter);
+			return;
+		}
+	}
+	synfig::warning("Unable to find bone to erase!");
 }
 
 Duck::Handle
@@ -1468,6 +1517,60 @@ Duckmatic::find_bezier(synfig::Point pos, synfig::Real scale, synfig::Real radiu
 	}
 
 	return 0;
+}
+
+Duckmatic::Bone::Handle
+Duckmatic::find_bone(synfig::Point pos, synfig::Real radius)
+{
+	if(radius==0) radius=10000000;
+
+	Bone::Handle best_bone;
+	Real best_dist = 1e18;
+
+	for(auto iter = bone_list_.rbegin(); iter != bone_list_.rend(); ++iter)
+	{
+		const Bone::Handle& bone = *iter;
+		if(!bone || !bone->is_valid())
+			continue;
+
+		Point p0 = bone->origin->get_trans_point();
+		Point p1 = bone->tip->get_trans_point();
+		if(p0.is_nan_or_inf() || p1.is_nan_or_inf())
+			continue;
+
+		Vector v = p1 - p0;
+		Real v_len2 = v.mag_squared();
+		Real t = 0.0;
+		Point closest = p0;
+
+		if(v_len2 > 1e-12)
+		{
+			t = (pos - p0) * v / v_len2;
+			Real t_clamped = std::max(0.0, std::min(1.0, t));
+			closest = p0 + v * t_clamped;
+		}
+
+		Real dist = (pos - closest).mag();
+		Real t_clamped = std::max(0.0, std::min(1.0, t));
+		Real r0 = (bone->origin_width && bone->origin) ? (bone->origin_width->get_trans_point() - p0).mag() : std::fabs(bone->r0);
+		Real r1 = (bone->tip_width && bone->tip) ? (bone->tip_width->get_trans_point() - p1).mag() : std::fabs(bone->r1);
+		Real bone_r = r0 + t_clamped * (r1 - r0);
+		Real hit_r = std::max(bone_r, radius);
+
+		if(dist <= hit_r)
+		{
+			Real score = dist / (hit_r > 1e-6 ? hit_r : 1.0);
+			if(score < best_dist)
+			{
+				best_dist = score;
+				best_bone = bone;
+				if(score < 0.2)
+					return best_bone;
+			}
+		}
+	}
+
+	return best_bone;
 }
 
 
@@ -2640,7 +2743,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 						return false;
 			}
 			else
-			if (value_node->get_contained_type() == types_namespace::TypePair<Bone, Bone>::instance)
+			if (value_node->get_contained_type() == types_namespace::TypePair<synfig::Bone, synfig::Bone>::instance)
 			{
 				bool edit_second = value_desc.parent_is_layer() && value_desc.get_layer()->active();
 				for(i=0;i<value_node->link_count();i++)
@@ -2898,6 +3001,10 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 
 		Duck::Handle fake_duck;
 		Duck::Handle tip_duck;
+		Duck::Handle origin_duck;
+		Duck::Handle angle_duck;
+		Duck::Handle origin_width_duck;
+		Duck::Handle tip_width_duck;
 		synfig::TransformStack origin_transform_stack(transform_stack), bone_transform_stack;
 		bool recursive(get_type_mask() & Duck::TYPE_BONE_RECURSIVE);
 
@@ -2930,7 +3037,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 
 		synfig::GUID guid(bone_value_node->get_guid());
 		Time time(get_time());
-		Bone bone((*bone_value_node)(time).get(Bone()));
+		synfig::Bone bone((*bone_value_node)(time).get(synfig::Bone()));
 		bool invertible(true);
 		Angle angle;
 		Angle::deg parent_angle(0);
@@ -2940,7 +3047,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 			bool has_parent(!bone.is_root());
 			if (has_parent)
 			{
-				Bone parent_bone((*bone.get_parent())(time).get(Bone()));
+				synfig::Bone parent_bone((*bone.get_parent())(time).get(synfig::Bone()));
 
 				// add the parent's ducks too
 				add_to_ducks(synfigapp::ValueDesc(bone_value_node, bone_value_node->get_link_index_from_name("parent"), value_desc),canvas_view,transform_stack);
@@ -2968,7 +3075,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 						   Angle::deg(parent_angle + (parent_bone.get_angle())).get());
 					parent_angle += parent_bone.get_angle();
 					if (parent_bone.is_root()) break;
-					parent_bone = (*parent_bone.get_parent())(time).get(Bone());
+					parent_bone = (*parent_bone.get_parent())(time).get(synfig::Bone());
 				}
 				printf("%s:%d finally %5.2f\n\n", __FILE__, __LINE__, Angle::deg(parent_angle).get());
 #endif
@@ -3007,20 +3114,21 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 														  value_desc));					// value_desc
 			add_duck(duck);
 			bezier->p1 = bezier->c1 = duck;
+			origin_duck = duck;
 		}
 
 		//parent tip fake
 		{
 			if(!bone.is_root()){
 				synfigapp::ValueDesc parent_value_desc(bone_value_node, bone_value_node->get_link_index_from_name("parent"), orig_value_desc);;
-				Bone parent_bone = (*(bone.get_parent()))(time).get(Bone());
+				synfig::Bone parent_bone = (*(bone.get_parent()))(time).get(synfig::Bone());
 
 				if(parent_bone.get_parent()){
 					Point origin = parent_bone.get_origin();
 					Matrix bm = parent_bone.get_animated_matrix();
 					Real bscale = parent_bone.get_scalelx();
 
-					parent_bone = (*parent_bone.get_parent())(time).get(Bone());
+					parent_bone = (*parent_bone.get_parent())(time).get(synfig::Bone());
 					Matrix m = parent_bone.get_animated_matrix();
 					Real scale = parent_bone.get_scalelx();
 					origin[0]*=scale;
@@ -3087,6 +3195,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 														  value_desc)); 				// value_desc
 			duck->set_origin(fake_duck);
 			add_duck(duck);
+			angle_duck = duck;
 		}
 
 		// tip
@@ -3154,6 +3263,7 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 				value_desc));					// value_desc
 			duck->set_origin(fake_duck);
 			add_duck(duck);
+			origin_width_duck = duck;
 		}
 
 		// tip width
@@ -3183,6 +3293,41 @@ Duckmatic::add_to_ducks(const synfigapp::ValueDesc& value_desc, CanvasView::Hand
 				value_desc));					// value_desc
 			duck->set_origin(tip_duck);
 			add_duck(duck);
+			tip_width_duck = duck;
+		}
+
+		{
+			Bone::Handle bone_obj = new Bone();
+			bone_obj->origin = origin_duck;
+			bone_obj->tip = tip_duck;
+			bone_obj->angle = angle_duck;
+			bone_obj->fake = fake_duck;
+			bone_obj->origin_width = origin_width_duck;
+			bone_obj->tip_width = tip_width_duck;
+			bone_obj->bone_node = bone_value_node;
+			bone_obj->value_desc = orig_value_desc;
+			bone_obj->transform_stack = bone_transform_stack;
+			bone_obj->length = bone.get_length() * (bone.get_scalex() * bone.get_scalelx());
+			bone_obj->r0 = std::fabs(bone.get_width());
+			bone_obj->r1 = std::fabs(bone.get_tipwidth());
+
+			bone_obj->signal_user_click(2).connect(
+				sigc::bind(
+					sigc::bind(
+						sigc::bind(
+							sigc::mem_fun(
+								*canvas_view,
+								&studio::CanvasView::popup_param_menu
+							),
+							false // bezier
+						),
+						0.0f // location
+					),
+					orig_value_desc // value_desc
+				)
+			);
+
+			add_bone(bone_obj);
 		}
 
 		return true;
@@ -3373,6 +3518,171 @@ BezierDrag_Default::end_bezier_drag(Duckmatic* duckmatic)
 }
 
 /*
+-- ** -- BoneDrag_Default M E T H O D S----------------------------
+*/
+BoneDrag_Default::BoneDrag_Default():
+	drag_offset_(0, 0),
+	origin_initial_(0, 0),
+	tip_initial_(0, 0),
+	angle_initial_(0, 0),
+	origin_width_initial_(0, 0),
+	tip_width_initial_(0, 0),
+	initial_bone_angle_(Angle::deg(0)),
+	total_rotation_(Angle::deg(0)),
+	initial_mouse_angle_(0.0),
+	last_mouse_angle_(0.0),
+	is_moving_(false),
+	translate_mode_(false)
+{
+}
+
+void
+BoneDrag_Default::begin_bone_drag(Duckmatic* duckmatic, const synfig::Point& offset, bool translate_mode)
+{
+	is_moving_ = false;
+	drag_offset_ = offset;
+	translate_mode_ = translate_mode;
+
+	Duckmatic::Bone::Handle bone = duckmatic->get_selected_bone();
+	if (!bone || !bone->is_valid())
+		return;
+
+	if (translate_mode_ && (!bone->origin || !bone->origin->get_editable()))
+		return;
+	if (!translate_mode_ && (!bone->angle || !bone->angle->get_editable()))
+		return;
+
+	origin_initial_ = bone->origin->get_trans_point();
+	tip_initial_ = bone->tip->get_trans_point();
+	angle_initial_ = bone->angle->get_trans_point();
+	if (bone->origin_width)
+		origin_width_initial_ = bone->origin_width->get_trans_point();
+	if (bone->tip_width)
+		tip_width_initial_ = bone->tip_width->get_trans_point();
+
+	Vector v_init = offset - origin_initial_;
+	if (v_init.mag() > 1e-4)
+	{
+		initial_mouse_angle_ = Angle::rad(atan2(v_init[1], v_init[0])).get();
+	}
+	else
+	{
+		Vector bone_axis = tip_initial_ - origin_initial_;
+		initial_mouse_angle_ = Angle::rad(atan2(bone_axis[1], bone_axis[0])).get();
+	}
+	last_mouse_angle_ = initial_mouse_angle_;
+	total_rotation_ = Angle::deg(0);
+	if (bone->angle)
+		bone->angle->set_rotations(Angle::deg(0));
+}
+
+void
+BoneDrag_Default::bone_drag(Duckmatic* duckmatic, const synfig::Point& point)
+{
+	Duckmatic::Bone::Handle bone = duckmatic->get_selected_bone();
+	if (!bone || !bone->is_valid())
+		return;
+
+	Time time(duckmatic->get_time());
+
+	if (translate_mode_)
+	{
+		Vector delta = duckmatic->snap_point_to_grid(point) - drag_offset_;
+		if (duckmatic->get_axis_lock())
+		{
+			if (std::fabs(delta[0]) >= std::fabs(delta[1]))
+				delta[1] = 0;
+			else
+				delta[0] = 0;
+		}
+
+		if (delta.mag() > 0.0001)
+			is_moving_ = true;
+
+		bone->origin->set_trans_point(origin_initial_ + delta, time);
+		bone->tip->set_trans_point(tip_initial_ + delta, time);
+		bone->angle->set_trans_point(angle_initial_ + delta, time);
+		if (bone->origin_width)
+			bone->origin_width->set_trans_point(origin_width_initial_ + delta, time);
+		if (bone->tip_width)
+			bone->tip_width->set_trans_point(tip_width_initial_ + delta, time);
+
+		if (is_moving_)
+			duckmatic->signal_edited_duck(bone->origin, true);
+	}
+	else
+	{
+		Vector v_curr = point - origin_initial_;
+		if (v_curr.mag() < 1e-5)
+			return;
+
+		Real current_mouse_angle = Angle::rad(atan2(v_curr[1], v_curr[0])).get();
+		Angle step = Angle::rad(current_mouse_angle - last_mouse_angle_);
+		while (step < Angle::deg(-180)) step += Angle::deg(360);
+		while (step > Angle::deg(180)) step -= Angle::deg(360);
+		total_rotation_ += step;
+		last_mouse_angle_ = current_mouse_angle;
+
+		Angle effective_rotation = total_rotation_;
+		if (duckmatic->get_axis_lock())
+		{
+			double deg_val = Angle::deg(total_rotation_).get();
+			double step_val = 15.0;
+			double snapped = round(deg_val / step_val) * step_val;
+			effective_rotation = Angle::deg(snapped);
+		}
+
+		if (std::fabs(Angle::rad(total_rotation_).get()) > 0.001)
+			is_moving_ = true;
+
+		Real cos_a = Angle::cos(effective_rotation).get();
+		Real sin_a = Angle::sin(effective_rotation).get();
+
+		auto rotate_point = [&](const Point& p) -> Point {
+			Vector d = p - origin_initial_;
+			return origin_initial_ + Point(d[0]*cos_a - d[1]*sin_a, d[0]*sin_a + d[1]*cos_a);
+		};
+
+		bone->angle->set_trans_point(rotate_point(angle_initial_), time);
+		bone->tip->set_trans_point(rotate_point(tip_initial_), time);
+		if (bone->origin_width)
+			bone->origin_width->set_trans_point(rotate_point(origin_width_initial_), time);
+		if (bone->tip_width)
+			bone->tip_width->set_trans_point(rotate_point(tip_width_initial_), time);
+
+		if (is_moving_)
+			duckmatic->signal_edited_duck(bone->angle, true);
+	}
+
+	duckmatic->update_ducks();
+}
+
+bool
+BoneDrag_Default::end_bone_drag(Duckmatic* duckmatic)
+{
+	if (is_moving_)
+	{
+		Duckmatic::Bone::Handle bone = duckmatic->get_selected_bone();
+		if (!bone || !bone->is_valid())
+			return false;
+
+		if (translate_mode_)
+		{
+			duckmatic->signal_edited_duck(bone->origin);
+		}
+		else
+		{
+			duckmatic->signal_edited_duck(bone->angle);
+		}
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+/*
 -- ** -- Duckmatic::Push M E T H O D S----------------------------
 */
 Duckmatic::Push::Push(Duckmatic *duckmatic_):
@@ -3380,9 +3690,11 @@ Duckmatic::Push::Push(Duckmatic *duckmatic_):
 {
 	duck_map=duckmatic_->duck_map;
 	bezier_list_=duckmatic_->bezier_list_;
+	bone_list_=duckmatic_->bone_list_;
 	duck_data_share_map=duckmatic_->duck_data_share_map;
 	stroke_list_=duckmatic_->stroke_list_;
 	duck_dragger_=duckmatic_->duck_dragger_;
+	bone_dragger_=duckmatic_->bone_dragger_;
 	needs_restore=true;
 }
 
@@ -3397,9 +3709,11 @@ Duckmatic::Push::restore()
 {
 	duckmatic_->duck_map=duck_map;
 	duckmatic_->bezier_list_=bezier_list_;
+	duckmatic_->bone_list_=bone_list_;
 	duckmatic_->duck_data_share_map=duck_data_share_map;
 	duckmatic_->stroke_list_=stroke_list_;
 	duckmatic_->duck_dragger_=duck_dragger_;
+	duckmatic_->bone_dragger_=bone_dragger_;
 	needs_restore=false;
 }
 
