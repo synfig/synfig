@@ -4,6 +4,7 @@
 **
 **	\legal
 **	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -29,18 +30,10 @@
 #define __SYNFIG_RENDERING_GL_CONTEXT_H
 
 /* === H E A D E R S ======================================================= */
-
-#include <cassert>
-
-#include <vector>
-#include <utility>
+#include "shaders.h"
+#include "headers.h"
 
 #include <mutex>
-
-#include <GL/gl.h>
-#include <GL/glx.h>
-
-#include <synfig/string.h>
 
 /* === M A C R O S ========================================================= */
 
@@ -55,74 +48,46 @@ namespace rendering
 namespace gl
 {
 
+// all internal objects assume a valid bound opengl context
 class Context
 {
 public:
 	class Lock {
-	private:
-		Context &context;
 	public:
-		Lock(Context &context): context(context) { context.use(); }
-		Lock(Lock &other): context(other.context) { context.use(); }
-		~Lock() { context.unuse(); }
-
-		Context& get() const { return context; }
-		Context* operator-> () const { return &get(); }
-	};
-
-	struct ContextInfo {
-		Display *display;
-		GLXDrawable drawable;
-		GLXDrawable read_drawable;
-		GLXContext context;
-
-		ContextInfo():
-			display(nullptr),
-			drawable(None),
-			read_drawable(None),
-			context(nullptr) { }
-
-		bool operator== (const ContextInfo &other) const
-		{
-			return display == other.display
-				&& drawable == other.drawable
-				&& read_drawable == other.read_drawable
-				&& context == other.context;
+		Lock(Context& ctx) : ctx(ctx) {
+			ctx.use();
 		}
-
-		bool operator!= (const ContextInfo &other) const
-		{
-			return !(*this == other);
+		~Lock() {
+			ctx.unuse();
 		}
-
-		void make_current() const;
-		static ContextInfo get_current(Display *default_display);
+	private:
+		Context& ctx;
 	};
-
-private:
-	std::recursive_mutex rec_mutex;
-
-	Display *display;
-	GLXFBConfig config;
-	GLXPbuffer pbuffer;
-	GLXContext context;
-
-	ContextInfo context_info;
-	std::vector<ContextInfo> context_stack;
-
-	static std::pair<GLenum, const char*> enum_strings[];
 
 public:
 	Context();
 	~Context();
 
-	bool is_valid() const { return context; }
-	bool is_current() const;
+	bool initialize();
+
+	gl::Programs::Program get_program(const std::string& str) const;
+	gl::Programs::Program get_blend_program(Color::BlendMethod method) const;
+
 	void use();
 	void unuse();
 
-	void check(const char *s = "");
-	const char* get_enum_string(GLenum x);
+private:
+	std::recursive_mutex mutex;
+
+	int lock_count = 0;
+
+	bool initialized = false;
+
+	GLFWwindow* glfwWindow = nullptr;
+
+	Programs* programs = nullptr;
+
+	Shaders* shaders = nullptr;
 };
 
 }; /* end namespace gl */

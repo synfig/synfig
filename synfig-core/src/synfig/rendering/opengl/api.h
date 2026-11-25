@@ -1,9 +1,9 @@
 /* === S Y N F I G ========================================================= */
-/*!	\file synfig/rendering/opengl/internal/glsl/simple_vertex.glsl
-**	\brief Simple Vertex Shader
+/*!	\file synfig/rendering/opengl/internal/api.h
+**	\brief API header
 **
 **	\legal
-**	......... ... 2015 Ivan Mahonin
+**	......... ... 2023 Bharat Sahlot
 **
 **	This file is part of Synfig.
 **
@@ -23,11 +23,16 @@
 */
 /* ========================================================================= */
 
-#version 330 core
+#ifndef __SYNFIG_RENDERING_API_HEADERS_H
+#define __SYNFIG_RENDERING_API_HEADERS_H
 
-layout(location = 0) in vec2 position;
+#include "./internal/headers.h"
+#include "./internal/context.h"
+#include "./internal/plane.h"
+#include "./internal/shaders.h"
+#include "./internal/framebuffer.h"
+#include "./internal/environment.h"
 
-void main()
-{
-	gl_Position = vec4(position, 0.0, 1.0);
-}
+#define OPENGL_DEBUG_OUTPUT
+
+#endif
