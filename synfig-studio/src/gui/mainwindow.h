@@ -67,6 +67,7 @@ namespace studio {
 		void on_dockable_unregistered(Dockable* dockable);
 		void toggle_show_menubar();
 		void toggle_show_toolbar();
+	
 
 		static void save_all();
 
@@ -94,7 +95,7 @@ namespace studio {
 
 		DockBook& main_dock_book() { return *main_dock_book_; }
 		const DockBook& main_dock_book() const { return *main_dock_book_; }
-
+		
 		static void set_workspace_default();
 		static void set_workspace_compositing();
 		static void set_workspace_animating();

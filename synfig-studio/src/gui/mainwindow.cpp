@@ -338,18 +338,22 @@ MainWindow::get_workspaces()
 	return list;
 }
 
-bool
-MainWindow::on_key_press_event(GdkEventKey* key_event)
+bool MainWindow::on_key_press_event(GdkEventKey* key_event)
 {
-	SYNFIG_EXCEPTION_GUARD_BEGIN()
-	Gtk::Widget * widget = get_focus();
-	if (widget && (dynamic_cast<Gtk::Editable*>(widget) || dynamic_cast<Gtk::TextView*>(widget) || dynamic_cast<Gtk::DrawingArea*>(widget))) {
-		bool handled = gtk_window_propagate_key_event(GTK_WINDOW(this->gobj()), key_event);
-		if (handled)
-			return true;
-	}
-	return Gtk::Window::on_key_press_event(key_event);
-	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+    SYNFIG_EXCEPTION_GUARD_BEGIN()
+    if (key_event->keyval == GDK_KEY_F2) {
+        App::focus_tool_options();
+        return true; 
+    }
+
+    Gtk::Widget* widget = get_focus();
+    if (widget && (dynamic_cast<Gtk::Editable*>(widget) || dynamic_cast<Gtk::TextView*>(widget) || dynamic_cast<Gtk::DrawingArea*>(widget))) {
+        bool handled = gtk_window_propagate_key_event(GTK_WINDOW(this->gobj()), key_event);
+        if (handled) 
+            return true;
+    }
+    return Gtk::Window::on_key_press_event(key_event);
+    SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
 void
