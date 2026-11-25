@@ -143,7 +143,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateRotate::StateRotate():
-	Smach::state<StateRotate_Context>("rotate", N_("Rotate Tool"))
+	Smach::state<StateRotate_Context>("rotate", N_("Rotate"))
 {
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateRotate_Context::event_refresh_tool_options));
 	insert(event_def(EVENT_STOP,&StateRotate_Context::event_stop_handler));

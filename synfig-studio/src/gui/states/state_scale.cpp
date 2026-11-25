@@ -132,7 +132,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateScale::StateScale():
-	Smach::state<StateScale_Context>("scale", N_("Scale Tool"))
+	Smach::state<StateScale_Context>("scale", N_("Scale"))
 {
 	insert(event_def(EVENT_REFRESH_TOOL_OPTIONS,&StateScale_Context::event_refresh_tool_options));
 	insert(event_def(EVENT_STOP,&StateScale_Context::event_stop_handler));

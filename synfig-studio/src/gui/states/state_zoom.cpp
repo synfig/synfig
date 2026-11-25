@@ -94,7 +94,7 @@ public:
 /* === M E T H O D S ======================================================= */
 
 StateZoom::StateZoom():
-	Smach::state<StateZoom_Context>("zoom", N_("Zoom Tool"))
+	Smach::state<StateZoom_Context>("zoom", N_("Zoom"))
 {
 	insert(event_def(EVENT_STOP,&StateZoom_Context::event_stop_handler));
 	insert(event_def(EVENT_REFRESH,&StateZoom_Context::event_refresh_handler));
