@@ -183,7 +183,6 @@ AC_ARG_WITH(fontconfig,
 if test $with_fontconfig != "no" ; then {
 	PKG_CHECK_MODULES(FONTCONFIG, fontconfig,[
 		with_fontconfig="yes"
-		CONFIG_DEPS="$CONFIG_DEPS fontconfig"
 	],[
 		with_fontconfig="no"
 	])
@@ -195,7 +194,18 @@ if test $with_fontconfig = "yes" ; then {
 } else {
 	AM_CONDITIONAL(WITH_FONTCONFIG,false)
 } ; fi
+AC_SUBST(FONTCONFIG_CFLAGS)
+AC_SUBST(FONTCONFIG_LIBS)
 
+# MLT++ CHECK-------------------------
+
+PKG_CHECK_MODULES(MLTPP, mlt++-7,,[
+	PKG_CHECK_MODULES(MLTPP, mlt++,,[
+		AC_MSG_ERROR([ ** You need to install mlt++.])
+	])
+])
+AC_SUBST(MLTPP_CFLAGS)
+AC_SUBST(MLTPP_LIBS)
 
 AC_CONFIG_FILES([
     Makefile
@@ -250,6 +260,7 @@ Profiling Mode -------------------> $profiling
 Optimizations --------------------> $optimization
 JACK Enabled ---------------------> $enable_jack
 Build images ---------------------> $with_images
+FontConfig Enabled ---------------> $with_fontconfig
 
 "'$'"CXX ------------------------------> '$CXX'
 "'$'"CXXFLAGS -------------------------> '$CXXFLAGS'
@@ -260,4 +271,8 @@ Build images ---------------------> $with_images
 "'$'"GTKMM_LIBS -----------------------> '$GTKMM_LIBS'
 "'$'"JACK_CFLAGS ----------------------> '$JACK_CFLAGS'
 "'$'"JACK_LIBS ------------------------> '$JACK_LIBS'
+"'$'"FONTCONFIG_CFLAGS ----------------> '$FONTCONFIG_CFLAGS'
+"'$'"FONTCONFIG_LIBS ------------------> '$FONTCONFIG_LIBS'
+"'$'"MLTPP_CFLAGS ---------------------> '$MLTPP_CFLAGS'
+"'$'"MLTPP_LIBS -----------------------> '$MLTPP_LIBS'
 "
