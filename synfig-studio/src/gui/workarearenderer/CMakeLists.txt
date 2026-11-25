@@ -1,7 +1,7 @@
 target_sources(synfigstudio
     PRIVATE
         "${CMAKE_CURRENT_LIST_DIR}/renderer_background.cpp"
-        "${CMAKE_CURRENT_LIST_DIR}/renderer_bbox.cpp"
+        "${CMAKE_CURRENT_LIST_DIR}/renderer_boundingbox.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renderer_canvas.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renderer_dragbox.cpp"
         "${CMAKE_CURRENT_LIST_DIR}/renderer_ducks.cpp"
