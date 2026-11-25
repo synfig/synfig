@@ -59,6 +59,7 @@ Widget_Distance::Widget_Distance():
 {
 	set_adjustment(adjustment);
 	set_numeric(false);
+	signal_event_after().connect(sigc::mem_fun(*this, &Widget_Distance::after_event));
 }
 
 Widget_Distance::~Widget_Distance()
@@ -99,6 +100,26 @@ Widget_Distance::on_key_release_event(GdkEventKey* event)
 	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
 }
 
+void
+Widget_Distance::after_event(GdkEvent *event)
+{
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
+	if ((event->type == GDK_BUTTON_RELEASE) && first_selection) {
+		select_region(0, -1);
+		first_selection = false;
+	}
+	SYNFIG_EXCEPTION_GUARD_END()
+}
+
+bool
+Widget_Distance::on_event(GdkEvent* event)
+{
+	SYNFIG_EXCEPTION_GUARD_BEGIN()
+	if (event->type == GDK_FOCUS_CHANGE && event->focus_change.in)
+			first_selection=true;
+	return SpinButton::on_event(event);
+	SYNFIG_EXCEPTION_GUARD_END_BOOL(true)
+}
 
 void
 Widget_Distance::set_value(const synfig::Distance &data)
