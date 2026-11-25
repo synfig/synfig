@@ -57,6 +57,7 @@ class Dock_Curves : public Dock_CanvasSpecific
 	
 	Gtk::Table* table_;
 	Widget_Curves* last_widget_curves_;
+	Gtk::ToolButton* mode_toggle_button_;
 
 protected:
 	virtual void init_canvas_view_vfunc(etl::loose_handle<CanvasView> canvas_view);
@@ -77,6 +78,9 @@ private:
 
 	void on_curves_waypoint_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button);
 	void on_curves_waypoint_double_clicked(synfigapp::ValueDesc value_desc, std::set<synfig::Waypoint,std::less<synfig::UniqueID>> waypoint_set, int button);
+
+	void on_toggle_mode_clicked();
+	void update_mode_button();
 }; // END of Dock_Curves
 
 }; // END of namespace studio

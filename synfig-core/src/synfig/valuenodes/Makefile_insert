@@ -65,6 +65,7 @@ VALUENODES_HH = \
 	valuenodes/valuenode_boneweightpair.h\
 	valuenodes/valuenode_wplist.h \
 	valuenodes/valuenode_bonelink.h \
+	valuenodes/valuenode_bonedriver.h \
 	valuenodes/valuenode_average.h \
 	valuenodes/valuenode_dynamic.h \
 	valuenodes/valuenode_derivative.h \
@@ -137,6 +138,7 @@ VALUENODES_CC = \
 	valuenodes/valuenode_boneweightpair.cpp\
 	valuenodes/valuenode_wplist.cpp \
 	valuenodes/valuenode_bonelink.cpp \
+	valuenodes/valuenode_bonedriver.cpp \
 	valuenodes/valuenode_average.cpp\
 	valuenodes/valuenode_dynamic.cpp \
 	valuenodes/valuenode_derivative.cpp \

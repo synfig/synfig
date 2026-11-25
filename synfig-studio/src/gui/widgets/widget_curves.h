@@ -106,8 +106,17 @@ private:
 	sigc::signal<void, synfigapp::ValueDesc, std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int> signal_waypoint_double_clicked_;
 
 public:
+	enum GraphMode {
+		MODE_VALUE_GRAPH = 0,
+		MODE_SPEED_GRAPH = 1
+	};
+
 	Widget_Curves();
 	~Widget_Curves();
+
+	GraphMode get_graph_mode() const { return graph_mode_; }
+	void set_graph_mode(GraphMode mode);
+	sigc::signal<void, GraphMode>& signal_graph_mode_changed() { return signal_graph_mode_changed_; }
 
 	const Glib::RefPtr<Gtk::Adjustment>& get_range_adjustment() const { return range_adjustment; }
 
@@ -119,6 +128,10 @@ public:
 
 	sigc::signal<void, synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_clicked() { return signal_waypoint_clicked_; }
 	sigc::signal<void, synfigapp::ValueDesc,std::set<synfig::Waypoint,std::less<synfig::UniqueID> >, int>& signal_waypoint_double_clicked() { return signal_waypoint_double_clicked_; }
+
+private:
+	GraphMode graph_mode_ = MODE_VALUE_GRAPH;
+	sigc::signal<void, GraphMode> signal_graph_mode_changed_;
 
 protected:
 	bool on_event(GdkEvent *event);
