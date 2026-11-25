@@ -68,6 +68,11 @@ protected:
 	 */
 	virtual Point point_vfunc(const Point &point) const = 0;
 
+	/**
+	 * If the coordinates distorted by the task should be clamped to the pixel-surface coordinates
+	 */
+	bool should_clamp_coordinates = false;
+
 public:
 	/**
 	 * Scan the target surface and fill each pixel according to point_vfunc().
