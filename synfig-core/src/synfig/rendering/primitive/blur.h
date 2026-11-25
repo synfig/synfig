@@ -54,7 +54,8 @@ public:
 		FASTGAUSSIAN	= 1,
 		CROSS			= 2,
 		GAUSSIAN		= 3,
-		DISC			= 4
+		DISC			= 4,
+		SOLID			= 5
 	};
 
 	Type type;
